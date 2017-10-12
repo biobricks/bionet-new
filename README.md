@@ -89,25 +89,34 @@ You will want to have a local SMTP server so the bionet can send outgoing emails
 sudo apt install postfix
 ```
 
-# Building
+# Building and development
 
-To build once:
-
-```
-npm run build
-```
-
-To continuously build every time files are changed (useful if you're actively developing), open a new terminal and run:
+To begin developing simple run:
 
 ```
-npm run watchify
+npm run dev
 ```
 
-# Running
+This will start the server, watch for changes to js and css files and enable hot module reloading.
+
+If you don't want hot module reloading do:
 
 ```
-npm start
+npm run dev --cold
 ```
+
+Also available are these `npm run` commands:
+
+* start: start server
+* build: build js and css once
+* watch: watch js and css and build when changed
+* hot: same as watch but with hot module reloading
+* build-js: build js once
+* watch-js: watch js and build when changed
+* hot-js: same as watch-js but with hot module reloading
+* build-css: build css once
+* watch-css: watch js and build when changed
+
 
 # Production 
 

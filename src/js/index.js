@@ -1,11 +1,13 @@
 
+var app = {};
+window.app = app;
 
 import {h, render, createElement, Component as PreactComponent} from 'preact'
 import ashnazg from 'ashnazg'
 
 const Component = ashnazg(PreactComponent)
 var Count = require('./count.js')(Component)
-
+var rpc = require('./rpc.js');
 
 function renderAll() {
   var container = document.getElementById('container');
@@ -57,9 +59,26 @@ window.changeState = function() {
 function init() {
 
   renderAll();
+
+  // connect to the server and attempt to log in
+  console.log("CONNECTING TO RPC");
+
+  rpc.connect(function(err, remote, user) {
+    if(err) {
+      console.error("Connection attempt failed. Will continue trying.");
+      return;
+    }
+
+    app.remote = remote;
+
+    if(user) {
+      console.log("Logged in as: ", user);
+    } else {
+      console.log("Not logged in");
+    }
+
+  });
 }
-
-
 
 // hot module reloading
 if(module.hot) {

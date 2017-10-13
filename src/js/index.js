@@ -1,9 +1,9 @@
+import {h, render, createElement, Component as PreactComponent} from 'preact'
+import ashnazg from 'ashnazg'
 
 var app = {};
 window.app = app;
-
-import {h, render, createElement, Component as PreactComponent} from 'preact'
-import ashnazg from 'ashnazg'
+app.actions = require('./actions/index');
 
 const Component = ashnazg(PreactComponent)
 var Count = require('./count.js')(Component)
@@ -68,7 +68,7 @@ function init() {
       console.error("Connection attempt failed. Will continue trying.");
       return;
     }
-
+    
     app.remote = remote;
 
     if(user) {

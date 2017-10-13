@@ -81,8 +81,6 @@ function connector(cb) {
       setCookie: true
     }, function (err, userData) {
 
-      setLoginState(userData);
-
       if(err) {
         cb(null, remote);
       } else {
@@ -119,11 +117,9 @@ function setConnectState(isConnected, msg) {
 
 function setLoginState(userData) {
   if(userData) {
-//    app.setLoginState(userData.user);
-    // TODO we should not be setting globals from in here
+    app.actions.user.set(userData.user);
   } else {
-//    app.setLoginState();
-    // TODO we should not be setting globals from in here
+    app.actions.user.set();
   }
 }
 
@@ -156,8 +152,6 @@ function logout(cb) {
 
   auth.logout(app.remote, function() {
 
-    // TODO we should not be setting globals from in here
-    app.user = undefined;
     setLoginState()
 
     console.log("Logged out.");

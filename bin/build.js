@@ -94,7 +94,15 @@ function build(opts) {
     plugins: [
       ['transform-react-jsx', {pragma: 'h'}]
     ]
-  })
+  });
+
+  b.transform('aliasify', {
+    aliases: {
+      "react": "preact-compat",
+      "react-dom": "preact-compat"
+    },
+    global: true
+  });
 
   onBuildStart();
 }

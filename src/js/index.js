@@ -1,25 +1,31 @@
 import {h, render, createElement, Component as PreactComponent} from 'preact'
 import ashnazg from 'ashnazg'
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
 var app = {};
 window.app = app;
 app.actions = require('./actions/index');
 
 const Component = ashnazg(PreactComponent)
-var Count = require('./count.js')(Component)
+var Global = require('./components/global.js')(Component)
+var Count = require('./components/count.js')(Component)
 var rpc = require('./rpc.js');
 
 function renderAll() {
   var container = document.getElementById('container');
 
-  render(<Count state="bob.myclock" />, container);
-  render(<Count state="yourclock" />, container);
-  render(<Count state="foo[]" />, container);
-  render(<Count state="foo[]" />, container);
-  render(<Count state="foo[]" />, container);
-  render(<Count state="[]" />, container);
-  render(<Count state="[]" />, container);
-  render(<Count state="[]" />, container);
+  render(
+      <Router>
+        <Global state="global">
+          <Route exact path="/" render={() => (
+              <Count state="bob.myclock" />
+          )}/>
+          <Route exact path="/login" render={() => (
+            <div>nothing here yet</div>
+          )}/>
+        </Global>
+      </Router>,
+    container);
 
 }
 

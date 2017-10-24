@@ -1,70 +1,49 @@
 import {h, render, createElement, Component as PreactComponent} from 'preact'
 import ashnazg from 'ashnazg'
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
 var app = {};
 window.app = app;
 app.actions = require('./actions/index');
 
 const Component = ashnazg(PreactComponent)
-var Global = require('./components/global.js')(Component)
-var Count = require('./components/count.js')(Component)
+var App = require('./components/app.js')(Component)
 var rpc = require('./rpc.js');
 
 function renderAll() {
   var container = document.getElementById('container');
 
-  render(
-      <Router>
-        <Global state="global">
-          <Route exact path="/" render={() => (
-              <Count state="bob.myclock" />
-          )}/>
-          <Route exact path="/login" render={() => (
-            <div>nothing here yet</div>
-          )}/>
-        </Global>
-      </Router>,
-    container);
-
+  render(<App/>, container);
 }
 
-window.saveState = function() {
-  var btn = document.getElementById('save-button');
-  btn.style.backgroundColor = '';  
+function bulmaInit() {
+ // Get all "navbar-burger" elements
+  var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
 
-  var newState;
-  try {
-    newState = JSON.parse(document.getElementById('app-state').value);
-    app.setState(newState);
-    document.getElementById('app-state').value = JSON.stringify(app.state, 2);
-  } catch(e) {
-    console.error(e);
-    btn.style.backgroundColor = 'red';
+  // Check if there are any navbar burgers
+  if ($navbarBurgers.length > 0) {
+
+    // Add a click event on each of them
+    $navbarBurgers.forEach(function ($el) {
+      $el.addEventListener('click', function () {
+
+        // Get the target from the "data-target" attribute
+        var target = $el.dataset.target;
+        var $target = document.getElementById(target);
+
+        // Toggle the class on both the "navbar-burger" and the "navbar-menu"
+        $el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+
+      });
+    });
   }
-  
-}
-
-window.changeState = function() {
-  var btn = document.getElementById('change-button');
-  btn.style.backgroundColor = '';  
-
-  var stateChange;
-  try {
-    stateChange = JSON.parse(document.getElementById('app-state-change').value);
-    app.changeState(stateChange);
-    document.getElementById('app-state').value = JSON.stringify(app.state, 2);
-  } catch(e) {
-    console.error(e);
-    btn.style.backgroundColor = 'red';
-  }
-  
 }
 
 
 function init() {
 
   renderAll();
+  bulmaInit();
 
   // connect to the server and attempt to log in
   console.log("CONNECTING TO RPC");

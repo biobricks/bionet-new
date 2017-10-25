@@ -1,9 +1,14 @@
 
 @import "../../node_modules/bulma/bulma.sass";
 
-body {
+$fa-font-path: "../fonts/font-awesome";
+@import "../../node_modules/font-awesome/scss/font-awesome.scss";
 
+body {
+    font-family: sans-serif;
 }
+
+/* app-global stuff BEGIN */
 
 .content-area {
     padding-top: 40px;
@@ -12,3 +17,27 @@ body {
 .post-hero-area {
     padding-top: 40px;
 }
+
+
+/*
+  A full-width bar at bottom of screent 
+  that does not overlay content.
+  Used for e.g. "you are disconnected"
+  notifications that cannot be hidden
+  by any user action.
+*/
+.persistent-notify {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: $danger;
+    color: $white;
+
+    .hcenter {
+        margin: 0 auto;
+    }
+}
+
+/* app global stuff END */

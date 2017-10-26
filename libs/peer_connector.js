@@ -7,6 +7,8 @@ var auth = require('rpc-multiauth');
 var distance = require('jeyo-distans');
 var xtend = require('xtend');
 
+// TODO add debug/verbose mode 
+
 function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
 
   this.hostname = hostname;

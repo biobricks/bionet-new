@@ -19,12 +19,31 @@ git clone https://github.com/biobricks/bionet
 
 # Installing pre-requisites
 
+Note: you might want to use your system's built in method for installing the latest version of nodejs rather than using nvm.
+
+## nodejs using nvm method (recommended for development)
+
 ```
 # install nvm
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
 # install node
 nvm install --lts
+```
 
+## nodejs using package manager
+
+The following is for Debian/Ubuntu based distros only. Instructions for many popular distros available [here](https://nodejs.org/en/download/package-manager/). 
+
+```
+curl -sL https://deb.nodesource.com/setup_6.x > /tmp/node_setup
+# look at /tmp/node_setup and ensure that the script does what's expected
+sudo -E bash /tmp/node_setup
+sudo apt install nodejs
+```
+
+## npm packages
+
+```
 # install node packages
 cd bionet/
 npm install
@@ -117,6 +136,35 @@ Also available are these `npm run` commands:
 * build-css: build css once
 * watch-css: watch js and build when changed
 
+# The bionet commands
+
+Currently there are a few commands. The plan is to eventually make all of their functionality accessible from the central `bionet` command.
+
+## ./bin/bionet
+
+```
+Usage: ./bin/bionet <sub_command> [sub_command arguments]
+```
+
+Sub-commands:
+
+* server: start the bionet server
+* status: connect to the running bionet server and report the status
+
+## ./bin/db.js
+
+```
+Usage: ./bin/db.js <sub_command> [sub_command arguments]
+```
+
+Sub-commands:
+
+* dump: Dump the entire database as JSON to stdout
+* import file.json: Import database from JSON
+* user list: List all users
+* user test: Create a test user for unit testing purposes
+
+This command is described more in the backup section.
 
 # Production 
 

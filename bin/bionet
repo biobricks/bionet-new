@@ -37,15 +37,9 @@ function usage(err) {
   f('');
   f("Where cmd is one of the following:");
   f('');
-  f("  dump: Dump the entire database as JSON to stdout");
-  f("  import [-f] file.json: Import database from JSON (use -f to force)");
-  f("  user: view users");
-  f("    list: Print list of all users");
-  f("    test: Create a user for unit testing and save credentials to test_user.json");
-  f("  help: Display this usage message");
+  f("  server: Start the bionet server");
+  f("  status: Connect to the running bionet server and report the status");
   f('');
-  f("  The --online flag will cause this script to fail if the bionet app");
-  f("  isn't currently running.");
   if(err) {
     process.exit(1);
   } else {

@@ -39,6 +39,7 @@ function usage(err) {
   f('');
   f("  server: Start the bionet server");
   f("  status: Connect to the running bionet server and report the status");
+  f("  search <query>: Run a global search and report the results");
   f('');
   if(err) {
     process.exit(1);
@@ -69,7 +70,7 @@ if(cmd === 'help') {
 
 function main() {
 
-  if(cmd.match(/^stat/)) { // dump
+  if(cmd.match(/^stat/)) { // show running node status
 
     connect({login: false}, function(err, done, remote) {
       if(err) fail(err);
@@ -83,7 +84,89 @@ function main() {
       });
     });
 
-  } else if(cmd.match(/^server/)) { // import
+  } else if(cmd.match(/^create/)) { // create a virtual
+    
+    if(!args.length) usage("You must provide JSON for the virtual to create");
+
+    var m = JSON.parse(args[0]);
+    if(!m || !m.name) {
+      usage("The JSON must contain at least a name");
+    }
+
+    connect(function(err, done, remote) {
+      if(err) fail(err);
+    
+      remote.saveVirtual(m, function(err, id) {
+        if(err) {
+          done();
+          fail(err);
+        }
+        console.log("Created virtual with id:", id);
+        
+        done();
+      });
+    })
+    
+
+  } else if(cmd.match(/^search/)) { // run a global search
+
+    if(!args.length) usage("You must provide a search query");
+
+    var isGlobal = true; // TODO add switch for local
+    var isBlast = false;
+    var query = args[0];
+    var stripped = query.replace(/\s+/, '');
+    var ntQuery = stripped.replace(/[ACGTUacgtu]+/, '');
+    
+    if(ntQuery.length === stripped.length) {
+      isBlast = true;
+    }
+    
+    connect(function(err, done, remote) {
+      if(err) fail(err);
+
+      if(!isGlobal) { // local search
+        var resultStream;
+        if(isBlast) {
+          resultStream = remote.blast(ntQuery);
+        } else {
+          resultStream = remote.searchAvailable(query);
+        }
+        
+        resultStream.on('data', function(result) {
+          console.log(JSON.stringify(result, null, 2));
+        });
+        
+      } else { // global search
+
+        if(isBlast) {
+          remote.peerBlast(ntQuery, function(err, result) {
+            if(err) {
+              done();
+              fail(err);
+            }
+
+            console.log(JSON.stringify(result, null, 2));
+            done();
+          });
+          
+        } else {
+          remote.peerSearch(query, function(err, result) {
+            if(err) {
+              done();
+              fail(err);
+            }
+
+            console.log(JSON.stringify(result, null, 2));
+            done();
+          });
+        }
+
+      }
+    });
+
+    
+  } else if(cmd.match(/^server/)) { // start the server
 
     var server = spawn(path.join(__dirname, 'server.js'), [])
     server.stdout.setEncoding('utf8');

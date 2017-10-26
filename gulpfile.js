@@ -14,14 +14,14 @@ gulp.task('watch:js', js.watch);
 gulp.task('hot:js', js.hot);
 
 gulp.task('build:css', function() {
-  return gulp.src('./src/css/*.scss')
+  return gulp.src('./src/css/index.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(cssimport())
     .pipe(gulp.dest('./static/build'));
 });
  
 gulp.task('watch:css', function() {
-  gulp.watch('./src/css/**/*.scss', ['build:css']);
+  gulp.watch('./src/css/**/*.sass', ['build:css']);
 });
 
 // not currently used

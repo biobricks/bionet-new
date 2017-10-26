@@ -1,6 +1,7 @@
 
 module.exports = {
   
-  user: require('./user')
+  user: require('./user'),
+  connection: require('./connection')
 
 }

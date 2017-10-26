@@ -23,7 +23,7 @@ function reconnect(cb) {
     });
   }
   setTimeout(function() {
-    setConnectState(false, "Will attempt to reconnect in " + (delay - 1) + " seconds...");
+    setConnectState(false, "Will attempt to reconnect in " + (delay - 1) + " seconds...", (delay - 1));
   }, 1000);
   console.log("reconnecting in", delay, "seconds");
   setTimeout(function() {
@@ -111,8 +111,8 @@ function connect(cb) {
   })
 }
 
-function setConnectState(isConnected, msg) {
-
+function setConnectState(isConnected, msg, delay) {
+  app.actions.connection.setState(isConnected, msg, delay);
 }
 
 function setLoginState(userData) {

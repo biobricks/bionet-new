@@ -6,6 +6,7 @@ module.exports = function(Component) {
 
   var Global = require('./global.js')(Component)
   var TopMenu = require('./top_menu.js')(Component)
+  var PersistentNotify = require('./persistent_notify.js')(Component)
   
   var Login = require('./login.js')(Component)
   var Count = require('./count.js')(Component)
@@ -31,6 +32,7 @@ module.exports = function(Component) {
                 <Login />
               )}/>
             </div>
+            <PersistentNotify state="pnotify" />
           </Global>
         </Router>
       )

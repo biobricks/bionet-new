@@ -12,7 +12,7 @@
     "hot": "gulp hot",
     "dev": "bin/dev.js",
     "postinstall": "bin/postinstall.sh",
-    "start": "bin/cmd.js"
+    "start": "bin/server.js"
   },
   "dependencies": {
     "accountdown": "^4.1.0",

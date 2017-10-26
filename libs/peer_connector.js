@@ -27,13 +27,13 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
   this._connectFail = function(peer) {
     peer.connected = false;
     
-    console.log("_connectFail");
+//    console.log("_connectFail");
 
     peer.rpc.die(); // prevent a future 'death' event
 
     if(peer.attempts >= this.opts.maxAttempts || !peer.wasConnected || peer.stopTrying) {
 //      if(peer.url === 'ws://172.30.0.26:8000/' || peer.url === 'ws://72.244.126.50:9009/') {
-        console.log("FAIL FAIL:", peer.url, peer.attempts, this.opts.maxAttempts, peer.wasConnected, peer.stopTrying);
+//        console.log("FAIL FAIL:", peer.url, peer.attempts, this.opts.maxAttempts, peer.wasConnected, peer.stopTrying);
 //      }
       if(this.urls[peer.url]) {
         //delete this.urls[peer.url];
@@ -63,7 +63,7 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
   this._connectToPeer = function(peer) {
     var self = this;
 
-    console.log("Connecting to:", peer.url);
+//    console.log("Connecting to:", peer.url);
     peer.attempts++;
 
     var stream = websocket(peer.url);
@@ -102,7 +102,7 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
 
       peer.remote = remote;
 
-      console.log("======================== CONNECTED TO", peer.url);
+//      console.log("======================== CONNECTED TO", peer.url);
       peer.wasConnected = true;
 
       remote.getPeerInfo(function(err, info) {
@@ -110,7 +110,7 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
           console.error('[peer getPeerInfo error]', err);
           return peer.stream.socket.close();
         }
-        console.log("GOT", info);
+
         peer.id = info.id;
         peer.name = info.name;
         peer.position = info.position;
@@ -129,7 +129,7 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
 
     stream.socket.on('close', function(code, reason) {
       if(code !== 1006) {
-        console.log("[peer outgoing websocket closed]", peer.url, code, reason);
+//        console.log("[peer outgoing websocket closed]", peer.url, code, reason);
       }
       self._connectFail(peer);
     });
@@ -138,18 +138,18 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
 
       // TODO are there any error codes that aren't cause for reconnecting?
       if(!err.message.match(/ECONNREFUSED/)) {
-        console.log('[peer websocket]', peer.url, err.message || err);
+//        console.log('[peer websocket]', peer.url, err.message || err);
       }
       self._connectFail(peer);
     });
 
     rpcClient.on('error', function(err) {
-      console.log('[peer rpc]', peer.url, err.message || err);
+//      console.log('[peer rpc]', peer.url, err.message || err);
       self._connectFail(peer);
     });
 
     rpcClient.on('death', function() {
-      console.log('[peer rpc death]', peer.url);
+//      console.log('[peer rpc death]', peer.url);
       self._connectFail(peer);
     });
   };
@@ -168,8 +168,8 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
       return;
     }
 
-    console.log("WANT TO ATTEMPT:", peer.url);
-    console.log(this.urls[peer.url] ? "  already connected" : "  not yet connected");
+//    console.log("WANT TO ATTEMPT:", peer.url);
+//    console.log(this.urls[peer.url] ? "  already connected" : "  not yet connected");
 
     // alredy connected to this peer
     if(this.urls[peer.url]) return;
@@ -191,7 +191,7 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
 
     // reached backoff timeout
     bo.on('ready', function(number, delay) {
-      console.log("RETRYING");
+//      console.log("RETRYING");
       this._connectToPeer(peer);
     }.bind(this));
 
@@ -206,7 +206,7 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
 
     // TODO check options and reject if e.g. hostname or port missing
 
-    console.log("INCOMING:", peerInfo);
+//    console.log("INCOMING:", peerInfo);
 
     if(peer) {
       if(peer.connected && !peer.incoming) {
@@ -238,10 +238,10 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
       peer.distance = Infinity;
     }
 
-    console.log("==================== INCOMING established:", peer.url);
+//    console.log("==================== INCOMING established:", peer.url);
 
     stream.socket.on('close', function(code, reason) {
-      console.log("[peer incoming connection closed]", code, reason);
+//      console.log("[peer incoming connection closed]", code, reason);
       delete self.peers[peer.id];
       delete self.urls[peer.url];
     });
@@ -269,16 +269,6 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
 //    }
 //  }; 
   };
-
-/*
-  setInterval(function() {
-    var key;
-    for(key in this.urls) {
-      console.log("    ~~~~~~~~~~~", key);
-    }
-    
-  }.bind(this), 3000);
-*/
 };
 
 

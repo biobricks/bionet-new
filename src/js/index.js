@@ -11,6 +11,9 @@ var rpc = require('./rpc.js');
 
 function renderAll() {
   var container = document.getElementById('container');
+  container.onclick = function() {
+    app.actions.notify("This is a test", 'warning');
+  }
 
   render(<App/>, container);
 }

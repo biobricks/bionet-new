@@ -2,7 +2,7 @@
 var through = require('through2');
 var rpc = require('rpc-multistream'); // rpc and stream multiplexing
 
-module.exports = function(settings, users, accounts, db, index, mailer) { 
+module.exports = function(settings, users, accounts, db, index, mailer, p2p) { 
   return {
 
     getPeerInfo: function(curUser, cb) {
@@ -15,8 +15,31 @@ module.exports = function(settings, users, accounts, db, index, mailer) {
       });
     },
 
+    getStatus: function(curUser, cb) {
+      var peers = [];
+      var o, peerId, peer;
+      for(peerId in p2p.connector.peers) {
+        peer = p2p.connector.peers[peerId];
+        if(!peer.connected) continue;
+        o = {};
+        
+        o.name = peer.name;
+        o.url = peer.url;
+        o.who_initiated_connection = peer.incoming ? 'they did' : 'we did';
+        peers.push(o);
+      }
+
+      
+      cb(null, {
+        name: settings.lab || 'unnamed node',
+        hostname: settings.hostname,
+        port: settings.port,
+        baseUrl: settings.baseUrl,
+        peers: peers
+      });
+    },
+
     foo: function(curUser, user, cb) {
-      //console.log("foo called");
       cb(null, "foo says hi");
     },
 

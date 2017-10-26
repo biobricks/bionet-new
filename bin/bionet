@@ -1,0 +1,106 @@
+#!/usr/bin/env node
+
+var path = require('path');
+var net = require('net');
+var fs = require('fs');
+var through = require('through2');
+var spawn = require('child_process').spawn;
+
+var connect = require('../tests/common/connect.js');
+
+var minimist = require('minimist');
+var argv = minimist(process.argv.slice(2), {
+    alias: {
+        s: 'settings'
+    },
+    boolean: [
+        'help'
+    ],
+    default: {
+        settings: '../settings.js'
+    }
+});
+
+var settings = require(argv.settings)(argv);
+
+function usage(err) {
+  var f;
+  if(err) {
+    f = console.error;
+    f(err);
+    f('');
+  } else {
+    f = console.log;
+  }
+
+  f("Usage:", path.basename(__filename), "cmd [args]");
+  f('');
+  f("Where cmd is one of the following:");
+  f('');
+  f("  dump: Dump the entire database as JSON to stdout");
+  f("  import [-f] file.json: Import database from JSON (use -f to force)");
+  f("  user: view users");
+  f("    list: Print list of all users");
+  f("    test: Create a user for unit testing and save credentials to test_user.json");
+  f("  help: Display this usage message");
+  f('');
+  f("  The --online flag will cause this script to fail if the bionet app");
+  f("  isn't currently running.");
+  if(err) {
+    process.exit(1);
+  } else {
+    process.exit(0);
+  }
+}
+
+function fail(str, exitCode) {
+  console.error(str);
+  process.exit(exitCode || 1);
+}
+
+if(argv._.length < 1) {
+  usage("No command specified");
+}
+
+var cmd = argv._[0];
+var args = argv._.slice(1);
+
+if(!cmd) {
+  usage("No command specified");
+}
+
+if(cmd === 'help') {
+  usage();
+}
+
+function main() {
+
+  if(cmd.match(/^stat/)) { // dump
+
+    connect({login: false}, function(err, done, remote) {
+      if(err) fail(err);
+
+      remote.getStatus(function(err, data) {
+        if(err) fail(err);
+
+        console.log(JSON.stringify(data, null, 2));
+        
+        done();
+      });
+    });
+
+  } else if(cmd.match(/^server/)) { // import
+
+    var server = spawn(path.join(__dirname, 'server.js'), [])
+    server.stdout.setEncoding('utf8');
+    server.stdout.on('data', console.log);
+    
+    server.stderr.setEncoding('utf8');
+    server.stdout.on('data', console.error);    
+    
+  } else {
+    usage("Invalid command");
+  }
+}
+
+main();

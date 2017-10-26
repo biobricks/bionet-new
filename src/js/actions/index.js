@@ -2,6 +2,7 @@
 module.exports = {
   
   user: require('./user'),
-  connection: require('./connection')
+  connection: require('./connection'),
+  notify: require('./notify')
 
 }

@@ -243,7 +243,8 @@ module.exports = function(settings, users, acccounts) {
         if(err) return cb(err);
         if(value) {
           return cb(new Error("Another physical is already named: " + m.name));
-        } 
+        }
+
         savePhysical(curUser, m, imageData, doPrint, cb, true);
       });
       return;

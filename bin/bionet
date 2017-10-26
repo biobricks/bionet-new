@@ -3,6 +3,7 @@
 var path = require('path');
 var net = require('net');
 var fs = require('fs');
+var uuid = require('uuid').v4;
 var through = require('through2');
 var spawn = require('child_process').spawn;
 
@@ -11,10 +12,12 @@ var connect = require('../tests/common/connect.js');
 var minimist = require('minimist');
 var argv = minimist(process.argv.slice(2), {
     alias: {
-        s: 'settings'
+      s: 'settings',
+      g: 'global'
     },
     boolean: [
-        'help'
+      'help',
+      'g'
     ],
     default: {
         settings: '../settings.js'
@@ -40,6 +43,7 @@ function usage(err) {
   f("  server: Start the bionet server");
   f("  status: Connect to the running bionet server and report the status");
   f("  search <query>: Run a global search and report the results");
+  f("  create <json>: Create a virtual and physical from the specified JSON");
   f('');
   if(err) {
     process.exit(1);
@@ -84,9 +88,9 @@ function main() {
       });
     });
 
-  } else if(cmd.match(/^create/)) { // create a virtual
+  } else if(cmd.match(/^create/)) { // create a virtual and physical
     
-    if(!args.length) usage("You must provide JSON for the virtual to create");
+    if(!args.length) usage("You must provide JSON for the material to create");
 
     var m = JSON.parse(args[0]);
     if(!m || !m.name) {
@@ -102,8 +106,23 @@ function main() {
           fail(err);
         }
         console.log("Created virtual with id:", id);
+
+        var p = {
+          virtual_id: id,
+          name: m.name + ' ' + uuid()
+        };
         
-        done();
+        remote.savePhysical(p, null, null, function(err, id) {
+          if(err) {
+            console.log("AAAAAAA")
+            done();
+            fail(err);
+          }
+
+          console.log("Created physical:", id)
+
+          done();
+        });
       });
     })
     
@@ -112,13 +131,12 @@ function main() {
 
     if(!args.length) usage("You must provide a search query");
 
-    var isGlobal = true; // TODO add switch for local
+    var isGlobal = argv.global;
     var isBlast = false;
     var query = args[0];
-    var stripped = query.replace(/\s+/, '');
-    var ntQuery = stripped.replace(/[ACGTUacgtu]+/, '');
+    var ntQuery = query.replace(/[ACGTUacgtu\s]+/, '');
     
-    if(ntQuery.length === stripped.length) {
+    if(ntQuery.length === 0) {
       isBlast = true;
     }
     
@@ -128,8 +146,10 @@ function main() {
       if(!isGlobal) { // local search
         var resultStream;
         if(isBlast) {
+          console.log("Searching locally using BLAST");
           resultStream = remote.blast(ntQuery);
         } else {
+          console.log("Searching locally using plain substring matching");
           resultStream = remote.searchAvailable(query);
         }
         
@@ -140,6 +160,7 @@ function main() {
       } else { // global search
 
         if(isBlast) {
+          console.log("Searching globally using BLAST");
           remote.peerBlast(ntQuery, function(err, result) {
             if(err) {
               done();
@@ -151,6 +172,7 @@ function main() {
           });
           
         } else {
+          console.log("Searching globally using plain substring matching");
           remote.peerSearch(query, function(err, result) {
             if(err) {
               done();

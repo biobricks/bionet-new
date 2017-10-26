@@ -3,6 +3,7 @@ var async = require('async');
 var sublevel = require('subleveldown');
 var treeIndex = require('level-tree-index');
 var ElasticIndex = require('level-elasticsearch-index');
+var blastLevel = require('blast-level');
 
 module.exports = function(settings, db) {
 
@@ -30,7 +31,26 @@ module.exports = function(settings, db) {
       console.log("Finished elastic index rebuild");
     });
   })
+/* blast index disabled for now
+  var blastIndex = blastLevel(db.virtual, {
+    mode: settings.blast.mode,
+    binPath: settings.blast.binPath,
+    path: settings.blast.path,
+    seqProp: 'sequence', // key in 'mydb' that stores the sequence data
+    seqIsFile: false,
+    seqFormatted: false,
+    changeProp: 'updated.time',
+    listen: true, // listen for changes on level db and auto update BLAST db
+    debug: true
+  });
 
+  blastIndex.on('error', function(err) {
+    console.error("blast-level error:", err);
+  });
+
+  // TODO disable this (this causes a rebuild on each startup)
+  blastIndex.rebuild();
+*/  
   function rebuild() {
     // TODO rebuild elasticSearch index as well
 
@@ -38,12 +58,15 @@ module.exports = function(settings, db) {
       if(err) return console.error("inventory tree rebuild error:", err);
       console.log("Finished inventory tree rebuild");
     });
+    
+//    blastIndex.rebuild();
   }
 
   return {
     inventoryTree: inventoryTree,
     elastic: elasticIndex,
     rebuild: rebuild
+//    blast: blastIndex
   };
 
 }

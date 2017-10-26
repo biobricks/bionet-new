@@ -114,12 +114,11 @@ function main() {
         
         remote.savePhysical(p, null, null, function(err, id) {
           if(err) {
-            console.log("AAAAAAA")
             done();
             fail(err);
           }
 
-          console.log("Created physical:", id)
+          console.log("Created physical with id:", id)
 
           done();
         });
@@ -173,11 +172,15 @@ function main() {
           
         } else {
           console.log("Searching globally using plain substring matching");
-          remote.peerSearch(query, function(err, result) {
+          remote.peerSearch(query, function(err, peer, result) {
             if(err) {
               done();
               fail(err);
             }
+            result = {
+              peer: peer.id,
+              result: result
+            };
 
             console.log(JSON.stringify(result, null, 2));
             done();

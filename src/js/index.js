@@ -1,23 +1,27 @@
 import {h, render, createElement, Component as PreactComponent} from 'preact'
 import ashnazg from 'ashnazg'
+import validator from './validator.js'
 
 var app = {};
 window.app = app;
 app.actions = require('./actions/index');
 
-const Component = ashnazg(PreactComponent)
+const Component = validator(ashnazg(PreactComponent))
 var App = require('./components/app.js')(Component)
 var rpc = require('./rpc.js');
 
 function renderAll() {
   var container = document.getElementById('container');
+  /*
   container.onclick = function() {
     app.actions.notify("This is a test", 'warning');
   }
+*/
 
   render(<App/>, container);
 }
 
+// initialize the bulma menus
 function bulmaInit() {
  // Get all "navbar-burger" elements
   var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);

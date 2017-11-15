@@ -13,9 +13,10 @@ and in this js remap types to same types are used in bulma $colors
 */
 
 module.exports = function(msg, type, timeout) {
+  if(!msg) return;
   if(typeof timeout !== 'number') timeout = 5000;
   new Noty({
-    text: msg,
+    text: msg.replace(/\r?\n/g, '<br/>'),
     theme: 'mint',
     type: type || 'warning', 
     timeout: timeout

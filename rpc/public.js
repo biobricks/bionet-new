@@ -1,6 +1,7 @@
 
 var through = require('through2');
 var rpc = require('rpc-multistream'); // rpc and stream multiplexing
+var validations = require('../common/validations.js');
 
 module.exports = function(settings, users, accounts, db, index, mailer, p2p) { 
   return {
@@ -51,21 +52,35 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       cb();
     },
     
-    createUser: function(curUser, email, password, opts, cb) {
+    createUser: function(curUser, username, email, password, opts, cb) {
       if(typeof opts === 'function') {
         cb = opts;
         opts = {};
       }
+
       if(settings.userSignupPassword) {
         if(opts.masterPassword != settings.userSignupPassword) {
           return cb("Invalid master signup password");
         }
       }
-      var user = {email: email};
+      
+      var errors = validations.serverCheck({
+        username: username,
+        email: email,
+        password: password,
+        masterPassword: opts.masterPassword
+      }, validations.signup, true)
+      if(errors) {
+        return cb(new Error(errors));
+      }
+      
+      var user = {
+        username: username,
+        email: email
+      };
 
       accounts.create(users, user, password, mailer, function(err) {
         if(err) {
-          console.log("ACCOUNT CREATE ERROR:", err);
           return cb(err);
         }
 

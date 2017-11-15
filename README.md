@@ -150,6 +150,8 @@ Sub-commands:
 
 * server: start the bionet server
 * status: connect to the running bionet server and report the status
+* create <json>: create a virtual and one physical instance from JSON
+* search [-g] <query>: search the bionet, use -g for global
 
 ## ./bin/db.js
 

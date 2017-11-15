@@ -4,7 +4,7 @@ module.exports = function(db, users, accounts) {
   return function(loginData, cb) {
     console.log("login attempt:", loginData);
     creds = {
-      username: loginData.email,
+      username: loginData.username,
       password: loginData.password
     };
 

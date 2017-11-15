@@ -159,7 +159,7 @@ module.exports = function(settings, users, acccounts) {
 
   function changeInfo(userData) {
     return {
-      user: userData.user.email,
+      user: userData.user.username,
       time: unixEpochTime()
     };
   }

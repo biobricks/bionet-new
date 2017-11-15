@@ -14,18 +14,16 @@ function del(curUser, db, dbName, key, cb) {
     
   db.db.get(key, function(err, o) {
     if(err) return cb(err);
-    console.log("GOT HERE!");
     var now = (new Date).getTime();
     var dKey = (Number.MAX_SAFE_INTEGER - now).toString() + uuid();
-        console.log("GOT HERE! 2");
     db.deleted.put(dKey, {
       db: dbName,
       key: key,
       deletedAt: now,
-      deletedBy: curUser.user.email,
+      deletedBy: curUser.user.username,
       data: JSON.parse(o)
     }, function(err) {
-    console.log("GOT HERE! 3");
+
       if(err) return cb(err);
       
       db.db.del(key, cb);
@@ -204,7 +202,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
     addToCart: function(curUser, physical_id, name, cb) {
       
       var o = {
-        user: curUser.user.email,
+        user: curUser.user.username,
         physical_id: physical_id,
         created: db.unixEpochTime()
       }
@@ -222,7 +220,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       const cartStream = Readable({ objectMode: true });
       cartStream._read = function() {}
 
-      var ucDB = db.userCart(curUser.user.email);
+      var ucDB = db.userCart(curUser.user.username);
       var s = ucDB.createReadStream();
 
       // TODO 
@@ -260,7 +258,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
     }),
 
     delFromCart: function(curUser, physical_id, cb) {
-      var ucDB = db.userCart(curUser.user.email);
+      var ucDB = db.userCart(curUser.user.username);
 
       db.physical.get(physical_id, function(err, o) {
         if(err) return cb(err);
@@ -270,7 +268,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
     },
 
     emptyCart: function(curUser, cb) {
-      var ucDB = db.userCart(curUser.user.email);
+      var ucDB = db.userCart(curUser.user.username);
       var s = ucDB.createKeyStream();
 
       var out = s.pipe(through.obj(function(key, enc, next) {

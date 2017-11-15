@@ -33,7 +33,7 @@ var accounts = {
     },
 
     create: function(users, user, password, mailer, cb) {
-        if(!user.email) return cb("User must have an email address");
+        if(!user.username) return cb("User must have a username");
         
         user.email = user.email.toLowerCase();
 
@@ -42,10 +42,10 @@ var accounts = {
         }
 
         var opts = {
-            login: {basic: {username: user.email, password: password}},
+            login: {basic: {username: user.username, password: password}},
             value: {
                 email: user.email, 
-                name: user.name,
+                username: user.username,
                 workbenchID: user.workbenchID,
                 verified: false,
                 verificationCode: uuid(),
@@ -53,7 +53,9 @@ var accounts = {
             }
         };
 
-        users.create(user.email, opts, function(err) {
+      // TODO check if email is already in use by a another user
+
+        users.create(user.username, opts, function(err) {
             if(err) {
                 var msg;
                 if(err.type == 'EXISTS') {
@@ -73,10 +75,10 @@ var accounts = {
 
     // update user value
     update: function(users, userValue, cb) {
-      users.get(userValue.email, function(err, value) {
+      users.get(userValue.username, function(err, value) {
         if(err) return cb(err);
 
-        users.put(userValue.email, userValue, cb);
+        users.put(userValue.username, userValue, cb);
       });
     },
 
@@ -144,7 +146,7 @@ var accounts = {
             // ToDo add creation date
             user.passwordResetCode = uuid();
 
-            users.put(user.email, user, function(err) {
+            users.put(user.username, user, function(err) {
                 if(err) return cb("Password reset failed: " + err);
 
                 mailer.sendPasswordReset(user, user.passwordResetCode, function(err) {
@@ -166,12 +168,12 @@ var accounts = {
     completePasswordReset: function(users, resetCode, password, cb) {
         accounts.checkPasswordResetCode(users, resetCode, function(err, user) {
             if(err) return cb(err);
-            accounts.updatePasswordUnsafe(users, user.email, password, function(err) {
+            accounts.updatePasswordUnsafe(users, user.username, password, function(err) {
                 if(err) return cb(err);
           
                 delete user.passwordResetCode;
       
-                users.put(user.email, user, function(err) {
+                users.put(user.username, user, function(err) {
                     if(err) return cb("Password reset failed. Could not update user database.");
 
                     cb();

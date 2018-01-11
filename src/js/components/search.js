@@ -26,14 +26,6 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
 
-//      this.listen('runQuery', function(newState) {
-//        if(newState) {
-//          this.doSearch(newState, this.state.page);
-//        }
-//        console.log(this.state);
-//      }.bind(this));
-
-
       this.state = {
         query: this.props.match.params.query,
         page: parseInt(this.props.match.params.page) || 1,
@@ -41,30 +33,20 @@ module.exports = function(Component) {
         perPage: 25
       };
 
-//      this.doSearch(this.state.query, this.state.page);
-
+      this.doSearch(this.state.query, this.state.page);
     };
 
     doSearch(query, page) {
-      console.log("SEARCHING");
       var self = this;
       this.fakeSearch(query, page - 1, function(err, data) {
-        console.log("GOT RESULTS:", data.results.length);
 
-        // TODO changeState is broken (it appends arrays when it should replace them)
-        self.setState({
+        self.changeState({
           results: data.results,
           hits: data.hits
         });
       });
     }
     
-    // TODO have ashnazg add this to the Component class
-    changeState(stateChange) {
-      var newState = merge(this.state, stateChange, {clone: true});
-      this.setState(newState);
-    }
-
     fakeResults(start, length) {
       var results = [];
       var i;

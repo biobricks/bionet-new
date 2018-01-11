@@ -6,7 +6,7 @@ var app = {};
 window.app = app;
 app.actions = require('./actions/index');
 
-const Component = validator(ashnazg(PreactComponent))
+const Component = validator(ashnazg.extend(PreactComponent))
 var App = require('./components/app.js')(Component)
 var rpc = require('./rpc.js');
 
@@ -53,7 +53,6 @@ function init() {
   bulmaInit();
 
   // connect to the server and attempt to log in
-  console.log("CONNECTING TO RPC");
 
   rpc.connect(function(err, remote, user) {
     if(err) {

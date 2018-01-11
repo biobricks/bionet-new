@@ -1,5 +1,6 @@
 
-import {h} from 'preact'
+import {h} from 'preact';
+import {Link} from 'react-router-dom';
 
 module.exports = function(Component) {
 
@@ -17,15 +18,15 @@ module.exports = function(Component) {
       
       if(app.state.global.user) {
         loginLogout = (
-          <a class="button is-primary" href="/logout">
+          <Link class="button is-primary" to="/logout">
             <span>Logout</span>
-          </a>
+          </Link>
         );
       } else {
         loginLogout = (
-          <a class="button is-primary" href="/login">
+          <Link class="button is-primary" to="/login">
             <span>Login</span>
-          </a>
+          </Link>
         );
       }
         
@@ -48,16 +49,16 @@ module.exports = function(Component) {
 
           <div id="navMenuTransparentExample" class="navbar-menu">
             <div class="navbar-start">
-              <a class="navbar-item " href="/search">
+              <Link class="navbar-item " to="/search">
                 Search
-              </a>
-              <a class="navbar-item " href="/inventory">
+              </Link>
+              <Link class="navbar-item " to="/inventory">
                 Inventory
-              </a>
+              </Link>
             </div>
 
             <div class="navbar-end">
-              <a class="navbar-item is-hidden-desktop-only" href="https://github.com/jgthms/bulma" target="_blank">
+              <a class="navbar-item is-hidden-desktop-only" href="https://github.com/biobricks/bionet" target="_blank">
                 <span class="icon" style="color: #333;">
                   <i class="fa fa-lg fa-github"></i>
                 </span>

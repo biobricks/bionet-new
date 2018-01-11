@@ -1,6 +1,7 @@
 
 import {h} from 'preact';
-import {Redirect} from 'react-router';
+//import {Redirect} from 'react-router';
+import {withRouter} from 'react-router';
 import merge from 'deepmerge';
 
 function clone(obj) {
@@ -9,13 +10,8 @@ function clone(obj) {
 
 module.exports = function(Component) {
   
-  return class Global extends Component {
-
-    // TODO have ashnazg add this to the Component class
-    changeState(stateChange) {
-      var newState = merge(this.state, stateChange, {clone: true});
-      this.setState(newState);
-    }
+  // withRouter causes this.props.history to exist for this component
+  return withRouter(class Global extends Component {
     
 	  render() {
 
@@ -24,12 +20,12 @@ module.exports = function(Component) {
       if(this.state.route) {
         var route = this.state.route;
         this.changeState({route: undefined});
-        return <Redirect to={route} push={true} />;
+        this.props.history.push(route);
       };
       
       return <div>
         {this.props.children}
       </div>;
 	  }
-  }
+  })
 }

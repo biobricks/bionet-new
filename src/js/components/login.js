@@ -7,7 +7,6 @@ import merge from 'deepmerge';
 module.exports = function(Component) {
 
   return class Login extends Component {
-
    
     constructor(props) {
       super(props);
@@ -16,12 +15,6 @@ module.exports = function(Component) {
         password: ''
       };
     };
-
-    // TODO have ashnazg add this to the Component class
-    changeState(stateChange) {
-      var newState = merge(this.state, stateChange, {clone: true});
-      this.setState(newState);
-    }
     
     login(e) {
       e.preventDefault();

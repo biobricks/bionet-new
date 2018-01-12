@@ -5,20 +5,6 @@ import merge from 'deepmerge';
 
 module.exports = function(Component) {
 
-/*
-  TODO 
-
-  Add functionality to ashnazg for running a function when a part of state changes.
-  It should receive the previous and new states.
-  Bind this component's state to app.state.search
-  then set a function that listens for state changes to app.state.search
-  and if there are changes to app.state.search.query or app.state.search.page
-  then run the async search query and update app.state.search.results.
-  This will trigger one more run of the function monitoring the state
-  changes but then it won't trigger another query and that will be it.
-
-*/
-
   var SearchResults = require('./search_results.js')(Component)
 
   return class Search extends Component {
@@ -41,32 +27,33 @@ module.exports = function(Component) {
       this.fakeSearch(query, page - 1, function(err, data) {
 
         self.changeState({
+          page: page,
           results: data.results,
           hits: data.hits
         });
       });
     }
     
-    fakeResults(start, length) {
+    fakeResults(start, length, postfix) {
       var results = [];
       var i;
       for(i=start; i < start + length; i++) {
         results.push({
-          name: "This is a fake result " + i,
+          name: "This is a fake result - " + postfix + ' - ' +  i,
           description: "Yeah it's really a fake result. Very fake. I don't know if I can really say much more about it. I just feel so full of fnord."
         });
       }
 
       return {
         results: results,
-        hits: 100
+        hits: 1000
       }
     }
 
     fakeSearch(query, page, cb) {
       var self = this;
       setTimeout(function() {
-        cb(null, self.fakeResults(page * self.state.perPage, self.state.perPage));
+        cb(null, self.fakeResults(page * self.state.perPage, self.state.perPage, query));
       }, 300);
     }
 

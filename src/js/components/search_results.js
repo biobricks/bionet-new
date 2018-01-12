@@ -2,7 +2,7 @@
 import {h} from 'preact';
 import linkState from 'linkstate';
 import merge from 'deepmerge';
-import {Link} from 'react-router-dom';
+import {NavLink, Link} from 'react-router-dom';
 
 module.exports = function(Component) {
 
@@ -16,15 +16,31 @@ module.exports = function(Component) {
     };
 
     componentWillReceiveProps(nextProps) {
-//      console.log("RECEIVE search_results");
+
+    }
+    
+    pageUrl(pageNumber) {
+      return '/search/'+encodeURI(this.props.query)+'/'+pageNumber;
+    }
+
+    pageLink(pageNumber, curPage) {
+        
+      const label = "Goto page " + pageNumber;
+      var className = "pagination-link";
+      if(curPage === pageNumber) className += ' is-current';
+
+      return (
+          <li>
+            <Link to={this.pageUrl(pageNumber)} class={className} aria-label={label}>
+              {pageNumber}
+            </Link>
+          </li>
+        );
     }
 
 	  render() {
 
-//      console.log("RENDER search_results", this.props);
-
       var results;
-
       var numPages = this.props.numpages || 0;
 
       if(!this.props.results.length) {
@@ -33,25 +49,58 @@ module.exports = function(Component) {
         );
 
       } else {
-//        var start = this.state.page * this.state.perPage;
-//        var pageResults = this.props.results.slice(start, start + this.state.perPage);
-//        console.log("this.props.results", this.props.results)
         results = this.props.results.map(function(result) {
           return (<p>{result.name}</p>);
         });
 
       }
 
+      const curPage = parseInt(this.props.page);
+      const lastPage = numPages;
+
+      var forwardBackLinks = [
+        (<Link to={this.pageUrl(Math.max(1, curPage-1))} class="pagination-previous">Previous</Link>),
+        (<Link to={this.pageUrl(Math.min(lastPage, curPage+1))} class="pagination-next">Next page</Link>)
+      ];
+
+
       var pageLinks = [];
-      if(numPages > 1) {
+      if(numPages <= 1) {
+        forwardBackLinks = '';
+      } else if(numPages <= 5) {
         var i;
         for(i=0; i < numPages; i++) {
-          pageLinks.push((
-              <li><Link to={'/search/'+encodeURI(this.props.query)+'/'+(i+1)}>{i+1}</Link></li>
-          ))
+          pageLinks.push(this.pageLink(i+1, curPage));
         }
-      }
+      } else {
+        pageLinks.push(this.pageLink(1, curPage));
+        if(curPage > 3) {
+          pageLinks.push((
+            <li><span class="pagination-ellipsis">&hellip;</span></li>
+          ));
+        }
+        if(curPage > 2) {
+          pageLinks.push(this.pageLink(curPage - 1, curPage));
+        }
+        if(curPage > 1) {
+          pageLinks.push(this.pageLink(curPage, curPage));
+        }
 
+        if(curPage < lastPage - 1) {
+          pageLinks.push(this.pageLink(curPage + 1, curPage));
+        }
+
+        if(curPage < lastPage - 2) {
+          pageLinks.push((
+            <li><span class="pagination-ellipsis">&hellip;</span></li>
+          ));
+        }
+
+        if(curPage < lastPage) {
+          pageLinks.push(this.pageLink(lastPage, curPage));
+        }
+
+      }
       
       return (
         <div>
@@ -59,9 +108,12 @@ module.exports = function(Component) {
           <div>
             {results}
           </div>
-          <ul>
-            {pageLinks}
-          </ul>
+          <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            {forwardBackLinks}
+            <ul class="pagination-list">
+              {pageLinks}
+            </ul>
+          </nav>
         </div>
       )
     }

@@ -14,14 +14,35 @@ module.exports = function(Component) {
 
 	  render() {
 
+      var optionalNavItems = [];
       var loginLogout;
-      
+
       if(app.state.global.user) {
+        const userData = app.state.global.user.userData;
         loginLogout = (
           <Link class="button is-primary" to="/logout">
             <span>Logout</span>
           </Link>
         );
+
+        optionalNavItems.push((
+          <Link to='/settings' class="navbar-item">
+            <span class="icon" style="color: #333;">
+              <i class="fa fa-lg fa-cog" aria-hidden="true"></i>
+            </span>
+          </Link>
+        ));
+
+        // only show admin menu item if this is an admin user
+        if(userData.groups && userData.groups.indexOf('admin')) {
+          optionalNavItems.push((
+            <Link to='/admin' class="navbar-item">
+              <span class="icon" style="color: #333;">
+                <i class="fa fa-lg fa-lock" aria-hidden="true"></i>
+              </span>
+            </Link>
+          ))
+        }
       } else {
         loginLogout = (
           <Link class="button is-primary" to="/login">
@@ -58,11 +79,7 @@ module.exports = function(Component) {
             </div>
 
             <div class="navbar-end">
-              <a class="navbar-item is-hidden-desktop-only" href="https://github.com/biobricks/bionet" target="_blank">
-                <span class="icon" style="color: #333;">
-                  <i class="fa fa-lg fa-github"></i>
-                </span>
-              </a>
+              {optionalNavItems}
               <div class="navbar-item">
                 {loginLogout}
               </div>

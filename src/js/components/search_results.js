@@ -49,8 +49,15 @@ module.exports = function(Component) {
         );
 
       } else {
+
         results = this.props.results.map(function(result) {
-          return (<p>{result.name}</p>);
+          return (
+            <div class="columns">
+              <div class="column left is-10">{result.name}</div>
+              <div class="column"></div>
+              <div class="column"></div>
+            </div>
+          );
         });
 
       }
@@ -104,8 +111,7 @@ module.exports = function(Component) {
       
       return (
         <div>
-          <div>PAGE: {this.props.page}</div>
-          <div>
+          <div class="search-results">
             {results}
           </div>
           <nav class="pagination is-centered" role="navigation" aria-label="pagination">

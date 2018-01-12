@@ -2,6 +2,7 @@
   Establish RPC connection to server and optionally log in.
 */
 
+var auth = require('rpc-multiauth');
 var path = require('path');
 var fs = require('fs');
 var websocket = require('websocket-stream');
@@ -32,13 +33,17 @@ module.exports = function(opts, callback) {
   var account;
   if(opts.login === true) {
     try {
-      account = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'test_user.json'),  {encoding: 'utf8'}));
+      account = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'test_user.json'), {encoding: 'utf8'}));
     } catch(e) {
       return callback(new Error("Reading test_user.json failed. Did you create a test user? Hint: You can run `./bin/db.js user test` to create a test user. Or you can specify opts.login.email and opts.login.password"));
     }
   } else if(opts.login) {
     account = opts.login;
-}
+  }
+
+  if(!account.username) {
+    return callback(new Error("Your test-account account has no username. You may be using an old test-account. Please generate a new one with the command `./bin/db.js user test`"));
+  }
 
   var stream = websocket(websocketUrl);
 
@@ -70,8 +75,8 @@ module.exports = function(opts, callback) {
   rpcClient.on('methods', function (remote) {
 
     if(!account) return callback(null, done, remote);
-    remote.login({
-      email: account.email,
+    auth.login(remote, {
+      username: account.username,
       password: account.password
     }, function(err, token, userData) {
       if(err) {

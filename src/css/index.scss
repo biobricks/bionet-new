@@ -5,6 +5,7 @@
 $fa-font-path: "../fonts/font_awesome"; /* set font-awesome font path */
 @import "../../node_modules/font-awesome/scss/font-awesome.scss";
 @import "material_design_icons.scss";
+@import "search.scss";
 
 
 body {
@@ -14,7 +15,10 @@ body {
 /* app-global stuff BEGIN */
 
 .content-area {
-    padding-top: 40px;
+    margin-top: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
 }
 
 

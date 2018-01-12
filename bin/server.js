@@ -172,7 +172,7 @@ websocket.createServer({server: server}, function(stream) {
 });
 
 
-// initialize the db (if it 
+// initialize the db
 db.init();
 
 

@@ -1,7 +1,6 @@
 
 import {h} from 'preact';
 import linkState from 'linkstate';
-import merge from 'deepmerge';
 
 module.exports = function(Component) {
 
@@ -19,7 +18,9 @@ module.exports = function(Component) {
         perPage: 25
       };
 
-      this.doSearch(this.state.query, this.state.page);
+      if(props.match.params.query) {
+        this.doSearch(this.state.query, this.state.page);
+      }
     };
 
     doSearch(query, page) {
@@ -64,9 +65,19 @@ module.exports = function(Component) {
 
     componentWillReceiveProps(nextProps) {
 
-      if(nextProps.match.params.query !== this.props.match.params.query || 
+      if(!nextProps.match.params.query) {
+        this.changeState({
+          page: 1,
+          results: [],
+          hits: 0
+        })
+
+      } else {
+
+         if(nextProps.match.params.query !== this.props.match.params.query || 
          nextProps.match.params.page !== this.props.match.params.page) {
-        this.doSearch(nextProps.match.params.query, nextProps.match.params.page || 1);
+           this.doSearch(nextProps.match.params.query, nextProps.match.params.page || 1);
+         }
       }
     }
 
@@ -75,9 +86,20 @@ module.exports = function(Component) {
 
       return (
         <div>
+
           <form onsubmit={this.search.bind(this)}>
-            <input type="text" oninput={linkState(this, 'query')} placeholder="Search the bionet" />
+            <div class="field has-addons">
+              <div class="control">
+                <input class="input" type="text" oninput={linkState(this, 'query')} placeholder="Search the bionet" value={this.state.query} />
+              </div>
+              <div class="control">
+                <a class="button is-info" onclick={this.search.bind(this)}>
+                  Search
+                </a>
+              </div>
+            </div>
           </form>
+
           <SearchResults query={this.state.query} results={this.state.results} page={this.state.page} numpages={Math.ceil(this.state.hits / this.state.perPage)} />
         </div>
       )

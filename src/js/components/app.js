@@ -1,6 +1,6 @@
 
 import {h} from 'preact';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {Switch, BrowserRouter as Router, Route, Link} from 'react-router-dom';
 
 module.exports = function(Component) {
 
@@ -10,6 +10,7 @@ module.exports = function(Component) {
 
   var Signup = require('./signup.js')(Component);
   var Login = require('./login.js')(Component);
+  var Search = require('./search.js')(Component);
   var Count = require('./count.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
 
@@ -33,6 +34,13 @@ module.exports = function(Component) {
               <Route exact path="/signup" render={() => (
                 <Signup />
               )}/>
+          
+              <Switch>
+                <Route path="/search/:query/:page" component={Search} />
+                <Route path="/search/:query" component={Search} />
+                <Route path="/search" component={Search} />
+              </Switch>
+
               <Route exact path="/login" render={() => (
                 <Login />
               )}/>

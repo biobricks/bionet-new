@@ -141,13 +141,11 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
 
       var d = through.obj(function(key, enc, next) {
         db.deleted.del(key, next);
-        console.log("AAAAA");
       })
       s.pipe(d);
 
-      d.on('data', function(data) {
-        console.log("DAAAAAAAATAAAAAA");
-      });
+//      d.on('data', function(data) {
+//      });
 
       d.on('end', cb);
       d.on('error', cb);
@@ -159,7 +157,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         if(err) return cb(err);
         if(!o.key) return cb(new Error("Unable to undelete: Original key missing."))
         // TODO check if a physical already exists with this name
-        console.log("UNDELETING:", o);
+//        console.log("UNDELETING:", o);
         db.db.put(o.key, JSON.stringify(o.data), function(err) {
           if(err) return cb(err);
           
@@ -575,7 +573,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
     }),
 
     search: function(curUser, q, cb) {
-      console.log("CALLED SEARCH:", q);
+
       var s = db.bio.createReadStream({valueEncoding: 'json'});
 
       var ret = [];

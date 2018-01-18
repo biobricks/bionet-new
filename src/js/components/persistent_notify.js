@@ -12,7 +12,7 @@ module.exports = function(Component) {
 
     
 	  render() {
-      console.log("APP.STATE.GLOBAL", app.state.global);
+//      console.log("APP.STATE.GLOBAL", app.state.global);
 
       if(!app.state.global.connection || app.state.global.connection.state !== 'retrying')  return '';
 

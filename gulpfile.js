@@ -21,7 +21,7 @@ gulp.task('build:css', function() {
 });
  
 gulp.task('watch:css', function() {
-  gulp.watch('./src/css/**/*.sass', ['build:css']);
+  gulp.watch('./src/css/**/*.scss', ['build:css']);
 });
 
 // not currently used

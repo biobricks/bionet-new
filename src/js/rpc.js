@@ -77,6 +77,7 @@ function connector(cb) {
   rpcClient.on('methods', function (remote) {
 
     // automatically try to authenticate when connecting
+    // TODO rpc-multiauth's .athenticate function should pass back the token
     auth.authenticate(remote, {
       setCookie: true
     }, function (err, userData) {
@@ -101,9 +102,11 @@ function connect(cb) {
     }
     setConnectState(true);
 
-    if(reconnectAttempts) {
-      console.log("Reconnected!");
-    }
+    setLoginState(user);
+
+//    if(reconnectAttempts) {
+//      console.log("Reconnected!");
+//    }
 
     reconnectAttempts = 0;
 
@@ -111,13 +114,17 @@ function connect(cb) {
   })
 }
 
+// TODO we probably should be calling app.actions from index.js
+//      instead of from in here
 function setConnectState(isConnected, msg, delay) {
   app.actions.connection.setState(isConnected, msg, delay);
 }
 
-function setLoginState(userData) {
-  if(userData) {
-    app.actions.user.set(userData.user);
+// TODO we probably should be calling app.actions from index.js
+//      instead of from in here
+function setLoginState(user, token) {
+  if(user) {
+    app.actions.user.set(user, token);
   } else {
     app.actions.user.set();
   }
@@ -136,7 +143,7 @@ function login(email, password, cb) {
   }, function (err, token, userData) {
     if(err) return cb(err);
 
-    setLoginState(userData);
+    setLoginState(userData.user, token);
 
     console.log("login successful! token: " + token + " userData: " + JSON.stringify(userData));
 

@@ -11,6 +11,7 @@ module.exports = function(Component) {
   var Signup = require('./signup.js')(Component);
   var Login = require('./login.js')(Component);
   var Count = require('./count.js')(Component);
+  var Inventory = require('./inventory/index.js')(Component);
 
   return class App extends Component {
 
@@ -34,6 +35,9 @@ module.exports = function(Component) {
               )}/>
               <Route exact path="/login" render={() => (
                 <Login />
+              )}/>
+              <Route exact path="/inventory" render={() => (
+                <Inventory state="inventory"/>
               )}/>
             </div>
             <PersistentNotify state="pnotify" />

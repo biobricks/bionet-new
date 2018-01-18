@@ -35,8 +35,8 @@ module.exports = function (Component) {
                 inventoryPath:[]
             };
 
-            //ashnazg.listen('global.inventoryPath', this.inventoryPathListener.bind(this));
-            //ashnazg.listen('global.inventoryNav', this.addMenuListener.bind(this));
+            ashnazg.listen('global.inventoryPath', this.inventoryPathListener.bind(this));
+            ashnazg.listen('global.inventoryNav', this.addMenuListener.bind(this));
 
 
         }

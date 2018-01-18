@@ -9,6 +9,7 @@ app.actions = require('./actions/index');
 const Component = validator(ashnazg(PreactComponent))
 var App = require('./components/app.js')(Component)
 var rpc = require('./rpc.js');
+app.settings = require('../../settings.js')()
 
 function renderAll() {
   var container = document.getElementById('container');

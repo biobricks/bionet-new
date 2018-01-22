@@ -1,8 +1,33 @@
 var self = module.exports = {
     
     getPath: function (n) {
-        var newPath = []
-        for (var i=0; i<n; i++) newPath.push(i)
+        
+        const generateTestItems = function(xunits,yunits) {
+            const items=[]
+            for (var y=0; y<yunits; y++) {
+                for (var x=0; x<xunits; x++) {
+                    if ( Math.random() > 0.8 ) {
+                        var id = (x+1)+','+(y+1)
+                        items.push({id:id,parent_x:x,parent_y:y})
+                    }
+                }
+            }
+            return items
+        }
+        
+        const newPath2 = [
+            {label:'lab',child:'freezer',x:1,y:1},
+            {label:'freezer',child:'shelf',x:1,y:5},
+            {label:'shelf',child:'rack',x:4,y:1},
+            {label:'rack',child:'box',x:5,y:4},
+            {label:'box',child:'well',x:10,y:10}
+        ]
+        const newPath = []
+        for (var i=0; i<n; i++) {
+            var item = newPath2[i]
+            item.items = generateTestItems(item.x, item.y)
+            newPath.push(item)
+        }
         
         app.setState({
             global: {

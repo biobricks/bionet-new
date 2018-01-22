@@ -6,27 +6,13 @@ import ashnazg from 'ashnazg'
 
 module.exports = function (Component) {
     
-    var ActionNavbar = require('./ActionNavbar')(Component);
-    var InventoryPath = require('./InventoryPath')(Component);
+    var ActionNavbar = require('./actionNavbar')(Component);
+    var InventoryPath = require('./inventoryPath')(Component);
     
     return class Inventory extends Component {
 
         constructor(props) {
             super(props);
-            /*
-            app.setState({
-                global: {
-                    inventoryPath: [1,1]
-                }
-            });
-            app.setState({
-                global: {
-                    inventoryNav: {empty:''}
-                }
-            });
-                addMenu:app.state.global.inventoryNav,
-                inventoryPath:app.state.global.inventoryPath
-            */
             
             this.state = {
                 rootId:null,
@@ -37,12 +23,10 @@ module.exports = function (Component) {
 
             ashnazg.listen('global.inventoryPath', this.inventoryPathListener.bind(this));
             ashnazg.listen('global.inventoryNav', this.addMenuListener.bind(this));
-
-
         }
     
         componentDidMount() {
-            console.log('inventory component mounted')
+            //console.log('inventory component mounted')
             
             app.actions.inventory.getPath(1)
             app.actions.inventory.getInventoryTypes()
@@ -50,12 +34,13 @@ module.exports = function (Component) {
 
         
         inventoryPathListener(newPath) {
-                console.log("global inventoryPath just changed to:", newPath);
+                //console.log("global inventoryPath just changed to:", newPath);
                 this.setState({inventoryPath:newPath})
         }
         
         addMenuListener(newMenu) {
-                console.log("global inventoryNav just changed to:", app.state.global.inventoryNav, newMenu);
+                //console.log("global inventoryNav just changed to:", app.state.global.inventoryNav, newMenu);
+                //todo: parameter does not return correct value of app.state.global.inventoryNav
                 this.setState({addMenu:app.state.global.inventoryNav})
         }
         

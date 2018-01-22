@@ -55,6 +55,7 @@
     "browserify": "^14.4.0",
     "browserify-hmr": "^0.3.5",
     "bulma": "^0.6.2",
+    "bulma-tooltip": "^0.1.1",
     "byline": "^5.0.0",
     "colors": "^1.1.2",
     "deep-object-diff": "^1.0.4",

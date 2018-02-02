@@ -1,4 +1,4 @@
-
+import ashnazg from 'ashnazg'
 
 module.exports = {
   user: {

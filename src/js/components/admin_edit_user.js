@@ -3,7 +3,6 @@ import {h} from 'preact';
 import {Link} from 'react-router-dom';
 import linkState from 'linkstate';
 import util from '../util.js';
-import ashnazg from 'ashnazg'
 
 module.exports = function(Component) {
 
@@ -19,6 +18,7 @@ module.exports = function(Component) {
         user: undefined
       };
 
+      util.whenConnected(this.onConnected.bind(this));
     };
 
     saveUser(e) {

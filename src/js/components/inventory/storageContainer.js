@@ -13,6 +13,8 @@ module.exports = function (Component) {
             this.state = {
                 tiles:[]
             }
+            this.populateContainer(this.props.items, this.props.xunits, this.props.yunits)
+            this.subdivideContainer(this.props.width, this.props.height, this.props.xunits, this.props.yunits, this.props.label, this.props.childType)
             this.cellMap = {}
         }
 

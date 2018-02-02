@@ -29,12 +29,46 @@ var self = module.exports = {
             newPath.push(item)
         }
         
-        app.setState({
+        app.changeState({
             global: {
                 inventoryPath: newPath
             }
         });
         //console.log('getPathTest action %d',n, newPath)
+    },
+    
+    getChildren:function(id, cb) {
+        app.remote.getChildren(id, function(err, children) {
+            if (err) return console.error(err);
+            const ichildren = []
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i]
+                if (id === child.value.parent_id) ichildren.push(child)
+            }
+            cb(id, ichildren)
+        })
+    },
+    
+    getInventoryPath: function(id, cb) {
+        if (!id) return
+        const locationPath = {}
+        var results = 0
+        app.remote.getLocationPath(id, function (err, locationPathAr) {
+            if (err) {
+                console.log('getLocationPath error:', err)
+                return
+            }
+            results = locationPathAr.length
+            for (var i = 0; i < locationPathAr.length; i++) {
+                var location = locationPathAr[i]
+                var locationId = location.id
+                locationPath[locationId] = location
+                this.getChildren(locationId, (pid, children) => {
+                    locationPath[pid].children = children
+                    if (--results <= 0) cb(locationPath)
+                })
+            }
+        })
     },
     
     getInventoryTypes: function() {
@@ -66,6 +100,25 @@ var self = module.exports = {
         });
         
         const createType = 'storage'
+    },
+    
+    getRootItem: function(cb) {
+        var rootItem
+        app.remote.inventoryTree(function (err, children) {
+            if (err) return console.log("ERROR:", err);
+            for (var i = 0; i < children.length; i++) {
+                var item = children[i].value
+                if (!item.parent_id && item.type === 'lab') {
+                    app.changeState({
+                        global: {
+                            inventoryRoot: item
+                        }
+                    });
+                    if (cb) cb(item)
+                    break;
+                }
+            }
+        })
     },
     
     init: function (q) {
@@ -119,17 +172,6 @@ var self = module.exports = {
         })
     },
     
-    getChildren:function(id, cb) {
-        BIONET.remote.getChildren(id, function(err, children) {
-            if (err) return console.error(err);
-            const ichildren = []
-            for (var i = 0; i < children.length; i++) {
-                var child = children[i]
-                if (id === child.value.parent_id) ichildren.push(child)
-            }
-            cb(id, ichildren)
-        })
-    },
         
     retrieveLocationPath: function (id, cb) {
         if (!id) return
@@ -360,6 +402,11 @@ var self = module.exports = {
     virtualSaveResult: function () {
 
     },
+    
+    addItem: function(type) {
+        
+    },
+    
     delPhysical: function (id) {
 
     }

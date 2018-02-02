@@ -63,17 +63,33 @@ var self = module.exports = {
     auth.login(app.remote, {
       username: userOrEmail,
       password: password
-    }, function(err, token, userData) {
+    }, function(err, token, user) {
       if(err) return cb(err);
 
-      app.actions.user.set(userData, token);
+      app.actions.user.set(user.user, token);
       
       cb();
     });
   },
 
-  logout: function(cb) {
+  list: function() {
+    return app.remote.getUsers();
+  },
 
+  get: function(username, cb) {
+    app.remote.getUser(username, cb)
+  },
+
+  save: function(username, userdata, cb) {
+    app.remote.saveUser(username, userdata, cb)
+  },
+
+  del: function(username, cb) {
+    app.remote.delUser(username, cb)
+  },
+
+  logout: function(cb) {
+    app.rpc.logout(cb);
   },
 
   passwordReset: function(userOrEmail, cb) {

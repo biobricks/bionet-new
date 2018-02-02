@@ -29,7 +29,7 @@ var self = module.exports = {
             newPath.push(item)
         }
         
-        app.setState({
+        app.changeState({
             global: {
                 inventoryPath: newPath
             }
@@ -59,7 +59,7 @@ var self = module.exports = {
             addMenuMaterials: materials,
             addMenuLocations: locations
         }
-        app.setState({
+        app.changeState({
             global: {
                 inventoryNav: addMenu
             }

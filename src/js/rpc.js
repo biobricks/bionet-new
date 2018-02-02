@@ -100,6 +100,12 @@ function connect(cb) {
       reconnect(cb);
       return;
     }
+
+    // TODO hrm modifying the app. globals from here is not the best
+    //      but we do need app.remote to be set before the connection state
+    //      is modified
+    app.remote = remote; 
+
     setConnectState(true);
 
     setLoginState(user);

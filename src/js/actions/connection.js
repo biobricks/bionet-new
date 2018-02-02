@@ -35,7 +35,17 @@ var self = module.exports = {
         });
       }
     }
-  }
+  },
 
-  
+  // maybe move to util?
+  isConnected: function() {
+    if(app.state 
+       && app.state.global 
+       && app.state.global.connection 
+       && app.state.global.connection.state === 'connected') {
+      return true;
+    } else {
+      return false;
+    }
+  }
 };

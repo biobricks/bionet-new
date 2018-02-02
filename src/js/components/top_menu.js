@@ -1,6 +1,7 @@
 
 import {h} from 'preact';
 import {Link} from 'react-router-dom';
+import util from '../util.js';
 
 module.exports = function(Component) {
 
@@ -24,6 +25,16 @@ module.exports = function(Component) {
             <span>Logout</span>
           </Link>
         );
+
+        if(util.user.isInGroup('admin')) {
+          optionalNavItems.push((
+            <Link to='/admin' class="navbar-item">
+              <span class="icon" style="color: #333;">
+                <i class="fa fa-lg fa-wrench" aria-hidden="true"></i>
+            </span>
+          </Link>
+          ));
+        }
 
         optionalNavItems.push((
           <Link to='/settings' class="navbar-item">
@@ -56,7 +67,7 @@ module.exports = function(Component) {
         <nav class="navbar is-transparent">
           <div class="navbar-brand">
             <a class="navbar-item">
-              <img src="static/images/bionet_logo.png" alt="bionet.io"  height="48" />
+              <img src="/static/images/bionet_logo.png" alt="bionet.io"  height="48" />
             </a>
 
             <a class="navbar-item is-hidden-desktop" target="_blank">foo</a>

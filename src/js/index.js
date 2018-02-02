@@ -8,7 +8,8 @@ app.actions = require('./actions/index');
 
 const Component = validator(ashnazg.extend(PreactComponent))
 var App = require('./components/app.js')(Component)
-var rpc = require('./rpc.js');
+
+app.rpc = require('./rpc.js');
 app.settings = require('../../settings.js')()
 
 function renderAll() {
@@ -55,13 +56,11 @@ function init() {
 
   // connect to the server and attempt to log in
 
-  rpc.connect(function(err, remote, user) {
+  app.rpc.connect(function(err, remote, user) {
     if(err) {
       console.error("Connection attempt failed. Will continue trying.");
       return;
     }
-    
-    app.remote = remote;
 
     if(user) {
       console.log("Logged in as: ", user);

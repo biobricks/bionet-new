@@ -93,7 +93,7 @@ var self = module.exports = {
             addMenuMaterials: materials,
             addMenuLocations: locations
         }
-        app.setState({
+        app.changeState({
             global: {
                 inventoryNav: addMenu
             }

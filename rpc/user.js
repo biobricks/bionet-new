@@ -600,6 +600,59 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       });
     },
 
+    getUsers: rpc.syncReadStream(function() {
+      return users.list();
+    }),
+
+    // TODO this should only be available to admin users
+    getUser: function(curUser, id, cb) {
+      users.get(id, cb);
+    },
+
+    delUser: function(curUser, id, cb) {
+      users.get(id, function(err, user) {
+        if(err) return cb(err);
+
+        users.remove(id, cb);
+      });
+    },
+
+    // TODO this should only be available to admin users
+    saveUser: function(curUser, id, userData, cb) {
+      console.log("UOOSFAS", JSON.stringify(curUser));
+
+      if(userData.password) {
+        if(userData.password !== userData.password_confirm) {
+          return cb(new Error("Passwords do not match"));
+        }
+      }
+
+      users.get(id, function(err, user) {
+        if(err) return cb(err);
+
+        if(userData.email) user.email = userData.email;
+        if(!userData.password) {
+          users.put(id, user, cb);
+          return;
+        }
+        users.removeLogin(id, 'basic', function(err) {
+          // TODO this error will leave the user unable to log in
+          // This is bad. This operation really should be atomic
+          if(err) return cb(err); 
+
+          users.addLogin(id, 'basic', {
+            username: id, password: 
+            userData.password}, function(err) {
+              if(err) return cb(err);
+              
+              users.put(id, user, cb);
+            })
+        });    
+
+      });
+
+    },
+
     // get a list of connected peers
     getPeers: function(curUser, cb) {
       if(!p2p) return cb(new Error("p2p not supported by this node"));

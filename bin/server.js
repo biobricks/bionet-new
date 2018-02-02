@@ -167,7 +167,7 @@ websocket.createServer({server: server}, function(stream) {
     }
   });
 
-
+  
   rpcServer.pipe(stream).pipe(rpcServer);
 });
 

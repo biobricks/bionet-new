@@ -5,5 +5,6 @@ module.exports = {
   connection: require('./connection'),
   route: require('./route'),
   notify: require('./notify'),
-  inventory: require('./inventory')
+  inventory: require('./inventory'),
+  p2p: require('./p2p')
 }

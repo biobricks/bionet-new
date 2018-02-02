@@ -10,9 +10,13 @@ module.exports = function(Component) {
 
   var Signup = require('./signup.js')(Component);
   var Login = require('./login.js')(Component);
+  var Logout = require('./logout.js')(Component);
   var Search = require('./search.js')(Component);
   var Count = require('./count.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
+  var Admin = require('./admin.js')(Component);
+  var AdminEditUser = require('./admin_edit_user.js')(Component);
+  var AdminDelUser = require('./admin_del_user.js')(Component);
 
   return class App extends Component {
 
@@ -22,7 +26,19 @@ module.exports = function(Component) {
     }
 
 	  render() {
-      
+      console.log("GLOB", JSON.stringify(app.state, null, 2));
+
+/*
+      if(!app.actions.connection.isConnected()) {
+        return (
+          <Router>
+            <Global state="global">
+              <PersistentNotify state="pnotify" />
+            </Global>
+          </Router>
+        )
+      }
+*/
       return (
         <Router>
           <Global state="global">
@@ -44,6 +60,16 @@ module.exports = function(Component) {
               <Route exact path="/login" render={() => (
                 <Login />
               )}/>
+              <Route exact path="/logout" render={() => (
+                <Logout />
+              )}/>
+
+              <Switch>
+                <Route path="/admin/edit-user/:username" component={AdminEditUser} />
+                <Route path="/admin/delete-user/:username" component={AdminDelUser} />
+                <Route path="/admin" component={Admin} />
+              </Switch>
+
               <Route exact path="/inventory" render={() => (
                 <Inventory state="inventory"/>
               )}/>

@@ -16,6 +16,8 @@ module.exports = function(Component) {
       this.state = {
         user: undefined
       };
+
+      util.whenConnected(this.onConnected.bind(this));
     };
 
     delUser(e) {
@@ -37,17 +39,7 @@ module.exports = function(Component) {
       app.actions.route('/admin/edit-user/'+this.state.user.username);
     }
 
-    componentDidMount() {
-
-      // TODO this is super hacky
-      // We need a function which gets called when the connection is opened
-      if(!app.actions.connection.isConnected()) {
-        setTimeout(function() {
-          this.componentDidMount();
-        }.bind(this), 200);
-
-        return;
-      }
+    onConnected() {
 
       var username = this.props.match.params.username;
       if(!username) {

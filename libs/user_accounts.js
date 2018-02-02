@@ -15,7 +15,6 @@ var accounts = {
         s.pipe(through.obj(function(row, enc, next) {
             var id = row.key;
             var user = row.value;
-
             if(user[key] && (user[key] == value)) {
                 s.destroy();
                 cb(null, id, user)
@@ -136,12 +135,12 @@ var accounts = {
         if(emailOrName.match('@')) {
             findBy = 'email';
         } else {
-            findBy = 'name';
+            findBy = 'username';
         }
 
         accounts.findUserBy(users, findBy, emailOrName, function(err, id, user) {
             if(err) return cb(err);
-            if(!id) return cb("User not found");
+            if(!id) return cb(new Error("User not found"));
 
             // ToDo add creation date
             user.passwordResetCode = uuid();

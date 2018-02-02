@@ -619,7 +619,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
 
     // TODO this should only be available to admin users
     saveUser: function(curUser, id, userData, cb) {
-      console.log("UOOSFAS", JSON.stringify(curUser));
 
       if(userData.password) {
         if(userData.password !== userData.password_confirm) {

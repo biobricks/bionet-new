@@ -92,7 +92,8 @@ var self = module.exports = {
     app.rpc.logout(cb);
   },
 
-  passwordReset: function(userOrEmail, cb) {
-    
+  passwordReset: function(usernameOrEmail, cb) {
+    console.log("AAAAA", usernameOrEmail);
+    app.remote.requestPasswordReset(usernameOrEmail, cb);    
   }
 };

@@ -7,6 +7,7 @@ module.exports = function(Component) {
 
   var AccessDenied = require('./access_denied.js')(Component);
   var AdminEditUser = require('./admin_edit_user.js')(Component)
+  var AdminCreateUser = require('./admin_create_user.js')(Component)
 
   return class Admin extends Component {
    
@@ -17,9 +18,6 @@ module.exports = function(Component) {
         peers: [],
         users: []
       };
-
-
-
     };
 
     componentDidMount() {
@@ -113,6 +111,9 @@ module.exports = function(Component) {
             <ul>
               {users}
             </ul>
+          </div>
+          <div>
+          <Link to="/admin/create-user">Create user</Link>
           </div>
         </div>
       )

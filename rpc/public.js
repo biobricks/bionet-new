@@ -58,9 +58,19 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         opts = {};
       }
 
-      if(settings.userSignupPassword) {
-        if(opts.masterPassword != settings.userSignupPassword) {
-          return cb("Invalid master signup password");
+      vOpts = {
+        humanReadable: true
+      };
+
+      // TODO put this check in re-usable function
+      // admins don't need a check for master password
+      if(curUser.user.groups && curUser.user.groups.indexOf('admin') >= 0) {
+        vOpts.ignore = ['masterPassword'];
+      } else {
+        if(settings.userSignupPassword) {
+          if(opts.masterPassword != settings.userSignupPassword) {
+            return cb("Invalid master signup password");
+          }
         }
       }
       
@@ -69,7 +79,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         email: email,
         password: password,
         masterPassword: opts.masterPassword
-      }, validations.signup, true)
+      }, validations.signup, vOpts)
       if(errors) {
         return cb(new Error(errors));
       }

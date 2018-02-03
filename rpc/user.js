@@ -4,6 +4,7 @@ var uuid = require('uuid').v4;
 var async = require('async');
 var through = require('through2');
 var rpc = require('rpc-multistream'); // rpc and stream multiplexing
+var validations = require('../common/validations.js');
 
 function del(curUser, db, dbName, key, cb) {
   if(!dbName || dbName === 'user' || dbName === 'index') return cb(new Error("not allowed"));
@@ -739,7 +740,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       if(!peer || !peer.remote) return cb(new Error("No such peer: "+peerID));
 
       peer.remote.requestMaterialRemote(id, curUser.user.email, settings.physicalAddress, cb);
-    }
+    },
 
   };
 }

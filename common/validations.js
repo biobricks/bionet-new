@@ -70,7 +70,7 @@ module.exports = {
       }
     }
      // master password
-    if(o.masterPassword) {
+    if(o.masterPassword || (opts.ignore && opts.ignore.indexOf('masterPassword') >= 0)) {
       validation.masterPassword = false; // do not validate
     } else {
       if(lostFocus) {
@@ -82,8 +82,10 @@ module.exports = {
     return o;
   },
 
-  serverCheck(o, f, humanReadable) {    
-    f(o, true, {server: true});
+  serverCheck(o, f, opts) {
+    opts = opts || {};
+    opts.server = true;
+    f(o, true, opts);
 
     var errors = {};
     var v = o.validation;
@@ -94,7 +96,7 @@ module.exports = {
       }
     }
     if(Object.keys(errors).length) {
-      if(!humanReadable) return errors;
+      if(!opts.humanReadable) return errors;
       var human = [];
       for(key in errors) {
         // human.push(capitalize(key) + ': ' + capitalize(errors[key]));

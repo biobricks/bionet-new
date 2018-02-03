@@ -16,6 +16,7 @@ module.exports = function(Component) {
   var Inventory = require('./inventory/index.js')(Component);
   var Admin = require('./admin.js')(Component);
   var AdminEditUser = require('./admin_edit_user.js')(Component);
+  var AdminCreateUser = require('./admin_create_user.js')(Component);
   var AdminDelUser = require('./admin_del_user.js')(Component);
 
   return class App extends Component {
@@ -67,6 +68,7 @@ module.exports = function(Component) {
               <Switch>
                 <Route path="/admin/edit-user/:username" component={AdminEditUser} />
                 <Route path="/admin/delete-user/:username" component={AdminDelUser} />
+                <Route path="/admin/create-user" component={AdminCreateUser} />
                 <Route path="/admin" component={Admin} />
               </Switch>
 

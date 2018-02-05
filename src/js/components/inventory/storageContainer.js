@@ -13,14 +13,18 @@ module.exports = function (Component) {
             this.state = {
                 tiles:[]
             }
-            this.populateContainer(this.props.items, this.props.xunits, this.props.yunits)
-            this.subdivideContainer(this.props.width, this.props.height, this.props.xunits, this.props.yunits, this.props.label, this.props.childType)
+            const xunits = (this.props.xunits) ? this.props.xunits : 1
+            const yunits = (this.props.yunits) ? this.props.yunits : 1
+            this.populateContainer(this.props.items, xunits, yunits)
+            this.subdivideContainer(this.props.width, this.props.height, xunits, yunits, this.props.label, this.props.childType)
             this.cellMap = {}
         }
 
         componentWillReceiveProps(nextProps) {
-            this.populateContainer(nextProps.items, nextProps.xunits, nextProps.yunits)
-            this.subdivideContainer(nextProps.width, nextProps.height, nextProps.xunits, nextProps.yunits, nextProps.label, nextProps.childType)
+            const xunits = (nextProps.xunits) ? nextProps.xunits : 1
+            const yunits = (nextProps.yunits) ? nextProps.yunits : 1
+            this.populateContainer(nextProps.items, xunits, yunits)
+            this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType)
         }
 
         generateLabel(parent_x, parent_y, xunits, yunits) {
@@ -32,8 +36,11 @@ module.exports = function (Component) {
             return ''
         }
 
-        subdivideContainer(width, height, xunits, yunits, containerLabel, childType) {
-            
+        subdivideContainer(pwidth, pheight, pxunits, pyunits, containerLabel, childType) {
+            const xunits = (pxunits===0) ? 1 : pxunits
+            const yunits = (pyunits===0) ? 1 : pyunits
+            const width = pwidth
+            const height = pheight-yunits
             const dx = width / xunits
             const dy = height / yunits
             const thisModule = this
@@ -43,12 +50,14 @@ module.exports = function (Component) {
                 for (var x=0; x<xunits; x++) {
                     var label = thisModule.generateLabel(x, row, xunits, yunits)
                     var cell = thisModule.cellMap[label]
+                    var name = label
                     var isOccupied = false
                     if (cell) {
                         isOccupied = true
+                        if (cell.name) name=cell.name
                     } else {
                     }
-                    var storageCell = <StorageCell id={"cell_"+label} label={label} childType={childType} width={dx} height={dy} occupied={isOccupied}/>
+                    var storageCell = <StorageCell id={"cell_"+label} label={label} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell}/>
                     cols.push(storageCell)
                 }
                 return cols
@@ -78,10 +87,11 @@ module.exports = function (Component) {
         
         populateContainer(items, xunits, yunits) {
             this.cellMap={}
+            //console.log('populateContainer:', items)
             if (!items) return
             for (var i=0; i<items.length; i++) {
                 var item = items[i]
-                var cellId = this.generateLabel(item.parent_x,item.parent_y, xunits, yunits)
+                var cellId = this.generateLabel(item.parent_x-1,item.parent_y-1, xunits, yunits)
                 this.cellMap[cellId]=item
             }
         }

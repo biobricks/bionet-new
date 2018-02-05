@@ -8,7 +8,7 @@ var self = module.exports = {
                 for (var x=0; x<xunits; x++) {
                     if ( Math.random() > 0.8 ) {
                         var id = (x+1)+','+(y+1)
-                        items.push({id:id,parent_x:x,parent_y:y})
+                        items.push({id:id,name:id,parent_x:x,parent_y:y})
                     }
                 }
             }
@@ -16,16 +16,16 @@ var self = module.exports = {
         }
         
         const newPath2 = [
-            {label:'lab',child:'freezer',x:1,y:1},
-            {label:'freezer',child:'shelf',x:1,y:5},
-            {label:'shelf',child:'rack',x:4,y:1},
-            {label:'rack',child:'box',x:5,y:4},
-            {label:'box',child:'well',x:10,y:10}
+            {name:'lab',child:'freezer',xUnits:1,yUnits:1},
+            {name:'freezer',child:'shelf',xUnits:1,yUnits:5},
+            {name:'shelf',child:'rack',xUnits:4,yUnits:1},
+            {name:'rack',child:'box',xUnits:5,yUnits:4},
+            {name:'box',child:'well',xUnits:10,yUnits:10}
         ]
         const newPath = []
         for (var i=0; i<n; i++) {
             var item = newPath2[i]
-            item.items = generateTestItems(item.x, item.y)
+            item.children = generateTestItems(item.xUnits, item.yUnits)
             newPath.push(item)
         }
         
@@ -41,12 +41,26 @@ var self = module.exports = {
         app.remote.getChildren(id, function(err, children) {
             if (err) return console.error(err);
             const ichildren = []
+            var ypos=0
             for (var i = 0; i < children.length; i++) {
                 var child = children[i]
-                if (id === child.value.parent_id) ichildren.push(child)
+                if (id === child.value.parent_id) {
+                    var value = child.value
+                    if (!value.parent_x) value.parent_x = 1
+                    if (!value.parent_y) value.parent_y = ypos++
+                    ichildren.push(value)
+                }
             }
             cb(id, ichildren)
         })
+    },
+    
+    getLocationType: function( type ) {
+        const types = app.state.global.inventoryTypes.locations
+        for (var i=0; i<types.length; i++) {
+            if ( types[i].name === type ) return types[i]
+        }
+        return null
     },
     
     getInventoryPath: function(id, cb) {
@@ -58,17 +72,37 @@ var self = module.exports = {
                 console.log('getLocationPath error:', err)
                 return
             }
+            
+            app.changeState({
+                global: {
+                    inventoryLocationPath: locationPathAr
+                }
+            });
+            locationPathAr.reverse()
+            
             results = locationPathAr.length
             for (var i = 0; i < locationPathAr.length; i++) {
                 var location = locationPathAr[i]
                 var locationId = location.id
+                var locationType = this.getLocationType(location.type)
+                if (locationType) {
+                    location.xUnits = locationType.xUnits
+                    location.yUnits = locationType.yUnits
+                }
                 locationPath[locationId] = location
                 this.getChildren(locationId, (pid, children) => {
                     locationPath[pid].children = children
-                    if (--results <= 0) cb(locationPath)
+                    if (--results <= 0) {
+                        app.changeState({
+                            global: {
+                                inventoryPath: locationPathAr
+                            }
+                        });
+                        if (cb) cb(locationPath)
+                    }
                 })
             }
-        })
+        }.bind(this ))
     },
     
     getInventoryTypes: function() {
@@ -89,13 +123,13 @@ var self = module.exports = {
             }
         }
         
-        const addMenu = {
-            addMenuMaterials: materials,
-            addMenuLocations: locations
+        const typeSpec = {
+            materials: materials,
+            locations: locations
         }
-        app.changeState({
+        app.setState({
             global: {
-                inventoryNav: addMenu
+                inventoryTypes: typeSpec
             }
         });
         
@@ -189,7 +223,9 @@ var self = module.exports = {
                 locationPath[locationId] = location
                 this.getChildren(locationId, (pid, children) => {
                     locationPath[pid].children = children
-                    if (--results <= 0) cb(locationPath)
+                    if (--results <= 0) {
+                        cb(locationPath)
+                    }
                 })
             }
         })

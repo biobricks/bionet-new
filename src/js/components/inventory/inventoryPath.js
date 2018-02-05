@@ -21,7 +21,7 @@ module.exports = function (Component) {
         }
         
         updateInventoryPath(newPath) {
-            console.log('update inventory path:',newPath)
+            //console.log('update inventory path:',newPath)
             const containerSize = this.state.containerSize-20
 
             if (!newPath) return
@@ -37,7 +37,7 @@ module.exports = function (Component) {
                 if (unit.label==='box') selectedItem = unit
                 inventoryPath.push( 
                     <div id={id} key={id} class="tile is-child is-2" style={pathChild}>
-                        <StorageContainer height={containerSize} width={containerSize} title={unit.label} childType={unit.child} xunits={unit.x} yunits={unit.y} items={unit.items}/>
+                        <StorageContainer height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} items={unit.children}/>
                     </div>
                 )
             }
@@ -48,7 +48,7 @@ module.exports = function (Component) {
         }
 
         render() {
-            console.log(this.state.inventoryPath)
+            //console.log(this.state.inventoryPath)
             if (!this.state.inventoryPath) return
             
             const itemChild = "border: 1px solid grey; height:400px;margin:0;padding:0;"

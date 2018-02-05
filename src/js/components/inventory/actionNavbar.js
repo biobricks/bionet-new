@@ -21,9 +21,9 @@ module.exports = function (Component) {
         componentWillReceiveProps(nextProps)
         {
             if (!nextProps || !nextProps.menu) return
-            console.log('ActionNavBar props:',nextProps.menu)
+            //console.log('ActionNavBar props:',nextProps.menu)
             
-            const menuDef = nextProps.menu.addMenuLocations
+            const menuDef = nextProps.menu.locations
             const menu = []
             
             const DropdownMenuItem = function(props) {
@@ -40,13 +40,6 @@ module.exports = function (Component) {
         
         addItemClick(e) {
             console.log('add menu item:',e.target.id, this.editPhysical)
-            /*
-            app.setState({
-                global: {
-                    enableEditPhysical: true
-                }
-            });
-            */
             this.setState(
                 {
                     itemType:e.target.id,
@@ -68,12 +61,6 @@ module.exports = function (Component) {
         addItem() {
             const addItemMenuDisplay = (this.state.addItemMenuDisplay==='is-active') ? '' :'is-active'
             this.setState({addItemMenuDisplay:addItemMenuDisplay})
-            // todo: activate edit physical modal
-            /*
-            app.remote.getType('lab',function(e,type) {
-                console.log('getType: ',type, e)
-            })
-            */
         }
         
         starItem() {
@@ -102,7 +89,6 @@ module.exports = function (Component) {
             var by = 25
             const ActionMenuButton = function(props) {
                 by += 65
-                //var style = "position:fixed; border-radius:50%; width:55px; height:55px; top:"+by+"px; left:10px;color:#ffffff;background-color:#0080ff;"
                 var style = "border-radius:50%; width:55px; height:55px;color:#ffffff;background-color:#0080ff;"
                 return (
                         <div class="tile">
@@ -127,8 +113,6 @@ module.exports = function (Component) {
                     <ActionMenuButton icon="edit" onClick={this.editItem.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
-                            
-                                
                     <EditPhysical state="enableEditPhysical" active={this.state.displayAddPhysicalModal} type={this.state.itemType} isOpen={this.showAddPhysicalModal}/>
                     
                 </div>

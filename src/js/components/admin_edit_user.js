@@ -3,7 +3,6 @@ import {h} from 'preact';
 import {Link} from 'react-router-dom';
 import linkState from 'linkstate';
 import util from '../util.js';
-import ashnazg from 'ashnazg'
 
 module.exports = function(Component) {
 
@@ -19,6 +18,22 @@ module.exports = function(Component) {
         user: undefined
       };
 
+      util.whenConnected(this.onConnected.bind(this));
+    };
+
+    sendPasswordReset() {
+      if(!this.state.user || !this.state.user.username) {
+        app.actions.notify("No username specified. Could not reset password", 'error');
+        return;
+      }
+      app.actions.user.passwordReset(this.state.user.username, function(err) {
+        if(err) {
+          app.actions.notify("Error resetting password", 'error');
+          console.error(err);
+          return;
+        }
+        app.actions.notify("Password reset email sent", 'success');
+      });
     };
 
     saveUser(e) {
@@ -97,7 +112,13 @@ module.exports = function(Component) {
               <input type="submit" value="Save" />
             </form>
             <p>
-            <Link to={"/admin/delete-user/"+encodeURIComponent(this.state.user.username)}>Delete user</Link>
+              <a href="#" onclick={this.sendPasswordReset.bind(this)}>Send password reset email</a>
+            </p>
+            <p>
+              <Link to={"/admin/delete-user/"+encodeURIComponent(this.state.user.username)}>Delete user</Link>
+            </p>
+            <p>
+              <Link to="/admin">Back</Link>
             </p>
           </div>
         </div>

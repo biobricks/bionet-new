@@ -44,13 +44,8 @@ var self = module.exports = {
       opts.masterPassword = opts.masterPassword.trim();
     }
     
-    app.remote.createUser(username, email, password, {masterPassword: opts.masterPassword}, function(err, data) {
-      if(err) {
-        app.actions.notify(err.toString(), 'error');
-        return cb(new Error(err));
-      }
-      cb();
-    });
+    app.remote.createUser(username, email, password, {masterPassword: opts.masterPassword}, cb);
+
   },
   
   login: function(userOrEmail, password, cb) {
@@ -92,7 +87,7 @@ var self = module.exports = {
     app.rpc.logout(cb);
   },
 
-  passwordReset: function(userOrEmail, cb) {
-    
+  passwordReset: function(usernameOrEmail, cb) {
+    app.remote.requestPasswordReset(usernameOrEmail, cb);    
   }
 };

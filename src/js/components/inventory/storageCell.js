@@ -29,7 +29,8 @@ module.exports = function (Component) {
                 }.bind(this), 250)
             }
             if ( this.clickCount++ > 0 ) {
-                if (this.props.item.id) app.actions.inventory.editItem(this.props.item)
+                if (this.props.item && this.props.item.id) app.actions.inventory.editItem(this.props.item)
+                else app.actions.inventory.editItem({id:'null', name:'new item'})
                 // edit cell contents
             }
         }

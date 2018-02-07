@@ -2,6 +2,7 @@ import {
     h
 }
 from 'preact'
+import ashnazg from 'ashnazg'
 
 module.exports = function (Component) {
     const EditPhysical = require('./editPhysical')(Component)
@@ -13,15 +14,36 @@ module.exports = function (Component) {
             this.state = {
                 addItemMenuDisplay:'',
                 addMenu:{},
-                displayAddPhysicalModal:false
+                displayAddPhysicalModal:false,
+                item:null,
             }
+            app.changeState({
+                global: {
+                    inventoryItem: null
+                }
+            });
+            ashnazg.listen('global.inventoryItem', this.editItem.bind(this));
             this.showAddPhysicalModal = this.showAddPhysicalModal.bind(this)
+        }
+        
+        editItem(item) {
+            console.log('editPhysical2 item:',item, this)
+            //if (!item) return
+            this.setState(
+                {
+                    item:item,
+                    displayAddPhysicalModal:true
+                }
+            )
+            //this.enableModal()
+            //this.open()
+            if (this.props.isOpen) this.props.isOpen(true)
         }
         
         componentWillReceiveProps(nextProps)
         {
             if (!nextProps || !nextProps.menu) return
-            //console.log('ActionNavBar props:',nextProps.menu)
+            console.log('ActionNavBar props:',nextProps.menu)
             
             const menuDef = nextProps.menu.locations
             const menu = []
@@ -37,6 +59,7 @@ module.exports = function (Component) {
             this.setState({addMenu:menu})
             return true
         }
+    
         
         addItemClick(e) {
             console.log('add menu item:',e.target.id, this.editPhysical)
@@ -49,11 +72,12 @@ module.exports = function (Component) {
             )
         }
         
-        showAddPhysicalModal(isOpen) {
+        showAddPhysicalModal(isOpen, item) {
             this.setState(
                 {
                     addItemMenuDisplay:'',
-                    displayAddPhysicalModal:isOpen
+                    displayAddPhysicalModal:isOpen,
+                    item:item
                 }
             )
         }
@@ -113,7 +137,7 @@ module.exports = function (Component) {
                     <ActionMenuButton icon="edit" onClick={this.editItem.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
-                    <EditPhysical state="enableEditPhysical" active={this.state.displayAddPhysicalModal} type={this.state.itemType} isOpen={this.showAddPhysicalModal}/>
+                    <EditPhysical state="enableEditPhysical" active={this.state.displayAddPhysicalModal} type={this.state.itemType} isOpen={this.showAddPhysicalModal} item={this.state.item}/>
                     
                 </div>
             )

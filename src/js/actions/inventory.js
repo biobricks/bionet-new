@@ -37,6 +37,15 @@ var self = module.exports = {
         //console.log('getPathTest action %d',n, newPath)
     },
     
+    editItem: function(item) {
+        console.log('editItem action: ', item)
+        app.changeState({
+            global: {
+                inventoryItem: item
+            }
+        });
+    },
+    
     getChildren:function(id, cb) {
         app.remote.getChildren(id, function(err, children) {
             if (err) return console.error(err);

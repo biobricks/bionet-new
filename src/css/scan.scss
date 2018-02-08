@@ -1,0 +1,28 @@
+
+.keyboard-form input {
+  /*
+     Setting visibilit:hidden 
+     makes the elements unusable.
+     This hack hides them
+     while letting them remain usable
+  */
+  height: 0;
+  border: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin: 0;
+  padding: 0;
+}
+
+#scanCanvas {
+  display: none;
+}
+
+#scanVideo {
+
+}
+
+#cameraAccessMsg .spinner {
+
+}

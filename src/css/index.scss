@@ -6,8 +6,12 @@
 $fa-font-path: "../fonts/font_awesome"; /* set font-awesome font path */
 @import "../../node_modules/font-awesome/scss/font-awesome.scss";
 @import "material_design_icons.scss";
-@import "search.scss";
+@import "spinners.scss";
 
+@import "help.scss";
+@import "search.scss";
+@import "scan.scss";
+@import "print.scss";
 
 body {
     font-family: sans-serif;
@@ -67,6 +71,40 @@ body {
 }
 
 
+.hint {
+  position: relative;
+  display: block;
+  font-size: 0.75rem;
+  margin-top: -0.5rem;
+  margin-left: 0.2rem; 
+  color: #777777;
+}
+
+.hint .hint-text {
+  position: relative;
+  float: left;
+}
+
+.hint .hint-label {
+  float: left;
+  margin-right: 0.3rem;
+}
+
+.hint p {
+  margin: 0;
+  padding: 0;
+}
+
+.hint p.other {
+  margin: 0;
+  margin-top: -0.2rem;
+  padding: 0;
+}
+
+
+.float-clear {
+  clear: both;
+}
                               
 /* app global stuff END */
 

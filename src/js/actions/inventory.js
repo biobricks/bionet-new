@@ -37,11 +37,38 @@ var self = module.exports = {
         //console.log('getPathTest action %d',n, newPath)
     },
     
+    getItemFromInventoryPath: function(id) {
+        const path = app.state.global.inventoryPath
+        if (!path) return null
+        console.log('getItemFromInventoryPath:',path)
+        //return
+        for (var i=0; i<path.length; i++) {
+            if (path[i].id===id) return path[i]
+        }
+        return null
+    },
+    
+    deselectItem: function(id) {
+        app.changeState({
+            global: {
+                inventoryFunction: {name:'clearSelection', id:id}
+            }
+        });
+    },
+    
     editItem: function(item) {
         console.log('editItem action: ', item)
+        var parent = null
+        if (item.parent_id) parent = this.getItemFromInventoryPath(item.parent_id)
+        console.log('editItem action: ', item, parent)
         app.changeState({
             global: {
                 inventoryItem: item
+            }
+        });
+        app.changeState({
+            global: {
+                inventoryItemParent: parent
             }
         });
     },
@@ -300,6 +327,53 @@ var self = module.exports = {
 
     setSelectionMode: function (e) {
 
+    },
+    
+    saveToInventory: function (physical, label, doPrint, cb) {
+        app.remote.savePhysical(physical, label, doPrint, function (err, id) {
+            if (err) {
+                //toast('ERROR saving ' + physicalData.material.name + ' ' + err)
+                console.log(err)
+                if (cb) cb(err)
+                return;
+            }
+            if (cb) cb(id)
+        })
+    },
+
+    generatePhysicals: function (seriesName, instances, container_id, well_id) {
+        const parent_id = container_id || app.user.workbenchID
+        const instancesList = []
+        for (var instance = 0; instance < instances; instance++) {
+            // todo: generate hash value for new physical instance to avoid naming collisions
+            const name = seriesName + '_' + instance
+            var parent_x, parent_y
+            if (well_id) {
+                parent_x = well_id.x
+                parent_y = well_id.y
+            }
+            const dbData = {
+                name: name,
+                type: 'physical',
+                parent_id: parent_id,
+                parent_x: parent_x,
+                parent_y: parent_y
+            }
+            instancesList.push(dbData)
+        }
+        if (container_id) {
+            var nrem = instancesList.length
+            for (var i = 0; i < instancesList.length; i++) {
+                saveToInventory(instancesList[i], null, null, function (n) {
+                    if (--nrem <= 0) {
+                        //app.ui.toast(instancesList.length + ' items uploaded to inventory');
+                        //BIONET.signal.refreshInventoryPath.dispatch(container_id)
+                    }
+                })
+            }
+        } else {
+            saveInWorkbench(instancesList)
+        }
     },
 
     generatePhysicalsFromUpload: function (result, parent_id) {

@@ -62,18 +62,20 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         humanReadable: true
       };
 
-      // TODO put this check in re-usable function
-      // admins don't need a check for master password
-      if(curUser.user.groups && curUser.user.groups.indexOf('admin') >= 0) {
-        vOpts.ignore = ['masterPassword'];
-      } else {
-        if(settings.userSignupPassword) {
-          if(opts.masterPassword != settings.userSignupPassword) {
-            return cb("Invalid master signup password");
+      if(curUser) {
+        // TODO put this check in re-usable function
+        // admins don't need a check for master password
+        if(curUser.user.groups && curUser.user.groups.indexOf('admin') >= 0) {
+          vOpts.ignore = ['masterPassword'];
+        } else {
+          if(settings.userSignupPassword) {
+            if(opts.masterPassword != settings.userSignupPassword) {
+              return cb("Invalid master signup password");
+            }
           }
         }
       }
-      
+
       var errors = validations.serverCheck({
         username: username,
         email: email,

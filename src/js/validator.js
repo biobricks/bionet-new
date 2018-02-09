@@ -76,7 +76,6 @@ export default function(ClassToExtend) {
       if(typeof this.validate !== 'function') return;
       
       this.setState(this.validate(this.state, true));
-      console.log("VALIDATION:", JSON.stringify(this.state.validation, null, 2));
       var v = this.state.validation;
       var key;
       for(key in v) {

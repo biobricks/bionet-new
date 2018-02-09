@@ -24,11 +24,12 @@ module.exports = function (Component) {
                 }
             });
             ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
+
             this.showAddPhysicalModal = this.showAddPhysicalModal.bind(this)
         }
         
         editItemListener(item) {
-            console.log('editPhysical2 item:',item)
+
             //if (!item) return
             this.setState(
                 {
@@ -40,9 +41,10 @@ module.exports = function (Component) {
             this.item = item
             this.displayAddPhysicalModal = true
         }
-        
+
         componentWillReceiveProps(nextProps)
         {
+
             if (!nextProps || !nextProps.menu) return
             console.log('ActionNavBar props:',nextProps.menu, this.state, this.item)
             
@@ -64,9 +66,9 @@ module.exports = function (Component) {
                 }
             )
         }
-    
-        
+
         addItemClick(e) {
+
             console.log('add menu item:',e.target.id, this.editPhysical)
             this.setState(
                 {
@@ -76,19 +78,23 @@ module.exports = function (Component) {
                 }
             )
             this.displayAddPhysicalModal=true
+
         }
         
         showAddPhysicalModal(isOpen, item) {
-            this.setState(
-                {
-                    addItemMenuDisplay:'',
-                    displayAddPhysicalModal:isOpen,
-                    item:item
-                }
-            )
-            this.displayAddPhysicalModal=isOpen
+
+          this.setState(
+            {
+              addItemMenuDisplay:'',
+              displayAddPhysicalModal:isOpen,
+              item:item
+            }
+          )
+
+          this.displayAddPhysicalModal=isOpen
+
         }
-        
+      
         addItem() {
             const addItemMenuDisplay = (this.state.addItemMenuDisplay==='is-active') ? '' :'is-active'
             this.setState({addItemMenuDisplay:addItemMenuDisplay})
@@ -116,7 +122,7 @@ module.exports = function (Component) {
         }
         
         render() {
-            console.log('actionNavbar render:', this.state, this.item)
+            console.log('$$$$$$$$$$$$$:', this.state.item)
             const actionButtonContainer = "max-height:75px; height:75px;"
             const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
             

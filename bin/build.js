@@ -97,6 +97,8 @@ function build(opts) {
     ]
   });
 
+  b.transform('browserify-markdown');
+
   b.transform('aliasify', {
     aliases: {
       "react": "preact-compat",

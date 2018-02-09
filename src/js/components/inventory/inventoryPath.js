@@ -8,6 +8,9 @@ module.exports = function (Component) {
             super(props);
             //console.log('view props:', JSON.stringify(props))
             const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
+
+          
+
             this.state = {
                 inventoryPath:inventoryPath,
                 inventoryItem:{},
@@ -19,6 +22,7 @@ module.exports = function (Component) {
         componentWillReceiveProps(nextProps)
         {
             this.updateInventoryPath(nextProps.inventoryPath)
+
         }
         
         inventoryFunction(f) {
@@ -51,6 +55,7 @@ module.exports = function (Component) {
             //const pathChild = "border: 1px solid blue; height:"+this.state.containerSize+"px;margin:10px;padding:10px;"
             const inventoryPath = []
             var selectedItem = null
+
             for (var i=0; i<newPath.length; i++) {
                 var unit = newPath[i]
                 var id = 'ipath_'+i

@@ -177,9 +177,10 @@ var self = module.exports = {
         var rootItem
         app.remote.inventoryTree(function (err, children) {
             if (err) return console.log("ERROR:", err);
+
             for (var i = 0; i < children.length; i++) {
                 var item = children[i].value
-                if (!item.parent_id && item.type === 'lab') {
+                if (!item.parent_id && item.type === 'lab') {;
                     app.changeState({
                         global: {
                             inventoryRoot: item

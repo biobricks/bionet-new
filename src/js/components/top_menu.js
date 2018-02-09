@@ -87,6 +87,9 @@ module.exports = function(Component) {
               <Link class="navbar-item " to="/inventory">
                 Inventory
               </Link>
+              <Link class="navbar-item " to="/scan">
+                Scan
+              </Link>
             </div>
 
             <div class="navbar-end">

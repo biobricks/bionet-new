@@ -23,11 +23,20 @@ module.exports = function(Component) {
       return '/search/'+encodeURI(this.props.query)+'/'+pageNumber;
     }
 
-    pageLink(pageNumber, curPage) {
-        
+    pageLink(pageNumber, curPage, classes) {
+
+      classes = classes || ''
+      if(classes instanceof Array) classes = classes.join(' ');
       const label = "Goto page " + pageNumber;
-      var className = "pagination-link";
-      if(curPage === pageNumber) className += ' is-current';
+      var className = "button pagination-link";
+      if(curPage === pageNumber) {
+        className += ' is-current';
+        if(this.props.loading) {
+          className += ' is-loading';
+        }
+      }
+      
+      className += ' '+classes;
 
       return (
           <li>
@@ -45,7 +54,7 @@ module.exports = function(Component) {
 
       if(!this.props.results.length) {
         results = (
-          <p>no results</p>
+          <p>No results found for query: '{this.props.query}'</p>
         );
 
       } else {
@@ -53,9 +62,7 @@ module.exports = function(Component) {
         results = this.props.results.map(function(result) {
           return (
             <div class="columns">
-              <div class="column left is-10">{result.name}</div>
-              <div class="column"></div>
-              <div class="column"></div>
+              <div class="column left is-12">{result.name}</div>
             </div>
           );
         });

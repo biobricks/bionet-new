@@ -3,6 +3,7 @@ import {h} from 'preact';
 import linkState from 'linkstate';
 import zxcvbn from 'zxcvbn';
 import merge from 'deepmerge';
+import {Link} from 'react-router-dom';
 
 module.exports = function(Component) {
 
@@ -114,7 +115,7 @@ module.exports = function(Component) {
                 <div class="column is-6">
 
                   <div class="field">
-                    <p>Don't have a login? Why not <a href="/signup">sign up</a> for an account?</p>
+                    <p>Don't have a login? Why not <Link to="/signup">sign up</Link> for an account?</p>
                   </div>
                   
                   <div class="field">
@@ -136,7 +137,7 @@ module.exports = function(Component) {
                         <i class="fa fa-lock"></i>
                       </span>
                       {this.passwordMessage()}
-                      <p class="help is-danger">If you forgot your password you can <a href="/password-reset">request a password reset</a></p>
+                      <p class="help is-danger">If you forgot your password you can <Link to="/password-reset">request a password reset</Link></p>
                     </div>
                   </div>
 

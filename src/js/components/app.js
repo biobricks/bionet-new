@@ -12,34 +12,35 @@ module.exports = function(Component) {
   var Login = require('./login.js')(Component);
   var Logout = require('./logout.js')(Component);
   var Search = require('./search.js')(Component);
+  var Help = require('./help.js')(Component);
   var Count = require('./count.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
   var Admin = require('./admin.js')(Component);
   var AdminEditUser = require('./admin_edit_user.js')(Component);
   var AdminCreateUser = require('./admin_create_user.js')(Component);
   var AdminDelUser = require('./admin_del_user.js')(Component);
+  var Scan = require('./scan.js')(Component);
+  var Print = require('./print.js')(Component);
 
   return class App extends Component {
 
     constructor(props) {
       super(props);
       
+/*
+      this.pr = {
+        title: "Foo",
+        text: "aaaaaaaaaaaaa"
+      }
+        <Route path="/print" render={() => (
+            <Print opts={this.pr} />
+        )}/>
+*/
     }
 
 	  render() {
       console.log("GLOB", JSON.stringify(app.state, null, 2));
 
-/*
-      if(!app.actions.connection.isConnected()) {
-        return (
-          <Router>
-            <Global state="global">
-              <PersistentNotify state="pnotify" />
-            </Global>
-          </Router>
-        )
-      }
-*/
       return (
         <Router>
           <Global state="global">
@@ -71,6 +72,11 @@ module.exports = function(Component) {
                 <Route path="/admin/create-user" component={AdminCreateUser} />
                 <Route path="/admin" component={Admin} />
               </Switch>
+
+              <Route path="/scan" component={Scan} />
+              <Route path="/print" component={Print} />
+
+              <Route path="/help/:topic" component={Help} />
 
               <Route exact path="/inventory" render={() => (
                 <Inventory state="inventory"/>

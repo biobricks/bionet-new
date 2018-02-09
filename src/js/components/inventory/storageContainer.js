@@ -21,10 +21,6 @@ module.exports = function (Component) {
         }
 
         componentWillReceiveProps(nextProps) {
-            const xunits = (nextProps.xunits) ? nextProps.xunits : 1
-            const yunits = (nextProps.yunits) ? nextProps.yunits : 1
-            this.populateContainer(nextProps.items, xunits, yunits)
-            this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType)
         }
 
         generateLabel(parent_x, parent_y, xunits, yunits) {
@@ -36,11 +32,12 @@ module.exports = function (Component) {
             return ''
         }
 
-        subdivideContainer(pwidth, pheight, pxunits, pyunits, containerLabel, childType) {
+        subdivideContainer(pwidth, pheight, pxunits, pyunits, containerLabel, childType, selectedItemId, px, py) {
+            console.log('subdivideContainer', pwidth, selectedItemId, px, py)
             const xunits = (pxunits===0) ? 1 : pxunits
             const yunits = (pyunits===0) ? 1 : pyunits
             const width = pwidth
-            const height = pheight-yunits
+            const height = pheight
             const dx = width / xunits
             const dy = height / yunits
             const thisModule = this
@@ -52,18 +49,21 @@ module.exports = function (Component) {
                     var cell = thisModule.cellMap[label]
                     var name = label
                     var isOccupied = false
+                    var isActive = false
                     if (cell) {
                         isOccupied = true
                         if (cell.name) name=cell.name
+                        isActive = cell.id === selectedItemId
                     } else {
+                        isActive = row+1 === py && x+1 === px
                     }
-                    var storageCell = <StorageCell id={"cell_"+label} label={label} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell}/>
+                    var storageCell = <StorageCell label={label} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.props.dbid} parent_x={x+1} parent_y={row+1} active={isActive}/>
                     cols.push(storageCell)
                 }
                 return cols
             }
                               
-            const rowStyle = "width:"+width+"px;height:"+dy+"px;margin:0;padding:0;"
+            const rowStyle = "width:"+width+"px;height:"+dy+"px;margin:0;padding:0px;"
             const generateRows = function() {
                 const rows=[]
                 for (var y=0; y<yunits; y++) {
@@ -76,18 +76,19 @@ module.exports = function (Component) {
                 return rows
             }
                 
-            const tileStyle = "width:"+width+"px;height:"+dy+"px;margin:0;padding:0;"
+            const tileStyle = "width:"+width+"px;height:"+dy+"px;margin:0;padding:0px;"
             const tiles = (
                     <div class="tile is-vertical" style={tileStyle}>
                         {generateRows()}
                     </div>
             )
-            this.setState({tiles:tiles})
+            return tiles
+            //this.setState({tiles:tiles})
         }
         
         populateContainer(items, xunits, yunits) {
-            this.cellMap={}
             //console.log('populateContainer:', items)
+            this.cellMap={}
             if (!items) return
             for (var i=0; i<items.length; i++) {
                 var item = items[i]
@@ -95,18 +96,33 @@ module.exports = function (Component) {
                 this.cellMap[cellId]=item
             }
         }
+
+        getId() {
+            return this.props.dbid
+        }
+
+        deselectChildren() {
+            console.log('deselectChildren:',this.props)
+            for (var i=0; i<this.props.children.length; i++) {
+                this.props.children[i].deactivate()
+            }
+        }
         
         render() {
+            console.log('containerSubdivision render:',this.props)
+            const xunits = (this.props.xunits) ? this.props.xunits : 1
+            const yunits = (this.props.yunits) ? this.props.yunits : 1
+            this.populateContainer(this.props.items, xunits, yunits)
+            const tiles = this.subdivideContainer(this.props.width, this.props.height, xunits, yunits, this.props.label, this.props.childType, this.props.selectedItem, this.props.px, this.props.py)
             
-            //console.log('containerSubdivision render:',this.props)
             const titleLabelStyle = "height:20px;width:"+this.props.width+"px;font-size:12px;line-height:20px;font-weight:800;"
             const TitleLabel = function(props) {
                 return (<div style={titleLabelStyle}>{props.text}</div>)
             }
             return (
-                <div id="inventory_tiles" class="tile is-parent is-vertical" style={"padding:0;margin:0;width:"+this.props.width}>
+                <div id="inventory_tiles2" class="tile is-parent is-vertical" style={"padding:0;margin:0;width:"+this.props.width+"px;"}>
                     <TitleLabel text={this.props.title}/>
-                    {this.state.tiles}
+                    {tiles}
                 </div>
             )
         }

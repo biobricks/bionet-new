@@ -5,6 +5,7 @@ from 'preact'
 import linkState from 'linkstate';
 
 module.exports = function (Component) {
+    const StorageContainer = require('./storageContainer')(Component)
     return class EditPhysical extends Component {
         constructor(props) {
             super(props);
@@ -17,47 +18,45 @@ module.exports = function (Component) {
             };
             this.close = this.close.bind(this)
             this.close()
+            this.id = null
+            this.item = null
             return true
         }
         
         componentWillReceiveProps(nextProps) {
             console.log('EditPhysical props:',nextProps)
-            const isActive = (nextProps.active) ? 'is-active' : ''
-            //if (!nextProps.active) return
+            var isActive = false
+            if (nextProps.active) {
+                isActive=true
+                //if (this.props.isOpen) this.props.isOpen(true)
+            } else {
+                //if (this.props.isOpen) this.props.isOpen(false)
+            }
+            
             var name=''
             var type=nextProps.type
             var titlePrefix = 'Create '
+            
             if (nextProps.item) {
                 const item = nextProps.item
                 titlePrefix = 'Edit '
                 name = item.name
                 type = item.type
+                this.id = item.id
+                this.item = item
+            } else {
+                this.item = null
+                this.id = null
             }
+            
             this.setState({
+                id:this.id,
                 type:type,
+                name:name,
                 title:titlePrefix+type,
-                active:isActive
+                active:(isActive) ? 'is-active' : ''
                 })
-            return true
         }
-        /*
-        editItem(item) {
-            console.log('editPhysical2 item:',item, this)
-            //if (!item) return
-            this.setState(
-                {
-                    type:item.type,
-                    title:'Edit '+item.name,
-                    active:'is-active',
-                    id:item.id,
-                    name:item.name
-                }
-            )
-            //this.enableModal()
-            //this.open()
-            if (this.props.isOpen) this.props.isOpen(true)
-        }
-        */
         
         enableModal() {
             //console.log('enableModal:',app.state.global.enableEditPhysical)
@@ -76,6 +75,30 @@ module.exports = function (Component) {
         submit(e) {
             e.preventDefault();
             this.close()
+            
+            // edit existing item
+            var dbData = null
+            if (this.item) {
+                dbData = this.item
+                
+            // create new item
+            } else {
+                dbData={}
+                dbData.parent_id = this.parent_id
+                dbData.parent_x = this.parent_x
+                dbData.parent_y = this.parent_y
+            }
+            
+            // merge form data
+            dbData.name = this.state.name
+            dbData.type = this.state.type
+            console.log('edit physical, submit:',dbData)
+            
+            /*
+            app.actions.saveToInventory(dbData, null, null, function(id) {
+            })
+            */
+            
         }
         
         open() {
@@ -89,12 +112,22 @@ module.exports = function (Component) {
         }
         
         render() {
-            //console.log('EditPhysical render state:',this.state)
+            console.log('EditPhysical render state:',this.state, this.props)
             
+            const selectedItemId = (this.props.item) ? this.props.item.id : null
+            const item = app.state.global.inventoryItemParent
+            console.log('EditStorageContainer:',selectedItemId)
+            const containerSize = 400
+            const style = "width:400px; height:400px;border: 1px solid black;"
+            var storageContainer = null
+            if (item) {
+                storageContainer = (<StorageContainer dbid={item.id} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={item.yUnits} items={item.children} selectedItem={selectedItemId}  px={this.props.item.parent_x} py={this.props.item.parent_y}/>)
+            }
+                
             return (
             <div class={"modal "+this.state.active}>
               <div class="modal-background" onclick={this.close}></div>
-                  <div class="modal-content" style="background-color:#ffffff;padding:10px;height:500px;">
+                  <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 25%);">
                 
                 <form onsubmit={this.submit.bind(this)}>
                 
@@ -106,14 +139,14 @@ module.exports = function (Component) {
                   </div>
                 </section>
 
-                <div class="container post-hero-area">
+                <div class=" post-hero-area">
                   <div class="columns">
-                    <div class="column is-6">
+                    <div class="column">
 
                       <div class="field">
                         <label class="label">Id</label>
                         <div class="control has-icons-left has-icons-right">
-                          <input class="input" type="text" oninput={linkState(this, 'id')} />
+                          <input class="input" type="text" oninput={linkState(this, 'id')}  value={this.state.id}/>
                         </div>
                         {this.nameMessage()}
                       </div>
@@ -121,7 +154,7 @@ module.exports = function (Component) {
                       <div class="field">
                         <label class="label">Name</label>
                         <div class="control has-icons-left has-icons-right">
-                          <input class="input" type="text" oninput={linkState(this, 'name')} />
+                          <input class="input" type="text" oninput={linkState(this, 'name')} value={this.state.name} />
                         </div>
                         {this.nameMessage()}
                       </div>
@@ -129,7 +162,7 @@ module.exports = function (Component) {
                       <div class="field">
                         <label class="label">Type</label>
                         <div class="control has-icons-left has-icons-right">
-                          <input class="input" type="text" oninput={linkState(this, 'type')} />
+                          <input class="input" type="text" oninput={linkState(this, 'type')}  value={this.state.type}/>
                           {this.typeMessage()}
                         </div>
                       </div>
@@ -140,6 +173,9 @@ module.exports = function (Component) {
                         </div>
                       </div>
 
+                    </div>
+                    <div class="column">
+                        {storageContainer}
                     </div>
                 </div>
             </div>

@@ -120,11 +120,7 @@ module.exports = function (Component) {
         }
         
         render() {
-<<<<<<< HEAD
             console.log('actionNavbar render:', this.state)
-=======
-            console.log('$$$$$$$$$$$$$:', this.state.item)
->>>>>>> dbabe1760217fa59ac5f20f2d66c1f53e815bde9
             const actionButtonContainer = "max-height:75px; height:75px;"
             const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
             

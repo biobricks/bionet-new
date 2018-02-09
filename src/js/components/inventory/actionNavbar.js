@@ -15,8 +15,7 @@ module.exports = function (Component) {
                 addItemMenuDisplay:'',
                 addMenu:{},
                 displayAddPhysicalModal:false,
-                item:null,
-                item2:null
+                test:false
             }
             app.changeState({
                 global: {
@@ -33,8 +32,7 @@ module.exports = function (Component) {
             this.setState(
                 {
                     displayAddPhysicalModal:true,
-                    item:item,
-                    item2:item
+                    test:true
                 }
             )
             this.item = item
@@ -116,7 +114,7 @@ module.exports = function (Component) {
         }
         
         render() {
-            console.log('actionNavbar render:', this.state, this.item)
+            console.log('actionNavbar render:', this.state)
             const actionButtonContainer = "max-height:75px; height:75px;"
             const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
             

@@ -31,13 +31,14 @@ module.exports = function (Component) {
         }
         
         clearSelection(id) {
-            return
             var path = this.state.inventoryPath
             for (var i=0; i<path.length; i++) {
                 var container = path[i]
+                /*
                 if (container.getId()===id) {
                     container.deselectChildren()
                 }
+                */
             }
         }
         
@@ -60,13 +61,16 @@ module.exports = function (Component) {
                     px = nextUnit.parent_x
                     py = nextUnit.parent_y
                 }
-
-                // todo switch to selected id
-                if (unit.label==='box') selectedItem = unit
-                inventoryPath.push( 
+                /*
                     <div id={id} key={id} class="tile is-child is-2" style={pathChild}>
                         <StorageContainer dbid={unit.id} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
                     </div>
+                */
+
+                // todo switch to selected id
+                if (unit.label==='box') selectedItem = unit
+                inventoryPath.push(
+                    <StorageContainer dbid={unit.id} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
                 )
             }
             this.inventoryPath = inventoryPath

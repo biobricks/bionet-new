@@ -108,6 +108,7 @@ var self = module.exports = {
                 console.log('getLocationPath error:', err)
                 return
             }
+            console.log('************getInventoryPath:', id, locationPathAr )
             
             app.changeState({
                 global: {

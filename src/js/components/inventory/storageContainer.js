@@ -33,7 +33,7 @@ module.exports = function (Component) {
         }
 
         subdivideContainer(pwidth, pheight, pxunits, pyunits, containerLabel, childType, selectedItemId, px, py) {
-            console.log('subdivideContainer', pwidth, selectedItemId, px, py)
+            //console.log('subdivideContainer', pxunits, pyunits, pwidth, selectedItemId, px, py)
             const xunits = (pxunits===0) ? 1 : pxunits
             const yunits = (pyunits===0) ? 1 : pyunits
             const width = pwidth
@@ -109,7 +109,7 @@ module.exports = function (Component) {
         }
         
         render() {
-            console.log('containerSubdivision render:',this.props)
+            //console.log('containerSubdivision render:',this.props)
             const xunits = (this.props.xunits) ? this.props.xunits : 1
             const yunits = (this.props.yunits) ? this.props.yunits : 1
             this.populateContainer(this.props.items, xunits, yunits)
@@ -119,10 +119,13 @@ module.exports = function (Component) {
             const TitleLabel = function(props) {
                 return (<div style={titleLabelStyle}>{props.text}</div>)
             }
+            const pathChild = "height:"+this.props.containerSize+"px;margin:0px;padding:0;width:"+(this.props.containerSize+20)+"px;"
             return (
-                <div id="inventory_tiles2" class="tile is-parent is-vertical" style={"padding:0;margin:0;width:"+this.props.width+"px;"}>
-                    <TitleLabel text={this.props.title}/>
-                    {tiles}
+                <div id={this.props.dbid} key={this.props.dbid} class="tile is-child is-2" style={pathChild}>
+                    <div id="inventory_tiles2" class="tile is-parent is-vertical" style={"padding:0;margin:0;width:"+this.props.width+"px;"}>
+                        <TitleLabel text={this.props.title}/>
+                        {tiles}
+                    </div>
                 </div>
             )
         }

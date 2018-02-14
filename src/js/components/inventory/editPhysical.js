@@ -155,7 +155,7 @@ module.exports = function (Component) {
                         <div class="field">
                             <label class="label">{props.label}</label>
                             <div class="control has-icons-left has-icons-right">
-                                <input class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
+                                <input class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
                             </div>
                             {this.msgFunction(props.msg)}
                         </div>
@@ -189,6 +189,7 @@ module.exports = function (Component) {
                     </form>
                 )
             } else {
+                                            //<FormInputText fid='id' value={this.item.id} label="Id" readonly="true"/>
                 return (
                     <div class={"modal "+this.state.active}>
                       <div class="modal-background" onclick={this.close}></div>
@@ -205,11 +206,12 @@ module.exports = function (Component) {
                                 <div class=" post-hero-area">
                                     <div class="columns">
                                         <div class="column">
-                                            <FormInputText fid='id' value={this.item.id} label="Id" readonly="true"/>
                                             <FormInputText fid='name' value={this.item.name} label="Name" />
                                             <label class="label">Type</label>
                                             <ItemTypes type={this.item.type} types={types} setType={this.setType}/>
-                                            {attributes}
+                                            <div style="margin-top:10px;margin-bottom:30px;">
+                                                {attributes}
+                                            </div>
                                             <div class="field">
                                                 <div class="control">
                                                     <input type="submit" class="button is-link" value="Submit" />

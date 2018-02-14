@@ -141,7 +141,7 @@ module.exports = function (Component) {
         
         render() {
             //console.log('actionNavbar render:', this.state)
-            const actionButtonContainer = "max-height:75px; height:75px;"
+            const actionButtonContainer = "justify-content:flex-start;max-height:75px; height:75px;"
             const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
             const menu = this.initMenus(this.props)
             

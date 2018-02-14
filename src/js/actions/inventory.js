@@ -1,4 +1,4 @@
-var self = module.exports = {
+module.exports = {
     
     getPath: function (n) {
         
@@ -538,7 +538,8 @@ var self = module.exports = {
         
     },
     
-    delPhysical: function (id) {
-
+    delPhysical: function (id, cb) {
+        var err = null
+        if (cb) cb(err, id)
     }
 }

@@ -4,6 +4,8 @@ import {Link} from 'react-router-dom';
 import util from '../util.js';
 
 module.exports = function(Component) {
+    
+  var ModalPrompt = require('./modal_prompt.js')(Component);
 
   return class TopMenu extends Component {
 
@@ -99,7 +101,8 @@ module.exports = function(Component) {
               </div>
             </div>
           </div>
-        </nav>
+            <ModalPrompt state="ModalPrompt" prompt={app.state.global.prompt}/>
+          </nav>
         
 
       )

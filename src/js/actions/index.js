@@ -6,5 +6,6 @@ module.exports = {
   route: require('./route'),
   notify: require('./notify'),
   inventory: require('./inventory'),
-  p2p: require('./p2p')
+  p2p: require('./p2p'),
+  prompt: require('./prompt')
 }

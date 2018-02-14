@@ -112,9 +112,26 @@ module.exports = function (Component) {
         }
         
         deleteItem() {
-            
-            app.actions.inventory.getPath(2)
-            //console.log('delete item')
+            const id = app.state.global.inventorySelection.id
+            if (!id) return
+            const item = app.actions.inventory.getItemFromInventoryPath(id)
+            if (!item) return
+            const name = item.name
+            app.actions.prompt.display('Do you wish to delete '+name+'?', function(accept) {
+                console.log('delete item:',accept)
+                if (accept) {
+                    app.actions.inventory.delPhysical(id, function(err,id) {
+                        if (err) {
+                            app.actions.notify("Error deleting item", 'error');
+                            return
+                        }
+                        app.actions.notify("Item deleted", 'notice', 2000);
+                        const parentId = app.state.global.inventorySelection.parentId
+                        console.log('delete refresh parentId:',parentId)
+                        app.actions.inventory.getInventoryPath(parentId)
+                    })
+                }
+            })
         }
         
         upload() {

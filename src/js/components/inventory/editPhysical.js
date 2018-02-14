@@ -6,56 +6,49 @@ import linkState from 'linkstate';
 
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
+    const ItemTypes = require('./itemTypes')(Component)
     return class EditPhysical extends Component {
         constructor(props) {
             super(props);
+
             this.state = {
                 id:'',
                 name: '',
                 title: 'Add Physical',
                 type: '',
+                attributes:[],
                 active:''
             };
             this.close = this.close.bind(this)
+            this.setType = this.setType.bind(this)
+            
             this.close()
             this.id = null
-            this.item = null
-            return true
+            this.item = {}
         }
         
         componentWillReceiveProps(nextProps) {
             console.log('EditPhysical props:',nextProps)
-            var isActive = false
-            if (nextProps.active) {
-                isActive=true
-                //if (this.props.isOpen) this.props.isOpen(true)
-            } else {
-                //if (this.props.isOpen) this.props.isOpen(false)
+            const active = (nextProps.active) ? 'is-active' : ''
+            if (!nextProps.item) {
+                this.setState({
+                    active:active
+                })
+                return
             }
             
-            var name=''
-            var type=nextProps.type
-            var titlePrefix = 'Create '
-            
-            if (nextProps.item) {
-                const item = nextProps.item
-                titlePrefix = 'Edit '
-                name = item.name
-                type = item.type
-                this.id = item.id
-                this.item = item
-            } else {
-                this.item = null
-                this.id = null
-            }
+            var item = nextProps.item
+            this.item = item
+            var titlePrefix = (item.id) ? 'Edit ' : 'Create '
+            this.id = item.id
+            this.parent_item = app.actions.inventory.getItemFromInventoryPath(item.parent_id)
             
             this.setState({
-                id:this.id,
-                type:type,
-                name:name,
-                title:titlePrefix+type,
-                active:(isActive) ? 'is-active' : ''
-                })
+                id:item.id,
+                attributes:app.actions.inventory.getAttributesForType(item.type),
+                title:titlePrefix+item.type,
+                active:active
+            })
         }
         
         enableModal() {
@@ -64,40 +57,30 @@ module.exports = function (Component) {
             this.setState({active:isActive})
         }
         
-        nameMessage() {
-            
-        }
-        
-        typeMessage() {
-            
-        }
-        
         submit(e) {
             e.preventDefault();
             this.close()
             
             // edit existing item
-            var dbData = null
-            if (this.item) {
-                dbData = this.item
-                
-            // create new item
-            } else {
-                dbData={}
-                dbData.parent_id = this.parent_id
-                dbData.parent_x = this.parent_x
-                dbData.parent_y = this.parent_y
+            var dbData = this.item
+            const selection = app.state.global.inventorySelection
+            if (selection) {
+                dbData.parent_id = selection.parentId
+                dbData.parent_x = selection.x
+                dbData.parent_y = selection.y
             }
-            
+
             // merge form data
-            dbData.name = this.state.name
-            dbData.type = this.state.type
-            console.log('edit physical, submit:',dbData)
-            
-            /*
-            app.actions.saveToInventory(dbData, null, null, function(id) {
+            console.log('edit physical, submit:',dbData, selection)
+            //return
+            app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
+                if (err) {
+                    app.actions.notify("Error saving "+dbData.name, 'error');
+                    return
+                }
+                app.actions.notify(dbData.name+" saved", 'notice', 2000);
+                app.actions.inventory.getInventoryPath(dbData.parent_id)
             })
-            */
             
         }
         
@@ -111,18 +94,68 @@ module.exports = function (Component) {
             if (this.props.isOpen) this.props.isOpen(false)
         }
         
+        setType(type) {
+            this.item.type = type
+        }
+        
+        msgFunction(msg) {
+            //return ''
+        }
+        
         render() {
             console.log('EditPhysical render state:',this.state, this.props)
-            
-            const selectedItemId = (this.props.item) ? this.props.item.id : null
-            const item = app.state.global.inventoryItemParent
+            const item = this.item
+            const selectedItemId = (item) ? item.id : null
             console.log('EditStorageContainer:',selectedItemId)
             const containerSize = 400
             const style = "width:400px; height:400px;border: 1px solid black;"
             var storageContainer = null
-            if (item) {
-                storageContainer = (<StorageContainer dbid={item.id} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={item.yUnits} items={item.children} selectedItem={selectedItemId}  px={this.props.item.parent_x} py={this.props.item.parent_y}/>)
+            
+            const parent_item = this.parent_item
+            if (parent_item) {
+                var px = 0
+                var py = 0
+                if (item) {
+                    px = item.parent_x
+                    py = item.parent_y
+                }
+                storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} />)
             }
+                      
+            const linkFormData = function(component, fid, valuePath) {
+              return event => {
+                var update = {};
+                update[fid] = event.currentTarget.value;
+                Object.assign(this.item, update)
+              };
+            }.bind(this)
+                
+            const FormInputText = function(props) {
+                console.log('FormInputText:',props)
+                return(
+                    <div class="field">
+                        <label class="label">{props.label}</label>
+                            <div class="control has-icons-left has-icons-right">
+                                <input class="input" type="text" placeholder="Normal input" oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
+                            </div>
+                            {this.msgFunction(props.msg)}
+                    </div>
+                )
+            }.bind(this)
+            
+            const attributeDefs = this.state.attributes
+            const attributes=[]
+            if (attributeDefs) {
+                for (var i=0; i<attributeDefs.length; i++) {
+                    var field = attributeDefs[i]
+                    var fieldId = field.name.toLowerCase()
+                    var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
+                    var value = (item && item[fieldId]) ? item[fieldId] : ''
+                    attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
+                }
+            }
+            const types= (app.state.global.inventoryTypes) ? app.state.global.inventoryTypes.locations : [] 
+                                //<FormInputText fid='type' value={this.item.type} label="Type" />
                 
             return (
             <div class={"modal "+this.state.active}>
@@ -131,57 +164,43 @@ module.exports = function (Component) {
                 
                 <form onsubmit={this.submit.bind(this)}>
                 
-                <section class="hero is-info ">
-                  <div class="hero-body">
-                    <div class="container">
-                      <h1 class="title">{this.state.title}</h1>
+                    <section class="hero is-info ">
+                      <div class="hero-body">
+                        <div class="container">
+                          <h1 class="title">{this.state.title}</h1>
+                        </div>
+                      </div>
+                    </section>
+
+                    <div class=" post-hero-area">
+                        <div class="columns">
+
+                            <div class="column">
+
+                                <FormInputText fid='id' value={this.item.id} label="Id" readonly="true"/>
+                                <FormInputText fid='name' value={this.item.name} label="Name" />
+                                <label class="label">Type</label>
+                                <ItemTypes type={this.item.type} types={types} setType={this.setType}/>
+                                {attributes}
+
+                                <div class="field">
+                                    <div class="control">
+                                        <input type="submit" class="button is-link" value="Submit" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column">
+                                {storageContainer}
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </section>
-
-                <div class=" post-hero-area">
-                  <div class="columns">
-                    <div class="column">
-
-                      <div class="field">
-                        <label class="label">Id</label>
-                        <div class="control has-icons-left has-icons-right">
-                          <input class="input" type="text" oninput={linkState(this, 'id')}  value={this.state.id}/>
-                        </div>
-                        {this.nameMessage()}
-                      </div>
-                          
-                      <div class="field">
-                        <label class="label">Name</label>
-                        <div class="control has-icons-left has-icons-right">
-                          <input class="input" type="text" oninput={linkState(this, 'name')} value={this.state.name} />
-                        </div>
-                        {this.nameMessage()}
-                      </div>
-
-                      <div class="field">
-                        <label class="label">Type</label>
-                        <div class="control has-icons-left has-icons-right">
-                          <input class="input" type="text" oninput={linkState(this, 'type')}  value={this.state.type}/>
-                          {this.typeMessage()}
-                        </div>
-                      </div>
-                          
-                      <div class="field">
-                        <div class="control">
-                          <input type="submit" class="button is-link" value="Submit" />
-                        </div>
-                      </div>
-
-                    </div>
-                    <div class="column">
-                        {storageContainer}
-                    </div>
-                </div>
-            </div>
+                    
             </form>
+                            
             <button class="modal-close" aria-label="close" onclick={this.close}></button>
              </div>
+            
             </div>
             )
         }

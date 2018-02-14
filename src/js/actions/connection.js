@@ -1,5 +1,3 @@
-
-
 var self = module.exports = {
 
   setState: function(state, msg, retryDelay) {

@@ -13,7 +13,6 @@ module.exports = function (Component) {
             super(props);
             this.state = {
                 addItemMenuDisplay:'',
-                addMenu:{},
                 displayAddPhysicalModal:false,
                 test:false
             }
@@ -28,23 +27,22 @@ module.exports = function (Component) {
         }
         
         editItemListener(item) {
+            //console.log('editItemListener:',item)
 
-            //if (!item) return
             this.setState(
                 {
-                    displayAddPhysicalModal:true,
-                    test:true
+                    displayAddPhysicalModal:true
                 }
             )
             this.item = item
             this.displayAddPhysicalModal = true
         }
 
-        componentWillReceiveProps(nextProps)
+        initMenus(nextProps)
         {
 
             if (!nextProps || !nextProps.menu) return
-            console.log('ActionNavBar props:',nextProps.menu, this.state, this.item)
+            //console.log('ActionNavBar props:',nextProps.menu, this.state, this.item)
             
             const menuDef = nextProps.menu.locations
             const menu = []
@@ -57,26 +55,31 @@ module.exports = function (Component) {
                 var item = menuDef[i]
                 menu.push(<DropdownMenuItem id={item.name} label={item.title} onClick={this.addItemClick.bind(this)} />)
             }
-            this.setState(
-                {
-                    addMenu:menu,
-                    displayAddPhysicalModal:this.displayAddPhysicalModal
-                }
-            )
+            return menu
         }
 
         addItemClick(e) {
 
-            console.log('add menu item:',e.target.id, this.editPhysical)
-            this.setState(
-                {
-                    itemType:e.target.id,
-                    addItemMenuDisplay:'',
-                    displayAddPhysicalModal:true
-                }
-            )
-            this.displayAddPhysicalModal=true
-
+            //console.log('add menu item:',e.target.id, this.editPhysical)
+            
+            const parent_id = app.state.global.inventorySelection.id
+            
+            this.displayAddMenu(false)
+            
+            // todo: ashnagz listner is not triggered if unchanged
+            var item = {
+                salt: Math.random(),
+                type: e.target.id,
+                name: '',
+                parent_id: parent_id,
+                parent_x: 1,
+                parent_y: 1
+            }
+            app.actions.inventory.editItem(item)
+        }
+    
+        displayAddMenu(show) {
+            this.setState({ addItemMenuDisplay: (show) ? 'is-active' : '' })
         }
         
         showAddPhysicalModal(isOpen, item) {
@@ -93,9 +96,8 @@ module.exports = function (Component) {
 
         }
       
-        addItem() {
-            const addItemMenuDisplay = (this.state.addItemMenuDisplay==='is-active') ? '' :'is-active'
-            this.setState({addItemMenuDisplay:addItemMenuDisplay})
+        addItemButton() {
+            this.displayAddMenu(this.state.addItemMenuDisplay !== 'is-active')
         }
         
         starItem() {
@@ -110,6 +112,7 @@ module.exports = function (Component) {
         }
         
         deleteItem() {
+            
             app.actions.inventory.getPath(2)
             //console.log('delete item')
         }
@@ -120,9 +123,10 @@ module.exports = function (Component) {
         }
         
         render() {
-            console.log('actionNavbar render:', this.state)
+            //console.log('actionNavbar render:', this.state)
             const actionButtonContainer = "max-height:75px; height:75px;"
             const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
+            const menu = this.initMenus(this.props)
             
             const ActionMenuButton = function(props) {
                 return (
@@ -137,11 +141,11 @@ module.exports = function (Component) {
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
                     <div class={"dropdown tile "+this.state.addItemMenuDisplay} style={actionButtonContainer}>
                         <div class="dropdown-trigger">
-                            <ActionMenuButton icon="add" onClick={this.addItem.bind(this)} />
+                            <ActionMenuButton icon="add" onClick={this.addItemButton.bind(this)} />
                         </div>
                         <div class="dropdown-menu" id="dropdown-menu" role="menu" style={"position:fixed; top:145px; left:10px;"}>
                             <div class="dropdown-content">
-                                {this.state.addMenu}
+                                {menu}
                             </div>
                         </div>
                     </div>
@@ -149,7 +153,7 @@ module.exports = function (Component) {
                     <ActionMenuButton icon="edit" onClick={this.editItem.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
-                    <EditPhysical state="enableEditPhysical" active={this.state.displayAddPhysicalModal} type={this.state.itemType} isOpen={this.showAddPhysicalModal} item={this.item}/>
+                    <EditPhysical state="enableEditPhysical" active={this.state.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />
                 </div>
             )
         }

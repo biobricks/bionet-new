@@ -48,6 +48,19 @@ var self = module.exports = {
         return null
     },
     
+    selectCell: function(id, parentId, x, y) {
+        app.changeState({
+            global: {
+                inventorySelection: {
+                    id: id,
+                    parentId: parentId,
+                    x: x,
+                    y: y
+                }
+            }
+        });
+    },
+    
     deselectItem: function(id) {
         app.changeState({
             global: {
@@ -58,16 +71,10 @@ var self = module.exports = {
     
     editItem: function(item) {
         console.log('editItem action: ', item)
-        var parent = null
-        if (item.parent_id) parent = this.getItemFromInventoryPath(item.parent_id)
-        console.log('editItem action: ', item, parent)
+        const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
         app.changeState({
             global: {
-                inventoryItem: item
-            }
-        });
-        app.changeState({
-            global: {
+                inventoryItem: item,
                 inventoryItemParent: parent
             }
         });
@@ -108,7 +115,6 @@ var self = module.exports = {
                 console.log('getLocationPath error:', err)
                 return
             }
-            console.log('************getInventoryPath:', id, locationPathAr )
             
             app.changeState({
                 global: {
@@ -273,20 +279,13 @@ var self = module.exports = {
         BIONET.signal.setLayout.dispatch(tag.layout)
         const selectionMode = selectionModeVis || BIONET_VIS.getSelectionMode()
         if (selectionMode === BIONET.EDIT_SELECTION) {
-            //editSelection = BIONET_VIS.getEditSelection()
             editSelection = BIONET_VIS.getEditSelection()
             if (editSelection && editSelection.dbData) {
-                //if (editSelection.physicalId) {
                 if (editSelection.dbData.type === 'physical') {
                     tag.editMaterial()
                 } else {
                     tag.editItem()
-                        //BIONET.signal.getPhysical.dispatch(id)
                 }
-                //} else {
-                // create new physical and add to parent
-                //console.log('selectInventoryItem: create new physical', JSON.stringify(editSelection), id)
-                //}
             }
             return
         } else if (selectionMode === BIONET.MOVE_SELECTION) {
@@ -294,12 +293,6 @@ var self = module.exports = {
             BIONET_VIS.setMoveItemId(id)
             const currentItem = BIONET_VIS.getSelectedItem()
             console.log('selectInventoryItem: move', id, currentItem)
-                /*
-                const parentId = currentItem.parent_id
-                retrieveLocationPath(parentId, (path) => {
-                    BIONET_VIS.signal.setLocationPath.dispatch(parentId, path)
-                })
-                */
             return
         }
 
@@ -334,13 +327,30 @@ var self = module.exports = {
     saveToInventory: function (physical, label, doPrint, cb) {
         app.remote.savePhysical(physical, label, doPrint, function (err, id) {
             if (err) {
-                //toast('ERROR saving ' + physicalData.material.name + ' ' + err)
                 console.log(err)
-                if (cb) cb(err)
-                return;
             }
-            if (cb) cb(id)
+            if (cb) cb(err, id)
         })
+    },
+    
+    getAttributesForType: function(type) {
+        const dataTypes = app.settings.dataTypes
+        const attributes = []
+        for (var i = 0; i < dataTypes.length; i++) {
+          const dataType = dataTypes[i]
+          if (type === dataType.name) {
+            var fields = dataType.fields
+            if (fields === undefined) return attributes
+            Object.keys(fields).forEach(function (key, index) {
+              attributes.push({
+                name: key,
+                value: fields[key]
+              })
+            })
+            break
+          }
+        }
+        return attributes
     },
 
     generatePhysicals: function (seriesName, instances, container_id, well_id) {

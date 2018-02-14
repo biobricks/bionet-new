@@ -9,8 +9,6 @@ module.exports = function (Component) {
             //console.log('view props:', JSON.stringify(props))
             const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
 
-          
-
             this.state = {
                 inventoryPath:inventoryPath,
                 inventoryItem:{},
@@ -35,7 +33,7 @@ module.exports = function (Component) {
         }
         
         clearSelection(id) {
-            var path = this.state.inventoryPath
+            var path = this.inventoryPath
             for (var i=0; i<path.length; i++) {
                 var container = path[i]
                 /*
@@ -66,11 +64,6 @@ module.exports = function (Component) {
                     px = nextUnit.parent_x
                     py = nextUnit.parent_y
                 }
-                /*
-                    <div id={id} key={id} class="tile is-child is-2" style={pathChild}>
-                        <StorageContainer dbid={unit.id} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
-                    </div>
-                */
 
                 // todo switch to selected id
                 if (unit.label==='box') selectedItem = unit
@@ -80,16 +73,16 @@ module.exports = function (Component) {
             }
             this.inventoryPath = inventoryPath
             this.newPath = newPath.length
-            this.setState({inventoryPath:inventoryPath, selectedItem:selectedItem})
+            //this.setState({inventoryPath:inventoryPath, selectedItem:selectedItem})
             return inventoryPath
         }
 
         render() {
+            
             //console.log(this.state.inventoryPath)
-            if (!this.state.inventoryPath) return
-            
+            if (!this.props.inventoryPath) return
+            const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
             //calc(100vh - 40px);
-            
             const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
             const itemChild = "border:1px solid grey;margin:0;padding:0;"
             const itemMaxHeight = "margin:0;padding:0;"
@@ -100,7 +93,7 @@ module.exports = function (Component) {
                 <div id="inventory_tiles" class="tile is-11" style="">
                     <div class="tile is-vertical">
                         <div id="inventory_path" class="tile is-11 is-parent" style={pathMaxHeight}>
-                            {this.state.inventoryPath}
+                            {inventoryPath}
                         </div>
                         <div id="inventory_item" class="tile is-parent" style={itemMaxHeight}>
                             <div id="i1" class="tile is-child is-12" style={itemChild} />

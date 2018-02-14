@@ -20,9 +20,6 @@ module.exports = function (Component) {
             this.cellMap = {}
         }
 
-        componentWillReceiveProps(nextProps) {
-        }
-
         generateLabel(parent_x, parent_y, xunits, yunits) {
             const x = parent_x+1
             const y = parent_y+1
@@ -57,7 +54,7 @@ module.exports = function (Component) {
                     } else {
                         isActive = row+1 === py && x+1 === px
                     }
-                    var storageCell = <StorageCell label={label} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.props.dbid} parent_x={x+1} parent_y={row+1} active={isActive}/>
+                    var storageCell = <StorageCell state="inventorySelection" label={label} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.props.dbid} parent_x={x+1} parent_y={row+1} active={isActive}/>
                     cols.push(storageCell)
                 }
                 return cols
@@ -83,7 +80,6 @@ module.exports = function (Component) {
                     </div>
             )
             return tiles
-            //this.setState({tiles:tiles})
         }
         
         populateContainer(items, xunits, yunits) {

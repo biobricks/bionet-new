@@ -40,7 +40,7 @@ module.exports = {
     getItemFromInventoryPath: function(id) {
         const path = app.state.global.inventoryPath
         if (!path) return null
-        console.log('getItemFromInventoryPath:',path)
+        //console.log('getItemFromInventoryPath:',path)
         //return
         for (var i=0; i<path.length; i++) {
             if (path[i].id===id) return path[i]

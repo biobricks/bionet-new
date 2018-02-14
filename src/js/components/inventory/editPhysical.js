@@ -10,29 +10,34 @@ module.exports = function (Component) {
     return class EditPhysical extends Component {
         constructor(props) {
             super(props);
-
+            this.componentWillReceiveProps(this.props)
+            this.close = this.close.bind(this)
+            this.setType = this.setType.bind(this)
+            /*
+            var item = this.props.item
+            this.item = item
             this.state = {
                 id:'',
                 name: '',
                 title: 'Add Physical',
                 type: '',
                 attributes:[],
-                active:''
+                active:(this.props.active) ? 'is-active' : '',
+                tabular:this.props.tabular
             };
-            this.close = this.close.bind(this)
-            this.setType = this.setType.bind(this)
-            
-            this.close()
             this.id = null
-            this.item = {}
+            this.close()
+            */
         }
         
         componentWillReceiveProps(nextProps) {
             console.log('EditPhysical props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
+            const tabular = nextProps.tabular
             if (!nextProps.item) {
                 this.setState({
-                    active:active
+                    active:active,
+                    tabular:tabular
                 })
                 return
             }
@@ -47,7 +52,8 @@ module.exports = function (Component) {
                 id:item.id,
                 attributes:app.actions.inventory.getAttributesForType(item.type),
                 title:titlePrefix+item.type,
-                active:active
+                active:active,
+                tabular:tabular
             })
         }
         
@@ -103,13 +109,15 @@ module.exports = function (Component) {
         }
         
         render() {
-            console.log('EditPhysical render state:',this.state, this.props)
+            //console.log('EditPhysical render state:',this.state, this.props)
             const item = this.item
+            if (!item) return null
             const selectedItemId = (item) ? item.id : null
-            console.log('EditStorageContainer:',selectedItemId)
+            //console.log('EditStorageContainer:',selectedItemId)
             const containerSize = 400
             const style = "width:400px; height:400px;border: 1px solid black;"
             var storageContainer = null
+            const tabular = this.state.tabular
             
             const parent_item = this.parent_item
             if (parent_item) {
@@ -131,16 +139,28 @@ module.exports = function (Component) {
             }.bind(this)
                 
             const FormInputText = function(props) {
-                console.log('FormInputText:',props)
-                return(
-                    <div class="field">
-                        <label class="label">{props.label}</label>
+                //console.log('FormInputText:',props)
+                if (tabular) {
+                    //                    <div class="tile is-child is-3">Name</div>
+
+                    return(
+                        <div class="tile is-child is-3" style="padding:0; margin:0">
+                            <input class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}>
+                                {this.msgFunction(props.msg)}
+                            </input>
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div class="field">
+                            <label class="label">{props.label}</label>
                             <div class="control has-icons-left has-icons-right">
-                                <input class="input" type="text" placeholder="Normal input" oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
+                                <input class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
                             </div>
                             {this.msgFunction(props.msg)}
-                    </div>
-                )
+                        </div>
+                    )
+                }
             }.bind(this)
             
             const attributeDefs = this.state.attributes
@@ -156,53 +176,57 @@ module.exports = function (Component) {
             }
             const types= (app.state.global.inventoryTypes) ? app.state.global.inventoryTypes.locations : [] 
                                 //<FormInputText fid='type' value={this.item.type} label="Type" />
-                
-            return (
-            <div class={"modal "+this.state.active}>
-              <div class="modal-background" onclick={this.close}></div>
-                  <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 25%);">
-                
-                <form onsubmit={this.submit.bind(this)}>
-                
-                    <section class="hero is-info ">
-                      <div class="hero-body">
-                        <div class="container">
-                          <h1 class="title">{this.state.title}</h1>
+            if (tabular) {
+                //                            <ItemTypes type={this.item.type} types={types} setType={this.setType}/>
+
+                return (
+                    <form onsubmit={this.submit.bind(this)}>
+                        <div class="tile is-parent is-11"  style="padding:0; margin:0">
+                            <FormInputText fid='name' value={this.item.name} label="Name" />
+                            <ItemTypes type={this.item.type} types={types} setType={this.setType} class="tile is-child is-3"/>
+                            {attributes}
                         </div>
-                      </div>
-                    </section>
+                    </form>
+                )
+            } else {
+                return (
+                    <div class={"modal "+this.state.active}>
+                      <div class="modal-background" onclick={this.close}></div>
+                          <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 25%);">
+                            <form onsubmit={this.submit.bind(this)}>
 
-                    <div class=" post-hero-area">
-                        <div class="columns">
-
-                            <div class="column">
-
-                                <FormInputText fid='id' value={this.item.id} label="Id" readonly="true"/>
-                                <FormInputText fid='name' value={this.item.name} label="Name" />
-                                <label class="label">Type</label>
-                                <ItemTypes type={this.item.type} types={types} setType={this.setType}/>
-                                {attributes}
-
-                                <div class="field">
-                                    <div class="control">
-                                        <input type="submit" class="button is-link" value="Submit" />
+                                <section class="hero is-info ">
+                                  <div class="hero-body">
+                                    <div class="container">
+                                      <h1 class="title">{this.state.title}</h1>
+                                    </div>
+                                  </div>
+                                </section>
+                                <div class=" post-hero-area">
+                                    <div class="columns">
+                                        <div class="column">
+                                            <FormInputText fid='id' value={this.item.id} label="Id" readonly="true"/>
+                                            <FormInputText fid='name' value={this.item.name} label="Name" />
+                                            <label class="label">Type</label>
+                                            <ItemTypes type={this.item.type} types={types} setType={this.setType}/>
+                                            {attributes}
+                                            <div class="field">
+                                                <div class="control">
+                                                    <input type="submit" class="button is-link" value="Submit" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            {storageContainer}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="column">
-                                {storageContainer}
-                            </div>
+                            </form>
+                            <button class="modal-close" aria-label="close" onclick={this.close}></button>
                         </div>
                     </div>
-                    
-            </form>
-                            
-            <button class="modal-close" aria-label="close" onclick={this.close}></button>
-             </div>
-            
-            </div>
-            )
+                )
+            }
         }
     }
 }

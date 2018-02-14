@@ -8,18 +8,20 @@ module.exports = function (Component) {
     return class ItemTypes extends Component {
         constructor(props) {
             super(props);
-
+            this.componentWillReceiveProps(this.props)
+            /*
             this.state = {
                 type:null,
                 types:null,
                 active:false
             };
+            */
             this.toggleDropdown = this.toggleDropdown.bind(this)
             this.selectType = this.selectType.bind(this)
         }
         
         componentWillReceiveProps(nextProps) {
-            console.log('Item types:',nextProps)
+            //console.log('Item types:',nextProps)
             this.setState({
                 type:nextProps.type,
                 types:nextProps.types
@@ -63,9 +65,9 @@ module.exports = function (Component) {
             const active = (this.state.active) ? 'is-active' : ''
             
             return(
-                <div class={"dropdown "+active}>
-                  <div class="dropdown-trigger">
-                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu3" onclick={this.toggleDropdown}>
+                <div class={"dropdown "+active+" "+this.props.class} style={this.props.style}>
+                  <div class="dropdown-trigger"  style="min-width:100%;width:100%">
+                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu3" onclick={this.toggleDropdown}  style="min-width:100%;width:100%;justify-content:flex-start">
                       <span>{this.state.type}</span>
                       <span class="icon is-small">
                         <i class="material-icons" aria-hidden="true">arrow_drop_down</i>

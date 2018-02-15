@@ -2,6 +2,11 @@
 import {h} from 'preact';
 import linkState from 'linkstate';
 import util from '../util.js';
+
+// TODO maybe switch from FontLoader to the new CSS font loader api?
+// though probably the browser suport is worse
+//  https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
+// Maybe use this: https://github.com/bramstein/fontfaceobserver
 import FontLoader from 'FontLoader';
 
 var LabelMaker = require('../labelmaker.js');

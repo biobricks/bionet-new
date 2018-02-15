@@ -137,10 +137,16 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       accounts.completePasswordReset(users, resetCode, password, cb);
     },
 
-    blast: rpc.syncReadStream(function(curUser, query) {
-      if(!index.blast) throw new Error("BLAST queries not supported by this node");
-      return index.blast.query(query);
-    }),
+    blast: function(curUser, query, opts, cb) {
+      if(!index.blast) return cb(new Error("BLAST queries not supported by this node"));
+
+      // should only virtuals that have physicals be returned?
+      if(opts.onlyAvailable) {
+        // TODO filter stream results keeping only available
+      }
+
+      index.blast.query(query, opts, cb);
+    },
 
     // TODO should have some kind of validation / security / rate limiting
     requestMaterialRemote: function(curUser, id, requesterEmail, physicalAddress, cb) {

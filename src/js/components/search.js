@@ -2,6 +2,7 @@
 import {h} from 'preact';
 import linkState from 'linkstate';
 import {Link} from 'react-router-dom';
+import util from '../util.js';
 
 module.exports = function(Component) {
 
@@ -22,9 +23,11 @@ module.exports = function(Component) {
         perPage: 25
       };
 
-      if(this.state.query) {
-        this.doSearch(this.state.query, this.state.page);
-      }
+      util.whenConnected(function() {
+        if(this.state.query) {
+          this.doSearch(this.state.query, this.state.page);
+        }
+      }.bind(this));
     };
 
     doSearch(query, page) {
@@ -33,47 +36,53 @@ module.exports = function(Component) {
         prevQuery: query,
         page: page,
         loading: true,
+        results: [],
         newQuery: !(query == this.state.prevQuery)
       });
 
-      this.queryID++;
+      app.actions.search.auto(query, page - 1, this.perPage, function(err, metadata, stream) {
+        if(err) {
+          app.actions.notify("Search failed: " + err, 'error');
+          console.error(err);
+          return;
+        }
 
-      this.fakeSearch(query, page - 1, this.queryID, function(err, queryID, data) {
+        if(this.prevStream) {
+          this.prevStream.destroy();
+        }
+        this.prevStream = stream;
 
-        // if multiple queries have been started before one returns
-        // then only accept results from most recent query
-        if(queryID !== this.queryID) return;
+
+        var isFirst = true;
+        const self = this;
+
+        stream.on('error', function(err) {
+          // TODO handle better
+          app.actions.notify("Search failed", 'error');
+          console.error(err);
+          self.prevStream = null;
+        });
+        
 
         this.changeState({
-          page: page,
-          results: data.results,
-          hits: data.hits,
-          loading: false
+          hits: metadata.hits
         });
+       
+        stream.on('data', function(data) {
+          self.changeState({
+            results: this.state.results.concat([data]),
+            loading: false
+          });
+        });
+
+        stream.on('end', function() {
+          self.changeState({
+            loading: false
+          });
+          self.prevStream = null;
+        });
+                  
       }.bind(this));
-    }
-    
-    fakeResults(start, length, postfix) {
-      var results = [];
-      var i;
-      for(i=start; i < start + length; i++) {
-        results.push({
-          name: "This is a fake result - " + postfix + ' - ' +  i,
-          description: "Yeah it's really a fake result. Very fake. I don't know if I can really say much more about it. I just feel so full of fnord."
-        });
-      }
-
-      return {
-        results: results,
-        hits: 1000
-      }
-    }
-
-    fakeSearch(query, page, queryID, cb) {
-      var self = this;
-      setTimeout(function() {
-        cb(null, queryID, self.fakeResults(page * self.state.perPage, self.state.perPage, query));
-      }, 3000);
     }
 
     search(e) {
@@ -135,7 +144,7 @@ module.exports = function(Component) {
               
               <div class="hint-label">Hint:</div>
               <div class="hint-text">
-                <p>You can search for using either human language or DNA/AA sequence.</p>
+                <p>You can search using either human language or a DNA/AA sequence.</p>
                 <p class="other">For advanced search tips have a look at <Link to="/help/search">search syntax help</Link>.</p>
               </div>
               <div class="float-clear"></div> 

@@ -7,5 +7,6 @@ module.exports = {
   notify: require('./notify'),
   inventory: require('./inventory'),
   p2p: require('./p2p'),
+  search: require('./search'),
   prompt: require('./prompt')
 }

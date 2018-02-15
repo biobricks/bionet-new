@@ -31,7 +31,8 @@ module.exports = function(settings, db) {
       console.log("Finished elastic index rebuild");
     });
   })
-/* blast index disabled for now
+
+
   var blastIndex = blastLevel(db.virtual, {
     mode: settings.blast.mode,
     binPath: settings.blast.binPath,
@@ -50,7 +51,7 @@ module.exports = function(settings, db) {
 
   // TODO disable this (this causes a rebuild on each startup)
   blastIndex.rebuild();
-*/  
+
   function rebuild() {
     // TODO rebuild elasticSearch index as well
 
@@ -65,8 +66,8 @@ module.exports = function(settings, db) {
   return {
     inventoryTree: inventoryTree,
     elastic: elasticIndex,
-    rebuild: rebuild
-//    blast: blastIndex
+    rebuild: rebuild,
+    blast: blastIndex
   };
 
 }

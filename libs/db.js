@@ -8,11 +8,12 @@ var IDGenerator = require('../libs/id_generator.js'); // atomically unique IDs
 var labDeviceServer = require('../libs/lab_device_server.js');
 var uuid = require('uuid').v4;
 
-module.exports = function(settings, users, acccounts) {
+module.exports = function(settings, users, acccounts, opts) {
+  opts = opts || {};
 
   var sep = '!';
 
-  var db = level(settings.dbPath || './db');
+  var db = opts.db || level(settings.dbPath || './db');
   var userDB = sublevel(db, 'u', {separator: sep, valueEncoding: 'json'});
   var indexDB = sublevel(db, 'i', {separator: sep});
 
@@ -150,6 +151,8 @@ module.exports = function(settings, users, acccounts) {
     return Math.floor((new Date((new Date).getTime() + days * 24 * 60 * 60 * 1000)).getTime()/1000);
   }
 
+  // TODO lab device server should not be started from in here
+  //      since this file is re-used by e.g. `bin/dbs.js`
   labDeviceServer.start(settings, function(err) {
     if(err) return console.error(err);
 

@@ -69,7 +69,7 @@ module.exports = function (Component) {
                 // todo switch to selected id
                 if (unit.label==='box') selectedItem = unit
                 inventoryPath.push(
-                    <StorageContainer dbid={unit.id} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
+                    <StorageContainer dbid={unit.id} type={unit.type} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
                 )
             }
             this.inventoryPath = inventoryPath
@@ -92,7 +92,7 @@ module.exports = function (Component) {
             if (!path || path.length<1) return null
             
             const unit = path[path.length-1]
-            console.log('updateTabularData:',unit)
+            //console.log('updateTabularData:',unit)
             const items = unit.children
             const tabularElement=[]
             for (var i=0; i<items.length; i++) {

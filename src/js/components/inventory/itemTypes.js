@@ -9,13 +9,6 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             this.componentWillReceiveProps(this.props)
-            /*
-            this.state = {
-                type:null,
-                types:null,
-                active:false
-            };
-            */
             this.toggleDropdown = this.toggleDropdown.bind(this)
             this.selectType = this.selectType.bind(this)
         }

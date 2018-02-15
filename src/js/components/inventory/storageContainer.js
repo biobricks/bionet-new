@@ -88,7 +88,16 @@ module.exports = function (Component) {
             if (!items) return
             for (var i=0; i<items.length; i++) {
                 var item = items[i]
-                var cellId = this.generateLabel(item.parent_x-1,item.parent_y-1, xunits, yunits)
+                var px=0
+                var py=0
+                if (this.props.type && this.props.type.toLowerCase()==='lab') {
+                    px = 0
+                    py = i
+                } else {
+                    px = item.parent_x-1
+                    py = item.parent_y-1
+                }
+                var cellId = this.generateLabel(px, py, xunits, yunits)
                 this.cellMap[cellId]=item
             }
         }

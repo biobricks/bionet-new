@@ -10,10 +10,7 @@ module.exports = function (Component) {
             super(props);
             this.onClickCell = this.onClickCell.bind(this)
             this.onDoubleClickCell = this.onDoubleClickCell.bind(this)
-            this.state = {
-                isActive:false,
-                isSelected:false
-            }
+            this.componentWillReceiveProps(this.props)
             this.clickCount = 0
         }
         
@@ -57,21 +54,25 @@ module.exports = function (Component) {
                 const width = this.props.width
                 const fontSize = (this.props.width>15) ? 11 : 8
                 const lineHeight = this.props.height-1
-                const cellLabelStyle = "font-size:"+fontSize+"px;line-height:"+lineHeight+"px;text-align:center;pointer-events:none;"
+                const textAlign = (width>100) ? 'text-align:left' : 'text-align:center'
+                
+                const cellLabelStyle = "font-size:"+fontSize+"px;line-height:"+lineHeight+"px;pointer-events:none;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;width:"+width+"px;"+textAlign
                 const cellBackground = (this.props.occupied) ? '#ffffff' : '#a0a0a0'
                 
                 const fontWeight = (this.state.isSelected) ? 800 : 300
                 const cellBorderWidth = (this.state.isSelected) ? 1 : 1
                 var backgroundColor = (this.state.isActive) ? '#00ffff' : cellBackground
-                const colStyle = "border: "+cellBorderWidth+"px solid black; height:"+this.props.height+"px; max-height:"+this.props.height+"px;width:"+this.props.width+"px;margin:0px;padding-right:1px;text-align:center;background-color:"+backgroundColor+";font-weight:"+fontWeight+";"
+                const colStyle = "border: "+cellBorderWidth+"px solid black; height:"+this.props.height+"px; max-height:"+this.props.height+"px;width:"+this.props.width+"px;margin:0px;padding-right:1px;background-color:"+backgroundColor+";font-weight:"+fontWeight+";"+textAlign
                 
+                const cellName = (this.props.item) ? this.props.item.name : ''
                 const CellLabel = function(props) {
-                    if (width>20) return (<span style={cellLabelStyle}>{props.text}</span>)
+                    if (width>100) return (<span style={cellLabelStyle+"margin-left:5px;"}>{props.name}</span>)
+                    else if (width>20) return (<span style={cellLabelStyle}>{props.text}</span>)
                 }
                                        
                 return (
                     <div id={this.props.id} class="tile is-child tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} >
-                        <CellLabel text={this.props.label}/>
+                        <CellLabel text={this.props.label} name={cellName}/>
                     </div>
                 )
         }

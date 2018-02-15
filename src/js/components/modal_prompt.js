@@ -35,7 +35,7 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            console.log('prompt:',nextProps)
+            //console.log('prompt:',nextProps)
             if (!nextProps.prompt) return
             this.state.message = nextProps.prompt.message
             this.cb = nextProps.prompt.cb

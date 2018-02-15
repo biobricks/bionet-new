@@ -5,9 +5,8 @@ from 'preact'
 import linkState from 'linkstate';
 
 module.exports = function (Component) {
-    const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
-    return class EditPhysical extends Component {
+    return class EditVirtual extends Component {
         constructor(props) {
             super(props);
             this.componentWillReceiveProps(this.props)
@@ -16,7 +15,7 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
+            console.log('EditVirtual props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
             const tabular = nextProps.tabular
             if (!nextProps.item) {
@@ -159,14 +158,11 @@ module.exports = function (Component) {
                     attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
                 }
             }
-                                    
-            var types=[]
-            if (app.state.global.inventoryTypes && parent_item) {
-                const currentSelectionType = parent_item.type.toLowerCase()
-                types = (currentSelectionType.indexOf('box') >= 0) ? app.state.global.inventoryTypes.materials : app.state.global.inventoryTypes.locations
-            }
-
+            const types= (app.state.global.inventoryTypes) ? app.state.global.inventoryTypes.locations : [] 
+                                //<FormInputText fid='type' value={this.item.type} label="Type" />
             if (tabular) {
+                //                            <ItemTypes type={this.item.type} types={types} setType={this.setType}/>
+
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="tile is-parent is-11"  style="padding:0; margin:0">

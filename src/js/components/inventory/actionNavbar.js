@@ -11,51 +11,32 @@ module.exports = function (Component) {
         
         constructor(props) {
             super(props);
-            this.state = {
-                addItemMenuDisplay:'',
-                displayAddPhysicalModal:false,
-                test:false
-            }
-            app.changeState({
-                global: {
-                    inventoryItem: null
-                }
-            });
+            this.componentWillReceiveProps(this.props)
             ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
-
             this.showAddPhysicalModal = this.showAddPhysicalModal.bind(this)
         }
         
         editItemListener(item) {
-            //console.log('editItemListener:',item)
-
-            this.setState(
-                {
-                    displayAddPhysicalModal:true
-                }
-            )
+            console.log('editItemListener:',item)
             this.item = item
-            this.displayAddPhysicalModal = true
+            this.displayAddPhysicalModal=true
+            this.setState({displayAddPhysicalModal:true})
         }
 
-        initMenus(nextProps)
+        componentWillReceiveProps(nextProps)
         {
-
             if (!nextProps || !nextProps.menu) return
             //console.log('ActionNavBar props:',nextProps.menu, this.state, this.item)
-            
-            const menuDef = nextProps.menu.locations
-            const menu = []
-            
-            const DropdownMenuItem = function(props) {
-                return <a id={props.id} class="dropdown-item {props.isActive}" onClick={props.onClick}>{props.label}</a>
+            var physicalMenu = false
+            if (app.state.global.inventorySelection) {
+                const currentItem = app.actions.inventory.getItemFromInventoryPath(app.state.global.inventorySelection.id)
+                if (currentItem && currentItem.type) {
+                    const currentSelectionType = currentItem.type.toLowerCase()
+                    if (currentSelectionType.indexOf('box')>=0) physicalMenu = true
+                }
             }
-            
-            for (var i=0; i<menuDef.length; i++) {
-                var item = menuDef[i]
-                menu.push(<DropdownMenuItem id={item.name} label={item.title} onClick={this.addItemClick.bind(this)} />)
-            }
-            return menu
+            const menuDef = (physicalMenu) ? nextProps.menu.materials : nextProps.menu.locations 
+            this.setState({menuDef:menuDef})
         }
 
         addItemClick(e) {
@@ -83,7 +64,6 @@ module.exports = function (Component) {
         }
         
         showAddPhysicalModal(isOpen, item) {
-
           this.setState(
             {
               addItemMenuDisplay:'',
@@ -91,9 +71,7 @@ module.exports = function (Component) {
               item:item
             }
           )
-
           this.displayAddPhysicalModal=isOpen
-
         }
       
         addItemButton() {
@@ -140,10 +118,24 @@ module.exports = function (Component) {
         }
         
         render() {
-            //console.log('actionNavbar render:', this.state)
+            const initMenu = function() {
+                const menuDef = this.state.menuDef
+                if (!menuDef) return null
+                const menu = []
+                const DropdownMenuItem = function(props) {
+                    return <a id={props.id} class="dropdown-item {props.isActive}" onClick={props.onClick}>{props.label}</a>
+                }
+                for (var i=0; i<menuDef.length; i++) {
+                    var item = menuDef[i]
+                    menu.push(<DropdownMenuItem id={item.name} label={item.title} onClick={this.addItemClick.bind(this)} />)
+                }
+                return menu
+            }.bind(this)
+            
+            console.log('actionNavbar render:', this.state)
             const actionButtonContainer = "justify-content:flex-start;max-height:75px; height:75px;"
             const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
-            const menu = this.initMenus(this.props)
+            const menu = initMenu()
             
             const ActionMenuButton = function(props) {
                 return (
@@ -170,7 +162,7 @@ module.exports = function (Component) {
                     <ActionMenuButton icon="edit" onClick={this.editItem.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
-                    <EditPhysical state="enableEditPhysical" active={this.state.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />
+                    <EditPhysical state="enableEditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />
                 </div>
             )
         }

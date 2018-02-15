@@ -129,7 +129,7 @@ module.exports = function(Component) {
 
       return (
 
-        <div class="print modal-content">
+        <div class="print">
           <canvas id="labelPreview" class="labelPreview tab" width="560" height="174"></canvas>
           <form id="createLabelForm" name="createLabelForm" class="col s12" onsubmit={this.submitForm.bind(this)}>
             <input type="hidden" value={this.state.humanID || '?'} /><br/>

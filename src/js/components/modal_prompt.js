@@ -43,8 +43,6 @@ module.exports = function (Component) {
         }
         
         render() {
-            //                  <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 50%);">
-
             const active = (this.state.active) ? 'is-active' : ''
             return(
             <div class={"modal "+active}>
@@ -55,12 +53,15 @@ module.exports = function (Component) {
                           <div class="hero-body">
                             <div class="container">
                               <h1 class="title">{this.state.message}</h1>
-                                <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>
-                                <span style="width:60px;">&nbsp;</span>
-                                <input type="submit" class="button is-link" value="Cancel" />
                             </div>
                           </div>
                         </section>
+                        <div class=" post-hero-area">
+                            {app.actions.prompt.render()}
+                            <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>
+                            <span style="width:60px;">&nbsp;</span>
+                            <input type="submit" class="button is-link" value="Cancel" />
+                        </div>
                     </form>
                 <button class="modal-close" aria-label="close" onclick={this.close.bind(this)}></button>
                  </div>

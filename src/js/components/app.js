@@ -40,7 +40,11 @@ module.exports = function(Component) {
 
 	  render() {
       console.log("GLOB", JSON.stringify(app.state, null, 2));
-
+          /*
+                  <Route path="/inventory" render={() => (
+                    <Inventory state="inventory"/>
+                  )}/>
+          */
       return (
         <Router>
           <Global state="global">
@@ -77,10 +81,12 @@ module.exports = function(Component) {
               <Route path="/print" component={Print} />
 
               <Route path="/help/:topic" component={Help} />
-
-              <Route exact path="/inventory" render={() => (
-                <Inventory state="inventory"/>
-              )}/>
+              
+              <Switch>
+                  <Route path="/inventory/:id" component={Inventory}/>
+                  <Route path="/inventory" component={Inventory}/>
+              </Switch>
+              
             </div>
             <PersistentNotify state="pnotify" />
           </Global>

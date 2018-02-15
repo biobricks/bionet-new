@@ -13,16 +13,6 @@ module.exports = function (Component) {
 
         constructor(props) {
             super(props);
-            
-            this.state = {
-                rootId:null,
-                selectedItemId:null,
-                addMenu:{},
-                inventoryPath:[],
-                rootItem:{}
-            };
-            this.rootItem = null
-            //console.log('initializing inventory: user', app.state.global.user)
             ashnazg.listen('global.user', this.loggedInUser.bind(this));
         }
 
@@ -34,16 +24,18 @@ module.exports = function (Component) {
         loggedInUser(loggedInUser) {
             //console.log('logged in inventory: user', loggedInUser, app.remote)
             if (!(loggedInUser)) return
-
-            app.actions.inventory.getRootItem(function(rootItem) {
-                //console.log('getRootItem:', rootItem)
-                if (rootItem) {
-                    this.rootItem = rootItem
-                    app.actions.inventory.getInventoryPath(rootItem.id, function(inventoryPath){
-                        //console.log('inventoryPath: ', inventoryPath, app.state.global.inventoryLocationPath)
-                    })
-                }
-            }.bind(this))
+            const id = (this.props.match) ? this.props.match.params.id : null
+            if (id) {
+                console.log('logged in inventory: id', id)
+                app.actions.inventory.getInventoryPath(id, function(inventoryPath){})
+            } else {
+                console.log('logged in inventory: no id', this)
+                app.actions.inventory.getRootItem(function(item) {
+                    if (item) {
+                        app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){})
+                    }
+                }.bind(this))
+            }
         }
         
         render() {

@@ -9,6 +9,12 @@ module.exports = {
             }
         });
     },
+    initRender: function(component) {
+        this.component = component
+    },
+    render: function(element) {
+        return this.component
+    },
     reset: function() {
         app.changeState({
             global: {

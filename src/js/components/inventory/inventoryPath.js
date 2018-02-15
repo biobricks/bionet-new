@@ -4,6 +4,8 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const EditPhysical = require('./editPhysical')(Component)
+    const PrintLabel = require('../print')(Component)
+    const ScanLabel = require('../scan')(Component)
     return class InventoryPath extends Component {
         constructor(props) {
             super(props);
@@ -86,7 +88,57 @@ module.exports = function (Component) {
                 </div>
             )
         }
-                               
+        
+        scan() {
+            /*
+            const path = this.props.inventoryPath
+            if (!path || path.length<1) return null
+            const item = path[path.length-1]
+            if (!item) return
+            const id = item.id
+            const name = item.name
+            */
+            app.actions.prompt.initRender(<ScanLabel/>)
+            app.actions.prompt.display('Scan item', function(accept) {
+                console.log('scan item:',accept)
+                if (accept) {
+                }
+            })
+        }
+        
+        print() {
+            const path = this.props.inventoryPath
+            if (!path || path.length<1) return null
+            const item = path[path.length-1]
+            if (!item) return
+            const id = item.id
+            const name = item.name
+            app.actions.prompt.initRender(<PrintLabel/>)
+            app.actions.prompt.display('Print label for '+name+'?', function(accept) {
+                console.log('print item:',accept)
+                if (accept) {
+                }
+            })
+        }
+        
+        selectedItemHeader() {
+            const path = this.props.inventoryPath
+            if (!path || path.length<1) return null
+            const selectedItem = path[path.length-1]
+            if (!selectedItem) return null
+            return (
+                <div class="navbar" style="width:100%;">
+                    <div class="navbar-start">
+                        <h1 class="title is-4">{selectedItem.name}</h1>
+                    </div>
+                    <div class="navbar-end">
+                        <a class="navbar-item" onclick={this.scan.bind(this)}>Scan</a>
+                        <a class="navbar-item" onclick={this.print.bind(this)}>Print</a>
+                    </div>
+                </div>
+            )
+        }
+        
         updateTabularData() {
             const path = this.props.inventoryPath
             if (!path || path.length<1) return null
@@ -106,6 +158,7 @@ module.exports = function (Component) {
             
             //console.log(this.state.inventoryPath)
             if (!this.props.inventoryPath) return
+            const selectedItemHeader = this.selectedItemHeader()
             const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
             const tabularHeader = this.tabularHeader()
             const tabularData = this.updateTabularData()
@@ -119,6 +172,9 @@ module.exports = function (Component) {
             return (
                 <div id="inventory_tiles" class="tile is-11">
                     <div class="tile is-vertical">
+                        <div id="inventory-header" class="tile is-11 is-parent" style="margin:0;padding:0;">
+                            {selectedItemHeader}
+                        </div>
                         <div id="inventory_path" class="tile is-11 is-parent" style={pathMaxHeight}>
                             {inventoryPath}
                         </div>

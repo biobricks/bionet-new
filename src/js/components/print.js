@@ -2,7 +2,7 @@
 import {h} from 'preact';
 import linkState from 'linkstate';
 import util from '../util.js';
-import FontLoader from 'FontLoader';
+//import FontLoader from 'FontLoader';
 
 var LabelMaker = require('../labelmaker.js');
 var settings = require('../../../settings.js')();

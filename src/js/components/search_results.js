@@ -69,7 +69,7 @@ module.exports = function(Component) {
         results = this.props.results.map(function(result) {
           return (
             <div class="columns">
-              <div class="column left is-12">{result.value.name}</div>
+              <div class="column left is-12"><Link to={'/inventory/'+result.value.id}>{result.value.name}</Link></div>
             </div>
           );
         });

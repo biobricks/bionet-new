@@ -12,10 +12,6 @@ module.exports = function (Component) {
             this.deselectRows.bind(this)
         }
         
-        componentWillReceiveProps(nextProps)
-        {
-        }
-        
         tabularHeader() {
             return(
                 <div class="tile is-parent is-11"  style="padding:0; margin:0;font-weight:800">
@@ -40,7 +36,7 @@ module.exports = function (Component) {
             const ref=(row) => { if (row) thisModule.rowRef[row.props.id] = row; }
             for (var i=0; i<items.length; i++) {
                 var item = items[i]
-                tabularData.push(<EditPhysical state="enableEditPhysical" ref={ref} active="true" tabular="true" item={item} id={item.id} onFocus={thisModule.deselectRows.bind(thisModule)}/>)
+                tabularData.push(<EditPhysical state="EditPhysicalTable" ref={ref} active="true" tabular="true" item={item} id={item.id} onFocus={thisModule.deselectRows.bind(thisModule)}/>)
             }
             return tabularData
         }
@@ -60,12 +56,11 @@ module.exports = function (Component) {
             //console.log(this.state.inventoryPath)
             const tabularHeader = this.tabularHeader()
             const tabularData = this.updateTabularData()
-            const itemMaxHeight = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;border:1px solid black;"
-            //const itemMaxHeight = "margin:0;padding:0;height:calc(100vh - "+this.props.height+"px);overflow-y:scroll;border:1px solid black;"
+            const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;border:1px solid black;box-sizing:initial;"
             
             return (
-                <div id="inventory_table" class="tile is-parent" style={itemMaxHeight}>
-                    <div id="i1" class="tile is-child " style="margin:0;padding:0;">
+                <div id="inventory_table" class="tile is-parent" style="margin:0;padding:0;box-sizing:initial">
+                    <div id="i1" class="" style={tableStyle}>
                         {tabularHeader}
                         {tabularData}
                     </div>

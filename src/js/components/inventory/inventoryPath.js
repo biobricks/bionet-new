@@ -13,7 +13,7 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             //console.log('view props:', JSON.stringify(props))
-            const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
+            const inventoryPath = this.updateInventoryPath(props.inventoryPath)
             var containerSize = window.innerWidth/8
             containerSize = (containerSize > 150) ? 150: containerSize
             this.state = {
@@ -74,21 +74,12 @@ module.exports = function (Component) {
                 // todo switch to selected id
                 if (unit.label==='box') selectedItem = unit
                 inventoryPath.push(
-                    <StorageContainer dbid={unit.id} type={unit.type} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
+                    <StorageContainer dbid={unit.id} type={unit.type} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} item={unit} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
                 )
             }
             this.inventoryPath = inventoryPath
             this.newPath = newPath.length
             return inventoryPath
-        }
-        
-        tabularHeader() {
-            return(
-                <div class="tile is-parent is-11"  style="padding:0; margin:0;font-weight:800">
-                    <div class="tile is-child is-3" style="padding-left: calc(0.625em - 1px);">Name</div>
-                    <div class="tile is-child is-3" style="padding-left: calc(0.625em - 1px);">Type</div>
-                </div>
-            )
         }
         
         print() {
@@ -116,14 +107,6 @@ module.exports = function (Component) {
             const selectedItem = path[path.length-1]
             if (!selectedItem) return null
             window.history.pushState({ foo: "bar" }, selectedItem.name, "/inventory/"+selectedItem.id);
-            /*
-                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">add</i></a>
-                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">edit</i></a>
-                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">star</i></a>
-                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">open_in_browser</i></a>
-                        <a class="navbar-item" onclick={this.print.bind(this)}><i class="material-icons">print</i></a>
-                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">delete</i></a>
-            */
             return (
                 <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
                     <div class="tile is-7">
@@ -140,25 +123,6 @@ module.exports = function (Component) {
             )
         }
         
-        updateTabularData() {
-            const path = this.props.inventoryPath
-            if (!path || path.length<1) return null
-            
-            const unit = path[path.length-1]
-            //console.log('updateTabularData:',unit)
-            const items = unit.children
-            
-            if (items.length===0) {
-                return (<div style="padding-left: calc(0.625em - 1px)">{unit.name} is empty.</div>)
-            }
-            const tabularElement=[]
-            for (var i=0; i<items.length; i++) {
-                var item = items[i]
-                tabularElement.push(<EditPhysical state="enableEditPhysical" active="true" tabular="true" item={item} />)
-            }
-            return tabularElement
-        }
-
         render() {
             
             //console.log(this.state.inventoryPath)
@@ -171,15 +135,12 @@ module.exports = function (Component) {
             const selectedItemHeader = this.selectedItemHeader()
             const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
             
-            //const tabularHeader = this.tabularHeader()
-            //const tabularData = this.updateTabularData()
-            
             const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
             const itemChild = "border:1px solid grey;margin:0;padding:0;"
             const itemMaxHeight = "margin:0;padding:0;height:calc(100vh - "+this.state.containerSize+"px - 40px)"
             const pathChild = "border: 1px solid grey; height:"+this.state.containerSize+"px;margin:0;padding:0;"
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
-            const tableHeight =  window.innerHeight-this.state.containerSize-40
+            const tableHeight =  window.innerHeight-this.state.containerSize-100
             //console.log('updateTabularData:',unit)
             
             return (

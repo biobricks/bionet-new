@@ -11,26 +11,23 @@ module.exports = function (Component) {
             this.onClickCell = this.onClickCell.bind(this)
             this.getCellCoordinates = this.getCellCoordinates.bind(this)
             this.onDoubleClickCell = this.onDoubleClickCell.bind(this)
-            this.componentWillReceiveProps(this.props)
+            this.componentWillReceiveProps(props)
             this.clickCount = 0
         }
         
         componentWillReceiveProps(nextProps) {
-            //if (nextProps.isActive) console.log('cell props:',nextProps)
-            this.setState({
-                isActive:nextProps.active
-            })
+            if (this.state.isActive !== nextProps.active) this.setState({isActive:nextProps.active})
         }
         
         onClickCell(e) {
             e.preventDefault();
-            if (this.props.onSelectCell) this.props.onSelectCell(this.props.label, true)
+            console.log('storageCell onClickCell')
+            const id = (this.props.item) ? this.props.item.id : null
+            app.actions.inventory.selectCell(id, this.props.parent_id, this.props.parent_x, this.props.parent_y, true)
         }
 
         onDoubleClickCell(e) {
             e.preventDefault();
-            //if (this.props.mode!=='edit') return
-            
             console.log('onDoubleClickCell',e)
             if (this.props.item && this.props.item.id) app.actions.inventory.editItem(this.props.item)
             else app.actions.inventory.editItem({id:null, name:'new item', parent_id:this.props.parent_id, parent_x:this.props.parent_x, parent_y:this.props.parent_y})
@@ -41,21 +38,6 @@ module.exports = function (Component) {
         }
         
         focus(active, navigate) {
-            if (active) {
-                //console.log('setting focus to:',this.props.label)
-                const itemId = (this.props.item) ? this.props.item.id : null
-                const parentId = this.props.parent_id
-                if (this.props.mode==='edit') {
-                    app.actions.inventory.updateCellLocation(itemId, parentId, this.props.parent_x, this.props.parent_y )
-                }
-                else {
-                    app.actions.inventory.selectCell(itemId, parentId, this.props.parent_x, this.props.parent_y )
-                    if (navigate) {
-                        if (itemId) app.actions.inventory.getInventoryPath(itemId)
-                        else if (parentId) app.actions.inventory.getInventoryPath(parentId)
-                    }
-                }
-            }
             this.setState({isFocused:active})
         }
         

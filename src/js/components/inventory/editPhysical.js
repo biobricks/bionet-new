@@ -13,44 +13,53 @@ module.exports = function (Component) {
     return class EditPhysical extends Component {
         constructor(props) {
             super(props);
-            this.componentWillReceiveProps(this.props)
-            this.close = this.close.bind(this)
+            this.componentWillReceiveProps(props)
             this.focus = this.focus.bind(this)
-            this.setType = this.setType.bind(this)
+            this.close = this.close.bind(this)
+            this.inventoryCellLocation=this.inventoryCellLocation.bind(this)
             ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
         }
         
         componentWillReceiveProps(nextProps) {
             if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
-            const tabular = nextProps.tabular
-            if (!nextProps.item) {
-                this.setState({
-                    active:active,
-                    tabular:tabular
-                })
-                return
+            
+            var item={}
+            if (nextProps.item) {
+                item = nextProps.item
+            } else {
+                item.id = null
+                item.parent_id = null
             }
             
-            var item = nextProps.item
             this.item = item
-            var titlePrefix = (item.id) ? 'Edit '+item.name : 'Create '+item.type
             this.id = item.id
-            this.parent_item = app.actions.inventory.getItemFromInventoryPath(item.parent_id)
+            this.parent_item = (item.parent_id) ? app.actions.inventory.getItemFromInventoryPath(item.parent_id) : null
+            
+            const titlePrefix = (this.id) ? 'Edit '+item.name : 'Create '+item.type
+            const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
             
             this.setState({
-                id:item.id,
-                attributes:app.actions.inventory.getAttributesForType(item.type),
+                attributes:attributes,
                 title:titlePrefix,
-                active:active,
-                tabular:tabular
+                active:active
             })
+            
         }
         
         inventoryCellLocation(loc) {
+            console.log('setting parent x,y',loc,this.parent_item,this.id)
             if (this.props.tabular) return
-            const px = this.item.parent_x
-            const py = this.item.parent_y
+            //console.log('setting parent x,y',loc,this.parent_item,this.id)
+            if (loc.parentId !== this.parent_item) return
+            /*
+            this.setState(
+                {
+                    px:loc.x,
+                    py:loc.y
+                }
+            )
+            */
             this.item.parent_x = loc.x
             this.item.parent_y = loc.y
             //console.log('inventoryCellLocation',loc, this.item)
@@ -98,7 +107,7 @@ module.exports = function (Component) {
             delete dbData.salt
             delete dbData.loc
             console.log('edit physical, submit:',dbData, selection)
-            return
+            //return
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
@@ -110,18 +119,9 @@ module.exports = function (Component) {
             
         }
         
-        open() {
-            this.setState({active:'is-active'})
-            if (this.props.isOpen) this.props.isOpen(true)
-        }
-        
         close () {
             this.setState({active:''})
             if (this.props.isOpen) this.props.isOpen(false)
-        }
-        
-        setType(type) {
-            this.item.type = type
         }
         
         onClickRow(e) {
@@ -132,7 +132,8 @@ module.exports = function (Component) {
         focus(active, navigate) {
             if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
-            if (active) app.actions.inventory.updateCellLocation(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y )
+            //if (active) app.actions.inventory.updateCellLocation(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y )
+            if (active) app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
         }
         
         msgFunction(msg) {
@@ -147,19 +148,9 @@ module.exports = function (Component) {
             //console.log('EditStorageContainer:',selectedItemId)
             const containerSize = 250
             const style = "width:400px; height:400px;border: 1px solid black;"
-            var storageContainer = null
-            const tabular = this.state.tabular
+            const tabular = this.props.tabular
             
             const parent_item = this.parent_item
-            if (parent_item) {
-                var px = 0
-                var py = 0
-                if (item) {
-                    px = item.parent_x
-                    py = item.parent_y
-                }
-                storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
-            }
                       
             const linkFormData = function(component, fid, valuePath) {
               return event => {
@@ -215,7 +206,7 @@ module.exports = function (Component) {
                 const label = this.item.parent_x+','+this.item.parent_y
                 return (
                     <form onsubmit={this.submit.bind(this)}>
-                        <div class="tile is-parent is-11"  style={"padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
+                        <div class="tile is-parent is-11"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
                             <FormInputText fid='name' value={this.item.name} label="Name" class="is-3"/>
                             <FormInputText fid='loc' value={label} label="Loc"  class="is-1"/>
                             <ItemTypes type={this.item.type} types={types} setType={this.setType} class="tile is-child is-3" onblur={this.onblur.bind(this)} />
@@ -226,6 +217,10 @@ module.exports = function (Component) {
             } else {
                 //const editTable=(item.type.indexOf('box') >= 0) ? <EditTable item={item} items={item.children}/> : null
                 const editTable = null
+                var storageContainer = null
+                if (parent_item) {
+                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={this.item.parent_x} py={this.item.parent_y} mode="edit"/>)
+                }
                 return (
                     <div class={"modal "+this.state.active}>
                       <div class="modal-background" onclick={this.close}></div>

@@ -11,17 +11,30 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             //console.log('StorageContainer props:', JSON.stringify(props))
-            this.deselectChildren = this.deselectChildren.bind(this)
-            this.state = {
-                tiles:[]
-            }
-            const xunits = (this.props.xunits) ? this.props.xunits : 1
-            const yunits = (this.props.yunits) ? this.props.yunits : 1
-            //this.populateContainer(this.props.items, xunits, yunits)
-            //this.subdivideContainer(this.props.width, this.props.height, xunits, yunits, this.props.label, this.props.childType)
             this.cellMap = {}
             this.cellRef = {}
-            ashnazg.listen('global.inventoryCellLocation', this.selectCell.bind(this));
+            this.deselectChildren = this.deselectChildren.bind(this)
+            ashnazg.listen('global.inventorySelection', this.selectCellListener.bind(this));
+            this.initialize(props)
+        }
+        
+        initialize(nextProps) {
+            //console.log('storageContainer initialize props:',nextProps)
+            const xunits = (nextProps.xunits) ? nextProps.xunits : 1
+            const yunits = (nextProps.yunits) ? nextProps.yunits : 1
+            this.xunits = xunits
+            this.yunits = yunits
+            this.dbid = nextProps.dbid
+            this.type = nextProps.type
+            this.populateContainer(nextProps.items, xunits, yunits)
+            const tiles = this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType, nextProps.selectedItem, nextProps.px, nextProps.py, nextProps.mode)
+            //this.setState({tiles:tiles})
+            if (nextProps.mode==='edit') {
+                //console.log('storageContainer initialize props:',nextProps,app.state.global.inventoryCellLocation)
+                //console.log('selectCell edit:',app.state.global.inventoryCellLocation)
+                //this.selectCell(app.state.global.inventoryCellLocation)
+            }
+            return tiles
         }
 
         generateLabel(parent_x, parent_y, xunits, yunits) {
@@ -59,7 +72,7 @@ module.exports = function (Component) {
                         isActive = row+1 === py && x+1 === px
                     }
                     var ref=(cell) => { if (cell) thisModule.cellRef[cell.props.label] = cell; }
-                    var storageCell = <StorageCell state="inventorySelection" label={label} ref={ref} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.props.dbid} parent_x={x+1} parent_y={row+1} active={isActive} mode={mode} onSelectCell={thisModule.deselectChildren}/>
+                    var storageCell = <StorageCell state="inventorySelection" label={label} ref={ref} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.dbid} parent_x={x+1} parent_y={row+1} active={isActive} mode={mode}/>
                     cols.push(storageCell)
                 }
                 return cols
@@ -97,7 +110,7 @@ module.exports = function (Component) {
                 var item = items[i]
                 var px=0
                 var py=0
-                if (this.props.type && this.props.type.toLowerCase()==='lab') {
+                if (this.type && this.type.toLowerCase()==='lab') {
                     px = 0
                     py = i
                 } else {
@@ -113,32 +126,45 @@ module.exports = function (Component) {
             return this.props.dbid
         }
 
-        selectCell(cellLocation) {
-            if (this.props.dbid!==cellLocation.parentId) return
-            console.log('selectCell:',cellLocation)
-            const xunits = (this.props.xunits) ? this.props.xunits : 1
-            const yunits = (this.props.yunits) ? this.props.yunits : 1
+        selectCellListener(cellLocation) {
+            if (this.dbid!==cellLocation.parentId) return
+            console.log('selectCellListener:',this.dbid, cellLocation)
+            const xunits = (this.xunits) ? this.xunits : 1
+            const yunits = (this.yunits) ? this.yunits : 1
             const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)
-            this.deselectChildren(cellCoordinates, false)
+            //this.deselectChildren(cellCoordinates, false)
+            
+            for(var cellLabel in this.cellRef){
+                var ref = this.cellRef[cellLabel]
+                if (ref) {
+                    ref.focus(cellCoordinates === ref.props.label, cellLocation.navigate)
+                }
+            }
+            const selectedCell = this.cellRef[cellCoordinates]
+            if (!this.props.item || !selectedCell) return
+            const selectedItem = (selectedCell.props.item) ? selectedCell.props.item.id : this.props.item.id
+            if (cellLocation.navigate) app.actions.inventory.getInventoryPath(selectedItem)
         }
 
         deselectChildren(cellCoordinates, navigate) {
-            console.log('deselectChildren:',this.cellRef, cellCoordinates)
+            //console.log('deselectChildren:',this.cellRef, cellCoordinates)
             for(var cellLabel in this.cellRef){
                 var ref = this.cellRef[cellLabel]
-                //console.log('ref:',ref)
                 if (ref) {
                     ref.focus(cellCoordinates === ref.props.label, navigate)
                 }
             }
+            const selectedCell = this.cellRef[cellCoordinates]
+            //console.log('setting focus to:',selectedCell, this.props)
+            if (!this.props.item || !selectedCell) return
+            const selectedItem = (selectedCell.props.item) ? selectedCell.props.item.id : this.props.item.id
+            app.actions.inventory.getInventoryPath(selectedItem)
         }
         
         render() {
             //console.log('containerSubdivision render:',this.props)
-            const xunits = (this.props.xunits) ? this.props.xunits : 1
-            const yunits = (this.props.yunits) ? this.props.yunits : 1
-            this.populateContainer(this.props.items, xunits, yunits)
-            const tiles = this.subdivideContainer(this.props.width, this.props.height, xunits, yunits, this.props.label, this.props.childType, this.props.selectedItem, this.props.px, this.props.py, this.props.mode)
+            const tiles = this.initialize(this.props)
+            if (!tiles) return
             
             const titleLabelStyle = "height:20px;width:"+this.props.width+"px;font-size:12px;line-height:20px;font-weight:800;overflow:hidden;white-space:nowrap"
             const TitleLabel = function(props) {

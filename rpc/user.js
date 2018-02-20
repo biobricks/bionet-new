@@ -412,29 +412,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
     // get all physical instances of a virtual
     // TODO create an index for this
     instancesOfVirtual: function(curUser, virtual_id, cb) {
-      var results=[];
-      var s = db.physical.createReadStream({
-        valueEncoding: 'json'
-      });
-      var out = s.pipe(through.obj(function(data, enc, next) {
-        if(!data || !data.value || !data.value.virtual_id) return next()
-
-        if(data.value.virtual_id === virtual_id) {
-          results.push(data.value);
-        }
-        next();
-      }));
-      
-      s.on('close', function() {
-        cb(null,results);
-      });
-      
-      out.on('error', function(err) {
-        cb(err);
-        console.error("instancesofvirtual error:", err);
-      });
-      
-      return out;
+      db.instancesOfVirtual(virtual_id, cb);
     },
 
     getLocationPath: function (curUser, id, cb) {

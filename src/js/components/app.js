@@ -58,8 +58,7 @@ module.exports = function(Component) {
               )}/>
           
               <Switch>
-                <Route path="/search/:query/:page" component={Search} />
-                <Route path="/search/:query" component={Search} />
+                <Route path="/search/:query/:page?/:type?/:available?" component={Search} />
                 <Route path="/search" component={Search} />
               </Switch>
 

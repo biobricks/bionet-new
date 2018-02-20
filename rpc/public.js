@@ -100,25 +100,92 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
      });
     }, 
 
-    searchAvailable: rpc.syncReadStream(function(curUser, q, cb) {
+    // stream of search results for virtuals
+    searchVirtuals: rpc.syncReadStream(function(curUser, q, opts) {
+      var opts = opts || {};
+      var s = db.virtual.createReadStream({valueEncoding: 'json'});
+
+      var skipped = 0;
+      var pushed = 0;
+      var results = s.pipe(through.obj(function(data, enc, next) {
+
+        if((data.value.name && data.value.name.toLowerCase().match(q.toLowerCase())) || (data.value.Description && data.value.Description.toLowerCase().match(q.toLowerCase()))) {
+          // skip stuff beginning with underscore
+          if(data.value.name && data.value.name[0] === '_') {
+            return next();
+          }
+
+          if(opts.includeAvailability || opts.onlyAvailable) {
+            this.push(data);
+          } else { // we're doing the filtering for pagination (if any)
+            if(!opts.offset && !opts.maxResults) { // no pagination filtering
+              this.push(data);
+            } else { // do pagination filtering
+              if(opts.offset && skipped < opts.offset) {
+                skipped++;
+                next();
+                return;
+              }
+              if(opts.maxResults && pushed >= opts.maxResults) {
+                return next(null, null); // end stream
+              }
+              this.push(data);
+              pushed++;
+            }
+          }
+        }
+        next();
+      }));
+
+      if(!opts.includeAvailability && !opts.onlyAvailable) {
+        return results;
+      }
+      
+      return s.pipe(through.obj(function(obj, enc, cb) {
+        db.doesVirtualHaveInstance(obj.key, function(err, hasInstance) {
+          if(err) return cb(err);
+          
+          if(!opts.onlyAvailable || hasInstance) {
+            obj.value.hasInstance = hasInstance;
+
+            if(!opts.offset && !opts.maxResults) { // no pagination filtering
+              this.push(obj);
+            } else { // do pagination filtering
+              if(opts.offset && skipped < opts.offset) {
+                skipped++;
+                cb();
+                return;
+              }
+              if(opts.maxResults && pushed >= opts.maxResults) {
+                return cb(null, null); // end stream
+              }
+              this.push(obj);
+              pushed++;
+            }
+          }
+          cb();
+          
+        }.bind(this));
+      }));
+    }),
+
+    // This actually searches physicals
+    searchPhysicals: rpc.syncReadStream(function(curUser, q, opts) {
+      var opts = opts || {};
       var s = db.physical.createReadStream({valueEncoding: 'json'});
 
       return s.pipe(through.obj(function(data, enc, next) {
-//        if(!data.value.isPublic) return next();
-//        if(!data.value.isAvailable) return next();
-
         if((data.value.name && data.value.name.toLowerCase().match(q.toLowerCase())) || (data.value.description && data.value.description.toLowerCase().match(q.toLowerCase()))) {
           // skip stuff beginning with underscore
           if(data.value.name && data.value.name[0] === '_') {
-            return;
+            return next();
           }
 
-          this.push(data.value);
+          this.push(data);
         }
-        
         next();
-        
       }));
+
     }),
 
     verifyUser: function(curUser, code, cb) {
@@ -141,8 +208,36 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       if(!index.blast) return cb(new Error("BLAST queries not supported by this node"));
 
       // should only virtuals that have physicals be returned?
-      if(opts.onlyAvailable) {
-        // TODO filter stream results keeping only available
+      if(opts.includeAvailability || opts.onlyAvailable) {
+
+        index.blast.query(query, opts, function(err, metadata, stream) {
+          if(err) return cb(err);
+
+          // if we are filtering then we won't know the total number of hits
+          if(opts.onlyAvailable) metadata.hits = undefined;
+
+          var outStream = through.obj(function(obj, enc, cb) {
+            db.doesVirtualHaveInstance(obj.key, function(err, hasInstance) {
+              if(err) return cb(err);
+
+              if(!opts.onlyAvailable || hasInstance) {
+                obj.value.hasInstance = hasInstance;
+
+                this.push(obj);
+              }
+              cb();
+
+            }.bind(this));
+          }, function() {
+            // TODO why is this necessary?
+            outStream.emit('end');
+          });
+          
+          stream.pipe(outStream);
+
+          cb(null, metadata, outStream);
+        });
+        return;
       }
 
       index.blast.query(query, opts, cb);

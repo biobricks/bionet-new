@@ -37,5 +37,32 @@ module.exports = {
         cb(user);
       });
     }
+  },
+
+  // If the string contains any characters that aren't
+  // DNA/RNA characters as allowed by BLAST+ return false. Otherwise true.
+  // if strict is true then treat lower case characters as invalid
+  isNT: function(str, strict) {
+
+    if(!strict) {
+      str = str.toUpperCase();
+    }
+
+    // IUPAC and BLAST+ allowed characters
+    // https://www.ncbi.nlm.nih.gov/books/NBK53702/#gbankquickstart.if_i_don_t_know_the_base
+    // https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=BlastHelp
+    if(str.match(/[^UTGACRYMKSWHBVDN-]/)) {
+      return false;
+    }
+    return true;
+  },
+  
+  // strip non-nucleotide chars
+  stripNonNTChars: function(str, strict) {
+    if(!strict) {
+      str = str.toUpperCase();
+    }    
+
+    return str.replace(/[^UTGACRYMKSWHBVDN-]+/g, '');
   }
 }

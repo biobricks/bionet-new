@@ -5,10 +5,9 @@ var level = require('level'); // leveldb database
 var sublevel = require('subleveldown'); // leveldb multiplexing
 var through = require('through2');
 var IDGenerator = require('../libs/id_generator.js'); // atomically unique IDs
-var labDeviceServer = require('../libs/lab_device_server.js');
 var uuid = require('uuid').v4;
 
-module.exports = function(settings, users, acccounts, opts) {
+module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
   opts = opts || {};
 
   var sep = '!';
@@ -150,15 +149,6 @@ module.exports = function(settings, users, acccounts, opts) {
     days = days || 0;
     return Math.floor((new Date((new Date).getTime() + days * 24 * 60 * 60 * 1000)).getTime()/1000);
   }
-
-  // TODO lab device server should not be started from in here
-  //      since this file is re-used by e.g. `bin/dbs.js`
-  labDeviceServer.start(settings, function(err) {
-    if(err) return console.error(err);
-
-    console.log("Lab device server started");
-  });
-
 
   function changeInfo(userData) {
     return {
@@ -346,7 +336,64 @@ module.exports = function(settings, users, acccounts, opts) {
       });
     });
   }
+
+  // TODO create an index for this
+  function instancesOfVirtual(virtual_id, cb) {
+    var results=[];
+    var s = physicalDB.createReadStream({
+      valueEncoding: 'json'
+    });
+    var out = s.pipe(through.obj(function(data, enc, next) {
+      if(!data || !data.value || !data.value.virtual_id) return next()
+
+      if(data.value.virtual_id === virtual_id) {
+        results.push(data.value);
+      }
+      next();
+    }));
+    
+    s.on('close', function() {
+      cb(null,results);
+    });
+    
+    out.on('error', function(err) {
+      cb(err);
+      console.error("instancesOfVirtual error:", err);
+    });
+    
+    return out;
+  }
   
+  // check if any physical instances exist for this virtual
+  function doesVirtualHaveInstance(virtual_id, cb) {
+    var foundInstance = false;
+
+    var s = physicalDB.createReadStream({
+      valueEncoding: 'json'
+    });
+
+    var out = s.pipe(through.obj(function(data, enc, next) {
+      if(!data || !data.value || !data.value.virtual_id) return next()
+
+      if(data.value.virtual_id === virtual_id) {
+        foundInstance = true;
+        next(null, null);
+        return;
+      }
+
+      next();
+    }, function() {
+      cb(null, foundInstance)
+    }));
+        
+    out.on('error', function(err) {
+      cb(err);
+      console.error("instancesOfVirtual error:", err);
+    });
+    
+    return out;
+  };
+
 
   function init(cb) {
     createInitialLab(cb);
@@ -365,6 +412,8 @@ module.exports = function(settings, users, acccounts, opts) {
     idGenerator: idGenerator,
     saveMaterial: saveMaterialInDB,
     savePhysical: savePhysical,
+    instancesOfVirtual: instancesOfVirtual,
+    doesVirtualHaveInstance: doesVirtualHaveInstance,
     userCart: userCartDB,
     unixEpochTime: unixEpochTime,
     ensureUserData: ensureUserData,

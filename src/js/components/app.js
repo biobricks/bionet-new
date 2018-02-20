@@ -27,24 +27,10 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
       
-/*
-      this.pr = {
-        title: "Foo",
-        text: "aaaaaaaaaaaaa"
-      }
-        <Route path="/print" render={() => (
-            <Print opts={this.pr} />
-        )}/>
-*/
     }
 
 	  render() {
-      console.log("GLOB", JSON.stringify(app.state, null, 2));
-          /*
-                  <Route path="/inventory" render={() => (
-                    <Inventory state="inventory"/>
-                  )}/>
-          */
+
       return (
         <Router>
           <Global state="global">
@@ -58,8 +44,7 @@ module.exports = function(Component) {
               )}/>
           
               <Switch>
-                <Route path="/search/:query/:page" component={Search} />
-                <Route path="/search/:query" component={Search} />
+                <Route path="/search/:query/:page?/:type?/:available?" component={Search} />
                 <Route path="/search" component={Search} />
               </Switch>
 

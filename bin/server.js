@@ -12,6 +12,7 @@ var accountdown = require('accountdown'); // user/login management
 var uuid = require('uuid').v4;
 var accounts = require('../libs/user_accounts.js');
 var Mailer = require('../libs/mailer.js');
+var labDeviceServer = require('../libs/lab_device_server.js');
 
 var Writable = require('stream').Writable;
 var Readable = require('stream').Readable;
@@ -35,7 +36,14 @@ default: {
 
 var settings = require(argv.settings)(argv);
 
-var db = require('../libs/db.js')(settings, users, accounts);
+labDeviceServer.start(settings, function(err) {
+  if(err) return console.error(err);
+  
+  console.log("Lab device server started");
+});
+
+
+var db = require('../libs/db.js')(settings, users, accounts, labDeviceServer);
 
 var index = require('../libs/indexing.js')(settings, db);
 

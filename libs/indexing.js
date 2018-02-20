@@ -35,10 +35,11 @@ module.exports = function(settings, db) {
 
   if(settings.blast) {
     var blastIndex = blastLevel(db.virtual, {
+      type: settings.blast.type,
       mode: settings.blast.mode,
       binPath: settings.blast.binPath,
       path: settings.blast.path,
-      seqProp: 'sequence', // key in 'mydb' that stores the sequence data
+      seqProp: settings.blast.seqProp, // key in 'mydb' that stores the sequence data
       seqIsFile: false,
       seqFormatted: false,
       changeProp: 'updated.time',
@@ -62,7 +63,9 @@ module.exports = function(settings, db) {
       console.log("Finished inventory tree rebuild");
     });
     
-//    blastIndex.rebuild();
+    if(settings.blast) {
+      blastIndex.rebuild();
+    }
   }
 
   return {

@@ -174,7 +174,7 @@ function getDBs(db) {
   var users = accountdown(userDB, {
     login: { basic: require('accountdown-basic') }
   });
-  return require('../libs/db.js')(settings, users, accounts, {db: db});
+  return require('../libs/db.js')(settings, users, accounts, undefined, {db: db});
 }
 
 function main() {

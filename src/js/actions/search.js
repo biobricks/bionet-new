@@ -1,8 +1,10 @@
 
+import util from '../util.js'
+
 module.exports = {
 
   // auto-detect query type
-  auto: function(query, page, perPage, cb) {
+  auto: function(query, page, perPage, opts, cb) {
 
     query = query.trim();
 
@@ -13,35 +15,55 @@ module.exports = {
       // assuming this is nucleotides
       // TODO this could still be amino acids, need to clarify with user
 
-      return app.actions.search.blast(query, page, perPage, cb);
+      return app.actions.search.blast(query, page, perPage, opts, cb);
     }
 
     // TODO implement AA search
     // else if(!query.match(/[^ABCDEFGHIKLMNPQRSTUVWYZX*-]/)) { // Amino acids
 
     // TODO default to human search instead
-    return app.actions.search.exact(query, page, perPage, cb)
+    return app.actions.search.exact(query, page, perPage, opts, cb)
 
   },
 
-  blast: function(query, page, perPage, cb) {
+  // opts:
+  // `onlyAvailable`: Only return virtuals that have a physical
+  blast: function(query, page, perPage, opts, cb) {
     if(page < 1) page = 1;
     if(perPage < 1) perPage = 1;
 
-    return app.remote.blast(query, {
-      maxResults: perPage,
-      offset: perPage * (page - 1)
-    }, cb);
+    opts = opts || {};
+    opts.maxResults = perPage;
+    opts.offset = perPage * (page - 1);
+    console.log("OFFSET:", perPage, page, opts.offset);
+
+    // replace all non-DNA/RNA characters
+    query = util.stripNonNTChars(query);
+
+
+    if(!query) {
+      process.nextTick(function() {
+        cb(new Error("Query contains invalid nucleotide characters"));
+      });
+      return;
+    }
+
+    return app.remote.blast(query, opts, cb);
   },
 
   // match exact substrings
-  exact: function(query, page, perPage, cb) {
-    return cb(new Error("not yet implemented"));
+  exact: function(query, page, perPage, opts) {
+    opts = opts || {}
+    opts.offset = ((page - 1) * perPage);
+//    opts.maxResults = perPage;
+
+    return app.remote.searchVirtuals(query, opts);
   },
 
   // human language search using elasticsearch
-  human: function(query, page, queryID, cb) {
-    return cb(new Error("not yet implemented"));
+  human: function(query, page, perPage, opts) {
+    console.warn("human language search not yet implemented. falling back to exact text matching");
+    return app.actions.search.exact(query, page, perPage, opts)
   },
 
   // TODO make this return a stream via callback like the others

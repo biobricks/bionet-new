@@ -19,8 +19,15 @@ module.exports = function(Component) {
 
     }
     
+    // TODO generating a url for a query should be a re-usable function
     pageUrl(pageNumber) {
-      return '/search/'+encodeURI(this.props.query)+'/'+pageNumber;
+      var url = '/search/'+encodeURI(this.props.query.text);
+      url += '/'+pageNumber;
+      url += '/'+this.props.query.type;
+      if(this.props.query.onlyAvailable) {
+        url += '/available';
+      }
+      return url;
     }
 
     pageLink(pageNumber, curPage, classes) {
@@ -50,11 +57,11 @@ module.exports = function(Component) {
 	  render() {
 
       var results;
-      var numPages = this.props.numpages || 0;
+      var numPages = this.props.numpages || 1;
 
       if(!this.props.results.length) {
         results = (
-          <p>No results found for query: '{this.props.query}'</p>
+          <p>No results found for query: '{this.props.query.text}'</p>
         );
 
       } else {
@@ -62,7 +69,7 @@ module.exports = function(Component) {
         results = this.props.results.map(function(result) {
           return (
             <div class="columns">
-              <div class="column left is-12">{result.name}</div>
+              <div class="column left is-12"><Link to={'/inventory/'+result.value.id}>{result.value.name}</Link></div>
             </div>
           );
         });
@@ -72,19 +79,23 @@ module.exports = function(Component) {
       const curPage = parseInt(this.props.page);
       const lastPage = numPages;
 
-      var forwardBackLinks = [
-        (<Link to={this.pageUrl(Math.max(1, curPage-1))} class="pagination-previous">Previous</Link>),
-        (<Link to={this.pageUrl(Math.min(lastPage, curPage+1))} class="pagination-next">Next page</Link>)
-      ];
-
+      var forwardBackLinks = [];
+      if(curPage > 1) {
+        forwardBackLinks.push((
+            <Link to={this.pageUrl(Math.max(1, curPage-1))} class="pagination-previous">Previous</Link>));
+      }
+      if(curPage < lastPage) {
+        forwardBackLinks.push((
+            <Link to={this.pageUrl(Math.min(lastPage, curPage+1))} class="pagination-next">Next page</Link>));
+      }
 
       var pageLinks = [];
-      if(numPages <= 1) {
-        forwardBackLinks = '';
-      } else if(numPages <= 5) {
-        var i;
-        for(i=0; i < numPages; i++) {
-          pageLinks.push(this.pageLink(i+1, curPage));
+      if(numPages <= 5) {
+        if(numPages > 1) {
+          var i;
+          for(i=0; i < numPages; i++) {
+            pageLinks.push(this.pageLink(i+1, curPage));
+          }
         }
       } else {
         pageLinks.push(this.pageLink(1, curPage));

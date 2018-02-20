@@ -2,20 +2,24 @@ import { h } from 'preact'
 import ashnazg from 'ashnazg'
 
 module.exports = function (Component) {
+    
     const StorageContainer = require('./storageContainer')(Component)
     const EditPhysical = require('./editPhysical')(Component)
     const PrintLabel = require('../print')(Component)
     const ScanLabel = require('../scan')(Component)
+    const EditTable = require('./editTable')(Component)
+    
     return class InventoryPath extends Component {
         constructor(props) {
             super(props);
             //console.log('view props:', JSON.stringify(props))
             const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
-
+            var containerSize = window.innerWidth/8
+            containerSize = (containerSize > 150) ? 150: containerSize
             this.state = {
                 inventoryPath:inventoryPath,
                 inventoryItem:{},
-                containerSize:150
+                containerSize:containerSize
             }
             ashnazg.listen('global.inventoryFunction', this.inventoryFunction.bind(this));
         }
@@ -53,7 +57,6 @@ module.exports = function (Component) {
 
             if (!newPath) return
             const pathChild = "height:"+this.state.containerSize+"px;margin:0px;padding:0;width:"+(containerSize+20)+"px;"
-            //const pathChild = "border: 1px solid blue; height:"+this.state.containerSize+"px;margin:10px;padding:10px;"
             const inventoryPath = []
             var selectedItem = null
 
@@ -76,7 +79,6 @@ module.exports = function (Component) {
             }
             this.inventoryPath = inventoryPath
             this.newPath = newPath.length
-            //this.setState({inventoryPath:inventoryPath, selectedItem:selectedItem})
             return inventoryPath
         }
         
@@ -87,23 +89,6 @@ module.exports = function (Component) {
                     <div class="tile is-child is-3" style="padding-left: calc(0.625em - 1px);">Type</div>
                 </div>
             )
-        }
-        
-        scan() {
-            /*
-            const path = this.props.inventoryPath
-            if (!path || path.length<1) return null
-            const item = path[path.length-1]
-            if (!item) return
-            const id = item.id
-            const name = item.name
-            */
-            app.actions.prompt.initRender(<ScanLabel/>)
-            app.actions.prompt.display('Scan item', function(accept) {
-                console.log('scan item:',accept)
-                if (accept) {
-                }
-            })
         }
         
         print() {
@@ -121,19 +106,35 @@ module.exports = function (Component) {
             })
         }
         
+        addFavorite() {
+            
+        }
+        
         selectedItemHeader() {
             const path = this.props.inventoryPath
             if (!path || path.length<1) return null
             const selectedItem = path[path.length-1]
             if (!selectedItem) return null
+            window.history.pushState({ foo: "bar" }, selectedItem.name, "/inventory/"+selectedItem.id);
+            /*
+                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">add</i></a>
+                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">edit</i></a>
+                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">star</i></a>
+                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">open_in_browser</i></a>
+                        <a class="navbar-item" onclick={this.print.bind(this)}><i class="material-icons">print</i></a>
+                        <a class="navbar-item" onclick={this.addFavorite.bind(this)}><i class="material-icons">delete</i></a>
+            */
             return (
-                <div class="navbar" style="width:100%;">
-                    <div class="navbar-start">
-                        <h1 class="title is-4">{selectedItem.name}</h1>
+                <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
+                    <div class="tile is-7">
+                        <div class="navbar-start">
+                            <h1 class="title is-4" style="padding:12px">{selectedItem.name}</h1>
+                        </div>
                     </div>
-                    <div class="navbar-end">
-                        <a class="navbar-item" onclick={this.scan.bind(this)}>Scan</a>
-                        <a class="navbar-item" onclick={this.print.bind(this)}>Print</a>
+                    <div class="tile is-4">
+                        <div class="navbar-end">
+                            <a class="navbar-item" onclick={this.print.bind(this)}><i class="material-icons">print</i></a>
+                        </div>
                     </div>
                 </div>
             )
@@ -146,6 +147,10 @@ module.exports = function (Component) {
             const unit = path[path.length-1]
             //console.log('updateTabularData:',unit)
             const items = unit.children
+            
+            if (items.length===0) {
+                return (<div style="padding-left: calc(0.625em - 1px)">{unit.name} is empty.</div>)
+            }
             const tabularElement=[]
             for (var i=0; i<items.length; i++) {
                 var item = items[i]
@@ -157,34 +162,37 @@ module.exports = function (Component) {
         render() {
             
             //console.log(this.state.inventoryPath)
-            if (!this.props.inventoryPath) return
+                    
+            const path = this.props.inventoryPath
+            if (!path) return
+            const currentItem = path[path.length-1]
+            var childItems = (currentItem) ? currentItem.children : null
+            
             const selectedItemHeader = this.selectedItemHeader()
             const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
-            const tabularHeader = this.tabularHeader()
-            const tabularData = this.updateTabularData()
-            //calc(100vh - 40px);
+            
+            //const tabularHeader = this.tabularHeader()
+            //const tabularData = this.updateTabularData()
+            
             const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
             const itemChild = "border:1px solid grey;margin:0;padding:0;"
             const itemMaxHeight = "margin:0;padding:0;height:calc(100vh - "+this.state.containerSize+"px - 40px)"
             const pathChild = "border: 1px solid grey; height:"+this.state.containerSize+"px;margin:0;padding:0;"
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
+            const tableHeight =  window.innerHeight-this.state.containerSize-40
+            //console.log('updateTabularData:',unit)
             
             return (
-                <div id="inventory_tiles" class="tile is-11">
+                <div id="inventory_tiles" class="tile is-12">
                     <div class="tile is-vertical">
-                        <div id="inventory-header" class="tile is-11 is-parent" style="margin:0;padding:0;">
+                        <div id="inventory-header" class="tile is-parent is-12" style="margin:0;padding:0;">
                             {selectedItemHeader}
                         </div>
-                        <div id="inventory_path" class="tile is-11 is-parent" style={pathMaxHeight}>
+                        <div id="inventory_path" class="tile is-parent is-12" style={pathMaxHeight}>
                             {inventoryPath}
                         </div>
                         <br/>
-                        <div id="inventory_item" class="tile is-parent" style={itemMaxHeight}>
-                            <div id="i1" class="tile is-child is-12" style="margin:0;padding:0;">
-                                {tabularHeader}
-                                {tabularData}
-                            </div>
-                        </div>
+                        <EditTable item={currentItem} items={childItems} height={tableHeight} />
                     </div>
                 </div>
             )

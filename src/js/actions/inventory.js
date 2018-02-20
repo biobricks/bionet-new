@@ -61,6 +61,19 @@ module.exports = {
         });
     },
     
+    updateCellLocation: function(id, parentId, x, y) {
+        app.changeState({
+            global: {
+                inventoryCellLocation: {
+                    id: id,
+                    parentId: parentId,
+                    x: x,
+                    y: y
+                }
+            }
+        });
+    },
+    
     deselectItem: function(id) {
         app.changeState({
             global: {
@@ -141,6 +154,7 @@ module.exports = {
                                 inventoryPath: locationPathAr
                             }
                         });
+                        this.selectCell(locationId, location.parent_id, location.parent_x, location.parent_y)
                         if (cb) cb(locationPath)
                     }
                 })

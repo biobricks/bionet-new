@@ -11,20 +11,12 @@ module.exports = function (Component) {
         
         constructor(props) {
             super(props);
+            this.showAddPhysicalModal = this.showAddPhysicalModal.bind(this)
             this.componentWillReceiveProps(this.props)
             ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
-            this.showAddPhysicalModal = this.showAddPhysicalModal.bind(this)
         }
         
-        editItemListener(item) {
-            console.log('editItemListener:',item)
-            this.item = item
-            this.displayAddPhysicalModal=true
-            this.setState({displayAddPhysicalModal:true})
-        }
-
-        componentWillReceiveProps(nextProps)
-        {
+        componentWillReceiveProps(nextProps) {
             if (!nextProps || !nextProps.menu) return
             //console.log('ActionNavBar props:',nextProps.menu, this.state, this.item)
             var physicalMenu = false
@@ -39,24 +31,44 @@ module.exports = function (Component) {
             this.setState({menuDef:menuDef})
         }
 
+        editItemListener(item) {
+            console.log('editItemListener:',item)
+            this.item = item
+            this.displayAddPhysicalModal=true
+            this.setState({displayAddPhysicalModal:true})
+        }
+        
+        generateNewItem(type) {
+            // todo: ashnagz listner is not triggered if unchanged, salt property is temporary work-around
+            return {
+                salt: Math.random(),
+                type: type,
+                name: '',
+                parent_id: app.state.global.inventorySelection.parentId,
+                parent_x: app.state.global.inventorySelection.x,
+                parent_y: app.state.global.inventorySelection.y
+            }
+        }
+            
         addItemClick(e) {
 
             //console.log('add menu item:',e.target.id, this.editPhysical)
-            
-            const parent_id = app.state.global.inventorySelection.id
-            
             this.displayAddMenu(false)
             
             // todo: ashnagz listner is not triggered if unchanged
+            const item = this.generateNewItem(e.target.id)
+            /*
             var item = {
                 salt: Math.random(),
                 type: e.target.id,
                 name: '',
-                parent_id: parent_id,
-                parent_x: 1,
-                parent_y: 1
+                parent_id: app.state.global.inventorySelection.parentId,
+                parent_x: app.state.global.inventorySelection.x,
+                parent_y: app.state.global.inventorySelection.y
             }
+            */
             app.actions.inventory.editItem(item)
+            //console.log('add menu item:',e.target.id, app.state.global.inventorySelection, item)
         }
     
         displayAddMenu(show) {
@@ -85,8 +97,15 @@ module.exports = function (Component) {
         }
         
         editItem() {
-            //console.log('edit item')
-            app.actions.inventory.getPath(1)
+            //console.log('edit item',app.state.global.inventorySelection )
+            const id = app.state.global.inventorySelection.id
+            var item = null
+            if (!id) {
+                item = this.generateNewItem('')
+            } else {
+                item = app.actions.inventory.getItemFromInventoryPath(id)
+            }
+            app.actions.inventory.editItem(item)
         }
         
         deleteItem() {
@@ -146,6 +165,7 @@ module.exports = function (Component) {
             }
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
+            const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="enableEditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />) : null
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
                     <div class={"dropdown tile "+this.state.addItemMenuDisplay} style={actionButtonContainer}>
@@ -162,7 +182,7 @@ module.exports = function (Component) {
                     <ActionMenuButton icon="edit" onClick={this.editItem.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
-                    <EditPhysical state="enableEditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />
+                    {editPhysical}
                 </div>
             )
         }

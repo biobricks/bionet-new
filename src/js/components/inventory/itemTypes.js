@@ -34,6 +34,7 @@ module.exports = function (Component) {
                 active:false
             })
             if (this.props.setType) this.props.setType(type)
+            if (this.props.onblur) this.props.onblur(e, "type", type)
         }
         
         render() {
@@ -60,7 +61,7 @@ module.exports = function (Component) {
             return(
                 <div class={"dropdown "+active+" "+this.props.class} style={this.props.style}>
                   <div class="dropdown-trigger"  style="min-width:100%;width:100%">
-                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu3" onclick={this.toggleDropdown}  style="min-width:100%;width:100%;justify-content:flex-start">
+                    <button id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3" onclick={this.toggleDropdown}  style="min-width:100%;width:100%;justify-content:flex-start">
                       <span>{this.state.type}</span>
                       <span class="icon is-small">
                         <i class="material-icons" aria-hidden="true">arrow_drop_down</i>

@@ -47,7 +47,7 @@ module.exports = function (Component) {
             return(
             <div class={"modal "+active}>
               <div class="modal-background" onclick={this.close.bind(this)}></div>
-                  <div class="modal-content" style="background-color:#ffffff;">
+                  <div class="modal-content" style="background-color:#ffffff;width:calc(100vw - 5%);">
                     <form onsubmit={this.close.bind(this)}>
                         <section class="hero is-info ">
                           <div class="hero-body">
@@ -58,9 +58,11 @@ module.exports = function (Component) {
                         </section>
                         <div class=" post-hero-area">
                             {app.actions.prompt.render()}
-                            <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>
-                            <span style="width:60px;">&nbsp;</span>
-                            <input type="submit" class="button is-link" value="Cancel" />
+                            <div class="control" style="margin-left:20px; margin-bottom:20px;">
+                                <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>
+                                <span style="margin-right:20px;">&nbsp;</span>
+                                <input type="submit" class="button is-link" value="Cancel" />
+                            </div>
                         </div>
                     </form>
                 <button class="modal-close" aria-label="close" onclick={this.close.bind(this)}></button>

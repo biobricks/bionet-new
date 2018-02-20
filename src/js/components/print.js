@@ -130,12 +130,7 @@ module.exports = function(Component) {
     }
 
 	  render() {
-
-
-      return (
-
-        <div class="print">
-          <canvas id="labelPreview" class="labelPreview tab" width="560" height="174"></canvas>
+            /*
           <form id="createLabelForm" name="createLabelForm" class="col s12" onsubmit={this.submitForm.bind(this)}>
             <input type="hidden" value={this.state.humanID || '?'} /><br/>
             Title: <input type="text" name="title" value={this.state.title} oninput={linkState(this, 'title')} /><br/>
@@ -149,8 +144,57 @@ module.exports = function(Component) {
 
             <input type="submit" style="visibility:hidden;height:0" />
           </form>
-        </div>
-      )
+          */
+        const linkFormData = function(component, fid, valuePath) {
+          return event => {
+            var update = {};
+            update[fid] = event.currentTarget.value;
+            //this.setState(update)
+            Object.assign(this.state, update)
+            this.updateLabel()
+          };
+        }.bind(this)
+        
+        const FormInputText = function(props) {
+            return (
+                <div class="field">
+                    <label class="label">{props.label}</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
+                    </div>
+                </div>
+            )
+        }
+        const FormInputTextArea = function(props) {
+            return (
+                <div class="field">
+                    <label class="label">{props.label}</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <textarea class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
+                    </div>
+                </div>
+            )
+        }
+
+        return (
+            <div class="tile">
+                <div class="tile" style="margin-left:20px;">
+                    <form id="createLabelForm" name="createLabelForm" onsubmit={this.submitForm.bind(this)}>
+                        <input type="hidden" value={this.state.humanID || '?'} /><br/>
+                        <FormInputText fid='title' value={this.state.title} label="Title" />
+                        <FormInputTextArea fid='text' value={this.state.text} label="Additional text" />
+                        <FormInputText fid='temperature' value={this.state.temperature} label="Storage Temperature" />
+                        <FormInputText fid='bsl' value={this.state.bsl} label="Biosafety Level" />
+                        <input type="submit" style="visibility:hidden;height:0" />
+                    </form>
+                </div>
+                <div class="tile is-vertical">
+                    <div style="width:560px;height:174px;">
+                        <canvas id="labelPreview" class="labelPreview tab" width="560" height="174"></canvas>
+                    </div>
+                </div>
+            </div>
+        )
     }
   }
 }

@@ -39,7 +39,6 @@ module.exports = function (Component) {
         }
         
         render() {
-            //console.log('inventory render, state:',this.state)
             return ( 
                 <div id="inventory_view" class="tile is-ancestor">
                     <ActionNavbar state="inventoryNav" menu={app.state.global.inventoryTypes}/>

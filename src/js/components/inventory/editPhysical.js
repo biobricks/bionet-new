@@ -3,16 +3,21 @@ import {
 }
 from 'preact'
 import linkState from 'linkstate';
+import ashnazg from 'ashnazg'
 
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
+    //const EditTable = require('./editTable')(Component)
+    
     return class EditPhysical extends Component {
         constructor(props) {
             super(props);
             this.componentWillReceiveProps(this.props)
             this.close = this.close.bind(this)
+            this.focus = this.focus.bind(this)
             this.setType = this.setType.bind(this)
+            ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
         }
         
         componentWillReceiveProps(nextProps) {
@@ -29,17 +34,26 @@ module.exports = function (Component) {
             
             var item = nextProps.item
             this.item = item
-            var titlePrefix = (item.id) ? 'Edit ' : 'Create '
+            var titlePrefix = (item.id) ? 'Edit '+item.name : 'Create '+item.type
             this.id = item.id
             this.parent_item = app.actions.inventory.getItemFromInventoryPath(item.parent_id)
             
             this.setState({
                 id:item.id,
                 attributes:app.actions.inventory.getAttributesForType(item.type),
-                title:titlePrefix+item.type,
+                title:titlePrefix,
                 active:active,
                 tabular:tabular
             })
+        }
+        
+        inventoryCellLocation(loc) {
+            if (this.props.tabular) return
+            const px = this.item.parent_x
+            const py = this.item.parent_y
+            this.item.parent_x = loc.x
+            this.item.parent_y = loc.y
+            //console.log('inventoryCellLocation',loc, this.item)
         }
         
         enableModal() {
@@ -48,22 +62,43 @@ module.exports = function (Component) {
             this.setState({active:isActive})
         }
         
+        onblur(e, fid, fvalue) {
+            if (!this.item) return
+            var id = e.target.id
+            var value = e.target.value
+            if (fid) {
+                id = fid
+                value = fvalue
+            }
+            const dbData = this.item
+            dbData[id]=value
+            console.log('onblur:',id, value, dbData)
+            app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
+                if (err) {
+                    app.actions.notify("Error saving "+dbData.name, 'error');
+                }
+            })
+        }
+        
         submit(e) {
             e.preventDefault();
             this.close()
             
             // edit existing item
             var dbData = this.item
+            
             const selection = app.state.global.inventorySelection
-            if (selection) {
+            if (selection && !this.item.id) {
                 dbData.parent_id = selection.parentId
                 dbData.parent_x = selection.x
                 dbData.parent_y = selection.y
             }
 
             // merge form data
+            delete dbData.salt
+            delete dbData.loc
             console.log('edit physical, submit:',dbData, selection)
-            //return
+            return
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
@@ -89,6 +124,17 @@ module.exports = function (Component) {
             this.item.type = type
         }
         
+        onClickRow(e) {
+            e.preventDefault();
+            if (this.props.onFocus) this.props.onFocus(this.props.id)
+        }
+        
+        focus(active, navigate) {
+            if (active) console.log('focus selectedRow:',this.props.item)
+            this.setState({isFocused:active})
+            if (active) app.actions.inventory.updateCellLocation(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y )
+        }
+        
         msgFunction(msg) {
             //return ''
         }
@@ -99,7 +145,7 @@ module.exports = function (Component) {
             if (!item) return null
             const selectedItemId = (item) ? item.id : null
             //console.log('EditStorageContainer:',selectedItemId)
-            const containerSize = 400
+            const containerSize = 250
             const style = "width:400px; height:400px;border: 1px solid black;"
             var storageContainer = null
             const tabular = this.state.tabular
@@ -112,7 +158,7 @@ module.exports = function (Component) {
                     px = item.parent_x
                     py = item.parent_y
                 }
-                storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} />)
+                storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
             }
                       
             const linkFormData = function(component, fid, valuePath) {
@@ -126,11 +172,9 @@ module.exports = function (Component) {
             const FormInputText = function(props) {
                 //console.log('FormInputText:',props)
                 if (tabular) {
-                    //                    <div class="tile is-child is-3">Name</div>
-
                     return(
-                        <div class="tile is-child is-3" style="padding:0; margin:0">
-                            <input class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}>
+                        <div class={"tile is-child "+props.class} style="padding:0; margin:0">
+                            <input id={props.fid} class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly} onblur={this.onblur.bind(this)}>
                                 {this.msgFunction(props.msg)}
                             </input>
                         </div>
@@ -167,21 +211,25 @@ module.exports = function (Component) {
             }
 
             if (tabular) {
+                const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''
+                const label = this.item.parent_x+','+this.item.parent_y
                 return (
                     <form onsubmit={this.submit.bind(this)}>
-                        <div class="tile is-parent is-11"  style="padding:0; margin:0">
-                            <FormInputText fid='name' value={this.item.name} label="Name" />
-                            <ItemTypes type={this.item.type} types={types} setType={this.setType} class="tile is-child is-3"/>
+                        <div class="tile is-parent is-11"  style={"padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
+                            <FormInputText fid='name' value={this.item.name} label="Name" class="is-3"/>
+                            <FormInputText fid='loc' value={label} label="Loc"  class="is-1"/>
+                            <ItemTypes type={this.item.type} types={types} setType={this.setType} class="tile is-child is-3" onblur={this.onblur.bind(this)} />
                             {attributes}
                         </div>
                     </form>
                 )
             } else {
-                                            //<FormInputText fid='id' value={this.item.id} label="Id" readonly="true"/>
+                //const editTable=(item.type.indexOf('box') >= 0) ? <EditTable item={item} items={item.children}/> : null
+                const editTable = null
                 return (
                     <div class={"modal "+this.state.active}>
                       <div class="modal-background" onclick={this.close}></div>
-                          <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 25%);">
+                          <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 5%);">
                             <form onsubmit={this.submit.bind(this)}>
 
                                 <section class="hero is-info ">
@@ -196,13 +244,16 @@ module.exports = function (Component) {
                                         <div class="column">
                                             <FormInputText fid='name' value={this.item.name} label="Name" />
                                             <label class="label">Type</label>
-                                            <ItemTypes type={this.item.type} types={types} setType={this.setType}/>
+                                            <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
                                             <div style="margin-top:10px;margin-bottom:30px;">
                                                 {attributes}
                                             </div>
+                                            {editTable}
                                             <div class="field">
                                                 <div class="control">
-                                                    <input type="submit" class="button is-link" value="Submit" />
+                                                    <input type="submit" class="button is-link" value="Save" />
+                                                    <span style="margin-right:20px;">&nbsp;</span>
+                                                    <input type="button" class="button is-link" value="Cancel" onclick={this.close} />
                                                 </div>
                                             </div>
                                         </div>

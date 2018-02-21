@@ -230,6 +230,11 @@ var settings = {
    // comment this out to disable discovery
    dhtChannel: 'bionet-nodes',
 
+   // Add statically defined peers
+   staticPeers: [
+   //  {hostname: '127.0.0.1', port: 9000}
+   ],
+
   // Latitude and longtitude of the node's lab
   physicalPosition: [2.2, 2.2], 
 

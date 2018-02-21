@@ -23,6 +23,7 @@ module.exports = function(Component) {
     pageUrl(pageNumber) {
       var url = '/search/'+encodeURI(this.props.query.text);
       url += '/'+pageNumber;
+      url += '/'+this.props.query.scope;
       url += '/'+this.props.query.type;
       if(this.props.query.onlyAvailable) {
         url += '/available';
@@ -67,9 +68,25 @@ module.exports = function(Component) {
       } else {
 
         results = this.props.results.map(function(result) {
+          var icons = [];
+          if(result.value.hasInstance) {
+            icons.push((
+              <i class="fa fa-flask" aria-hidden="true"></i>
+            ));
+          }
+
           return (
             <div class="columns">
-              <div class="column left is-12"><Link to={'/inventory/'+result.value.id}>{result.value.name}</Link></div>
+              <div class="column left is-12">
+                <Link to={'/inventory/'+result.value.id}>
+                  <span>
+                    {result.value.name}
+                  </span>
+                  <span class="icons">
+                    {icons}
+                  </span>
+                </Link>
+              </div>
             </div>
           );
         });

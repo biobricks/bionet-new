@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 var fs = require('fs');
 var path = require('path');
 var net = require('net');
@@ -107,18 +108,45 @@ router.addRoute('/*', function(req, res, match) {
 });
 
 
-var server = http.createServer(function (req, res) {
+var server = http.createServer(function(req, res) {
   var m = router.match(req.url);
   m.fn(req, res, m);
 });
 
 
+server.on('connection', function(socket) {
+  socket.on('error', function(err) {
+    console.log("Client socket error:", err);
+  });
+  socket.on('close', function(err) {
+    console.log("CLOSE:", err);
+  });
+})
+
+server.on('close', function(err) {
+  console.log("Server close:", err);
+});
+
+
+server.on('error', function(err) {
+  console.error("Server error:", err);
+});
+
+server.on('clientError', function(err) {
+  console.error("Client connection error:", err);
+});
+
+
 // start the webserver
 console.log("Starting http server on " + (settings.hostname || '*') + " port " + settings.port);
-server.listen(settings.port, settings.hostname);
+
+server.listen(settings.port, settings.hostname)
+
+//var WebSocketServer = require('ws').Server;
+//var ws = new WebSocketServer({server: server});
 
 // initialize the websocket server on top of the webserver
-websocket.createServer({server: server}, function(stream) {
+var ws = websocket.createServer({server: server}, function(stream) {
 
   var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer, p2p);
 
@@ -137,7 +165,6 @@ websocket.createServer({server: server}, function(stream) {
     objectMode: true, // default to object mode streams
     debug: false
   });
-
 
   rpcServer.on('error', function(err) {
     console.error("Connection error (client disconnect?):", err);
@@ -179,6 +206,10 @@ websocket.createServer({server: server}, function(stream) {
   rpcServer.pipe(stream).pipe(rpcServer);
 });
 
+ws.on('error', function(err) {
+  if(err) console.error("WebSocket error:", err);
+//  socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+});
 
 // initialize the db
 db.init();
@@ -190,4 +221,21 @@ var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, inde
 var p2p;
 if(!argv.nop2p) {
   p2p = require('../libs/p2p.js')(rpcMethods, settings);
+
+  // TODO move this as an option to settings.js
+  if(settings.staticPeers) {
+    var i;
+    for(i=0; i < settings.staticPeers.length; i++) {
+      if(!settings.staticPeers[i].hostname || !settings.staticPeers[i].port) {
+        continue;
+      }
+      p2p.discoverer.inject(settings.staticPeers[i].hostname, settings.staticPeers[i].port);
+    }
+  }
 }
+
+// We need this due to this bug:
+// https://github.com/nodejs/node/issues/14102#issuecomment-367149479
+process.on('uncaughtException', function(err) {
+  console.log("Uncaught exception:", err.stack)
+});

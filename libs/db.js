@@ -372,26 +372,20 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
       valueEncoding: 'json'
     });
 
-    var out = s.pipe(through.obj(function(data, enc, next) {
-      if(!data || !data.value || !data.value.virtual_id) return next()
+    s.on('data', function(data) {
+      if(!data || !data.value || !data.value.virtual_id) return;
 
       if(data.value.virtual_id === virtual_id) {
         foundInstance = true;
-        next(null, null);
+        s.destroy();
         return;
       }
-
-      next();
-    }, function() {
-      cb(null, foundInstance)
-    }));
-        
-    out.on('error', function(err) {
-      cb(err);
-      console.error("instancesOfVirtual error:", err);
     });
-    
-    return out;
+       
+    s.on('end', function() {
+      cb(null, foundInstance);
+    });
+
   };
 
 

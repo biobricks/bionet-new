@@ -44,7 +44,7 @@ module.exports = function(Component) {
               )}/>
           
               <Switch>
-                <Route path="/search/:query/:page?/:type?/:available?" component={Search} />
+                <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />
                 <Route path="/search" component={Search} />
               </Switch>
 

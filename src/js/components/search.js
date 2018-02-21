@@ -7,12 +7,13 @@ import util from '../util.js';
 
 // TODO import something better
 function diff(a, b) {
+  if(!a || !b) return true;
   var allKeys = Object.keys(a).concat(Object.keys(b));
   var i;
   for(i=0; i < allKeys.length; i++) {
-    if(a[allKeys[i]] !== b[allKeys[i]]) return false;
+    if(a[allKeys[i]] !== b[allKeys[i]]) return true;
   }
-  return true;
+  return false;
 }
 
 module.exports = function(Component) {
@@ -26,10 +27,10 @@ module.exports = function(Component) {
 
       this.queryID = 0;
 
-
       this.state = {
         lastQuery: undefined,
         query: {
+          scope: 'local',
           text: this.props.match.params.query,
           type: this.props.match.params.type || 'human',
           onlyAvailable: !!(this.props.match.params.available)
@@ -40,9 +41,9 @@ module.exports = function(Component) {
       };
 
       util.whenConnected(function() {
-        if(this.state.query) {
-          this.doSearch(this.state.query.text, this.state.page, this.state.query.type, this.state.query.onlyAvailable);
-        }
+//        if(this.state.query) {
+//          this.doSearch();
+//        }
       }.bind(this));
     }
 
@@ -70,6 +71,20 @@ module.exports = function(Component) {
       });
     }
 
+    changeScope(e) {
+      if(!e || !e.target || !e.target.value) return;
+
+      this.changeState({
+        query: {
+          scope: e.target.value
+        },
+        page: 1
+      });
+
+      const el = document.getElementById('query');
+      el.focus();
+    }
+
     changeQueryType(e) {
       if(!e || !e.target || !e.target.value) return;
 
@@ -88,42 +103,44 @@ module.exports = function(Component) {
 
     // TODO this should just use this.state rather than receiving properties
     // and should not run a query if no query params changed
-    doSearch(query, page, type, onlyAvailable) {
-      page = page || 1;
-      type = type || 'human';
-      onlyAvailable = !!(onlyAvailable);
+    doSearch(isNewQuery) {
 
-      // TODO this shouldn't even be necessary
-      const newQuery = {
-        text: query,
-        type: type,
-        onlyAvailable: onlyAvailable
-      };
+      if(!this.state.query || !this.state.query.text || !this.state.query.text.trim()) return;
 
       this.setState({
         loading: true,
         results: [],
-        query: newQuery,
-        page: parseInt(page),
-        isNewQuery: diff(this.state.query, newQuery),
-        queryType: type,
-        queryOnlyAvailable: onlyAvailable,
+        page: parseInt(this.state.page),
+        isNewQuery: isNewQuery,
         lastQuery: xtend(this.state.query, {})
       });
 
-      var q = app.actions.search[this.state.queryType];
+      if(this.state.query.scope === 'global') {
+      console.log("SEARCHING:", this.state.page, this.state.query);
+
+        var stream = app.actions.search.global(this.state.query.type, this.state.query.text);
+
+        this.changeState({
+          hits: undefined
+        });
+        this.gotResultStream(stream, {});
+
+        return;
+      }
+
+      var q = app.actions.search[this.state.query.type];
       if(!q) {
         app.actions.notify("Invalid query type", 'error');
-        console.error("Invalid query type:", this.state.queryType)
+        console.error("Invalid query type:", this.state.query.type)
         return;
       }
 
       // Currently only 'blast' queries have a callback.
       // Other query types just return a stream and number of hits is unknown.
-      if(this.state.queryType !== 'blast') {
-        var stream = q(query, this.state.page, this.state.perPage, {
+      if(this.state.query.type !== 'blast') {
+        var stream = q(this.state.query.text, this.state.page, this.state.perPage, {
           includeAvailability: true,
-          onlyAvailable: onlyAvailable
+          onlyAvailable: this.state.query.onlyAvailable
         });
         this.changeState({
           hits: undefined
@@ -134,9 +151,9 @@ module.exports = function(Component) {
         return;
       }
 
-      q(query, this.state.page, this.state.perPage, {
+      q(this.state.query.text, this.state.page, this.state.perPage, {
         includeAvailability: true,
-        onlyAvailable: onlyAvailable
+        onlyAvailable: this.state.query.onlyAvailable
       }, function(err, metadata, stream) {
         if(err) {
           app.actions.notify("Search failed: " + err, 'error');
@@ -156,6 +173,7 @@ module.exports = function(Component) {
     gotResultStream(stream, opts) {
       opts = opts || {};
 
+      // cancel any in-progress streaming results
       if(this.prevStream) {
         this.prevStream.destroy();
       }
@@ -204,8 +222,6 @@ module.exports = function(Component) {
       });
       
     }
-      
-
 
     search(e) {
       e.preventDefault();
@@ -213,6 +229,7 @@ module.exports = function(Component) {
       if(this.state.query && this.state.query.text) {
         url += encodeURIComponent(this.state.query.text);
         url += '/' + encodeURIComponent(this.state.page || 1);
+        url += '/' + encodeURIComponent(this.state.query.scope || 'local');
         url += '/' + encodeURIComponent(this.state.query.type || 'human');
         if(this.state.query.onlyAvailable) {
           url += '/available'
@@ -232,15 +249,21 @@ module.exports = function(Component) {
 
       } else {
 
-        // TODO this should just set state based on params and call doSearch
-         if(nextProps.match.params.query !== this.props.match.params.query 
-            || nextProps.match.params.page !== this.props.match.params.page
-            || nextProps.match.params.type !== this.props.match.params.type
-            || nextProps.match.params.available !== this.props.match.params.available 
-           || !this.state.lastQuery) {
+        this.changeState({
+          query: {
+            text: nextProps.match.params.query,
+            scope: nextProps.match.params.scope || 'local', 
+            type: nextProps.match.params.type || 'human',
+            onlyAvailable: !!(nextProps.match.params.available)
+          },
+          page: nextProps.match.params.page || 1
+        })
 
-           this.doSearch(nextProps.match.params.query, nextProps.match.params.page, nextProps.match.params.type, nextProps.match.params.available);
-         }
+        const isNewQuery = diff(this.state.query, this.state.lastQuery);
+        const isNewPage = this.props.match.params.page !== nextProps.match.params.page;
+        if(isNewQuery || isNewPage) {
+          this.doSearch(isNewQuery);
+        }
       }
     }
 
@@ -275,6 +298,16 @@ module.exports = function(Component) {
                   Search
                 </a>
               </div>
+            </div>
+            <div class="control">
+              <label class="radio">
+                <input type="radio" name="scope" value="local" onchange={this.changeScope.bind(this)} checked={this.state.query.scope === 'local'} />
+                Local search
+              </label>
+              <label class="radio">
+                <input type="radio" name="scope" value="global" onchange={this.changeScope.bind(this)} checked={this.state.query.scope === 'global'} />
+                Global search
+              </label>
             </div>
             <div class="control">
               <label class="radio">

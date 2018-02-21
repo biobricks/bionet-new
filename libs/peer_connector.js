@@ -34,9 +34,7 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
     peer.rpc.die(); // prevent a future 'death' event
 
     if(peer.attempts >= this.opts.maxAttempts || !peer.wasConnected || peer.stopTrying) {
-//      if(peer.url === 'ws://172.30.0.26:8000/' || peer.url === 'ws://72.244.126.50:9009/') {
-//        console.log("FAIL FAIL:", peer.url, peer.attempts, this.opts.maxAttempts, peer.wasConnected, peer.stopTrying);
-//      }
+
       if(this.urls[peer.url]) {
         //delete this.urls[peer.url];
         delete this.peers[peer.id];
@@ -170,9 +168,6 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
       return;
     }
 
-//    console.log("WANT TO ATTEMPT:", peer.url);
-//    console.log(this.urls[peer.url] ? "  already connected" : "  not yet connected");
-
     // alredy connected to this peer
     if(this.urls[peer.url]) return;
 
@@ -240,7 +235,6 @@ function PeerConnector(peerID, hostname, port, rpcMethods, opts) {
       peer.distance = Infinity;
     }
 
-//    console.log("==================== INCOMING established:", peer.url);
 
     stream.socket.on('close', function(code, reason) {
 //      console.log("[peer incoming connection closed]", code, reason);

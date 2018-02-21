@@ -287,7 +287,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
 
     peerSearch: rpc.syncReadStream(function(curUser, methodName, query, opts) {
       opts = opts || {}
-      console.log("peerSearch 0")
       var out = through.obj();
       if(!p2p) {
         out.emit('error', new Error("p2p not supported by this node"));
@@ -296,8 +295,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
 
       var began = 0;
       var queriesSent = 0;
-
-      console.log("peerSearch 0")
 
       // for each connected peer
       p2p.connector.peerDo(function(peer, next) {
@@ -320,7 +317,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
             position: peer.position,
             distance: peer.distance
           };
-          s.write(data);
+          out.write(data);
         });
 
         s.on('end', function() {

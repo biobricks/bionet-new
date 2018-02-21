@@ -223,7 +223,15 @@ if(!argv.nop2p) {
   p2p = require('../libs/p2p.js')(rpcMethods, settings);
 
   // TODO move this as an option to settings.js
-  p2p.discoverer.inject('127.0.0.1', 9000);
+  if(settings.staticPeers) {
+    var i;
+    for(i=0; i < settings.staticPeers.length; i++) {
+      if(!settings.staticPeers[i].hostname || !settings.staticPeers[i].port) {
+        continue;
+      }
+      p2p.discoverer.inject(settings.staticPeers[i].hostname, settings.staticPeers[i].port);
+    }
+  }
 }
 
 // We need this due to this bug:

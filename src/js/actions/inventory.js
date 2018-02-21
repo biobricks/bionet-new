@@ -367,22 +367,27 @@ module.exports = {
         return attributes
     },
 
-    generatePhysicals: function (seriesName, instances, container_id, well_id) {
-        const parent_id = container_id || app.user.workbenchID
+    generatePhysicals: function (virtualId, seriesName, instances, container_id, well_id, cb) {
         const instancesList = []
         for (var instance = 0; instance < instances; instance++) {
+            
             // todo: generate hash value for new physical instance to avoid naming collisions
             const name = seriesName + '_' + instance
             var parent_x, parent_y
             if (well_id) {
                 parent_x = well_id.x
                 parent_y = well_id.y
+            } else {
+                parent_x = 1
+                parent_y = 1
             }
+            
             const dbData = {
                 name: name,
                 type: 'physical',
-                parent_id: parent_id,
-                parent_x: parent_x,
+                virtual_id:virtualId,
+                parent_id: container_id,
+                parent_x: parent_x+instance,
                 parent_y: parent_y
             }
             instancesList.push(dbData)
@@ -390,16 +395,27 @@ module.exports = {
         if (container_id) {
             var nrem = instancesList.length
             for (var i = 0; i < instancesList.length; i++) {
-                saveToInventory(instancesList[i], null, null, function (n) {
+                console.log('saving physical:',instancesList[i])
+                this.saveToInventory(instancesList[i], null, null, function (n) {
                     if (--nrem <= 0) {
-                        //app.ui.toast(instancesList.length + ' items uploaded to inventory');
-                        //BIONET.signal.refreshInventoryPath.dispatch(container_id)
+                        if (cb) cb()
                     }
                 })
             }
+            //if (cb) cb()
         } else {
-            saveInWorkbench(instancesList)
+            if (cb) cb()
         }
+    },
+    
+    saveVirtual: function(virtualObj, physicalInstances, container_id, well_id, cb) {
+        const thisModule = this
+        console.log('saveVirtual action:',virtualObj, physicalInstances, container_id, well_id)
+        app.remote.saveVirtual(virtualObj, function (err, virtualId) {
+            if (!err) thisModule.generatePhysicals(virtualId, virtualObj.name, physicalInstances, container_id, well_id, function() {
+                if (cb) cb(err,virtualId)
+            })
+        });
     },
 
     generatePhysicalsFromUpload: function (result, parent_id) {
@@ -420,9 +436,9 @@ module.exports = {
         const bionetBulkUpload = function () {
             const createVirtual = function (virtualObj, physicalInstances, container_id, well_id) {
                 if (!physicalInstances || isNaN(physicalInstances)) return
-                app.remote.saveVirtual(virtualObj, function (err, id) {
-                    if (err) return app.ui.toast("Error: " + err) // TODO handle error
-                    generatePhysicals(virtualObj.name, physicalInstances, container_id, well_id)
+                app.remote.saveVirtual(virtualObj, function (err, virtualId) {
+                    if (err) return null // TODO handle error
+                    generatePhysicals(virtualId, virtualObj.name, physicalInstances, container_id, well_id)
                 });
             }
             const nameIdx = headerLine.indexOf('Name')

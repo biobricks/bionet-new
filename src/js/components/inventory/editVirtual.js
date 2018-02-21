@@ -84,28 +84,49 @@ module.exports = function (Component) {
             e.preventDefault();
             this.close()
             
-            // edit existing item
-            var dbData = this.item
+            const item = this.item
+            var parentId = null
+            var x = 1
+            var y = 1
+            var dbData = {}
+            if (item) {
+                dbData = {
+                    name:item.name,
+                    type:item.type
+                }
+                parentId = item.parent_id
+            }
             
             const selection = app.state.global.inventorySelection
-            if (selection && !this.item.id) {
-                dbData.parent_id = selection.parentId
-                dbData.parent_x = selection.x
-                dbData.parent_y = selection.y
+            var wellData = {
+                x:1,
+                y:1
             }
-
+            if (selection) {
+                // todo: enable selection of start item in box - parent type needs to be box to enable material selection menu
+                /*
+                wellData = {
+                    x:selection.x,
+                    y:selection.y
+                }
+                */
+            }
+            
             // merge form data
-            delete dbData.salt
-            delete dbData.loc
-            console.log('edit physical, submit:',dbData, selection)
-            return
-            app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
+            const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
+            for (var i=0; i<attributes.length; i++) {
+                var fid = attributes[i].name.toLowerCase()
+                dbData[fid] = item[fid]
+            }
+            
+            //saveVirtual: function(virtualObj, physicalInstances, container_id, well_id, cb) {
+            app.actions.inventory.saveVirtual(dbData, item.instances, parentId, wellData, function(err, id) {
                 if (err) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
-                app.actions.inventory.getInventoryPath(dbData.parent_id)
+                app.actions.inventory.getInventoryPath(parentId)
             })
             
         }
@@ -243,9 +264,9 @@ module.exports = function (Component) {
                                     <div class="columns">
                                         <div class="column">
                                             <FormInputText fid='name' value={this.item.name} label="Name" />
-                                            <FormInputText fid='instances' value={this.item.name} label="Instances" />
                                             <label class="label">Type</label>
                                             <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
+                                            <FormInputText fid='instances' value={this.item.name} label="Instances" />
                                             <div style="margin-top:10px;margin-bottom:30px;">
                                                 {attributes}
                                             </div>

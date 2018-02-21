@@ -26,13 +26,18 @@ module.exports = function (Component) {
             if (!(loggedInUser)) return
             const id = (this.props.match) ? this.props.match.params.id : null
             if (id) {
-                console.log('logged in inventory: id', id)
-                app.actions.inventory.getInventoryPath(id, function(inventoryPath){})
+                app.actions.inventory.getInventoryPath(id, function(inventoryPath){
+                    const item = inventoryPath[id]
+                    //const item = app.actions.inventory.getItemFromInventoryPath(id, inventoryPath)
+                    console.log('logged in inventory: id', id, item, inventoryPath)
+                    app.actions.inventory.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                })
             } else {
                 console.log('logged in inventory: no id', this)
                 app.actions.inventory.getRootItem(function(item) {
                     if (item) {
                         app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){})
+                        app.actions.inventory.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
                     }
                 }.bind(this))
             }

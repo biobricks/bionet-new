@@ -8,7 +8,7 @@ module.exports = function (Component) {
     return class ItemTypes extends Component {
         constructor(props) {
             super(props);
-            this.componentWillReceiveProps(this.props)
+            this.componentWillReceiveProps(props)
             this.toggleDropdown = this.toggleDropdown.bind(this)
             this.selectType = this.selectType.bind(this)
         }

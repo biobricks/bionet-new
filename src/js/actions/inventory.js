@@ -37,8 +37,8 @@ module.exports = {
         //console.log('getPathTest action %d',n, newPath)
     },
     
-    getItemFromInventoryPath: function(id) {
-        const path = app.state.global.inventoryPath
+    getItemFromInventoryPath: function(id, pathIn) {
+        const path = (pathIn) ? pathIn : app.state.global.inventoryPath
         if (!path) return null
         //console.log('getItemFromInventoryPath:',path)
         //return
@@ -48,27 +48,17 @@ module.exports = {
         return null
     },
     
-    selectCell: function(id, parentId, x, y) {
+    selectCell: function(id, parentId, x, y, navigate) {
+        console.log('selectCell action:',id)
+        //console.trace()
         app.changeState({
             global: {
                 inventorySelection: {
                     id: id,
                     parentId: parentId,
                     x: x,
-                    y: y
-                }
-            }
-        });
-    },
-    
-    updateCellLocation: function(id, parentId, x, y) {
-        app.changeState({
-            global: {
-                inventoryCellLocation: {
-                    id: id,
-                    parentId: parentId,
-                    x: x,
-                    y: y
+                    y: y,
+                    navigate:navigate
                 }
             }
         });
@@ -88,6 +78,17 @@ module.exports = {
         app.changeState({
             global: {
                 inventoryItem: item,
+                inventoryItemParent: parent
+            }
+        });
+    },
+    
+    editVirtualItem: function(item) {
+        console.log('editVirtualItem action: ', item)
+        const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
+        app.changeState({
+            global: {
+                virtualItem: item,
                 inventoryItemParent: parent
             }
         });
@@ -154,7 +155,6 @@ module.exports = {
                                 inventoryPath: locationPathAr
                             }
                         });
-                        this.selectCell(locationId, location.parent_id, location.parent_x, location.parent_y)
                         if (cb) cb(locationPath)
                     }
                 })

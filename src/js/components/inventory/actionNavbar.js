@@ -6,14 +6,17 @@ import ashnazg from 'ashnazg'
 
 module.exports = function (Component) {
     const EditPhysical = require('./editPhysical')(Component)
+    const EditVirtual = require('./editVirtual')(Component)
     
     return class ActionNavBar extends Component {
         
         constructor(props) {
             super(props);
             this.showAddPhysicalModal = this.showAddPhysicalModal.bind(this)
-            this.componentWillReceiveProps(this.props)
+            this.showAddVirtualModal = this.showAddVirtualModal.bind(this)
+            this.componentWillReceiveProps(props)
             ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
+            ashnazg.listen('global.virtualItem', this.editVirtualItemListener.bind(this));
         }
         
         componentWillReceiveProps(nextProps) {
@@ -28,6 +31,7 @@ module.exports = function (Component) {
                 }
             }
             const menuDef = (physicalMenu) ? nextProps.menu.materials : nextProps.menu.locations 
+            this.createType = physicalMenu
             this.setState({menuDef:menuDef})
         }
 
@@ -35,18 +39,27 @@ module.exports = function (Component) {
             console.log('editItemListener:',item)
             this.item = item
             this.displayAddPhysicalModal=true
+            this.displayAddVirtualModal=false
             this.setState({displayAddPhysicalModal:true})
         }
         
-        generateNewItem(type) {
+        editVirtualItemListener(item) {
+            console.log('editVirtualItemListener:',item)
+            this.item = item
+            this.displayAddVirtualModal=true
+            this.displayAddPhysicalModal=false
+            //this.setState({displayAddPhysicalModal:true})
+        }
+        
+        generateNewItem(parent_id,x,y,type) {
             // todo: ashnagz listner is not triggered if unchanged, salt property is temporary work-around
             return {
                 salt: Math.random(),
                 type: type,
                 name: '',
-                parent_id: app.state.global.inventorySelection.parentId,
-                parent_x: app.state.global.inventorySelection.x,
-                parent_y: app.state.global.inventorySelection.y
+                parent_id: parent_id,
+                parent_x: x,
+                parent_y: y
             }
         }
             
@@ -56,33 +69,39 @@ module.exports = function (Component) {
             this.displayAddMenu(false)
             
             // todo: ashnagz listner is not triggered if unchanged
-            const item = this.generateNewItem(e.target.id)
-            /*
-            var item = {
-                salt: Math.random(),
-                type: e.target.id,
-                name: '',
-                parent_id: app.state.global.inventorySelection.parentId,
-                parent_x: app.state.global.inventorySelection.x,
-                parent_y: app.state.global.inventorySelection.y
-            }
-            */
-            app.actions.inventory.editItem(item)
-            //console.log('add menu item:',e.target.id, app.state.global.inventorySelection, item)
+            const item = this.generateNewItem(app.state.global.inventorySelection.id, app.state.global.inventorySelection.x, app.state.global.inventorySelection.y, e.target.id)
+            //const item = this.generateNewItem(app.state.global.inventorySelection.id, e.target.id)
+            if (this.createType) app.actions.inventory.editVirtualItem(item)
+            else app.actions.inventory.editItem(item)
         }
     
         displayAddMenu(show) {
             this.setState({ addItemMenuDisplay: (show) ? 'is-active' : '' })
         }
         
+        showAddVirtualModal(isOpen, item) {
+          this.setState(
+            {
+              addItemMenuDisplay:'',
+              displayAddPhysicalModal:false,
+              displayAddVirtualModal:isOpen,
+              item:item
+            }
+          )
+          this.displayAddPhysicalModal=false
+          this.displayAddVirtualModal=isOpen
+        }
+        
         showAddPhysicalModal(isOpen, item) {
           this.setState(
             {
               addItemMenuDisplay:'',
+              displayAddVirtualModal:false,
               displayAddPhysicalModal:isOpen,
               item:item
             }
           )
+          this.displayAddVirtualModal=false
           this.displayAddPhysicalModal=isOpen
         }
       
@@ -97,14 +116,14 @@ module.exports = function (Component) {
         }
         
         editItem() {
-            //console.log('edit item',app.state.global.inventorySelection )
             const id = app.state.global.inventorySelection.id
             var item = null
             if (!id) {
-                item = this.generateNewItem('')
+                item = this.generateNewItem(app.state.global.inventorySelection.parentId,app.state.global.inventorySelection.x, app.state.global.inventorySelection.y,'')
             } else {
                 item = app.actions.inventory.getItemFromInventoryPath(id)
             }
+            console.log('edit item',id, app.state.global.inventorySelection, item)
             app.actions.inventory.editItem(item)
         }
         
@@ -135,7 +154,7 @@ module.exports = function (Component) {
             //console.log('upload item')
             app.actions.inventory.getPath(5)
         }
-        
+
         render() {
             const initMenu = function() {
                 const menuDef = this.state.menuDef
@@ -151,7 +170,7 @@ module.exports = function (Component) {
                 return menu
             }.bind(this)
             
-            console.log('actionNavbar render:', this.state)
+            //console.log('actionNavbar render:', this.state)
             const actionButtonContainer = "justify-content:flex-start;max-height:75px; height:75px;"
             const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
             const menu = initMenu()
@@ -165,7 +184,8 @@ module.exports = function (Component) {
             }
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
-            const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="enableEditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />) : null
+            const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="EditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />) : null
+            const editVirtual = (this.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active={this.displayAddVirtualModal} isOpen={this.showAddVirtualModal} item={this.item} />) : null
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
                     <div class={"dropdown tile "+this.state.addItemMenuDisplay} style={actionButtonContainer}>
@@ -183,6 +203,7 @@ module.exports = function (Component) {
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
                     {editPhysical}
+                    {editVirtual}
                 </div>
             )
         }

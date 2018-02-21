@@ -13,12 +13,26 @@ module.exports = function (Component) {
         }
         
         tabularHeader() {
+            const items = this.props.items
+            if (!items || items.length<1) return null
+            const headerTitle=[]
+            headerTitle.push({name:'Name',class:'is-3'})
+            headerTitle.push({name:'Loc',class:'is-1'})
+            headerTitle.push({name:'Type',class:'is-3'})
+            const type = items[0].type
+            const attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
+            for (var i=0; i<attributes.length; i++) {
+                var fieldId = attributes[i].name.toLowerCase()
+                var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
+                headerTitle.push({name:label,class:'is-3'})
+            }
+            const headers=[]
+            for (var i=0; i<headerTitle.length; i++) {
+                var header = headerTitle[i]
+                headers.push(<div class={"tile is-child "+header.class} style={(i===0)?"padding-left: calc(0.625em - 1px);":""}>{header.name}</div>)
+            }
             return(
-                <div class="tile is-parent is-11"  style="padding:0; margin:0;font-weight:800">
-                    <div class="tile is-child is-3" style="padding-left: calc(0.625em - 1px);">Name</div>
-                    <div class="tile is-child is-1" style="padding-left: calc(0.625em - 1px);">Loc</div>
-                    <div class="tile is-child is-3" style="padding-left: calc(0.625em - 1px);">Type</div>
-                </div>
+                <div class="tile is-parent is-11"  style="padding:0; margin:0;font-weight:800">{headers}</div>
             )
         }
         
@@ -29,7 +43,7 @@ module.exports = function (Component) {
             const thisModule = this
             if (!selectedItem || !items) return
             
-            if (items.length===0) {
+            if (items.length<1) {
                 return (<div style="padding-left: calc(0.625em - 1px)">{selectedItem.name} is empty.</div>)
             }
             const tabularData=[]
@@ -56,7 +70,8 @@ module.exports = function (Component) {
             //console.log(this.state.inventoryPath)
             const tabularHeader = this.tabularHeader()
             const tabularData = this.updateTabularData()
-            const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;border:1px solid black;box-sizing:initial;"
+            const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;box-sizing:initial;"
+            //const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;border:1px solid black;box-sizing:initial;"
             
             return (
                 <div id="inventory_table" class="tile is-parent" style="margin:0;padding:0;box-sizing:initial">

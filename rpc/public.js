@@ -103,7 +103,13 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
     // stream of search results for virtuals
     searchVirtuals: rpc.syncReadStream(function(curUser, q, opts) {
       var opts = opts || {};
-      var s = db.virtual.createReadStream({valueEncoding: 'json'});
+      var s = db.virtual.createReadStream({keyEncoding: 'utf8', valueEncoding: 'json'});
+
+      if(!q || !q.trim()) {
+        return through.obj(function(data, enc, next) {
+          next(null, null);
+        });
+      }
 
       var skipped = 0;
       var pushed = 0;
@@ -135,36 +141,39 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
           }
         }
         next();
-      }));
 
+      }));
+      
       if(!opts.includeAvailability && !opts.onlyAvailable) {
         return results;
       }
-      
-      return s.pipe(through.obj(function(obj, enc, cb) {
+
+      return results.pipe(through.obj(function(obj, enc, next) {
         db.doesVirtualHaveInstance(obj.key, function(err, hasInstance) {
-          if(err) return cb(err);
+          if(err) return next(err);
           
           if(!opts.onlyAvailable || hasInstance) {
             obj.value.hasInstance = hasInstance;
 
             if(!opts.offset && !opts.maxResults) { // no pagination filtering
               this.push(obj);
+
             } else { // do pagination filtering
               if(opts.offset && skipped < opts.offset) {
+
                 skipped++;
-                cb();
+                next();
                 return;
               }
               if(opts.maxResults && pushed >= opts.maxResults) {
-                return cb(null, null); // end stream
+                return next(null, null); // end stream
               }
+
               this.push(obj);
               pushed++;
             }
           }
-          cb();
-          
+          next();
         }.bind(this));
       }));
     }),
@@ -204,7 +213,38 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       accounts.completePasswordReset(users, resetCode, password, cb);
     },
 
+    // TODO should be unified with `blast` call below
+    blastStream: rpc.syncReadStream(function(curUser, query, opts) {
+      opts = opts || {}
+      if(!index.blast) return cb(new Error("BLAST queries not supported by this node"));
+
+      // should only virtuals that have physicals be returned?
+      if(opts.includeAvailability || opts.onlyAvailable) {
+
+        var s = index.blast.query(query, opts)
+
+        return s.pipe(through.obj(function(obj, enc, next) {
+          
+          db.doesVirtualHaveInstance(obj.key, function(err, hasInstance) {
+            if(err) return next(err);
+            
+            if(!opts.onlyAvailable || hasInstance) {
+              obj.value.hasInstance = hasInstance;
+              
+              this.push(obj);
+            }
+            
+            next();
+            
+          }.bind(this));
+        }));
+      }
+
+      return index.blast.query(query, opts);
+    }),
+
     blast: function(curUser, query, opts, cb) {
+      opts = opts || {}
       if(!index.blast) return cb(new Error("BLAST queries not supported by this node"));
 
       // should only virtuals that have physicals be returned?
@@ -217,6 +257,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
           if(opts.onlyAvailable) metadata.hits = undefined;
 
           var outStream = through.obj(function(obj, enc, cb) {
+
             db.doesVirtualHaveInstance(obj.key, function(err, hasInstance) {
               if(err) return cb(err);
 
@@ -225,6 +266,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
 
                 this.push(obj);
               }
+
               cb();
 
             }.bind(this));
@@ -242,6 +284,60 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
 
       index.blast.query(query, opts, cb);
     },
+
+    peerSearch: rpc.syncReadStream(function(curUser, methodName, query, opts) {
+      opts = opts || {}
+      console.log("peerSearch 0")
+      var out = through.obj();
+      if(!p2p) {
+        out.emit('error', new Error("p2p not supported by this node"));
+        return out;
+      }
+
+      var began = 0;
+      var queriesSent = 0;
+
+      console.log("peerSearch 0")
+
+      // for each connected peer
+      p2p.connector.peerDo(function(peer, next) {
+        if(!peer.remote[methodName]) {
+          return next();
+        }
+
+        var s = peer.remote[methodName](query, opts);
+        queriesSent++;
+        began++;
+
+        s.on('error', function() {
+          s.destroy();
+        });
+
+        s.on('data', function(data) {
+          data.peerInfo = {
+            id: peer.id,
+            name: peer.name,
+            position: peer.position,
+            distance: peer.distance
+          };
+          s.write(data);
+        });
+
+        s.on('end', function() {
+          s.destroy();
+          began--;
+          if(began <= 0) {
+            out.end();
+          }
+        });
+      }, function(err) {
+        if(err) out.emit('error', err);
+        if(!queriesSent) {
+          out.end();
+        }
+      });
+      return out;
+    }),
 
     // TODO should have some kind of validation / security / rate limiting
     requestMaterialRemote: function(curUser, id, requesterEmail, physicalAddress, cb) {

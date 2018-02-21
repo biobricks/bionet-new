@@ -40,12 +40,18 @@ function discover(opts, cb) {
       console.log(peers);
     }
   });
-  
-  this.channel.on('peer', function(id, peer, type) {
+
+  this._foundPeer = function(id, peer, type) {
     var nodeID = peer.host+':'+peer.port;
     self.nodes[nodeID] = new Date().getTime();
     cb(null, peer, type);
-  });
+  };
+
+  this.inject = function(host, port) {
+    this._foundPeer(null, {host: host, port: port}, 'injected');
+  };
+  
+  this.channel.on('peer', this._foundPeer);
 
   this.peers = function() {
     var key, tmp;

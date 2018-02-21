@@ -2,7 +2,7 @@
 var async = require('async');
 var sublevel = require('subleveldown');
 var treeIndex = require('level-tree-index');
-var ElasticIndex = require('level-elasticsearch-index');
+//var ElasticIndex = require('level-elasticsearch-index');
 var blastLevel = require('blast-level');
 
 module.exports = function(settings, db) {
@@ -11,6 +11,7 @@ module.exports = function(settings, db) {
     parentProp: 'parent_id'
   });
 
+  /*
   var elasticIndex = ElasticIndex(db.bio, {});
 
   elasticIndex.add('name', function(key, val) {
@@ -31,7 +32,7 @@ module.exports = function(settings, db) {
       console.log("Finished elastic index rebuild");
     });
   })
-
+*/
 
   if(settings.blast) {
     var blastIndex = blastLevel(db.virtual, {
@@ -70,7 +71,7 @@ module.exports = function(settings, db) {
 
   return {
     inventoryTree: inventoryTree,
-    elastic: elasticIndex,
+//    elastic: elasticIndex,
     rebuild: rebuild,
     blast: blastIndex
   };

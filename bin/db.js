@@ -169,12 +169,15 @@ function createTestUser(users, cb, failed) {
 
 }
 
-function getDBs(db) {
+function getUsers(db) {
   var userDB = sublevel(db, 'u', { valueEncoding: 'json' });
-  var users = accountdown(userDB, {
+  return accountdown(userDB, {
     login: { basic: require('accountdown-basic') }
   });
-  return require('../libs/db.js')(settings, users, accounts, undefined, {db: db});
+}
+
+function getDBs(db, users) {
+  return require('../libs/db.js')(settings, getUsers(db), accounts, undefined, {db: db});
 }
 
 function main() {
@@ -310,6 +313,8 @@ function main() {
 
   } else if(cmd.match(/^u/)) { // user
 
+    var users = getUsers(db);
+
     var subCmd;
 
     if(args.length > 0) {
@@ -347,7 +352,7 @@ function main() {
             } else {
               console.log("User `"+user.username+"` is not in any groups");
             }
-            userDB.close();
+//            userDB.close();
           });
         } else {
 
@@ -379,7 +384,7 @@ function main() {
                 } else {
                   console.log("User `"+user.username+"` is not in the group `"+cur+"`");
                 }
-                userDB.close();
+//                userDB.close();
               }
             }
             if(!changed) {
@@ -388,7 +393,7 @@ function main() {
               users.put(key, user, function(err) {
                 if(err) fail("Failed to update user: " + err);
                 console.log("User groups updated");
-                userDB.close();
+//                userDB.close();
               });
             }
           });

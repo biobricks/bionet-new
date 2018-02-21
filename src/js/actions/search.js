@@ -3,6 +3,14 @@ import util from '../util.js'
 
 module.exports = {
 
+  global: function(type, query) {
+    if(type === 'human') {
+      return app.remote.peerSearch('searchVirtuals', query);
+    } else {
+      return app.remote.peerSearch('blastStream', query);
+    }
+  },
+
   // auto-detect query type
   auto: function(query, page, perPage, opts, cb) {
 
@@ -29,17 +37,16 @@ module.exports = {
   // opts:
   // `onlyAvailable`: Only return virtuals that have a physical
   blast: function(query, page, perPage, opts, cb) {
+
     if(page < 1) page = 1;
     if(perPage < 1) perPage = 1;
 
     opts = opts || {};
     opts.maxResults = perPage;
     opts.offset = perPage * (page - 1);
-    console.log("OFFSET:", perPage, page, opts.offset);
 
     // replace all non-DNA/RNA characters
     query = util.stripNonNTChars(query);
-
 
     if(!query) {
       process.nextTick(function() {

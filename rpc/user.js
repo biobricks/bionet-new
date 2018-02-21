@@ -640,8 +640,9 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       });
     },
 
+
     // TODO switch to using a stream as output rather than a callback
-    peerSearch: function(curUser, query, cb) {
+    peerSearchOld: function(curUser, query, cb) {
       if(!p2p) return cb(new Error("p2p not supported by this node"));
 
       function onError(err) {

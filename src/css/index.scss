@@ -9,6 +9,9 @@ $fa-font-path: "../fonts/font_awesome"; /* set font-awesome font path */
 /* CSS styles for SimpleMDE markdown editor */
 @import "../../node_modules/simplemde/dist/simplemde.min.css";
 
+/*
+  @import "../../node_modules/material-design-icons/iconfont/material-icons.css";
+*/
 @import "material_design_icons.scss";
 @import "spinners.scss";
 
@@ -111,4 +114,16 @@ body {
 }
                               
 /* app global stuff END */
+
+/* virtual.js BEGIN */
+
+.virtual div {
+  padding-top: 1rem;
+}
+
+p.description {
+  font-style: italic;
+}
+
+/* virtual.js END */
 

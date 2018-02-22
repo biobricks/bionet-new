@@ -89,7 +89,7 @@ module.exports = function(Component) {
       var i, u, editlink;
       for(i=0; i < this.state.users.length; i++) {
         u = this.state.users[i].value;
-
+        
         users.push((
           <li>
             User: {u.username} | Email: {u.email} | <Link to={"/admin/edit-user/"+encodeURIComponent(u.username)}>edit</Link>

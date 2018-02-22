@@ -409,12 +409,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       }, cb);
     },
 
-    // get all physical instances of a virtual
-    // TODO create an index for this
-    instancesOfVirtual: function(curUser, virtual_id, cb) {
-      db.instancesOfVirtual(virtual_id, cb);
-    },
-
     getLocationPath: function (curUser, id, cb) {
       
       if (id[0] !== 'p') {

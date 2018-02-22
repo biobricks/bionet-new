@@ -352,6 +352,12 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       });
     },
 
+    // get all physical instances of a virtual
+    // TODO create an index for this
+    instancesOfVirtual: function(curUser, virtual_id, cb) {
+      db.instancesOfVirtual(virtual_id, cb);
+    },
+
     // TODO should have some kind of validation / security / rate limiting
     requestMaterialRemote: function(curUser, id, requesterEmail, physicalAddress, cb) {
 

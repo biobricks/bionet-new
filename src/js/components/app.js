@@ -15,6 +15,7 @@ module.exports = function(Component) {
   var Help = require('./help.js')(Component);
   var Count = require('./count.js')(Component);
   var Virtual = require('./virtual.js')(Component);
+  var EditVirtual = require('./edit_virtual.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
   var Admin = require('./admin.js')(Component);
   var AdminEditUser = require('./admin_edit_user.js')(Component);
@@ -37,14 +38,13 @@ module.exports = function(Component) {
           <Global state="global">
             <TopMenu/>
             <div class="content-area">
-              <Route exact path="/" render={() => (
-                <Count state="bob.myclock" />
-              )}/>
+              <Route exact path="/" component={Search} />
               <Route exact path="/signup" render={() => (
                 <Signup />
               )}/>
 
               <Route path="/virtual/:id" component={Virtual} />
+              <Route path="/virtual/edit/:id" component={EditVirtual} />
           
               <Switch>
                 <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />

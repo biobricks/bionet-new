@@ -40,6 +40,9 @@ module.exports = function(Component) {
         perPage: 25,
       };
 
+      util.whenConnected(function() {
+        this.doSearch(true);
+      }.bind(this));
     }
 
 

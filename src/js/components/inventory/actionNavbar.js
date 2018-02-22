@@ -109,10 +109,18 @@ module.exports = function (Component) {
             this.displayAddMenu(this.state.addItemMenuDisplay !== 'is-active')
         }
         
+        homeItem() {
+            //console.log('star item')
+            if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
+            const root = app.state.global.inventoryPath[0]
+            const id = root.id
+            if (id) app.actions.inventory.getInventoryPath(id)
+        }
+        
         starItem() {
             //console.log('star item')
-            var n = parseInt(Math.random()*5+1)
-            app.actions.inventory.getPath(n)
+            //var n = parseInt(Math.random()*5+1)
+            //app.actions.inventory.getPath(n)
         }
         
         editItem() {
@@ -171,7 +179,7 @@ module.exports = function (Component) {
             }.bind(this)
             
             //console.log('actionNavbar render:', this.state)
-            const actionButtonContainer = "justify-content:flex-start;max-height:75px; height:75px;"
+            const actionButtonContainer = "justify-content:flex-start;"
             const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
             const menu = initMenu()
             
@@ -188,11 +196,13 @@ module.exports = function (Component) {
             const editVirtual = (this.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active={this.displayAddVirtualModal} isOpen={this.showAddVirtualModal} item={this.item} />) : null
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
+                    <ActionMenuButton icon="home" onClick={this.homeItem.bind(this)} />
+            
                     <div class={"dropdown tile "+this.state.addItemMenuDisplay} style={actionButtonContainer}>
                         <div class="dropdown-trigger">
                             <ActionMenuButton icon="add" onClick={this.addItemButton.bind(this)} />
                         </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu" style={"position:fixed; top:145px; left:10px;"}>
+                        <div class="dropdown-menu" id="dropdown-menu" role="menu" style={"position:fixed; top:195px; left:10px;"}>
                             <div class="dropdown-content">
                                 {menu}
                             </div>
@@ -200,8 +210,8 @@ module.exports = function (Component) {
                     </div>
                     <ActionMenuButton icon="star" onClick={this.starItem.bind(this)} />
                     <ActionMenuButton icon="edit" onClick={this.editItem.bind(this)} />
-                    <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
+                    <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     {editPhysical}
                     {editVirtual}
                 </div>

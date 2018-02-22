@@ -59,8 +59,8 @@ module.exports = function (Component) {
             const active = (this.state.active) ? 'is-active' : ''
             
             return(
-                <div class={"dropdown "+active+" "+this.props.class} style={this.props.style}>
-                  <div class="dropdown-trigger"  style="min-width:100%;width:100%">
+                <div class={"dropdown "+active+" tile "+this.props.classProps} style={this.props.style}>
+                  <div class={"dropdown-trigger"}  style="min-width:100%;width:100%">
                     <button id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3" onclick={this.toggleDropdown}  style="min-width:100%;width:100%;justify-content:flex-start">
                       <span>{this.state.type}</span>
                       <span class="icon is-small">

@@ -118,9 +118,6 @@ server.on('connection', function(socket) {
   socket.on('error', function(err) {
     console.log("Client socket error:", err);
   });
-  socket.on('close', function(err) {
-    console.log("CLOSE:", err);
-  });
 })
 
 server.on('close', function(err) {
@@ -147,6 +144,9 @@ server.listen(settings.port, settings.hostname)
 
 // initialize the websocket server on top of the webserver
 var ws = websocket.createServer({server: server}, function(stream) {
+  stream.on('error', function(err) {
+    console.error("WebSocket stream error:", err);
+  });
 
   var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer, p2p);
 
@@ -206,9 +206,15 @@ var ws = websocket.createServer({server: server}, function(stream) {
   rpcServer.pipe(stream).pipe(rpcServer);
 });
 
+
+ws.on('connection', function (socket) {
+  socket.on('error', function(err) {
+    console.error("WebSocket client error:", err);
+  });
+});
+
 ws.on('error', function(err) {
-  if(err) console.error("WebSocket error:", err);
-//  socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+  if(err) console.error("WebSocket server error:", err);
 });
 
 // initialize the db
@@ -234,8 +240,7 @@ if(!argv.nop2p) {
   }
 }
 
-// We need this due to this bug:
-// https://github.com/nodejs/node/issues/14102#issuecomment-367149479
+// prevent crashes from uncaught exceptions
 process.on('uncaughtException', function(err) {
   console.log("Uncaught exception:", err.stack)
 });

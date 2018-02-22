@@ -164,7 +164,7 @@ module.exports = function (Component) {
                 //console.log('FormInputText:',props)
                 if (tabular) {
                     return(
-                        <div class={"tile is-child "+props.class} style="padding:0; margin:0">
+                        <div class={"tile is-child "+props.classProps} style="padding:0; margin:0">
                             <input id={props.fid} class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly} onblur={this.onblur.bind(this)}>
                                 {this.msgFunction(props.msg)}
                             </input>
@@ -191,7 +191,8 @@ module.exports = function (Component) {
                     var fieldId = field.name.toLowerCase()
                     var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
                     var value = (item && item[fieldId]) ? item[fieldId] : ''
-                    attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
+                    var classProps = (this.props.classProps && (i+3<this.props.classProps.length)) ? this.props.classProps[i+3].class : ''
+                    attributes.push( <FormInputText fid={fieldId} label={label} value={value}  classProps={classProps}/> )
                 }
             }
                                     
@@ -204,12 +205,13 @@ module.exports = function (Component) {
             if (tabular) {
                 const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''
                 const label = this.item.parent_x+','+this.item.parent_y
+                //console.log('tabular:',this.props.classProps)
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="tile is-parent is-11"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
-                            <FormInputText fid='name' value={this.item.name} label="Name" class="is-3"/>
-                            <FormInputText fid='loc' value={label} label="Loc"  class="is-1"/>
-                            <ItemTypes type={this.item.type} types={types} setType={this.setType} class="tile is-child is-3" onblur={this.onblur.bind(this)} />
+                            <FormInputText fid='name' value={this.item.name} label="Name" classProps={this.props.classProps[0].class}/>
+                            <FormInputText fid='loc' value={label} label="Loc"  classProps={this.props.classProps[1].class}/>
+                            <ItemTypes type={this.item.type} types={types} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />
                             {attributes}
                         </div>
                     </form>

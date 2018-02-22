@@ -14,6 +14,35 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             ashnazg.listen('global.user', this.loggedInUser.bind(this));
+            ashnazg.listen('global.inventoryPath', this.onUpdatePath.bind(this));
+            window.onpopstate = this.onpopstate.bind(this)
+            this.pushHistory=true
+        }
+        
+        onUpdatePath(path) {
+            //console.log('onUpdatePath:',path)
+            if (!this.pushHistory) {
+                this.pushHistory=true
+                return
+            }
+            if (!path || path.length<1) return null
+            const selectedItem = path[path.length-1]
+            if (!selectedItem) return null
+            
+            const historyEntry = {
+                id:selectedItem.id,
+                name:selectedItem.name,
+                url:"/inventory/"+selectedItem.id
+            }
+            window.history.pushState(historyEntry, selectedItem.name, historyEntry.url);
+            console.log('onUpdatePath historyEntry:',historyEntry)
+        }
+            
+        onpopstate(e) {
+            console.log('onpopstate:',e.state, history.state)
+            const id = e.state.id
+            this.pushHistory=false
+            if (id) app.actions.inventory.getInventoryPath(id)
         }
 
         componentDidMount() {

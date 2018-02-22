@@ -21,38 +21,11 @@ module.exports = function (Component) {
                 inventoryItem:{},
                 containerSize:containerSize
             }
-            ashnazg.listen('global.inventoryFunction', this.inventoryFunction.bind(this));
-        }
-        
-        componentWillReceiveProps(nextProps)
-        {
-            this.updateInventoryPath(nextProps.inventoryPath)
-
-        }
-        
-        inventoryFunction(f) {
-            console.log('inventoryFunction:',f)
-            switch(f.name) {
-                case 'clearSelection':
-                    this.clearSelection(f.id)
-                    break;
-            }
-        }
-        
-        clearSelection(id) {
-            var path = this.inventoryPath
-            for (var i=0; i<path.length; i++) {
-                var container = path[i]
-                /*
-                if (container.getId()===id) {
-                    container.deselectChildren()
-                }
-                */
-            }
+            ashnazg.listen('global.inventoryPath', this.updateInventoryPath.bind(this));
         }
         
         updateInventoryPath(newPath) {
-            //console.log('update inventory path:',newPath)
+            console.log('update inventory path:',newPath)
             const containerSize = this.state.containerSize
 
             if (!newPath) return
@@ -77,6 +50,7 @@ module.exports = function (Component) {
                     <StorageContainer dbid={unit.id} type={unit.type} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} item={unit} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
                 )
             }
+            this.setState({inventoryPath:inventoryPath})
             this.inventoryPath = inventoryPath
             this.newPath = newPath.length
             return inventoryPath
@@ -98,7 +72,14 @@ module.exports = function (Component) {
         }
         
         addFavorite() {
-            
+            const path = this.props.inventoryPath
+            if (!path || path.length<1) return null
+            const item = path[path.length-1]
+            if (!item) return
+            const id = item.id
+            app.actions.inventory.addFavorite(id, function() {
+                app.actions.notify("Item added to favorites", 'notice', 2000);
+            })
         }
         
         selectedItemHeader() {
@@ -106,7 +87,9 @@ module.exports = function (Component) {
             if (!path || path.length<1) return null
             const selectedItem = path[path.length-1]
             if (!selectedItem) return null
-            window.history.pushState({ foo: "bar" }, selectedItem.name, "/inventory/"+selectedItem.id);
+            const iconStyle = "font-size:20px;"
+            //                            <a class="navbar-item mdi mdi-star-outline" style={iconStyle} onclick={this.addFavorite.bind(this)}></a>
+
             return (
                 <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
                     <div class="tile is-7">
@@ -116,7 +99,7 @@ module.exports = function (Component) {
                     </div>
                     <div class="tile is-4">
                         <div class="navbar-end">
-                            <a class="navbar-item" onclick={this.print.bind(this)}><i class="material-icons">print</i></a>
+                            <a class="navbar-item mdi mdi-printer"  style={iconStyle}onclick={this.print.bind(this)}></a>
                         </div>
                     </div>
                 </div>
@@ -125,15 +108,17 @@ module.exports = function (Component) {
         
         render() {
             
-            //console.log(this.state.inventoryPath)
-                    
-            const path = this.props.inventoryPath
+            const path = this.state.inventoryPath
             if (!path) return
-            const currentItem = path[path.length-1]
+            
+            const ipath = this.props.inventoryPath
+            if (!ipath) return
+            
+            const currentItem = ipath[path.length-1]
             var childItems = (currentItem) ? currentItem.children : null
+            console.log('inventory path render:',ipath,currentItem)
             
             const selectedItemHeader = this.selectedItemHeader()
-            const inventoryPath = this.updateInventoryPath(this.props.inventoryPath)
             
             const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
             const itemChild = "border:1px solid grey;margin:0;padding:0;"
@@ -141,7 +126,6 @@ module.exports = function (Component) {
             const pathChild = "border: 1px solid grey; height:"+this.state.containerSize+"px;margin:0;padding:0;"
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
             const tableHeight =  window.innerHeight-this.state.containerSize-100
-            //console.log('updateTabularData:',unit)
             
             return (
                 <div id="inventory_tiles" class="tile is-12">
@@ -150,7 +134,7 @@ module.exports = function (Component) {
                             {selectedItemHeader}
                         </div>
                         <div id="inventory_path" class="tile is-parent is-12" style={pathMaxHeight}>
-                            {inventoryPath}
+                            {path}
                         </div>
                         <br/>
                         <EditTable item={currentItem} items={childItems} height={tableHeight} />

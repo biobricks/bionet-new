@@ -109,10 +109,30 @@ module.exports = function (Component) {
             this.displayAddMenu(this.state.addItemMenuDisplay !== 'is-active')
         }
         
-        starItem() {
+        homeItem() {
             //console.log('star item')
-            var n = parseInt(Math.random()*5+1)
-            app.actions.inventory.getPath(n)
+            if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
+            const root = app.state.global.inventoryPath[0]
+            const id = root.id
+            if (id) app.actions.inventory.getInventoryPath(id)
+        }
+        
+        starItem() {
+            if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
+            const path = app.state.global.inventoryPath
+            if (!path || path.length<1) return null
+            const item = path[path.length-1]
+            if (!item) return
+            app.actions.inventory.addFavorite(item, function(err) {
+                if (err) app.actions.notify("Error adding "+item.name+" to favorites", 'error', 8000);
+                else {
+                    app.actions.notify(item.name+" added to favorites", 'notice', 2000);
+                    app.actions.inventory.getFavorites(function(err,favorites){
+                        console.log('getFavorites:', err, favorites)
+                    })
+                    //todo: refresh favorites action
+                }
+            })
         }
         
         editItem() {
@@ -152,7 +172,7 @@ module.exports = function (Component) {
         
         upload() {
             //console.log('upload item')
-            app.actions.inventory.getPath(5)
+            //app.actions.inventory.getPath(5)
         }
 
         render() {
@@ -171,14 +191,14 @@ module.exports = function (Component) {
             }.bind(this)
             
             //console.log('actionNavbar render:', this.state)
-            const actionButtonContainer = "justify-content:flex-start;max-height:75px; height:75px;"
-            const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
+            const actionButtonContainer = "border-radius:50%; margin-bottom:10px;width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;justify-content:center;"
+            const actionMenuButtonStyle = "font-size:20px;line-height:55px;color:#ffffff;display:flex;width:55px;justify-content:center;"
             const menu = initMenu()
             
             const ActionMenuButton = function(props) {
                 return (
-                        <div class="tile" style={actionButtonContainer}>
-                            <button class="button" onclick={props.onClick} style={actionMenuButtonStyle}><i class="material-icons">{props.icon}</i></button>
+                    <div class="tile" style={actionButtonContainer}>
+                            <a onclick={props.onClick} class={"mdi mdi-"+props.icon} style={actionMenuButtonStyle}></a>
                         </div>
                        )
             }
@@ -188,20 +208,22 @@ module.exports = function (Component) {
             const editVirtual = (this.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active={this.displayAddVirtualModal} isOpen={this.showAddVirtualModal} item={this.item} />) : null
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
-                    <div class={"dropdown tile "+this.state.addItemMenuDisplay} style={actionButtonContainer}>
+                    <ActionMenuButton icon="home" onClick={this.homeItem.bind(this)} />
+            
+                    <div class={"dropdown tile "+this.state.addItemMenuDisplay}>
                         <div class="dropdown-trigger">
-                            <ActionMenuButton icon="add" onClick={this.addItemButton.bind(this)} />
+                            <ActionMenuButton icon="plus" onClick={this.addItemButton.bind(this)} />
                         </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu" style={"position:fixed; top:145px; left:10px;"}>
+                        <div class="dropdown-menu" id="dropdown-menu" role="menu" style={"position:fixed; top:195px; left:10px;"}>
                             <div class="dropdown-content">
                                 {menu}
                             </div>
                         </div>
                     </div>
                     <ActionMenuButton icon="star" onClick={this.starItem.bind(this)} />
-                    <ActionMenuButton icon="edit" onClick={this.editItem.bind(this)} />
+                    <ActionMenuButton icon="pencil" onClick={this.editItem.bind(this)} />
+                    <ActionMenuButton icon="open-in-app" onClick={this.upload.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
-                    <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
                     {editPhysical}
                     {editVirtual}
                 </div>

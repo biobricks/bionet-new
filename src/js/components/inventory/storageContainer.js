@@ -132,7 +132,6 @@ module.exports = function (Component) {
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
             const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)
-            //this.deselectChildren(cellCoordinates, false)
             
             for(var cellLabel in this.cellRef){
                 var ref = this.cellRef[cellLabel]

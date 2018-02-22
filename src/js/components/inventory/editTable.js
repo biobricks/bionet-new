@@ -16,7 +16,7 @@ module.exports = function (Component) {
             const items = this.props.items
             if (!items || items.length<1) return null
             const headerTitle=[]
-            headerTitle.push({name:'Name',class:'is-3'})
+            headerTitle.push({name:'Name',class:'is-4'})
             headerTitle.push({name:'Loc',class:'is-1'})
             headerTitle.push({name:'Type',class:'is-3'})
             const type = items[0].type
@@ -31,6 +31,8 @@ module.exports = function (Component) {
                 var header = headerTitle[i]
                 headers.push(<div class={"tile is-child "+header.class} style={(i===0)?"padding-left: calc(0.625em - 1px);":""}>{header.name}</div>)
             }
+            this.headerTitle = headerTitle
+            
             return(
                 <div class="tile is-parent is-11"  style="padding:0; margin:0;font-weight:800">{headers}</div>
             )
@@ -39,6 +41,8 @@ module.exports = function (Component) {
         updateTabularData() {
             const selectedItem = this.props.item
             const items = this.props.items
+            const headerTitle = this.headerTitle
+            //console.log('updateTabularData:',headerTitle)
             this.rowRef={}
             const thisModule = this
             if (!selectedItem || !items) return
@@ -50,7 +54,7 @@ module.exports = function (Component) {
             const ref=(row) => { if (row) thisModule.rowRef[row.props.id] = row; }
             for (var i=0; i<items.length; i++) {
                 var item = items[i]
-                tabularData.push(<EditPhysical state="EditPhysicalTable" ref={ref} active="true" tabular="true" item={item} id={item.id} onFocus={thisModule.deselectRows.bind(thisModule)}/>)
+                tabularData.push(<EditPhysical state="EditPhysicalTable" ref={ref} active="true" tabular="true" item={item} id={item.id} classProps={headerTitle} onFocus={thisModule.deselectRows.bind(thisModule)}/>)
             }
             return tabularData
         }

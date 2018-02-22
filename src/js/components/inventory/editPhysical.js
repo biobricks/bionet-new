@@ -205,7 +205,7 @@ module.exports = function (Component) {
             if (tabular) {
                 const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''
                 const label = this.item.parent_x+','+this.item.parent_y
-                console.log('tabular:',this.props.classProps)
+                //console.log('tabular:',this.props.classProps)
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="tile is-parent is-11"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>

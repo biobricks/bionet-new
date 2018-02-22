@@ -88,6 +88,8 @@ module.exports = function (Component) {
             const selectedItem = path[path.length-1]
             if (!selectedItem) return null
             const iconStyle = "font-size:20px;"
+            //                            <a class="navbar-item mdi mdi-star-outline" style={iconStyle} onclick={this.addFavorite.bind(this)}></a>
+
             return (
                 <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
                     <div class="tile is-7">
@@ -97,7 +99,6 @@ module.exports = function (Component) {
                     </div>
                     <div class="tile is-4">
                         <div class="navbar-end">
-                            <a class="navbar-item mdi mdi-star-outline" style={iconStyle} onclick={this.addFavorite.bind(this)}></a>
                             <a class="navbar-item mdi mdi-printer"  style={iconStyle}onclick={this.print.bind(this)}></a>
                         </div>
                     </div>

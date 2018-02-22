@@ -118,9 +118,21 @@ module.exports = function (Component) {
         }
         
         starItem() {
-            //console.log('star item')
-            //var n = parseInt(Math.random()*5+1)
-            //app.actions.inventory.getPath(n)
+            if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
+            const path = app.state.global.inventoryPath
+            if (!path || path.length<1) return null
+            const item = path[path.length-1]
+            if (!item) return
+            app.actions.inventory.addFavorite(item, function(err) {
+                if (err) app.actions.notify("Error adding "+item.name+" to favorites", 'error', 8000);
+                else {
+                    app.actions.notify(item.name+" added to favorites", 'notice', 2000);
+                    app.actions.inventory.getFavorites(function(err,favorites){
+                        console.log('getFavorites:', err, favorites)
+                    })
+                    //todo: refresh favorites action
+                }
+            })
         }
         
         editItem() {
@@ -179,14 +191,14 @@ module.exports = function (Component) {
             }.bind(this)
             
             //console.log('actionNavbar render:', this.state)
-            const actionButtonContainer = "justify-content:flex-start;"
-            const actionMenuButtonStyle = "font-size:20px;line-height:55px;border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
+            const actionButtonContainer = "border-radius:50%; margin-bottom:10px;width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;justify-content:center;"
+            const actionMenuButtonStyle = "font-size:20px;line-height:55px;color:#ffffff;display:flex;width:55px;justify-content:center;"
             const menu = initMenu()
             
             const ActionMenuButton = function(props) {
                 return (
-                        <div class="tile" style={actionButtonContainer}>
-                            <button class="button" style="border:none" onclick={props.onClick}><a class={"mdi mdi-"+props.icon} style={actionMenuButtonStyle}></a></button>
+                    <div class="tile" style={actionButtonContainer}>
+                            <a onclick={props.onClick} class={"mdi mdi-"+props.icon} style={actionMenuButtonStyle}></a>
                         </div>
                        )
             }
@@ -198,7 +210,7 @@ module.exports = function (Component) {
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
                     <ActionMenuButton icon="home" onClick={this.homeItem.bind(this)} />
             
-                    <div class={"dropdown tile "+this.state.addItemMenuDisplay} style={actionButtonContainer}>
+                    <div class={"dropdown tile "+this.state.addItemMenuDisplay}>
                         <div class="dropdown-trigger">
                             <ActionMenuButton icon="plus" onClick={this.addItemButton.bind(this)} />
                         </div>

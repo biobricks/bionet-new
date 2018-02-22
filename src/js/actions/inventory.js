@@ -545,11 +545,17 @@ module.exports = {
         })
     },
 
-    addFavorite: function (id, cb) {
-        if (cb) cb()
+    addFavorite: function (m, cb) {
+        app.remote.saveFavLocation(m, null, null, function (err) {
+            if (cb) cb(err)
+        })
     },
 
-    getFavorites: function () {
+    getFavorites: function (cb) {
+        app.remote.favLocationsTree(function(err, userFavorites) {
+            cb(err, userFavorites)
+        })
+        /*
         app.remote.favLocationsTree(function (err, userFavorites) {
             if (err) {
                 console.log('get favorites err:', err)
@@ -558,6 +564,7 @@ module.exports = {
             //todo set getfavorites state
             //BIONET.signal.getFavoritesResult.dispatch(userFavorites)
         })
+        */
     },
 
     virtualSaveResult: function () {

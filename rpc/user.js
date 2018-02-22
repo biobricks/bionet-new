@@ -442,22 +442,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       }
       getParentLocation(id);
     },
-    
-    get: function(curUser, id, cb) {
-      var first = id[0];
-      var curdb;
-      if(first === 'p') {
-        curdb = db.physical;
-      } else if(first === 'v') {
-        curdb = db.virtual;
-      } else {
-        return cb(new Error("Unknown material class"));
-      }
-      curdb.get(id, {valueEncoding: 'json'}, function(err, p) {
-        if(err) return cb(err);
-        cb(null, p);
-      });
-    },
 
     // TODO use indexes for this!
     getByHumanID: function(curUser, humanID, cb) {

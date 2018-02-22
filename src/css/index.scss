@@ -5,6 +5,10 @@
 
 $fa-font-path: "../fonts/font_awesome"; /* set font-awesome font path */
 @import "../../node_modules/font-awesome/scss/font-awesome.scss";
+
+/* CSS styles for SimpleMDE markdown editor */
+@import "../../node_modules/simplemde/dist/simplemde.min.css";
+
 @import "material_design_icons.scss";
 @import "spinners.scss";
 

@@ -78,7 +78,7 @@ module.exports = function(Component) {
           return (
             <div class="columns">
               <div class="column left is-12">
-                <Link to={'/inventory/'+result.value.id}>
+                <Link to={'/virtual/'+result.value.id}>
                   <span>
                     {result.value.name}
                   </span>

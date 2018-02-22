@@ -336,6 +336,22 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       return out;
     }),
 
+    get: function(curUser, id, cb) {
+      var first = id[0];
+      var curdb;
+      if(first === 'p') {
+        curdb = db.physical;
+      } else if(first === 'v') {
+        curdb = db.virtual;
+      } else {
+        return cb(new Error("Unknown material class"));
+      }
+      curdb.get(id, {valueEncoding: 'json'}, function(err, p) {
+        if(err) return cb(err);
+        cb(null, p);
+      });
+    },
+
     // TODO should have some kind of validation / security / rate limiting
     requestMaterialRemote: function(curUser, id, requesterEmail, physicalAddress, cb) {
 

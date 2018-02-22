@@ -14,6 +14,7 @@ module.exports = function(Component) {
   var Search = require('./search.js')(Component);
   var Help = require('./help.js')(Component);
   var Count = require('./count.js')(Component);
+  var Virtual = require('./virtual.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
   var Admin = require('./admin.js')(Component);
   var AdminEditUser = require('./admin_edit_user.js')(Component);
@@ -42,6 +43,8 @@ module.exports = function(Component) {
               <Route exact path="/signup" render={() => (
                 <Signup />
               )}/>
+
+              <Route path="/virtual/:id" component={Virtual} />
           
               <Switch>
                 <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />

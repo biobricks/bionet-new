@@ -79,6 +79,7 @@
     "qrcode-reader": "^1.0.4",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "simplemde": "^1.11.2",
     "watchify": "^3.9.0",
     "zxcvbn": "^4.4.2"
   },

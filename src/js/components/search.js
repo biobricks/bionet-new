@@ -40,11 +40,6 @@ module.exports = function(Component) {
         perPage: 25,
       };
 
-      util.whenConnected(function() {
-//        if(this.state.query) {
-//          this.doSearch();
-//        }
-      }.bind(this));
     }
 
 
@@ -262,7 +257,9 @@ module.exports = function(Component) {
         const isNewQuery = diff(this.state.query, this.state.lastQuery);
         const isNewPage = this.props.match.params.page !== nextProps.match.params.page;
         if(isNewQuery || isNewPage) {
-          this.doSearch(isNewQuery);
+          util.whenConnected(function() {
+            this.doSearch(isNewQuery);
+          }.bind(this));
         }
       }
     }

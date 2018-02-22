@@ -160,7 +160,7 @@ module.exports = function (Component) {
         
         upload() {
             //console.log('upload item')
-            app.actions.inventory.getPath(5)
+            //app.actions.inventory.getPath(5)
         }
 
         render() {
@@ -180,13 +180,13 @@ module.exports = function (Component) {
             
             //console.log('actionNavbar render:', this.state)
             const actionButtonContainer = "justify-content:flex-start;"
-            const actionMenuButtonStyle = "border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
+            const actionMenuButtonStyle = "font-size:20px;line-height:55px;border-radius:50%; width:55px; height:55px;max-height:55px;color:#ffffff;background-color:#0080ff;"
             const menu = initMenu()
             
             const ActionMenuButton = function(props) {
                 return (
                         <div class="tile" style={actionButtonContainer}>
-                            <button class="button" onclick={props.onClick} style={actionMenuButtonStyle}><i class="material-icons">{props.icon}</i></button>
+                            <button class="button" style="border:none" onclick={props.onClick}><a class={"mdi mdi-"+props.icon} style={actionMenuButtonStyle}></a></button>
                         </div>
                        )
             }
@@ -200,7 +200,7 @@ module.exports = function (Component) {
             
                     <div class={"dropdown tile "+this.state.addItemMenuDisplay} style={actionButtonContainer}>
                         <div class="dropdown-trigger">
-                            <ActionMenuButton icon="add" onClick={this.addItemButton.bind(this)} />
+                            <ActionMenuButton icon="plus" onClick={this.addItemButton.bind(this)} />
                         </div>
                         <div class="dropdown-menu" id="dropdown-menu" role="menu" style={"position:fixed; top:195px; left:10px;"}>
                             <div class="dropdown-content">
@@ -209,8 +209,8 @@ module.exports = function (Component) {
                         </div>
                     </div>
                     <ActionMenuButton icon="star" onClick={this.starItem.bind(this)} />
-                    <ActionMenuButton icon="edit" onClick={this.editItem.bind(this)} />
-                    <ActionMenuButton icon="open_in_browser" onClick={this.upload.bind(this)} />
+                    <ActionMenuButton icon="pencil" onClick={this.editItem.bind(this)} />
+                    <ActionMenuButton icon="open-in-app" onClick={this.upload.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     {editPhysical}
                     {editVirtual}

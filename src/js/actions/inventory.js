@@ -545,8 +545,8 @@ module.exports = {
         })
     },
 
-    addFavorite: function (id) {
-
+    addFavorite: function (id, cb) {
+        if (cb) cb()
     },
 
     getFavorites: function () {

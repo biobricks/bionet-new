@@ -53,6 +53,7 @@ module.exports = function (Component) {
         loggedInUser(loggedInUser) {
             //console.log('logged in inventory: user', loggedInUser, app.remote)
             if (!(loggedInUser)) return
+            app.actions.inventory.getFavorites()
             const id = (this.props.match) ? this.props.match.params.id : null
             if (id) {
                 app.actions.inventory.getInventoryPath(id, function(inventoryPath){

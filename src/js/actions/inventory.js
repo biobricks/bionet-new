@@ -552,8 +552,15 @@ module.exports = {
     },
 
     getFavorites: function (cb) {
+        console.log('getFavorites action called')
         app.remote.favLocationsTree(function(err, userFavorites) {
-            cb(err, userFavorites)
+            console.log('getFavorites action:',userFavorites)
+            app.changeState({
+                global: {
+                    favorites: userFavorites
+                }
+            });
+            if (cb) cb(err, userFavorites)
         })
         /*
         app.remote.favLocationsTree(function (err, userFavorites) {

@@ -7,6 +7,7 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const EditPhysical = require('./editPhysical')(Component)
     const EditVirtual = require('./editVirtual')(Component)
+    const Favorites = require('./favorites')(Component)
     
     return class ActionNavBar extends Component {
         
@@ -34,6 +35,10 @@ module.exports = function (Component) {
             this.createType = physicalMenu
             this.setState({menuDef:menuDef})
         }
+        
+        componentDidMount() {
+        }
+        
 
         editItemListener(item) {
             console.log('editItemListener:',item)
@@ -118,21 +123,6 @@ module.exports = function (Component) {
         }
         
         starItem() {
-            if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
-            const path = app.state.global.inventoryPath
-            if (!path || path.length<1) return null
-            const item = path[path.length-1]
-            if (!item) return
-            app.actions.inventory.addFavorite(item, function(err) {
-                if (err) app.actions.notify("Error adding "+item.name+" to favorites", 'error', 8000);
-                else {
-                    app.actions.notify(item.name+" added to favorites", 'notice', 2000);
-                    app.actions.inventory.getFavorites(function(err,favorites){
-                        console.log('getFavorites:', err, favorites)
-                    })
-                    //todo: refresh favorites action
-                }
-            })
         }
         
         editItem() {
@@ -168,6 +158,28 @@ module.exports = function (Component) {
                     })
                 }
             })
+        }
+        
+        selectFavorite(id) {
+            console.log('selectFavorite:',id)
+            if (id) {
+                app.actions.inventory.getInventoryPath(id)
+            }
+        }
+        
+        addFavorite() {
+            if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
+            const path = app.state.global.inventoryPath
+            if (!path || path.length<1) return null
+            const item = path[path.length-1]
+            if (!item) return
+            app.actions.inventory.addFavorite(item, function(err) {
+                if (err) app.actions.notify("Error adding "+item.name+" to favorites", 'error', 8000);
+                else {
+                    app.actions.notify(item.name+" added to favorites", 'notice', 2000);
+                    app.actions.inventory.getFavorites()
+                }
+            }.bind(this))
         }
         
         upload() {
@@ -220,7 +232,18 @@ module.exports = function (Component) {
                             </div>
                         </div>
                     </div>
-                    <ActionMenuButton icon="star" onClick={this.starItem.bind(this)} />
+                    <div class="dropdown is-hoverable">
+                      <div class="dropdown-trigger">
+                        <ActionMenuButton icon="star" onClick={this.starItem.bind(this)} />
+                      </div>
+                      <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                        <div class="dropdown-content">
+                          <div class="dropdown-item">
+                            <Favorites favorites={app.state.global.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)}/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>            
                     <ActionMenuButton icon="pencil" onClick={this.editItem.bind(this)} />
                     <ActionMenuButton icon="open-in-app" onClick={this.upload.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />

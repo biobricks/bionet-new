@@ -10,7 +10,6 @@ import util from '../util.js';
 /*
   ToDo:
 
-  * list associated physicals (and link to them with /inventory/:id)
   * make a "request biomaterial" button
 */
 
@@ -43,6 +42,7 @@ module.exports = function(Component) {
     }
 
     getVirtual(id) {
+
       // TODO why is this running twice on reload?
       app.remote.get(id, function(err, data) {
         if(err || !data) {
@@ -125,10 +125,17 @@ module.exports = function(Component) {
             );
         }
 
+        var editLink = '';
+        if(app.state.global.user) {
+          editLink = (
+              <span><Link to={'/virtual/edit/' + this.state.virtual.id}>edit</Link></span>
+          );
+        }
+
         virtual = (
           <div class="virtual">
             <div>
-              <h3><span>Name: </span>{this.state.virtual.name}</h3>
+              <h3><span>Name: </span>{this.state.virtual.name} {editLink}</h3>
             </div>
             <div>
               <span>Description: </span><p class="description">{this.state.virtual.Description}</p>

@@ -14,6 +14,7 @@ var uuid = require('uuid').v4;
 var accounts = require('../libs/user_accounts.js');
 var Mailer = require('../libs/mailer.js');
 var labDeviceServer = require('../libs/lab_device_server.js');
+var labIcon = require('../libs/lab_icon.js');
 
 var Writable = require('stream').Writable;
 var Readable = require('stream').Readable;
@@ -36,6 +37,10 @@ default: {
 });
 
 var settings = require(argv.settings)(argv);
+
+
+// generate lab icon if it doesn't already exist
+labIcon(settings.lab, path.join(settings.staticPath, 'images', 'lab_icon.png'));
 
 labDeviceServer.start(settings, function(err) {
   if(err) return console.error(err);

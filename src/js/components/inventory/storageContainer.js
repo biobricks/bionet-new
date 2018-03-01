@@ -13,7 +13,6 @@ module.exports = function (Component) {
             //console.log('StorageContainer props:', JSON.stringify(props))
             this.cellMap = {}
             this.cellRef = {}
-            this.deselectChildren = this.deselectChildren.bind(this)
             ashnazg.listen('global.inventorySelection', this.selectCellListener.bind(this));
             this.initialize(props)
         }
@@ -28,12 +27,6 @@ module.exports = function (Component) {
             this.type = nextProps.type
             this.populateContainer(nextProps.items, xunits, yunits)
             const tiles = this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType, nextProps.selectedItem, nextProps.px, nextProps.py, nextProps.mode)
-            //this.setState({tiles:tiles})
-            if (nextProps.mode==='edit') {
-                //console.log('storageContainer initialize props:',nextProps,app.state.global.inventoryCellLocation)
-                //console.log('selectCell edit:',app.state.global.inventoryCellLocation)
-                //this.selectCell(app.state.global.inventoryCellLocation)
-            }
             return tiles
         }
 
@@ -55,24 +48,23 @@ module.exports = function (Component) {
             const dx = width / xunits
             const dy = height / yunits
             const thisModule = this
-            
             const generateCols =function(row) {
                 const cols=[]
-                for (var x=0; x<xunits; x++) {
-                    var label = thisModule.generateLabel(x+1, row+1, xunits, yunits)
+                const y = row+1
+                for (var col=0; col<xunits; col++) {
+                    var x = col+1
+                    var label = thisModule.generateLabel(x, y, xunits, yunits)
                     var cell = thisModule.cellMap[label]
                     var name = label
                     var isOccupied = false
-                    var isActive = false
+                    var isActive = y === py && x === px
                     if (cell) {
                         isOccupied = true
                         if (cell.name) name=cell.name
-                        isActive = cell.id === selectedItemId
-                    } else {
-                        isActive = row+1 === py && x+1 === px
                     }
-                    var ref=(cell) => { if (cell) thisModule.cellRef[cell.props.label] = cell; }
-                    var storageCell = <StorageCell state="inventorySelection" label={label} ref={ref} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.dbid} parent_x={x+1} parent_y={row+1} active={isActive} mode={mode}/>
+                    //if (isActive) console.log('generating active cell:',label)
+                    var ref = (cell) => { if (cell) thisModule.cellRef[cell.props.label] = cell; }
+                    var storageCell = <StorageCell state="inventorySelection" label={label} ref={ref} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.dbid} parent_x={x} parent_y={y} active={isActive} mode={mode}/>
                     cols.push(storageCell)
                 }
                 return cols
@@ -128,40 +120,32 @@ module.exports = function (Component) {
 
         selectCellListener(cellLocation) {
             if (this.dbid!==cellLocation.parentId) return
-            console.log('selectCellListener:',this.dbid, cellLocation)
+            console.log('selectCellListener:',this.dbid, cellLocation, this.props)
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
             const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)
             
-            for(var cellLabel in this.cellRef){
+            for (var cellLabel in this.cellRef) {
                 var ref = this.cellRef[cellLabel]
                 if (ref) {
-                    ref.focus(cellCoordinates === ref.props.label, cellLocation.navigate)
+                    //const focus = cellLocation.navigate && cellCoordinates === ref.props.label
+                    const focus = cellCoordinates === ref.props.label
+                    ref.focus(focus, cellLocation.navigate)
                 }
             }
-            const selectedCell = this.cellRef[cellCoordinates]
-            if (!this.props.item || !selectedCell) return
-            const selectedItem = (selectedCell.props.item) ? selectedCell.props.item.id : this.props.item.id
-            if (cellLocation.navigate) app.actions.inventory.getInventoryPath(selectedItem)
+            
+            if (cellLocation.navigate) {
+                const selectedCell = this.cellRef[cellCoordinates]
+                if (!this.props.item || !selectedCell) return
+                const selectedItem = (selectedCell.props.item) ? selectedCell.props.item.id : this.props.item.id
+                app.actions.inventory.getInventoryPath(selectedItem)
+            } else {
+                
+            }
         }
 
-        deselectChildren(cellCoordinates, navigate) {
-            //console.log('deselectChildren:',this.cellRef, cellCoordinates)
-            for(var cellLabel in this.cellRef){
-                var ref = this.cellRef[cellLabel]
-                if (ref) {
-                    ref.focus(cellCoordinates === ref.props.label, navigate)
-                }
-            }
-            const selectedCell = this.cellRef[cellCoordinates]
-            //console.log('setting focus to:',selectedCell, this.props)
-            if (!this.props.item || !selectedCell) return
-            const selectedItem = (selectedCell.props.item) ? selectedCell.props.item.id : this.props.item.id
-            app.actions.inventory.getInventoryPath(selectedItem)
-        }
-        
         render() {
-            //console.log('containerSubdivision render:',this.props)
+            console.log('containerSubdivision render:',this.props)
             const tiles = this.initialize(this.props)
             if (!tiles) return
             

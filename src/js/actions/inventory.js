@@ -37,6 +37,14 @@ module.exports = {
         //console.log('getPathTest action %d',n, newPath)
     },
     
+    getSelectedItem: function() {
+        if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return null
+        const path = app.state.global.inventoryPath
+        if (!path || path.length<1) return null
+        const item = path[path.length-1]
+        return item
+    },
+    
     getItemFromInventoryPath: function(id, pathIn) {
         const path = (pathIn) ? pathIn : app.state.global.inventoryPath
         if (!path) return null
@@ -122,6 +130,7 @@ module.exports = {
     
     getInventoryPath: function(id, cb) {
         if (!id) return
+        console.log('getInventoryPath action id:',id)
         const locationPath = {}
         var results = 0
         app.remote.getLocationPath(id, function (err, locationPathAr) {
@@ -549,6 +558,14 @@ module.exports = {
         app.remote.saveFavLocation(m, null, null, function (err) {
             if (cb) cb(err)
         })
+    },
+    
+    setMoveItem: function(item) {
+        app.changeState({
+            global: {
+                moveItem: item
+            }
+        });
     },
 
     getFavorites: function (cb) {

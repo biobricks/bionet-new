@@ -168,10 +168,14 @@ module.exports = function (Component) {
         }
         
         addFavorite() {
+            /*
             if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
             const path = app.state.global.inventoryPath
             if (!path || path.length<1) return null
             const item = path[path.length-1]
+            if (!item) return
+            */
+            const item = app.actions.inventory.getSelectedItem()
             if (!item) return
             app.actions.inventory.addFavorite(item, function(err) {
                 if (err) app.actions.notify("Error adding "+item.name+" to favorites", 'error', 8000);
@@ -185,6 +189,10 @@ module.exports = function (Component) {
         upload() {
             //console.log('upload item')
             //app.actions.inventory.getPath(5)
+        }
+        
+        moveItem() {
+            app.actions.inventory.setMoveItem(app.actions.inventory.getSelectedItem())
         }
 
         render() {
@@ -236,15 +244,16 @@ module.exports = function (Component) {
                       <div class="dropdown-trigger">
                         <ActionMenuButton icon="star" onClick={this.starItem.bind(this)} />
                       </div>
-                      <div class="dropdown-menu" id="dropdown-menu4" role="menu">
-                        <div class="dropdown-content">
-                          <div class="dropdown-item">
+                      <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="margin:0;padding:0;">
+                        <div class="dropdown-content"  style="margin:0;padding:0;">
+                          <div class="dropdown-item"  style="margin:0;padding:0;">
                             <Favorites favorites={app.state.global.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)}/>
                           </div>
                         </div>
                       </div>
                     </div>            
                     <ActionMenuButton icon="pencil" onClick={this.editItem.bind(this)} />
+                    <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
                     <ActionMenuButton icon="open-in-app" onClick={this.upload.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                     {editPhysical}

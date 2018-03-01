@@ -8,6 +8,7 @@ module.exports = function (Component) {
     const PrintLabel = require('../print')(Component)
     const ScanLabel = require('../scan')(Component)
     const EditTable = require('./editTable')(Component)
+    const MoveItem = require('./moveItem')(Component)
     
     return class InventoryPath extends Component {
         constructor(props) {
@@ -22,32 +23,20 @@ module.exports = function (Component) {
                 containerSize:containerSize
             }
             ashnazg.listen('global.inventoryPath', this.updateInventoryPath.bind(this));
+            ashnazg.listen('global.moveItem', this.updateMoveItem.bind(this));
         }
         
         updateInventoryPath(newPath) {
-            console.log('update inventory path:',newPath)
-            const containerSize = this.state.containerSize
-
             if (!newPath) return
-            const pathChild = "height:"+this.state.containerSize+"px;margin:0px;padding:0;width:"+(containerSize+20)+"px;"
+            //console.log('update inventory path:',newPath)
+            
+            const containerSize = this.state.containerSize
             const inventoryPath = []
-            var selectedItem = null
-
             for (var i=0; i<newPath.length; i++) {
-                var unit = newPath[i]
-                var id = 'ipath_'+i
-                var nextItemId = (i+1<newPath.length) ? newPath[i+1].id : null
-                var px = 0, py = 0
-                if (i+1<newPath.length) {
-                    var nextUnit = newPath[i+1]
-                    px = nextUnit.parent_x
-                    py = nextUnit.parent_y
-                }
-
-                // todo switch to selected id
-                if (unit.label==='box') selectedItem = unit
+                var item = newPath[i]
+                var nextItem = (i<newPath.length-1) ? newPath[i+1] : {}
                 inventoryPath.push(
-                    <StorageContainer dbid={unit.id} type={unit.type} height={containerSize} width={containerSize} title={unit.name} childType={unit.child} xunits={unit.xUnits} yunits={unit.yUnits} item={unit} items={unit.children} selectedItem={nextItemId} px={px} py={py}/>
+                    <StorageContainer dbid={item.id} type={item.type} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={item.yUnits} item={item} items={item.children} selectedItem={nextItem.id} px={nextItem.parent_x} py={nextItem.parent_y}/>
                 )
             }
             this.setState({inventoryPath:inventoryPath})
@@ -82,6 +71,10 @@ module.exports = function (Component) {
             })
         }
         
+        updateMoveItem(item) {
+            this.setState({moveItem:item})
+        }
+        
         selectedItemHeader() {
             const path = this.props.inventoryPath
             if (!path || path.length<1) return null
@@ -89,17 +82,24 @@ module.exports = function (Component) {
             if (!selectedItem) return null
             const iconStyle = "font-size:20px;"
             //                            <a class="navbar-item mdi mdi-star-outline" style={iconStyle} onclick={this.addFavorite.bind(this)}></a>
+            var moveId = null
+            var moveName = null
+            if (this.state.moveItem) {
+                moveId = this.state.moveItem.id
+                moveName = this.state.moveItem.name
+            }
 
             return (
                 <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
                     <div class="tile is-7">
                         <div class="navbar-start">
-                            <h1 class="title is-4" style="padding:12px">{selectedItem.name}</h1>
+                            <h1 class="title is-5" style="padding:12px">{selectedItem.name}</h1>
                         </div>
                     </div>
-                    <div class="tile is-4">
+                    <div class="tile">
                         <div class="navbar-end">
-                            <a class="navbar-item mdi mdi-printer"  style={iconStyle}onclick={this.print.bind(this)}></a>
+                            <MoveItem name={moveName} moveId={moveId} onclick={this.moveItem} />
+                            <a class="navbar-item mdi mdi-printer"  style={iconStyle} onclick={this.print.bind(this)}></a>
                         </div>
                     </div>
                 </div>

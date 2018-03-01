@@ -21,7 +21,7 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            return
+            //return
             if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
             const tabular = nextProps.tabular

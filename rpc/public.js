@@ -337,6 +337,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
     }),
 
     get: function(curUser, id, cb) {
+
       var first = id[0];
       var curdb;
       if(first === 'p') {
@@ -359,12 +360,12 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
     },
 
     // TODO should have some kind of validation / security / rate limiting
-    requestMaterialRemote: function(curUser, id, requesterEmail, physicalAddress, cb) {
+    requestLocalMaterial: function(curUser, id, requesterEmail, physicalAddress, name, org, msg, cb) {
 
-      db.physical.get(id, function(err, m) {
+      db.virtual.get(id, function(err, m) {
         if(err) return cb(err);
 
-        mailer.sendMaterialRequest(m, requesterEmail, physicalAddress, cb);
+        mailer.sendMaterialRequest(m, requesterEmail, physicalAddress, name, org, msg, cb);
       });
     }
 

@@ -35,6 +35,8 @@ module.exports = function(opts, base_url) {
     if(!data.subject || (!data.text && !data.html) || !data.to) {
       return cb("Attempting to send email with missing .subject, (.text or .html) or .to");
     }
+    console.log("SENDING TO:", JSON.stringify(data.to, null, 2));
+
     var subject = (this.opts.subjectPrefix) ? this.opts.subjectPrefix + ' ' + data.subject : data.subject;
     this.mailer.sendMail({
       from: this.opts.from_address,
@@ -63,22 +65,20 @@ module.exports = function(opts, base_url) {
     });
   };
 
-  this.sendMaterialRequest = function(m, requesterEmail, physicalAddress, cb) {
+  this.sendMaterialRequest = function(m, requesterEmail, physicalAddress, name, org, msg, cb) {
     if(!m || !m.name) {
       return cb("Cannot send email verification email: Missing material or material name");
     }
 
-    // TODO validate requesterEmail
-    var txt = "You have received a request for materials from "+requesterEmail+"\n\nThe material request is for: "+m.name+"\n\n"+"Inventory location: "+base_url+"/inventory/"+m.id+"\n\nShipping address:\n\n";
+    // TODO validate and sanitize user input
 
-    var i;
-    for(i=0; i < physicalAddress.length; i++) {
-      txt += "  "+physicalAddress[i]+"\n"
+    var txt = "You have received a request for materials from "+name+" <"+requesterEmail+"> from the lab/institute: "+org+"\n\n";
+    txt += "The material request is for: "+m.name+"\n\n";
+    txt += "Link: "+base_url+"/virtual/show/"+m.id+"\n\n";
+    txt += "Shipping address:\n\n"+physicalAddress+"\n\n";
+    if(msg && msg.trim()) {
+      txt += "The requester included the following message: \n\n"+msg+"\n\n";
     }
-
-    txt += "\n\n";
-
-    console.log("PPPPPPPPPPP", opts);
 
     this.send({
       to: opts.requestFulfillerEmail,

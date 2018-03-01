@@ -316,7 +316,7 @@ module.exports = function(Component) {
               </label>
               <label class="radio">
                 <input type="radio" name="type" value="blast" onchange={this.changeQueryType.bind(this)} checked={this.state.query.type === 'blast'} />
-                DNA/RNA
+                Nucletide sequence
               </label>
               <label class="radio" disabled>
                 <input type="radio" name="type" value="blast_aa" onchange={this.changeQueryType.bind(this)} checked={this.state.query.type === 'blast_aa'} disabled />
@@ -335,7 +335,7 @@ module.exports = function(Component) {
               
               <div class="hint-label">Hint:</div>
               <div class="hint-text">
-                <p>You can search using either human language or a DNA/AA sequence.</p>
+                <p>You can search using either human language or a nucleotide sequence.</p>
                 <p class="other">For advanced search tips have a look at <Link to="/help/search">search syntax help</Link>.</p>
               </div>
               <div class="float-clear"></div> 

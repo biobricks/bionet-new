@@ -16,6 +16,8 @@ module.exports = function(Component) {
   var Count = require('./count.js')(Component);
   var Virtual = require('./virtual.js')(Component);
   var EditVirtual = require('./edit_virtual.js')(Component);
+  var RequestMaterial = require('./request_material.js')(Component);
+  var RequestSent = require('./request_sent.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
   var Admin = require('./admin.js')(Component);
   var AdminEditUser = require('./admin_edit_user.js')(Component);
@@ -43,9 +45,12 @@ module.exports = function(Component) {
                 <Signup />
               )}/>
 
-              <Route path="/virtual/:id" component={Virtual} />
+              <Route path="/virtual/show/:id" component={Virtual} />
               <Route path="/virtual/edit/:id" component={EditVirtual} />
-          
+
+              <Route path="/request/:id" component={RequestMaterial} />
+              <Route path="/request-sent" component={RequestSent} />
+
               <Switch>
                 <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />
                 <Route path="/search" component={Search} />

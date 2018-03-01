@@ -63,7 +63,8 @@ module.exports = function(Component) {
           </Link>
         );
       }
-        
+
+
       
       return (
         <nav class="navbar is-transparent">
@@ -72,7 +73,10 @@ module.exports = function(Component) {
               <img src="/static/images/bionet_logo.png" alt="bionet.io"  height="48" />
             </a>
 
-            <a class="navbar-item is-hidden-desktop" target="_blank">bionet.io</a>
+            <a class="navbar-item" href="/">
+             <img class="lab-icon" src="/static/images/lab_icon.png" />
+             {app.settings.lab}
+            </a>
 
             <div class="navbar-burger burger" data-target="navMenuTransparentExample">
               <span></span>

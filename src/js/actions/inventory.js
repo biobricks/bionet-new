@@ -601,6 +601,8 @@ module.exports = {
     
     delPhysical: function (id, cb) {
         var err = null
-        if (cb) cb(err, id)
+        app.remote.delPhysical(id, function (err, id) {
+            if (cb) cb(err, id)
+        })
     }
 }

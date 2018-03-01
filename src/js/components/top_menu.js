@@ -73,10 +73,10 @@ module.exports = function(Component) {
               <img src="/static/images/bionet_logo.png" alt="bionet.io"  height="48" />
             </a>
 
-            <a class="navbar-item" href="/">
+            <Link class="navbar-item" to="/">
              <img class="lab-icon" src="/static/images/lab_icon.png" />
              {app.settings.lab}
-            </a>
+            </Link>
 
             <div class="navbar-burger burger" data-target="navMenuTransparentExample">
               <span></span>

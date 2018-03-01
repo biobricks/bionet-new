@@ -119,7 +119,10 @@ module.exports = function (Component) {
             if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
             const root = app.state.global.inventoryPath[0]
             const id = root.id
-            if (id) app.actions.inventory.getInventoryPath(id)
+            if (id) {
+                app.actions.inventory.selectCell(id, root.parent_id, root.parent_x, root.parent_y, true)
+                app.actions.inventory.getInventoryPath(id)
+            }
         }
         
         starItem() {
@@ -133,6 +136,7 @@ module.exports = function (Component) {
             } else {
                 item = app.actions.inventory.getItemFromInventoryPath(id)
             }
+            if (item) item.salt = Math.random()
             console.log('edit item',id, app.state.global.inventorySelection, item)
             app.actions.inventory.editItem(item)
         }
@@ -151,10 +155,15 @@ module.exports = function (Component) {
                             app.actions.notify("Error deleting item", 'error');
                             return
                         }
-                        app.actions.notify("Item deleted", 'notice', 2000);
+                        app.actions.notify(name+" deleted", 'notice', 2000);
+                        if (!app.state.global.inventorySelection) return
                         const parentId = app.state.global.inventorySelection.parentId
-                        console.log('delete refresh parentId:',parentId)
+                        if (!parentId) return
+                        const parentItem = app.actions.inventory.getItemFromInventoryPath(parentId)
                         app.actions.inventory.getInventoryPath(parentId)
+                        if (!parentItem) return
+                        console.log('delete refresh parentId:',parentId)
+                        app.actions.inventory.selectCell(parentItem.id, parentItem.parent_id, parentItem.parent_x, parentItem.parent_y, true)
                     })
                 }
             })
@@ -224,7 +233,8 @@ module.exports = function (Component) {
             }
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
-            const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="EditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />) : null
+//            const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="EditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />) : null
+            const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="EditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={app.state.global.inventoryItem} />) : null
             const editVirtual = (this.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active={this.displayAddVirtualModal} isOpen={this.showAddVirtualModal} item={this.item} />) : null
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
@@ -247,7 +257,7 @@ module.exports = function (Component) {
                       <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="margin:0;padding:0;">
                         <div class="dropdown-content"  style="margin:0;padding:0;">
                           <div class="dropdown-item"  style="margin:0;padding:0;">
-                            <Favorites favorites={app.state.global.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)}/>
+                            <Favorites favorites={app.state.global.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)} selectedItem={app.state.global.inventorySelection}/>
                           </div>
                         </div>
                       </div>

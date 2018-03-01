@@ -35,8 +35,9 @@ module.exports = function (Component) {
             for (var i=0; i<newPath.length; i++) {
                 var item = newPath[i]
                 var nextItem = (i<newPath.length-1) ? newPath[i+1] : {}
+                var yUnits = (item.type==='lab') ? item.children.length : item.yUnits
                 inventoryPath.push(
-                    <StorageContainer dbid={item.id} type={item.type} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={item.yUnits} item={item} items={item.children} selectedItem={nextItem.id} px={nextItem.parent_x} py={nextItem.parent_y}/>
+                    <StorageContainer dbid={item.id} type={item.type} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} items={item.children} selectedItem={nextItem.id} px={nextItem.parent_x} py={nextItem.parent_y}/>
                 )
             }
             this.setState({inventoryPath:inventoryPath})

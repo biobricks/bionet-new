@@ -18,7 +18,7 @@ module.exports = function (Component) {
         }
         
         initialize(nextProps) {
-            //console.log('storageContainer initialize props:',nextProps)
+            console.log('storageContainer initialize props:',nextProps)
             const xunits = (nextProps.xunits) ? nextProps.xunits : 1
             const yunits = (nextProps.yunits) ? nextProps.yunits : 1
             this.xunits = xunits
@@ -70,7 +70,7 @@ module.exports = function (Component) {
                 return cols
             }
                               
-            const rowStyle = "width:"+width+"px;height:"+dy+"px;margin:0;padding:0px;"
+            const rowStyle = "width:"+width+"px;max-height:"+dy+"px;margin:0;padding:0px;"
             const generateRows = function() {
                 thisModule.tiles=[]
                 const rows=[]

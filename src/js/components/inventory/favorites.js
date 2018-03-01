@@ -43,10 +43,18 @@ module.exports = function (Component) {
                 var material = favorites[i].material
                 favs.push(<Favorite favorite={favorites[i]} />)
             }
+            var itemName='itemx'
+            if (this.props.selectedItem) {
+                const id=this.props.selectedItem.id
+                if (id) {
+                    const item = app.actions.inventory.getItemFromInventoryPath(id)
+                    if (item && item.name) itemName = item.name
+                }
+            }
             return (
                 <nav class="panel">
                     <p class="panel-heading">Favorites</p>
-                    <a class="panel-block is-active" onclick={this.props.addFunction}>Add item to favorites</a>
+                    <a class="panel-block is-active" onclick={this.props.addFunction}>{"Add "+itemName+" to favorites"}</a>
                     {favs}
                 </nav>
             )

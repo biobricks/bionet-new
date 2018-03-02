@@ -16,9 +16,9 @@ module.exports = function (Component) {
         
         moveButtonClick() {
             if (this.state.moveActive) {
+                const item = app.actions.inventory.getLastPathItem()
                 const selection = app.state.global.inventorySelection
-                if (selection) {
-                    const item = app.actions.inventory.getSelectedItem()
+                if (item && selection) {
                     console.log('moved item from:',item.parent_x, item.parent_y)
                     item.parent_id = selection.parentId
                     item.parent_x = selection.x

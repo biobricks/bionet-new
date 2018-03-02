@@ -69,13 +69,11 @@ module.exports = function (Component) {
         }
             
         addItemClick(e) {
-
             //console.log('add menu item:',e.target.id, this.editPhysical)
             this.displayAddMenu(false)
-            
-            // todo: ashnagz listner is not triggered if unchanged
-            const item = this.generateNewItem(app.state.global.inventorySelection.id, app.state.global.inventorySelection.x, app.state.global.inventorySelection.y, e.target.id)
-            //const item = this.generateNewItem(app.state.global.inventorySelection.id, e.target.id)
+            const parent = app.actions.inventory.getLastPathItem()
+            if (!parent) return null
+            const item = this.generateNewItem(parent.id, parent.parent_x, parent.parent_y, e.target.id)
             if (this.createType) app.actions.inventory.editVirtualItem(item)
             else app.actions.inventory.editItem(item)
         }

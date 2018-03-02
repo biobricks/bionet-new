@@ -1,12 +1,5 @@
 module.exports = {
     getSelectedItem: function() {
-        /*
-        if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return null
-        const path = app.state.global.inventoryPath
-        if (!path || path.length<1) return null
-        const item = path[path.length-1]
-        return item
-        */
         if (!app.state.global.inventorySelection || !app.state.global.inventorySelection.id) return null
         const id = app.state.global.inventorySelection.id
         
@@ -23,6 +16,14 @@ module.exports = {
             }
         }
         return null
+    },
+    
+    getLastPathItem: function() {
+        if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return null
+        const path = app.state.global.inventoryPath
+        if (!path || path.length<1) return null
+        const item = path[path.length-1]
+        return item
     },
     
     getItemFromInventoryPath: function(id, pathIn) {

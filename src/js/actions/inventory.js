@@ -1,42 +1,4 @@
 module.exports = {
-    
-    getPath: function (n) {
-        
-        const generateTestItems = function(xunits,yunits) {
-            const items=[]
-            for (var y=0; y<yunits; y++) {
-                for (var x=0; x<xunits; x++) {
-                    if ( Math.random() > 0.8 ) {
-                        var id = (x+1)+','+(y+1)
-                        items.push({id:id,name:id,parent_x:x,parent_y:y})
-                    }
-                }
-            }
-            return items
-        }
-        
-        const newPath2 = [
-            {name:'lab',child:'freezer',xUnits:1,yUnits:1},
-            {name:'freezer',child:'shelf',xUnits:1,yUnits:5},
-            {name:'shelf',child:'rack',xUnits:4,yUnits:1},
-            {name:'rack',child:'box',xUnits:5,yUnits:4},
-            {name:'box',child:'well',xUnits:10,yUnits:10}
-        ]
-        const newPath = []
-        for (var i=0; i<n; i++) {
-            var item = newPath2[i]
-            item.children = generateTestItems(item.xUnits, item.yUnits)
-            newPath.push(item)
-        }
-        
-        app.changeState({
-            global: {
-                inventoryPath: newPath
-            }
-        });
-        //console.log('getPathTest action %d',n, newPath)
-    },
-    
     getSelectedItem: function() {
         if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return null
         const path = app.state.global.inventoryPath

@@ -64,7 +64,7 @@ module.exports = function (Component) {
                     <button id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3" onclick={this.toggleDropdown}  style="min-width:100%;width:100%;justify-content:flex-start">
                       <span>{this.state.type}</span>
                       <span class="icon is-small">
-                        <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
+                        <a class="mdi mdi-menu-down" style="color:black;"></a>
                       </span>
                     </button>
                   </div>

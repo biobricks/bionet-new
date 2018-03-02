@@ -196,8 +196,6 @@ module.exports = function (Component) {
         }
         
         upload() {
-            //console.log('upload item')
-            //app.actions.inventory.getPath(5)
         }
         
         moveItem() {

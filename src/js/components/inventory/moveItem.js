@@ -66,7 +66,7 @@ module.exports = function (Component) {
                         </div>
                     </div>
                     <span style="color:#ffffff;margin-left:5px; margin-right:20px;font-weight:800;">{this.props.name}</span>
-                    <span class="button is-rounded is-small is-light" onclick={close}><a class="mdi mdi-window-close" style="color:#000000;font-weight:800;"></a></span>
+                    <span class="button is-rounded" style="background-color:rgb(64,64,64);border:none;" onclick={close}><a class="mdi mdi-close-box mdi-24px mdi-light" style="color:#000000;font-weight:800;"></a></span>
                 </a>
             )
         }

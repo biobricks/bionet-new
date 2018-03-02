@@ -1,10 +1,28 @@
 module.exports = {
     getSelectedItem: function() {
+        /*
         if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return null
         const path = app.state.global.inventoryPath
         if (!path || path.length<1) return null
         const item = path[path.length-1]
         return item
+        */
+        if (!app.state.global.inventorySelection || !app.state.global.inventorySelection.id) return null
+        const id = app.state.global.inventorySelection.id
+        
+        if (app.state.global.inventoryPath && app.state.global.inventoryPath.length>0) {
+            const path = app.state.global.inventoryPath
+            const pathItem = path[path.length-1]
+            if (pathItem.id === id) return pathItem
+            
+            const children = pathItem.children
+            if (!children) return null
+            console.log('getSelectedItem searching child items')
+            for (var i=0; i<children.length; i++) {
+                if (children[i].id===id) return children[i]
+            }
+        }
+        return null
     },
     
     getItemFromInventoryPath: function(id, pathIn) {
@@ -34,17 +52,15 @@ module.exports = {
         });
     },
     
-    deselectItem: function(id) {
-        app.changeState({
-            global: {
-                inventoryFunction: {name:'clearSelection', id:id}
-            }
-        });
-    },
-    
     editItem: function(item) {
         console.log('editItem action: ', item)
         const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
+        app.changeState({
+            global: {
+                inventoryItem: null,
+                inventoryItemParent: null
+            }
+        });
         app.changeState({
             global: {
                 inventoryItem: item,
@@ -121,12 +137,35 @@ module.exports = {
                 this.getChildren(locationId, (pid, children) => {
                     locationPath[pid].children = children
                     if (--results <= 0) {
+                        
                         app.changeState({
                             global: {
-                                inventoryPath: locationPathAr
+                                inventoryPath: null
+                            }
+                        });
+                        
+                        const length = locationPathAr.length
+                        const item = (length>0) ? locationPathAr[length-1] : null
+                        const parent = (length>1) ? locationPathAr[length-2] : null
+                        var inventorySelection = null
+                        if (item) {
+                            inventorySelection = {
+                                id: item.id,
+                                parentId: item.parent_id,
+                                x: item.parent_x,
+                                y: item.parent_y,
+                                navigate:true
+                            }
+                        }
+                        
+                        app.changeState({
+                            global: {
+                                inventoryPath: locationPathAr,
+                                inventorySelection: inventorySelection
                             }
                         });
                         if (cb) cb(locationPath)
+                        
                     }
                 })
             }
@@ -157,6 +196,11 @@ module.exports = {
         }
         app.setState({
             global: {
+                inventoryTypes: null
+            }
+        });
+        app.setState({
+            global: {
                 inventoryTypes: typeSpec
             }
         });
@@ -172,6 +216,11 @@ module.exports = {
             for (var i = 0; i < children.length; i++) {
                 var item = children[i].value
                 if (!item.parent_id && item.type === 'lab') {;
+                    app.changeState({
+                        global: {
+                            inventoryRoot: null
+                        }
+                    });
                     app.changeState({
                         global: {
                             inventoryRoot: item
@@ -525,6 +574,11 @@ module.exports = {
     setMoveItem: function(item) {
         app.changeState({
             global: {
+                moveItem: null
+            }
+        });
+        app.changeState({
+            global: {
                 moveItem: item
             }
         });
@@ -536,21 +590,16 @@ module.exports = {
             console.log('getFavorites action:',userFavorites)
             app.changeState({
                 global: {
+                    favorites: null
+                }
+            });
+            app.changeState({
+                global: {
                     favorites: userFavorites
                 }
             });
             if (cb) cb(err, userFavorites)
         })
-        /*
-        app.remote.favLocationsTree(function (err, userFavorites) {
-            if (err) {
-                console.log('get favorites err:', err)
-                return
-            }
-            //todo set getfavorites state
-            //BIONET.signal.getFavoritesResult.dispatch(userFavorites)
-        })
-        */
     },
 
     virtualSaveResult: function () {

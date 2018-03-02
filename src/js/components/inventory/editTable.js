@@ -65,7 +65,20 @@ module.exports = function (Component) {
                 var ref = this.rowRef[id]
                 //console.log('rowref:',ref)
                 if (ref) {
-                    ref.focus(selectedId === ref.props.id, false)
+                    const hasFocus = selectedId === ref.props.id
+                    ref.focus(hasFocus, false)
+                    if (hasFocus) {
+                        var parent_id = null
+                        var parent_x = 0
+                        var parent_y = 0
+                        const item = ref.props.item
+                        if (item) {
+                            parent_id = item.parent_id
+                            parent_x = item.parent_x
+                            parent_y = item.parent_y
+                        }
+                        app.actions.inventory.selectCell(selectedId, parent_id, parent_x, parent_y, false)
+                    }
                 }
             }
         }

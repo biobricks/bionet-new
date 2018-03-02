@@ -129,14 +129,15 @@ module.exports = function (Component) {
         }
         
         editItem() {
+            var item = app.actions.inventory.getSelectedItem()
             const id = app.state.global.inventorySelection.id
-            var item = null
+            //var item = null
             if (!id) {
                 item = this.generateNewItem(app.state.global.inventorySelection.parentId,app.state.global.inventorySelection.x, app.state.global.inventorySelection.y,'')
             } else {
-                item = app.actions.inventory.getItemFromInventoryPath(id)
+                //item = app.actions.inventory.getItemFromInventoryPath(id)
             }
-            if (item) item.salt = Math.random()
+            //if (item) item.salt = Math.random()
             console.log('edit item',id, app.state.global.inventorySelection, item)
             app.actions.inventory.editItem(item)
         }
@@ -177,13 +178,6 @@ module.exports = function (Component) {
         }
         
         addFavorite() {
-            /*
-            if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
-            const path = app.state.global.inventoryPath
-            if (!path || path.length<1) return null
-            const item = path[path.length-1]
-            if (!item) return
-            */
             const item = app.actions.inventory.getSelectedItem()
             if (!item) return
             app.actions.inventory.addFavorite(item, function(err) {

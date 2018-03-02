@@ -55,21 +55,39 @@ module.exports = function (Component) {
             if (!(loggedInUser)) return
                         app.actions.inventory.getFavorites()
             const id = (this.props.match) ? this.props.match.params.id : null
+            const thisModule = this
+            
+            const getRootInventoryPath=function() {
+                app.actions.inventory.getRootItem(function(item) {
+                    if (item) {
+                        app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){
+                            app.actions.inventory.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                        })
+                    } else {
+                        console.log('getRootItem - no item found')
+                    }
+                })
+            }
+            
             if (id) {
                 app.actions.inventory.getInventoryPath(id, function(inventoryPath){
+                    if (!inventoryPath) {
+                        getRootInventoryPath()
+                        return
+                    }
                     const item = inventoryPath[id]
-                    //const item = app.actions.inventory.getItemFromInventoryPath(id, inventoryPath)
-                    console.log('logged in inventory: id', id, item, inventoryPath)
-                    app.actions.inventory.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                    if (item) {
+                        //const item = app.actions.inventory.getItemFromInventoryPath(id, inventoryPath)
+                        console.log('logged in inventory: id', id, item, inventoryPath)
+                        app.actions.inventory.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                    } else {
+                        console.log('logged in inventory: id not found', this)
+                        getRootInventoryPath()
+                    }
                 })
             } else {
                 console.log('logged in inventory: no id', this)
-                app.actions.inventory.getRootItem(function(item) {
-                    if (item) {
-                        app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){})
-                        app.actions.inventory.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
-                    }
-                }.bind(this))
+                getRootInventoryPath()
             }
         }
         

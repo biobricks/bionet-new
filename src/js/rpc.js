@@ -23,12 +23,15 @@ function reconnect(cb) {
     });
   }
   setTimeout(function() {
-    setConnectState(false, "Will attempt to reconnect in " + (delay - 1) + " seconds...", (delay - 1));
+    if(delay > 0) {
+      setConnectState(false, "Will attempt to reconnect in " + (delay - 1) + " seconds...", (delay - 1));
+    }
   }, 1000);
   console.log("reconnecting in", delay, "seconds");
   setTimeout(function() {
+    setConnectState(false, "Attempting to reconnect...");
     connect(cb);
-  }, delay * 1000);
+  }, delay * 1000 + 1);
   reconnectAttempts++;
 }
 
@@ -64,7 +67,12 @@ function connector(cb) {
   // You can turn on debugging like this:
   //   var rpcClient = rpc(null, {debug: true});
   var rpcClient = rpc(null, {
-    objectMode: true
+    objectMode: true,
+    heartbeat: 500
+  });
+
+  rpcClient.on('death', function() {
+    failOnce(new Error("connection timed out"));
   });
 
   rpcClient.pipe(stream).pipe(rpcClient);

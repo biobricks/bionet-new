@@ -18,7 +18,7 @@ module.exports = function (Component) {
         }
         
         initialize(nextProps) {
-            //console.log('storageContainer initialize props:',nextProps)
+            console.log('storageContainer initialize props:',nextProps)
             const xunits = (nextProps.xunits) ? nextProps.xunits : 1
             const yunits = (nextProps.yunits) ? nextProps.yunits : 1
             this.xunits = xunits
@@ -47,6 +47,7 @@ module.exports = function (Component) {
             const height = pheight
             const dx = width / xunits
             const dy = height / yunits
+            console.log('subdivideContainer', xunits, yunits, width, height, dx, dy)
             const thisModule = this
             const generateCols =function(row) {
                 const cols=[]

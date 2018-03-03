@@ -14,23 +14,23 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             //console.log('view props:', JSON.stringify(props))
-            const inventoryPath = this.updateInventoryPath(props.inventoryPath)
-            var containerSize = window.innerWidth/8
-            containerSize = (containerSize > 150) ? 150: containerSize
             this.state = {
-                inventoryPath:inventoryPath,
+                inventoryPath:null,
                 inventoryItem:{},
-                containerSize:containerSize
+                containerSize:150
             }
-            ashnazg.listen('global.inventoryPath', this.updateInventoryPath.bind(this));
-            ashnazg.listen('global.moveItem', this.updateMoveItem.bind(this));
+            //ashnazg.listen('global.inventoryPath', this.updateInventoryPath.bind(this));
+            //ashnazg.listen('global.moveItem', this.updateMoveItem.bind(this));
         }
         
         updateInventoryPath(newPath) {
             if (!newPath) return
             //console.log('update inventory path:',newPath)
             
-            const containerSize = this.state.containerSize
+            var containerSize = window.innerWidth/8
+            containerSize = (containerSize > 150) ? 150: containerSize
+            if (!containerSize) containerSize = 150
+            
             const inventoryPath = []
             for (var i=0; i<newPath.length; i++) {
                 var item = newPath[i]
@@ -40,7 +40,6 @@ module.exports = function (Component) {
                     <StorageContainer dbid={item.id} type={item.type} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} items={item.children} selectedItem={nextItem.id} px={nextItem.parent_x} py={nextItem.parent_y}/>
                 )
             }
-            this.setState({inventoryPath:inventoryPath})
             this.inventoryPath = inventoryPath
             this.newPath = newPath.length
             return inventoryPath
@@ -85,9 +84,10 @@ module.exports = function (Component) {
             //                            <a class="navbar-item mdi mdi-star-outline" style={iconStyle} onclick={this.addFavorite.bind(this)}></a>
             var moveId = null
             var moveName = null
-            if (this.state.moveItem) {
-                moveId = this.state.moveItem.id
-                moveName = this.state.moveItem.name
+            const moveItem = app.state.global.moveItem
+            if (moveItem) {
+                moveId = moveItem.id
+                moveName = moveItem.name
             }
 
             return (
@@ -109,7 +109,8 @@ module.exports = function (Component) {
         
         render() {
             
-            const path = this.state.inventoryPath
+            //const path = this.state.inventoryPath
+            const path = this.updateInventoryPath(this.props.inventoryPath)
             if (!path) return
             
             const ipath = this.props.inventoryPath

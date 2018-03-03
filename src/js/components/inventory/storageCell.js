@@ -65,7 +65,8 @@ module.exports = function (Component) {
                 const CellLabel = function(props) {
                     if (width>100) return (<span style={cellLabelStyle+"margin-left:5px;"}>{props.name}</span>)
                     else if (width>20) return (<span style={cellLabelStyle}>{props.text}</span>)
-                }
+                    return null
+                }.bind(this)
                                        
                 return (
                     <div id={this.props.id} class="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} >

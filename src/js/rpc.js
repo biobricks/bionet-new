@@ -68,7 +68,7 @@ function connector(cb) {
   //   var rpcClient = rpc(null, {debug: true});
   var rpcClient = rpc(null, {
     objectMode: true,
-    heartbeat: 500
+    heartbeat: 2000
   });
 
   rpcClient.on('death', function() {

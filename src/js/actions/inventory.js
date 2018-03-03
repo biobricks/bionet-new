@@ -1,4 +1,50 @@
 module.exports = {
+    
+    initialize: function () {
+        /*
+        app.changeState({
+            global: {
+                test:[1,2,3],
+                test2:{}
+            }
+        })
+        */
+        
+        app.changeState({
+            global: {
+                moveItem: {},
+                inventorySelection: {},
+                inventoryTypes:{},
+                inventoryItem: null,
+                inventoryItemParent: null,
+                virtualItem: null,
+                inventoryItemParent: null,
+                inventoryLocationPath: null,
+                inventoryPath:null,
+                inventoryRoot: null,
+                rootId: null
+            }
+        });
+        return
+        
+        app.changeState({
+            global: {
+                inventorySelection: {},
+                inventoryTypes:{},
+                inventoryItem: null,
+                inventoryItemParent: null,
+                virtualItem: null,
+                inventoryItemParent: null,
+                inventoryLocationPath: null,
+                inventoryPath: null,
+                inventoryRoot: null,
+                rootId: null,
+                moveItem: {},
+                locations:[]
+            }
+        });
+    },
+    
     getSelectedItem: function() {
         if (!app.state.global.inventorySelection || !app.state.global.inventorySelection.id) return null
         const id = app.state.global.inventorySelection.id
@@ -100,6 +146,7 @@ module.exports = {
     },
     
     getLocationType: function( type ) {
+        if (!app.state.global.inventoryTypes.locations) return
         const types = app.state.global.inventoryTypes.locations
         for (var i=0; i<types.length; i++) {
             if ( types[i].name === type ) return types[i]
@@ -108,14 +155,18 @@ module.exports = {
     },
     
     getInventoryPath: function(id, cb) {
-        if (!id) return
+        if (!id) {
+            if (cb) cb(null)
+            return null
+        }
         console.log('getInventoryPath action id:',id)
         const locationPath = {}
         var results = 0
         app.remote.getLocationPath(id, function (err, locationPathAr) {
             if (err) {
                 console.log('getLocationPath error:', err)
-                return
+                if (cb) cb(null)
+                return null
             }
             
             app.changeState({
@@ -195,12 +246,12 @@ module.exports = {
             materials: materials,
             locations: locations
         }
-        app.setState({
+        app.changeState({
             global: {
                 inventoryTypes: null
             }
         });
-        app.setState({
+        app.changeState({
             global: {
                 inventoryTypes: typeSpec
             }

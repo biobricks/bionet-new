@@ -47,13 +47,16 @@ module.exports = function (Component) {
 
         componentDidMount() {
             //console.log('inventory component mounted')
-            app.actions.inventory.getInventoryTypes()
         }
         
         loggedInUser(loggedInUser) {
             //console.log('logged in inventory: user', loggedInUser, app.remote)
             if (!(loggedInUser)) return
-                        app.actions.inventory.getFavorites()
+            
+            app.actions.inventory.initialize()
+            
+            app.actions.inventory.getInventoryTypes()
+            app.actions.inventory.getFavorites()
             const id = (this.props.match) ? this.props.match.params.id : null
             const thisModule = this
             

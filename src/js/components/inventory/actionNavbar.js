@@ -141,22 +141,32 @@ module.exports = function (Component) {
         }
         
         deleteItem() {
-            const id = app.state.global.inventorySelection.id
-            if (!id) return
-            const item = app.actions.inventory.getItemFromInventoryPath(id)
+            const item = app.actions.inventory.getLastPathItem()
             if (!item) return
+            const id = item.id
+            if (!id) return
             const name = item.name
+            const parentId = item.parent_id
+            console.log('deleting item 1:', id, name, parentId, item)
             app.actions.prompt.display('Do you wish to delete '+name+'?', function(accept) {
-                console.log('delete item:',accept)
                 if (accept) {
-                    app.actions.inventory.delPhysical(id, function(err,id) {
+                        /*
+                        console.log('deleting item 2:', id, name, parentId, item)
+                        app.actions.notify(name+" deleted", 'notice', 2000);
+                        if (!parentId) return
+                        const parentItem = app.actions.inventory.getItemFromInventoryPath(parentId)
+                        app.actions.inventory.getInventoryPath(parentId)
+                        if (!parentItem) return
+                        app.actions.inventory.selectCell(parentItem.id, parentItem.parent_id, parentItem.parent_x, parentItem.parent_y, true)
+                        return
+                        */
+                    
+                    app.actions.inventory.delPhysical(id, function(err,id2) {
                         if (err) {
                             app.actions.notify("Error deleting item", 'error');
                             return
                         }
                         app.actions.notify(name+" deleted", 'notice', 2000);
-                        if (!app.state.global.inventorySelection) return
-                        const parentId = app.state.global.inventorySelection.parentId
                         if (!parentId) return
                         const parentItem = app.actions.inventory.getItemFromInventoryPath(parentId)
                         app.actions.inventory.getInventoryPath(parentId)

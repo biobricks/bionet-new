@@ -18,7 +18,7 @@ module.exports = function (Component) {
         }
         
         initialize(nextProps) {
-            console.log('storageContainer initialize props:',nextProps)
+            //console.log('storageContainer initialize props:',nextProps)
             const xunits = (nextProps.xunits) ? nextProps.xunits : 1
             const yunits = (nextProps.yunits) ? nextProps.yunits : 1
             this.xunits = xunits
@@ -119,8 +119,8 @@ module.exports = function (Component) {
         }
 
         selectCellListener(cellLocation) {
-            if (this.dbid!==cellLocation.parentId) return
-            console.log('selectCellListener:',this.dbid, cellLocation, this.props)
+            if (!cellLocation || this.dbid!==cellLocation.parentId) return
+            //console.log('selectCellListener:',this.dbid, cellLocation, this.props)
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
             const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)
@@ -140,12 +140,11 @@ module.exports = function (Component) {
                 const selectedItem = (selectedCell.props.item) ? selectedCell.props.item.id : this.props.item.id
                 app.actions.inventory.getInventoryPath(selectedItem)
             } else {
-                
             }
         }
 
         render() {
-            console.log('containerSubdivision render:',this.props)
+            //console.log('containerSubdivision render:',this.props)
             const tiles = this.initialize(this.props)
             if (!tiles) return
             

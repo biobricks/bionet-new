@@ -16,6 +16,7 @@ module.exports = function (Component) {
             ashnazg.listen('global.user', this.loggedInUser.bind(this));
             ashnazg.listen('global.inventoryPath', this.onUpdatePath.bind(this));
             window.onpopstate = this.onpopstate.bind(this)
+            this.login=false
             this.pushHistory=true
         }
         
@@ -46,13 +47,18 @@ module.exports = function (Component) {
         }
 
         componentDidMount() {
+            if (app.state.global.user &&!this.login) this.loggedInUser(app.state.global.user)
             //console.log('inventory component mounted')
         }
         
         loggedInUser(loggedInUser) {
             //console.log('logged in inventory: user', loggedInUser, app.remote)
-            if (!(loggedInUser)) return
             
+            if (!(loggedInUser)) {
+                this.login = false
+                return
+            }
+            this.login=true
             app.actions.inventory.initialize()
             
             app.actions.inventory.getInventoryTypes()

@@ -3,6 +3,7 @@ import {
 }
 from 'preact'
 import ashnazg from 'ashnazg'
+//import util from '../util.js';
 
 module.exports = function (Component) {
 
@@ -47,20 +48,27 @@ module.exports = function (Component) {
         }
 
         componentDidMount() {
-            if (app.state.global.user &&!this.login) this.loggedInUser(app.state.global.user)
+            this.login = false
+            return
+            
+            console.log('inventory component mounted:',app.state.global.user)
+            if (!app.state.global.user) {
+                //app.actions.notify("You must be logged in to view inventory.", 'error');
+            } else {
+                if (!this.login) this.loggedInUser(app.state.global.user)
+            }
             //console.log('inventory component mounted')
         }
         
         loggedInUser(loggedInUser) {
             //console.log('logged in inventory: user', loggedInUser, app.remote)
             
-            if (!(loggedInUser)) {
+            if (!loggedInUser) {
                 this.login = false
                 return
             }
             this.login=true
             app.actions.inventory.initialize()
-            
             app.actions.inventory.getInventoryTypes()
             app.actions.inventory.getFavorites()
             const id = (this.props.match) ? this.props.match.params.id : null
@@ -101,6 +109,13 @@ module.exports = function (Component) {
         }
         
         render() {
+            if (!app.state.global.user) {
+                return (
+                    <div>You must be logged in to view this page.</div>
+                )
+            } else {
+                //this.loggedInUser(app.state.global.user)
+            }
             return ( 
                 <div id="inventory_view" class="tile is-ancestor">
                     <ActionNavbar state="inventoryNav" menu={app.state.global.inventoryTypes}/>

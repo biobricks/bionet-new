@@ -118,6 +118,12 @@ module.exports = {
     
     editVirtualItem: function(item) {
         console.log('editVirtualItem action: ', item)
+        app.changeState({
+            global: {
+                virtualItem: null,
+                inventoryItemParent: null
+            }
+        });
         const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
         app.changeState({
             global: {

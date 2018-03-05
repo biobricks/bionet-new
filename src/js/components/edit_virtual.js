@@ -150,7 +150,6 @@ module.exports = function(Component) {
 
     componentWillReceiveProps(nextProps) {
       const virtualId = (this.props.match && this.props.match.params.id) ? this.props.match.params.id : this.props.id
-      console.log('edit_virtual props, id:',virtualId)
       this.setState({
         id: virtualId,
         error: null
@@ -158,7 +157,6 @@ module.exports = function(Component) {
       if (this.props.modal) {
           app.actions.prompt.initCallback(this.save.bind(this))
       }
-
       util.whenConnected(function() {
         this.getVirtual(this.state.id);
       }.bind(this));
@@ -167,6 +165,7 @@ module.exports = function(Component) {
 
     componentDidMount() {
       if(!this.simplemde) {
+        const showToolbar = (this.props.modal) ? false : true
         this.simplemde = new SimpleMDE({ 
           element: document.getElementById('editor'),
           autoDownloadFontAwesome: false,
@@ -177,6 +176,7 @@ module.exports = function(Component) {
           },
           spellChecker: false,
           hideIcons: ['image'],
+          toolbar:showToolbar,
           indentWithTabs: false
         });
 
@@ -192,7 +192,6 @@ module.exports = function(Component) {
 
 	  render() {
           
-      //const virtualId = (this.state.id) ? this.state.id : this.props.id
       var formControls = null
       if (!this.props.modal) {
           formControls=(
@@ -206,6 +205,7 @@ module.exports = function(Component) {
             </div>
           )
       }
+      
       return (
         <div>
           <form onSubmit={this.save.bind(this)}>
@@ -221,7 +221,6 @@ module.exports = function(Component) {
               <textarea id="editor"></textarea>
             </div>
             {formControls}
-            
           </form>
 
         </div>

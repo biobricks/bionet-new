@@ -36,10 +36,6 @@ module.exports = function (Component) {
             this.setState({menuDef:menuDef})
         }
         
-        componentDidMount() {
-        }
-        
-
         editItemListener(item) {
             console.log('editItemListener:',item)
             this.item = item
@@ -123,6 +119,7 @@ module.exports = function (Component) {
             }
         }
         
+        //todo: add item to favorites dropdown is currently activated by hovering - enable clicking for touch-screen
         starItem() {
         }
         
@@ -141,6 +138,9 @@ module.exports = function (Component) {
         }
         
         deleteItem() {
+            //app.actions.notify("Error deleting item", 'error');
+            //return
+            
             const item = app.actions.inventory.getLastPathItem()
             if (!item) return
             const id = item.id
@@ -150,17 +150,6 @@ module.exports = function (Component) {
             console.log('deleting item 1:', id, name, parentId, item)
             app.actions.prompt.display('Do you wish to delete '+name+'?', function(accept) {
                 if (accept) {
-                        /*
-                        console.log('deleting item 2:', id, name, parentId, item)
-                        app.actions.notify(name+" deleted", 'notice', 2000);
-                        if (!parentId) return
-                        const parentItem = app.actions.inventory.getItemFromInventoryPath(parentId)
-                        app.actions.inventory.getInventoryPath(parentId)
-                        if (!parentItem) return
-                        app.actions.inventory.selectCell(parentItem.id, parentItem.parent_id, parentItem.parent_x, parentItem.parent_y, true)
-                        return
-                        */
-                    
                     app.actions.inventory.delPhysical(id, function(err,id2) {
                         if (err) {
                             app.actions.notify("Error deleting item", 'error');
@@ -197,6 +186,7 @@ module.exports = function (Component) {
             }.bind(this))
         }
         
+        // todo: display open local files modal then upload
         upload() {
         }
         
@@ -233,7 +223,6 @@ module.exports = function (Component) {
             }
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
-//            const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="EditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={this.item} />) : null
             const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="EditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={app.state.global.inventoryItem} />) : null
             const editVirtual = (this.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active={this.displayAddVirtualModal} isOpen={this.showAddVirtualModal} item={this.item} />) : null
             return (

@@ -116,12 +116,13 @@ module.exports = {
         });
     },
     
-    editVirtualItem: function(id) {
-        console.log('editVirtualItem action: ', id)
-        //const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
+    editVirtualItem: function(item) {
+        console.log('editVirtualItem action: ', item)
+        const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
         app.changeState({
             global: {
-                editVirtualId:id
+                virtualItem: item,
+                inventoryItemParent: parent
             }
         });
     },

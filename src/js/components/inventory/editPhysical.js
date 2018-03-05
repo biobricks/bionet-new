@@ -8,6 +8,7 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
+    const EditVirtual = require('../edit_virtual')(Component)
     //const EditTable = require('./editTable')(Component)
     
     return class EditPhysical extends Component {
@@ -142,8 +143,14 @@ module.exports = function (Component) {
         
         editVirtual(e) {
             e.preventDefault();
-            if (!this.props.item) return
-            console.log('edit virtual:',this.props.item)
+            if (!this.props.item || !this.props.item.virtual_id) return
+            
+            const editVirtualId = this.props.item.virtual_id
+            app.actions.inventory.editVirtualItem(editVirtualId)
+            app.actions.prompt.initRender(<EditVirtual state="EditVirtual" id={editVirtualId} modal="true"/>)
+            app.actions.prompt.display('Edit Virtual', function(result) {
+                //console.log('virtual result')
+            })
         }
         
         render() {

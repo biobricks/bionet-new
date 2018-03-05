@@ -31,6 +31,7 @@ module.exports = function (Component) {
             e.preventDefault();
             this.display(false)
             app.actions.prompt.reset()
+            app.actions.prompt.callback(e)
             if (this.cb) this.cb(true)
         }
         
@@ -57,7 +58,9 @@ module.exports = function (Component) {
                           </div>
                         </section>
                         <div class=" post-hero-area">
-                            {app.actions.prompt.render()}
+                            <div style="padding:20px;">
+                                {app.actions.prompt.render()}
+                            </div>
                             <div class="control" style="margin-left:20px; margin-bottom:20px;">
                                 <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>
                                 <span style="margin-right:20px;">&nbsp;</span>

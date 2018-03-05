@@ -21,9 +21,10 @@ module.exports = function(Component) {
       super(props);
 
       this.queryID = 0;
+      const virtualId = (props.match && props.match.params.id) ? props.match.params.id : props.id
 
       this.state = {
-        id: this.props.match.params.id,
+        id: virtualId,
         virtual: undefined,
         name: undefined,
         notice: undefined,
@@ -118,7 +119,7 @@ module.exports = function(Component) {
           console.error(err);
           return;
         }
-        app.actions.notify("Save complete!");
+        app.actions.notify(o.name+" saved!");
         this.setState({
           notice: undefined,
           changed: false
@@ -148,11 +149,15 @@ module.exports = function(Component) {
     }
 
     componentWillReceiveProps(nextProps) {
-
+      const virtualId = (this.props.match && this.props.match.params.id) ? this.props.match.params.id : this.props.id
+      console.log('edit_virtual props, id:',virtualId)
       this.setState({
-        id: nextProps.match.params.id,
+        id: virtualId,
         error: null
       });
+      if (this.props.modal) {
+          app.actions.prompt.initCallback(this.save.bind(this))
+      }
 
       util.whenConnected(function() {
         this.getVirtual(this.state.id);
@@ -186,7 +191,21 @@ module.exports = function(Component) {
     }
 
 	  render() {
-
+          
+      //const virtualId = (this.state.id) ? this.state.id : this.props.id
+      var formControls = null
+      if (!this.props.modal) {
+          formControls=(
+            <div class="field is-grouped">
+              <div class="control">
+                <input type="submit" class="button is-link" value="Save" disabled={!this.state.changed} />
+              </div>
+              <div class="control">
+                <button class="button is-text" onClick={this.cancel.bind(this)} disabled={!this.state.changed}>Cancel</button>
+                </div>
+            </div>
+          )
+      }
       return (
         <div>
           <form onSubmit={this.save.bind(this)}>
@@ -201,14 +220,8 @@ module.exports = function(Component) {
               <p class="help is-danger">{this.state.notice}</p>
               <textarea id="editor"></textarea>
             </div>
-            <div class="field is-grouped">
-              <div class="control">
-                <input type="submit" class="button is-link" value="Save" disabled={!this.state.changed} />
-              </div>
-              <div class="control">
-                <button class="button is-text" onClick={this.cancel.bind(this)} disabled={!this.state.changed}>Cancel</button>
-                </div>
-            </div>
+            {formControls}
+            
           </form>
 
         </div>

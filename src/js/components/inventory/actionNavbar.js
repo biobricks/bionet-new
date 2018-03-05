@@ -6,7 +6,6 @@ import ashnazg from 'ashnazg'
 
 module.exports = function (Component) {
     const EditPhysical = require('./editPhysical')(Component)
-    const EditVirtual = require('./editVirtual')(Component)
     const Favorites = require('./favorites')(Component)
     
     return class ActionNavBar extends Component {
@@ -40,16 +39,15 @@ module.exports = function (Component) {
             console.log('editItemListener:',item)
             this.item = item
             this.displayAddPhysicalModal=true
-            this.displayAddVirtualModal=false
             this.setState({displayAddPhysicalModal:true})
         }
         
         editVirtualItemListener(item) {
             console.log('editVirtualItemListener:',item)
             this.item = item
-            this.displayAddVirtualModal=true
-            this.displayAddPhysicalModal=false
-            //this.setState({displayAddPhysicalModal:true})
+            this.displayEditVirtualModal=true
+            //this.displayEditVirtualModal=false
+            this.setState({displayEditVirtualModal:true})
         }
         
         generateNewItem(parent_id,x,y,type) {
@@ -224,7 +222,18 @@ module.exports = function (Component) {
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
             const editPhysical = (this.displayAddPhysicalModal) ? (<EditPhysical state="EditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={app.state.global.inventoryItem} />) : null
-            const editVirtual = (this.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active={this.displayAddVirtualModal} isOpen={this.showAddVirtualModal} item={this.item} />) : null
+                                                                   
+           const editVirtualId = app.state.global.editVirtualId
+           var editVirtual=null
+            /*
+            if (editVirtualId) {
+                console.log('actionNavbar: edit virtual enabled, id:',editVirtualId)
+                editVirtual = (<EditVirtual state="EditVirtual" id={editVirtualId} />)
+                app.actions.prompt.display(editVirtual,function(result) {
+                    console.log('virtual result')
+                })
+            }
+            */
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
                     <ActionMenuButton icon="home" onClick={this.homeItem.bind(this)} />

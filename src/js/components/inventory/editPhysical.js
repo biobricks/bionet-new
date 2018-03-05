@@ -140,6 +140,12 @@ module.exports = function (Component) {
             //return ''
         }
         
+        editVirtual(e) {
+            e.preventDefault();
+            if (!this.props.item) return
+            console.log('edit virtual:',this.props.item)
+        }
+        
         render() {
             //console.log('EditPhysical render state:',this.state, this.props)
             const item = this.item
@@ -183,6 +189,15 @@ module.exports = function (Component) {
                 }
             }.bind(this)
             
+            const ActionButton = function(props) {
+                const classProps = (props.classProps) ? props.classProps : ''
+                return (
+                    <div onclick={props.onclick} class={"tile is-1 "+classProps} style="padding:0; margin:0;align-items:center;cursor:pointer;">
+                        <div class={"tile button is-small mdi mdi-18px mdi-"+props.icon} style="color:#606060;"></div>
+                    </div>
+                   )
+            }
+            
             const attributeDefs = this.state.attributes
             const attributes=[]
             if (attributeDefs) {
@@ -197,9 +212,15 @@ module.exports = function (Component) {
             }
                                     
             var types=[]
+            const currentSelectionType = parent_item.type.toLowerCase()
+            const isBox = currentSelectionType.indexOf('box') >= 0
             if (app.state.global.inventoryTypes && parent_item) {
-                const currentSelectionType = parent_item.type.toLowerCase()
-                types = (currentSelectionType.indexOf('box') >= 0) ? app.state.global.inventoryTypes.materials : app.state.global.inventoryTypes.locations
+                types = (isBox) ? app.state.global.inventoryTypes.materials : app.state.global.inventoryTypes.locations
+            }
+                    
+            var document = null
+            if (isBox) {
+                document = (<ActionButton dbid={selectedItemId} onclick={this.editVirtual.bind(this)} icon="file-document" />)
             }
 
             if (tabular) {
@@ -210,8 +231,9 @@ module.exports = function (Component) {
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="tile is-parent is-11"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
                             <FormInputText fid='name' value={this.item.name} label="Name" classProps={this.props.classProps[0].class}/>
-                            <FormInputText fid='loc' value={label} label="Loc"  classProps={this.props.classProps[1].class}/>
-                            <ItemTypes type={this.item.type} types={types} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />
+                            <ItemTypes type={this.item.type} types={types} setType={this.setType} classProps={this.props.classProps[1].class} onblur={this.onblur.bind(this)} />
+                            <FormInputText fid='loc' value={label} label="Loc"  classProps={this.props.classProps[2].class}/>
+                            {document}
                             {attributes}
                         </div>
                     </form>

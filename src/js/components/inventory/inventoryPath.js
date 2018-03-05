@@ -81,7 +81,6 @@ module.exports = function (Component) {
             const selectedItem = path[path.length-1]
             if (!selectedItem) return null
             const iconStyle = "font-size:20px;"
-            //                            <a class="navbar-item mdi mdi-star-outline" style={iconStyle} onclick={this.addFavorite.bind(this)}></a>
             var moveId = null
             var moveName = null
             const moveItem = app.state.global.moveItem
@@ -89,7 +88,6 @@ module.exports = function (Component) {
                 moveId = moveItem.id
                 moveName = moveItem.name
             }
-
             return (
                 <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
                     <div class="tile is-7">

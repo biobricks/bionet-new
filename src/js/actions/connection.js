@@ -28,7 +28,8 @@ var self = module.exports = {
             }
           },
           pnotify: {
-            time: retryDelay
+            time: retryDelay,
+            msg: msg
           }
         });
       }

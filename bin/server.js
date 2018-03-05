@@ -149,6 +149,8 @@ server.listen(settings.port, settings.hostname)
 
 // initialize the websocket server on top of the webserver
 var ws = websocket.createServer({server: server}, function(stream) {
+//      console.log("AAAAAAAAAAAAAA", stream.listenerCount('error'));
+//      console.log("  -- ", stream.listeners('error')[1]);
   stream.on('error', function(err) {
     console.error("WebSocket stream error:", err);
   });
@@ -246,6 +248,6 @@ if(!argv.nop2p) {
 }
 
 // prevent crashes from uncaught exceptions
-process.on('uncaughtException', function(err) {
-  console.log("Uncaught exception:", err.stack)
-});
+//process.on('uncaughtException', function(err) {
+//  console.log("Uncaught exception:", err.stack)
+//});

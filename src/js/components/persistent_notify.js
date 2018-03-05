@@ -17,8 +17,10 @@ module.exports = function(Component) {
       if(!app.state.global.connection || app.state.global.connection.state !== 'retrying')  return '';
 
       var msg = '';
-      if(this.state.time >= 0) {
+      if(!this.state.msg && this.state.time >= 0) {
         msg = "Will attempt to reconnect in " + this.state.time + " seconds.";
+      } else {
+        msg = this.state.msg;
       }
 
       return (

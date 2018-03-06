@@ -51,8 +51,11 @@ var self = module.exports = {
   login: function(userOrEmail, password, cb) {
 
     if(emailValidator.validate(userOrEmail)) {
+      app.actions.notify("Login by email not currently supported. Please use your username.", 'error');
+
       // TODO if email, look up user by email
-      throw new Error("TODO login by email not implemented");
+      console.error(new Error("TODO login by email not implemented"));
+      return;
     }
 
     auth.login(app.remote, {

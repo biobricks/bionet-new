@@ -162,20 +162,26 @@ module.exports = {
     },
     
     getInventoryPath: function(id, cb) {
+        //console.log('getInventoryPath action id:',id)
         if (!id) {
             if (cb) cb(null)
             return null
         }
-        console.log('getInventoryPath action id:',id)
         const locationPath = {}
         var results = 0
         app.remote.getLocationPath(id, function (err, locationPathAr) {
             if (err) {
-                console.log('getLocationPath error:', err)
+                console.log('getInventoryPath error:', err)
                 if (cb) cb(null)
                 return null
             }
-            
+            /*
+            app.changeState({
+                global: {
+                    inventoryPath: null
+                }
+            });
+            */
             app.changeState({
                 global: {
                     inventoryLocationPath: locationPathAr
@@ -195,35 +201,19 @@ module.exports = {
                 locationPath[locationId] = location
                 this.getChildren(locationId, (pid, children) => {
                     locationPath[pid].children = children
+                    //console.log('getInventoryPath children:', results)
                     if (--results <= 0) {
-                        
-                        app.changeState({
-                            global: {
-                                inventoryPath: null
-                            }
-                        });
                         
                         const length = locationPathAr.length
                         const item = (length>0) ? locationPathAr[length-1] : null
                         const parent = (length>1) ? locationPathAr[length-2] : null
-                        var inventorySelection = null
-                        if (item) {
-                            inventorySelection = {
-                                id: item.id,
-                                parentId: item.parent_id,
-                                x: item.parent_x,
-                                y: item.parent_y,
-                                navigate:true
-                            }
-                        }
-                                //inventorySelection: inventorySelection
-                        
-                        app.changeState({
+                        //console.log('getInventoryPath change state:', locationPathAr)
+                        app.setState({
                             global: {
                                 inventoryPath: locationPathAr
                             }
                         });
-                        if (cb) cb(locationPath)
+                        if (cb) cb(locationPathAr)
                         
                     }
                 })

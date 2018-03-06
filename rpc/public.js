@@ -81,9 +81,15 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         email: email,
         password: password,
         masterPassword: opts.masterPassword
-      }, validations.signup, vOpts)
+      }, validations.signup, vOpts);
       if(errors) {
         return cb(new Error(errors));
+      }
+
+      if(settings.userSignupPassword) {
+        if(opts.masterPassword !== settings.userSignupPassword) {
+          return cb(new Error("Wrong master password"));
+        }
       }
       
       var user = {

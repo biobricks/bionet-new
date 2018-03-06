@@ -128,14 +128,10 @@ function connect(cb) {
   })
 }
 
-// TODO we probably should be calling app.actions from index.js
-//      instead of from in here
 function setConnectState(isConnected, msg, delay) {
   app.actions.connection.setState(isConnected, msg, delay);
 }
 
-// TODO we probably should be calling app.actions from index.js
-//      instead of from in here
 function setLoginState(user, token) {
   if(user) {
     app.actions.user.set(user, token);

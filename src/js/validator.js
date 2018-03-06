@@ -38,7 +38,6 @@ export default function(ClassToExtend) {
       if(typeof this.state.validation[propName] !== 'undefined') {
         if(this.state.validation[propName] === false) return 'fa-check';
         if(this.state.validation[propName] instanceof Array) {
-          console.log("AAAAAAAAAAA", this.state.validation[propName][1]);
           if(this.state.validation[propName][1] === 'success') return 'fa-check';
           if(this.state.validation[propName][1] === 'warning') return '';
         }
@@ -54,7 +53,6 @@ export default function(ClassToExtend) {
         if(this.state.validation[propName] === false)  return (
             <p class="help is-success">{notice || ''}</p>
         );;
-//        console.log("AAA", propName, this.state.validation[propName]);
         var msg = this.state.validation[propName];
         var severity = 'danger';
         if(this.state.validation[propName] instanceof Array) {

@@ -26,7 +26,7 @@ module.exports = function(Component) {
           return;
         }
         app.actions.notify("Thank you for signing up!", 'notice');
-        app.actions.route('/');
+        app.actions.route('/login');
       });
     }
     
@@ -96,7 +96,7 @@ module.exports = function(Component) {
                   <div class="field">
                     <label class="label">Master password</label>
                     <div class="control has-icons-left has-icons-right">
-                      <input class={'input ' + this.validateInputClass('masterPassword')} type="password" onInput={this.validator('masterPassword')} onfocusout={this.validator('masterPassword', true)} value={this.state.masterPassword} placeholder="hint: code" />
+                      <input class={'input ' + this.validateInputClass('masterPassword')} type="password" onInput={this.validator('masterPassword')} onfocusout={this.validator('masterPassword', true)} value={this.state.masterPassword} placeholder="hint: ask your bionet node administrator" />
                       <span class="icon is-small is-left">
                         <i class="fa fa-lock"></i>
                       </span>

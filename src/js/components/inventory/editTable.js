@@ -90,8 +90,8 @@ module.exports = function (Component) {
             //console.log(this.state.inventoryPath)
             const tabularHeader = this.tabularHeader()
             const tabularData = this.updateTabularData()
-            const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;box-sizing:initial;"
-            //const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;border:1px solid black;box-sizing:initial;"
+            //const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;box-sizing:initial;"
+            const tableStyle=""
             
             return (
                 <div id="inventory_table" class="tile is-parent" style="margin:0;padding:0;box-sizing:initial">

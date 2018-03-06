@@ -101,6 +101,7 @@ module.exports = {
     
     editItem: function(item) {
         console.log('editItem action: ', item)
+        if (!item) return
         const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
         app.changeState({
             global: {

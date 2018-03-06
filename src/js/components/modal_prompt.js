@@ -47,7 +47,7 @@ module.exports = function (Component) {
             const active = (this.state.active) ? 'is-active' : ''
             return(
             <div class={"modal "+active}>
-              <div class="modal-background" onclick={this.close.bind(this)}></div>
+              <div class="modal-background" onsubmit={this.close.bind(this)}></div>
                   <div class="modal-content" style="background-color:#ffffff;width:calc(100vw - 5%);">
                     <form onsubmit={this.close.bind(this)}>
                         <section class="hero is-info ">

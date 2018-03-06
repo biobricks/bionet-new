@@ -49,7 +49,7 @@ module.exports = function (Component) {
         }
         
         inventoryCellLocation(loc) {
-            console.log('setting parent x,y',loc,this.parent_item,this.id)
+            //console.log('setting parent x,y',loc,this.parent_item,this.id)
             if (this.props.tabular) return
             //console.log('setting parent x,y',loc,this.parent_item,this.id)
             if (loc.parentId !== this.parent_item) return
@@ -219,10 +219,15 @@ module.exports = function (Component) {
             }
                                     
             var types=[]
-            const currentSelectionType = parent_item.type.toLowerCase()
-            const isBox = currentSelectionType.indexOf('box') >= 0
-            if (app.state.global.inventoryTypes && parent_item) {
-                types = (isBox) ? app.state.global.inventoryTypes.materials : app.state.global.inventoryTypes.locations
+            var isBox = false
+            if (parent_item) {
+                const currentSelectionType = parent_item.type.toLowerCase()
+                isBox = currentSelectionType.indexOf('box') >= 0
+                if (app.state.global.inventoryTypes && parent_item) {
+                    types = (isBox) ? app.state.global.inventoryTypes.materials : app.state.global.inventoryTypes.locations
+                }
+            } else {
+                types = app.state.global.inventoryTypes.locations
             }
                     
             var document = null

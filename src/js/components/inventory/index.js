@@ -16,13 +16,18 @@ module.exports = function (Component) {
             super(props);
             ashnazg.listen('global.user', this.loggedInUser.bind(this));
             ashnazg.listen('global.inventoryPath', this.onUpdatePath.bind(this));
+            ashnazg.listen('global.inventoryPath', this.onUpdatePath.bind(this));
             window.onpopstate = this.onpopstate.bind(this)
-            this.login=false
+            this.initialized=false
             this.pushHistory=true
+            this.inventoryPath = null
+            this.state={
+                inventoryPath:null
+            }
         }
         
         onUpdatePath(path) {
-            //console.log('onUpdatePath:',path)
+            console.log('onUpdatePath:',path)
             if (!this.pushHistory) {
                 this.pushHistory=true
                 return
@@ -47,27 +52,13 @@ module.exports = function (Component) {
             if (id) app.actions.inventory.getInventoryPath(id)
         }
 
-        componentDidMount() {
-            this.login = false
-            return
-            
-            console.log('inventory component mounted:',app.state.global.user)
-            if (!app.state.global.user) {
-                //app.actions.notify("You must be logged in to view inventory.", 'error');
-            } else {
-                if (!this.login) this.loggedInUser(app.state.global.user)
-            }
-            //console.log('inventory component mounted')
-        }
-        
         loggedInUser(loggedInUser) {
-            //console.log('logged in inventory: user', loggedInUser, app.remote)
+            console.log('logged in inventory: user', loggedInUser, app.remote, this.initialized)
             
-            if (!loggedInUser) {
-                this.login = false
+            if (!loggedInUser || this.initialized) {
                 return
             }
-            this.login=true
+            this.initialized=true
             app.actions.inventory.initialize()
             app.actions.inventory.getInventoryTypes()
             app.actions.inventory.getFavorites()
@@ -94,9 +85,7 @@ module.exports = function (Component) {
                     }
                     const item = inventoryPath[id]
                     if (item) {
-                        //const item = app.actions.inventory.getItemFromInventoryPath(id, inventoryPath)
                         console.log('logged in inventory: id', id, item, inventoryPath)
-                        app.actions.inventory.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
                     } else {
                         console.log('logged in inventory: id not found', this)
                         getRootInventoryPath()
@@ -113,9 +102,11 @@ module.exports = function (Component) {
                 return (
                     <div>You must be logged in to view this page.</div>
                 )
-            } else {
-                //this.loggedInUser(app.state.global.user)
+            } else if (!this.initialized) {
+                this.loggedInUser(app.state.global.user)
+                return
             }
+            //console.log('inventory main render, inventoryPath:', app.state.global.inventoryPath)
             return ( 
                 <div id="inventory_view" class="tile is-ancestor">
                     <ActionNavbar state="inventoryNav" menu={app.state.global.inventoryTypes}/>

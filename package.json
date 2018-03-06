@@ -55,8 +55,8 @@
     "babel-preset-react-hmre": "^1.1.1",
     "babelify": "^7.3.0",
     "beepbeep": "^1.2.1",
-    "browserify": "^14.4.0",
-    "browserify-hmr": "^0.3.5",
+    "browserify": "^16.1.1",
+    "browserify-hmr": "^0.3.6",
     "browserify-markdown": "^2.0.1",
     "bulma": "^0.6.2",
     "bulma-tooltip": "0.1.7",
@@ -82,7 +82,7 @@
     "react-router-dom": "^4.2.2",
     "simplemde": "^1.11.2",
     "strftime": "^0.10.0",
-    "watchify": "^3.9.0",
+    "watchify": "^3.11.0",
     "zxcvbn": "^4.4.2"
   },
   "license": "AGPL-3.0"

@@ -11,6 +11,7 @@ module.exports = function(Component) {
   var Signup = require('./signup.js')(Component);
   var Login = require('./login.js')(Component);
   var Logout = require('./logout.js')(Component);
+  var PasswordReset = require('./password_reset.js')(Component);
   var Search = require('./search.js')(Component);
   var Help = require('./help.js')(Component);
   var Count = require('./count.js')(Component);
@@ -63,6 +64,8 @@ module.exports = function(Component) {
               <Route exact path="/logout" render={() => (
                 <Logout />
               )}/>
+
+              <Route path="/password-reset" component={PasswordReset} />
 
               <Route path="/settings" component={Settings} />
 

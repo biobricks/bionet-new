@@ -37,7 +37,7 @@ module.exports = function (Component) {
                 url:"/inventory/"+selectedItem.id
             }
             window.history.pushState(historyEntry, selectedItem.name, historyEntry.url);
-            console.log('onUpdatePath historyEntry:',historyEntry)
+            //console.log('onUpdatePath historyEntry:',historyEntry)
         }
             
         onpopstate(e) {

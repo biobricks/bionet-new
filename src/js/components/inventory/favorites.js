@@ -14,7 +14,7 @@ module.exports = function (Component) {
         render() {
             if (!this.props.favorites) return null
             const favorites = this.props.favorites
-            console.log('render favorites:',this.props)
+            //console.log('render favorites:',this.props)
             const thisModule = this
             const selectFavorite = function(e) {
                 e.preventDefault();

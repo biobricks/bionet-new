@@ -18,7 +18,7 @@ module.exports = function (Component) {
         }
         
         initialize(nextProps) {
-            console.log('storageContainer initialize props:',nextProps)
+            //console.log('storageContainer initialize props:',nextProps)
             const xunits = (nextProps.xunits) ? nextProps.xunits : 1
             const yunits = (nextProps.yunits) ? nextProps.yunits : 1
             this.xunits = xunits
@@ -47,7 +47,7 @@ module.exports = function (Component) {
             const height = pheight
             const dx = width / xunits
             const dy = height / yunits
-            console.log('subdivideContainer', xunits, yunits, width, height, dx, dy)
+            //console.log('subdivideContainer', xunits, yunits, width, height, dx, dy)
             const thisModule = this
             const generateCols =function(row) {
                 const cols=[]
@@ -121,7 +121,7 @@ module.exports = function (Component) {
 
         selectCellListener(cellLocation) {
             if (!cellLocation || this.dbid!==cellLocation.parentId) return
-            //console.log('selectCellListener:',this.dbid, cellLocation, this.props)
+            console.log('selectCellListener:',this.dbid, cellLocation, this.props)
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
             const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)

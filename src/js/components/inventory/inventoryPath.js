@@ -116,7 +116,7 @@ module.exports = function (Component) {
             
             const currentItem = ipath[path.length-1]
             var childItems = (currentItem) ? currentItem.children : null
-            console.log('inventory path render:',ipath,currentItem)
+            //console.log('inventory path render:',ipath,currentItem)
             
             const selectedItemHeader = this.selectedItemHeader()
             

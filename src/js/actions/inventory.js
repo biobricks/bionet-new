@@ -84,7 +84,7 @@ module.exports = {
     },
     
     selectCell: function(id, parentId, x, y, navigate) {
-        console.log('selectCell action:',id)
+        console.log('selectCell action:',id,x,y)
         //console.trace()
         app.changeState({
             global: {
@@ -215,11 +215,11 @@ module.exports = {
                                 navigate:true
                             }
                         }
+                                //inventorySelection: inventorySelection
                         
                         app.changeState({
                             global: {
-                                inventoryPath: locationPathAr,
-                                inventorySelection: inventorySelection
+                                inventoryPath: locationPathAr
                             }
                         });
                         if (cb) cb(locationPath)

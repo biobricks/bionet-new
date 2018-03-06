@@ -19,6 +19,7 @@ module.exports = function(Component) {
   var RequestMaterial = require('./request_material.js')(Component);
   var RequestSent = require('./request_sent.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
+  var Settings = require('./settings.js')(Component);
   var Admin = require('./admin.js')(Component);
   var AdminEditUser = require('./admin_edit_user.js')(Component);
   var AdminCreateUser = require('./admin_create_user.js')(Component);
@@ -62,6 +63,8 @@ module.exports = function(Component) {
               <Route exact path="/logout" render={() => (
                 <Logout />
               )}/>
+
+              <Route path="/settings" component={Settings} />
 
               <Switch>
                 <Route path="/admin/edit-user/:username" component={AdminEditUser} />

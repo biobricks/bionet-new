@@ -22,11 +22,11 @@ module.exports = function (Component) {
         }
         
         toggleDropdown(e) {
-            e.preventDefault();
             this.setState({active:!this.state.active})
         }
         
         selectType(e) {
+            e.preventDefault()
             const type = e.target.id
             //console.log('selectType:',type)
             this.setState({
@@ -57,7 +57,6 @@ module.exports = function (Component) {
             }
                                   
             const active = (this.state.active) ? 'is-active' : ''
-            
             return(
                 <div class={"dropdown "+active+" tile "+this.props.classProps} style={this.props.style}>
                   <div class={"dropdown-trigger"}  style="min-width:100%;width:100%">

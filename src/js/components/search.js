@@ -327,7 +327,7 @@ module.exports = function(Component) {
               <div class="control">
                 <label class="checkbox">
                 <input id="onlyAvailable" type="checkbox" onchange={linkState(this, 'query.onlyAvailable')} checked={this.state.query.onlyAvailable} />
-                &#160;Search only currently available materials
+                &#160;Show only currently available materials
                 </label>
               </div>
             </div>

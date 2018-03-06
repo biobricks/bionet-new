@@ -378,6 +378,7 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
       if(data.value.virtual_id === virtual_id) {
         foundInstance = true;
         s.destroy();
+        cb(null, foundInstance);
         return;
       }
     });

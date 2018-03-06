@@ -149,7 +149,8 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         next();
 
       }));
-      
+
+     
       if(!opts.includeAvailability && !opts.onlyAvailable) {
         return results;
       }
@@ -157,6 +158,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       return results.pipe(through.obj(function(obj, enc, next) {
         db.doesVirtualHaveInstance(obj.key, function(err, hasInstance) {
           if(err) return next(err);
+
           
           if(!opts.onlyAvailable || hasInstance) {
             obj.value.hasInstance = hasInstance;

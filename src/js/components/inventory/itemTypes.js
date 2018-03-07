@@ -25,6 +25,10 @@ module.exports = function (Component) {
             this.setState({active:!this.state.active})
         }
         
+        mouseOut(e) {
+            console.log('selectType mouse out')
+        }
+        
         selectType(e) {
             e.preventDefault()
             const type = e.target.id
@@ -60,15 +64,15 @@ module.exports = function (Component) {
             return(
                 <div class={"dropdown "+active+" tile "+this.props.classProps} style={this.props.style}>
                   <div class={"dropdown-trigger"}  style="min-width:100%;width:100%">
-                    <button id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3" onclick={this.toggleDropdown}  style="min-width:100%;width:100%;justify-content:flex-start">
+                    <button id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3" onclick={this.toggleDropdown.bind(this)}  style="min-width:100%;width:100%;justify-content:flex-start">
                       <span>{this.state.type}</span>
                       <span class="icon is-small">
                         <a class="mdi mdi-menu-down" style="color:black;"></a>
                       </span>
                     </button>
                   </div>
-                  <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content">
+                  <div class="dropdown-menu" id="dropdown-menu" role="menu" >
+                    <div class="dropdown-content test" onmouseout="this.mouseOut.bind(this)">
                         {typeElements}
                     </div>
                   </div>

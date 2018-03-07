@@ -16,6 +16,10 @@ module.exports = function (Component) {
             this.componentWillReceiveProps(props)
             ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
             ashnazg.listen('global.virtualItem', this.editVirtualItemListener.bind(this));
+            this.state={
+                enableAddItemMenu:'',
+                enableFavoritesMenu:''
+            }
         }
         
         componentWillReceiveProps(nextProps) {
@@ -63,7 +67,7 @@ module.exports = function (Component) {
             
         addItemClick(e) {
             //console.log('add menu item:',e.target.id, this.editPhysical)
-            this.displayAddMenu(false)
+            this.closeAddItemMenu()
             const parent = app.actions.inventory.getLastPathItem()
             if (!parent) return null
             const item = this.generateNewItem(parent.id, parent.parent_x, parent.parent_y, e.target.id)
@@ -71,12 +75,24 @@ module.exports = function (Component) {
             else app.actions.inventory.editItem(item)
         }
     
-        displayAddMenu(show) {
-            this.setState({ addItemMenuDisplay: (show) ? 'is-active' : '' })
+        openAddItemMenu() {
+            this.setState({ enableAddItemMenu: (!this.state.enableAddItemMenu) ? 'is-active' : '' })
+        }
+        
+        closeAddItemMenu() {
+            this.setState({ enableAddItemMenu:'' })
+        }
+        
+        openFavoritesMenu() {
+            this.setState({ enableFavoritesMenu: (!this.state.enableFavoritesMenu) ? 'is-active' : '' })
+        }
+        
+        closeFavoritesMenu() {
+            this.setState({ enableFavoritesMenu:'' })
         }
         
         addItemButton() {
-            this.displayAddMenu(this.state.addItemMenuDisplay !== 'is-active')
+            this.displayAddMenu(this.state.enableAddItemMenu === '')
         }
         
         homeItem() {
@@ -88,10 +104,6 @@ module.exports = function (Component) {
                 app.actions.inventory.selectCell(id, root.parent_id, root.parent_x, root.parent_y, true)
                 app.actions.inventory.getInventoryPath(id)
             }
-        }
-        
-        //todo: add item to favorites dropdown is currently activated by hovering - enable clicking for touch-screen
-        starItem() {
         }
         
         editItem() {
@@ -163,6 +175,7 @@ module.exports = function (Component) {
         }
 
         render() {
+            const thisModule=this
             const initMenu = function() {
                 const menuDef = this.state.menuDef
                 if (!menuDef) return null
@@ -191,39 +204,45 @@ module.exports = function (Component) {
             }
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
-
             //console.log('actionNavbar render: app.state.global.inventoryItem', app.state.global.inventoryItem)
             
             const editPhysical = (app.state.global.inventoryItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.global.inventoryItem} />) : null
                                                                      
             const editVirtual = (app.state.global.virtualItem) ? (<EditVirtual state="EditVirtual" active="true" item={this.item} />) : null
 
+            const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
                     <ActionMenuButton icon="home" onClick={this.homeItem.bind(this)} />
             
-                    <div class={"dropdown tile "+this.state.addItemMenuDisplay}>
+                    <div class={"dropdown tile "+this.state.enableAddItemMenu}>
                         <div class="dropdown-trigger">
-                            <ActionMenuButton icon="plus" onClick={this.addItemButton.bind(this)} />
+                            <ActionMenuButton icon="plus" onClick={this.openAddItemMenu.bind(this)} />
                         </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu" style={"position:fixed; top:195px; left:10px;"}>
-                            <div class="dropdown-content">
-                                {menu}
+                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div onclick={this.closeAddItemMenu.bind(this)} style={closeClickBackground}>
+                                <div class="dropdown-content" style={"position:fixed;top:200px;left:7px;"}>
+                                    {menu}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="dropdown is-hoverable">
-                      <div class="dropdown-trigger">
-                        <ActionMenuButton icon="star" onClick={this.starItem.bind(this)} />
-                      </div>
-                      <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="margin:0;padding:0;">
-                        <div class="dropdown-content"  style="margin:0;padding:0;">
-                          <div class="dropdown-item"  style="margin:0;padding:0;">
-                            <Favorites favorites={app.state.global.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)} selectedItem={app.state.global.inventorySelection}/>
-                          </div>
+            
+                    <div class={"dropdown "+this.state.enableFavoritesMenu}>
+                        <div class="dropdown-trigger">
+                            <ActionMenuButton icon="star" onClick={this.openFavoritesMenu.bind(this)} />
                         </div>
-                      </div>
-                    </div>            
+                        <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="margin:0;padding:0;">
+                            <div onclick={this.closeFavoritesMenu.bind(this)} style={closeClickBackground}>
+                                <div class="dropdown-content"  style={"position:fixed;top:265px;left:7px;"}>
+                                    <div class="dropdown-item"  style="margin:0;padding:0;">
+                                        <Favorites favorites={app.state.global.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)} selectedItem={app.state.global.inventorySelection}/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <ActionMenuButton icon="pencil" onClick={this.editItem.bind(this)} />
                     <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
                     <ActionMenuButton icon="open-in-app" onClick={this.upload.bind(this)} />

@@ -77,12 +77,12 @@ module.exports = function (Component) {
         
         open() {
             this.setState({active:'is-active'})
-            if (this.props.isOpen) this.props.isOpen(true)
+            if (this.props.onClose) this.props.onClose(true)
         }
         
         close () {
             this.setState({active:''})
-            if (this.props.isOpen) this.props.isOpen(false)
+            if (this.props.onClose) this.props.onClose(false)
         }
         
         setType(type) {

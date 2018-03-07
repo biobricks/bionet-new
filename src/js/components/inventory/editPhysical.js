@@ -122,7 +122,8 @@ module.exports = function (Component) {
         
         close () {
             this.setState({active:''})
-            if (this.props.isOpen) this.props.isOpen(false)
+            app.actions.inventory.editItem(null)
+            if (this.props.onClose) this.props.onClose(false)
         }
         
         onClickRow(e) {

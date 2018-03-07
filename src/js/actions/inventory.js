@@ -48,7 +48,7 @@ module.exports = {
     getSelectedItem: function() {
         if (!app.state.global.inventorySelection || !app.state.global.inventorySelection.id) return null
         const id = app.state.global.inventorySelection.id
-        
+        console.log('getSelectedItem action:',app.state.global.inventoryPath, app.state.global.inventorySelection)
         if (app.state.global.inventoryPath && app.state.global.inventoryPath.length>0) {
             const path = app.state.global.inventoryPath
             const pathItem = path[path.length-1]
@@ -101,15 +101,8 @@ module.exports = {
     
     editItem: function(item) {
         console.log('editItem action: ', item)
-        if (!item) return
-        const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
-        app.changeState({
-            global: {
-                inventoryItem: null,
-                inventoryItemParent: null
-            }
-        });
-        app.changeState({
+        const parent =  (item && item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
+        app.setState({
             global: {
                 inventoryItem: item,
                 inventoryItemParent: parent
@@ -119,13 +112,7 @@ module.exports = {
     
     editVirtualItem: function(item) {
         console.log('editVirtualItem action: ', item)
-        app.changeState({
-            global: {
-                virtualItem: null,
-                inventoryItemParent: null
-            }
-        });
-        const parent =  (item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
+        const parent =  (item && item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
         app.changeState({
             global: {
                 virtualItem: item,

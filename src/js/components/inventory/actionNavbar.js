@@ -13,8 +13,6 @@ module.exports = function (Component) {
         
         constructor(props) {
             super(props);
-            this.showAddPhysicalModal = this.showAddPhysicalModal.bind(this)
-            this.showAddVirtualModal = this.showAddVirtualModal.bind(this)
             this.componentWillReceiveProps(props)
             ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
             ashnazg.listen('global.virtualItem', this.editVirtualItemListener.bind(this));
@@ -37,10 +35,10 @@ module.exports = function (Component) {
         }
         
         editItemListener(item) {
-            console.log('editItemListener:',item)
+            console.log('editItem listener:',item)
+            if (!item) return
             this.item = item
             this.displayAddPhysicalModal=true
-            this.displayAddVirtualModal=false
             this.setState({displayAddPhysicalModal:true})
         }
         
@@ -48,7 +46,6 @@ module.exports = function (Component) {
             console.log('editVirtualItemListener:',item)
             this.item = item
             this.displayAddVirtualModal=true
-            this.displayAddPhysicalModal=false
             //this.setState({displayAddPhysicalModal:true})
         }
         
@@ -78,32 +75,6 @@ module.exports = function (Component) {
             this.setState({ addItemMenuDisplay: (show) ? 'is-active' : '' })
         }
         
-        showAddVirtualModal(isOpen, item) {
-          this.setState(
-            {
-              addItemMenuDisplay:'',
-              displayAddPhysicalModal:false,
-              displayAddVirtualModal:isOpen,
-              item:item
-            }
-          )
-          this.displayAddPhysicalModal=false
-          this.displayAddVirtualModal=isOpen
-        }
-        
-        showAddPhysicalModal(isOpen, item) {
-          this.setState(
-            {
-              addItemMenuDisplay:'',
-              displayAddVirtualModal:false,
-              displayAddPhysicalModal:isOpen,
-              item:item
-            }
-          )
-          this.displayAddVirtualModal=false
-          this.displayAddPhysicalModal=isOpen
-        }
-      
         addItemButton() {
             this.displayAddMenu(this.state.addItemMenuDisplay !== 'is-active')
         }
@@ -124,16 +95,13 @@ module.exports = function (Component) {
         }
         
         editItem() {
-            var item = app.actions.inventory.getSelectedItem()
-            const id = app.state.global.inventorySelection.id
-            //var item = null
-            if (!id) {
+            var item = null
+            if (!app.state.global.inventorySelection || !app.state.global.inventorySelection.id) {
                 item = this.generateNewItem(app.state.global.inventorySelection.parentId,app.state.global.inventorySelection.x, app.state.global.inventorySelection.y,'')
             } else {
-                //item = app.actions.inventory.getItemFromInventoryPath(id)
+                item = app.actions.inventory.getSelectedItem()
             }
-            //if (item) item.salt = Math.random()
-            console.log('edit item',id, app.state.global.inventorySelection, item)
+            console.log('edit item', app.state.global.inventorySelection, item)
             app.actions.inventory.editItem(item)
         }
         
@@ -224,10 +192,11 @@ module.exports = function (Component) {
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
 
-            const displayAddPhysicalModal = (app.state.global.inventoryItem) ? true : false
-            const editPhysical = (displayAddPhysicalModal) ? (<EditPhysical state="EditPhysical" active={this.displayAddPhysicalModal} isOpen={this.showAddPhysicalModal} item={app.state.global.inventoryItem} />) : null
+            //console.log('actionNavbar render: app.state.global.inventoryItem', app.state.global.inventoryItem)
+            
+            const editPhysical = (app.state.global.inventoryItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.global.inventoryItem} />) : null
                                                                      
-            const editVirtual = (app.state.global.virtualItem) ? (<EditVirtual state="EditVirtual" active={this.displayAddVirtualModal} isOpen={this.showAddVirtualModal} item={this.item} />) : null
+            const editVirtual = (app.state.global.virtualItem) ? (<EditVirtual state="EditVirtual" active="true" item={this.item} />) : null
 
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>

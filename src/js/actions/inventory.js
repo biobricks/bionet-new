@@ -115,8 +115,7 @@ module.exports = {
         const parent =  (item && item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
         app.changeState({
             global: {
-                virtualItem: item,
-                inventoryItemParent: parent
+                virtualItem: item
             }
         });
     },

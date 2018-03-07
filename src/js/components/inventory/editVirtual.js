@@ -139,6 +139,7 @@ module.exports = function (Component) {
         
         close () {
             this.setState({active:''})
+            app.actions.inventory.editVirtualItem(null)
             if (this.props.onClose) this.props.onClose(false)
         }
         

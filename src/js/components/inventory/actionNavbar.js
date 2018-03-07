@@ -146,14 +146,14 @@ module.exports = function (Component) {
                 }
             })
         }
-        
+
         selectFavorite(id) {
             console.log('selectFavorite:',id)
             if (id) {
                 app.actions.inventory.getInventoryPath(id)
             }
         }
-        
+
         addFavorite() {
             const item = app.actions.inventory.getSelectedItem()
             if (!item) return
@@ -165,7 +165,7 @@ module.exports = function (Component) {
                 }
             }.bind(this))
         }
-        
+
         // todo: display open local files modal then upload
         upload() {
         }
@@ -208,7 +208,7 @@ module.exports = function (Component) {
             
             const editPhysical = (app.state.global.inventoryItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.global.inventoryItem} />) : null
                                                                      
-            const editVirtual = (app.state.global.virtualItem) ? (<EditVirtual state="EditVirtual" active="true" item={this.item} />) : null
+            const editVirtual = (app.state.global.virtualItem) ? (<EditVirtual state="EditVirtual" active="true" item={app.state.global.virtualItem} />) : null
 
             const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
             return (

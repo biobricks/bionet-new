@@ -39,7 +39,7 @@ module.exports = function(Component) {
 
       return (
         <Router>
-          <Wrapper state="global">
+          <StateWrapper state="global">
             <TopMenu/>
             <div class="content-area">
               <Route exact path="/" component={Search} />

@@ -11,7 +11,7 @@ function clone(obj) {
 module.exports = function(Component) {
   
   // withRouter causes this.props.history to exist for this component
-  return withRouter(class Global extends Component {
+  return withRouter(class StateWrapper extends Component {
     
 	  render() {
 

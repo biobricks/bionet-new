@@ -4,7 +4,7 @@ import {Switch, BrowserRouter as Router, Route, Link} from 'react-router-dom';
 
 module.exports = function(Component) {
 
-  var Global = require('./global.js')(Component);
+  var StateWrapper = require('./state_wrapper.js')(Component);
   var TopMenu = require('./top_menu.js')(Component);
   var PersistentNotify = require('./persistent_notify.js')(Component);
 
@@ -39,7 +39,7 @@ module.exports = function(Component) {
 
       return (
         <Router>
-          <Global state="global">
+          <Wrapper state="global">
             <TopMenu/>
             <div class="content-area">
               <Route exact path="/" component={Search} />
@@ -88,7 +88,7 @@ module.exports = function(Component) {
               
             </div>
             <PersistentNotify state="pnotify" />
-          </Global>
+          </Wrapper>
         </Router>
       );
     }

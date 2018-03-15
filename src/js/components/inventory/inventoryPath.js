@@ -19,10 +19,25 @@ module.exports = function (Component) {
                 inventoryItem:{},
                 containerSize:150
             }
+            this.containerRef = {}
+            app.state.selectCellListener = this.selectCellListener.bind(this)
         }
         
         componentWillReceiveProps(props) {
             if (!props.inventoryPath) return
+        }
+        
+        selectCellListener(cellLocation) {
+            console.log('selectCellListener:',cellLocation, this.props)
+            for (var containerId in this.containerRef) {
+                var container = this.containerRef[containerId]
+                if (container.props.dbid===cellLocation.parentId) {
+                    console.log('selectCellListener, container:',containerId,container)
+                    container.selectCellListener(cellLocation)
+                    break
+                }
+            }
+            if (app.state.editContainerListener) app.state.editContainerListener(cellLocation, true)
         }
         
         updateInventoryPath(newPath) {
@@ -32,14 +47,15 @@ module.exports = function (Component) {
             var containerSize = window.innerWidth/8
             containerSize = (containerSize > 150) ? 150: containerSize
             if (!containerSize) containerSize = 150
-            
+            const thisModule = this
             const inventoryPath = []
             for (var i=0; i<newPath.length; i++) {
                 var item = newPath[i]
                 var nextItem = (i<newPath.length-1) ? newPath[i+1] : {}
                 var yUnits = (item.type==='lab') ? item.children.length : item.yUnits
+                var ref = (container) => { if (container) thisModule.containerRef[container.props.dbid] = container; }
                 inventoryPath.push(
-                    <StorageContainer dbid={item.id} type={item.type} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} items={item.children} selectedItem={nextItem.id} px={nextItem.parent_x} py={nextItem.parent_y}/>
+                    <StorageContainer dbid={item.id} type={item.type} ref={ref} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} items={item.children} selectedItem={nextItem.id} px={nextItem.parent_x} py={nextItem.parent_y}/>
                 )
             }
             this.inventoryPath = inventoryPath

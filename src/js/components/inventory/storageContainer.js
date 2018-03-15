@@ -13,7 +13,6 @@ module.exports = function (Component) {
             //console.log('StorageContainer props:', JSON.stringify(props))
             this.cellMap = {}
             this.cellRef = {}
-            ashnazg.listen('global.inventorySelection', this.selectCellListener.bind(this));
             this.initialize(props)
         }
         
@@ -27,6 +26,7 @@ module.exports = function (Component) {
             this.type = nextProps.type
             this.populateContainer(nextProps.items, xunits, yunits)
             const tiles = this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType, nextProps.selectedItem, nextProps.px, nextProps.py, nextProps.mode)
+            if (nextProps.mode==='edit') app.state.editContainerListener = this.selectCellListener.bind(this)
             return tiles
         }
 
@@ -119,9 +119,9 @@ module.exports = function (Component) {
             return this.props.dbid
         }
 
-        selectCellListener(cellLocation) {
+        selectCellListener(cellLocation, edit) {
+            console.log('selectCellListener:',edit, this.dbid, cellLocation, this.props)
             if (!cellLocation || this.dbid!==cellLocation.parentId) return
-            console.log('selectCellListener:',this.dbid, cellLocation, this.props)
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
             const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)

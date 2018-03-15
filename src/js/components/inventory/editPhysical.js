@@ -74,11 +74,13 @@ module.exports = function (Component) {
             const dbData = this.item
             dbData[id]=value
             console.log('onblur:',id, value, dbData)
+            /*
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
                 }
             })
+            */
         }
         
         setType(type) {
@@ -95,9 +97,9 @@ module.exports = function (Component) {
             const selection = app.state.global.inventorySelection
             if (selection && !this.item.id) {
                 dbData.parent_id = selection.parentId
-                dbData.parent_x = selection.x
-                dbData.parent_y = selection.y
             }
+            dbData.parent_x = selection.x
+            dbData.parent_y = selection.y
 
             // merge form data
             delete dbData.salt
@@ -129,7 +131,6 @@ module.exports = function (Component) {
         focus(active, navigate) {
             if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
-            //if (active) app.actions.inventory.updateCellLocation(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y )
             if (active) app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
         }
         

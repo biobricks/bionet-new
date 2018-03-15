@@ -56,27 +56,40 @@ module.exports = {
         return null
     },
     
-    selectCell: function(id, parentId, x, y, navigate, history) {
+    selectCell: function(id, parentId, x, y, navigate) {
         console.log('selectCell action:',id,x,y)
         //console.trace()
-        app.changeState({
-            global: {
-                inventorySelection: {
-                    id: id,
-                    parentId: parentId,
-                    x: x,
-                    y: y,
-                    navigate:navigate
-                }
-            }
-        });
-        const idn = (id) ? id : parentId
-        if (navigate && idn) {
-            const url = "/inventory/"+idn
-            console.log('selectCell:',url)
-            app.state.history.push(url)
+        const inventorySelection = {
+            id: id,
+            parentId: parentId,
+            x: x,
+            y: y,
+            navigate:navigate
         }
+        app.state.global.inventorySelection = inventorySelection
         
+        if (navigate) {
+            const idn = (id) ? id : parentId
+            /*
+            app.changeState({
+                global: {
+                    inventorySelection: {
+                        id: id,
+                        parentId: parentId,
+                        x: x,
+                        y: y,
+                        navigate:navigate
+                    }
+                }
+            });
+            */
+            if (idn) {
+                const url = "/inventory/"+idn
+                console.log('selectCell:',url)
+                app.state.history.push(url)
+            }
+        }
+        if (app.state.selectCellListener) app.state.selectCellListener(inventorySelection)
     },
     
     editItem: function(item) {
@@ -365,7 +378,7 @@ module.exports = {
             if (err) {
                 console.log(err)
             }
-            if (cb) cb(err, id)
+            if (cb) cb(err, id, physical.parent_x, physical.parent_y)
         })
     },
     
@@ -418,9 +431,13 @@ module.exports = {
             var nrem = instancesList.length
             for (var i = 0; i < instancesList.length; i++) {
                 console.log('saving physical:',instancesList[i])
-                this.saveToInventory(instancesList[i], null, null, function (n) {
+                this.saveToInventory(instancesList[i], null, null, function (err,id,x,y) {
+                    for (var j=0; j<instancesList.length; j++) {
+                        var instance = instancesList[j]
+                        if (instance.parent_x === x && instance.parent_y === y) instance.id = id
+                    }
                     if (--nrem <= 0) {
-                        if (cb) cb()
+                        if (cb) cb(instancesList)
                     }
                 })
             }
@@ -433,8 +450,8 @@ module.exports = {
         const thisModule = this
         console.log('saveVirtual action:',virtualObj, physicalInstances, container_id, well_id)
         app.remote.saveVirtual(virtualObj, function (err, virtualId) {
-            if (!err) thisModule.generatePhysicals(virtualId, virtualObj.name, physicalInstances, container_id, well_id, function() {
-                if (cb) cb(err,virtualId)
+            if (!err) thisModule.generatePhysicals(virtualId, virtualObj.name, physicalInstances, container_id, well_id, function(physicals) {
+                if (cb) cb(err,virtualId, physicals)
             })
         });
     },

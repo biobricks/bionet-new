@@ -96,13 +96,12 @@ module.exports = function (Component) {
         }
         
         homeItem() {
-            //console.log('star item')
-            if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return
-            const root = app.state.global.inventoryPath[0]
+            console.log('home item:', app.state.inventoryPath)
+            if (!app.state.inventoryPath || !app.state.inventoryPath.length>0) return
+            const root = app.state.inventoryPath[0]
             const id = root.id
             if (id) {
-                app.actions.inventory.selectCell(id, root.parent_id, root.parent_x, root.parent_y, true)
-                app.actions.inventory.getInventoryPath(id)
+                app.actions.inventory.selectInventoryId(id)
             }
         }
         
@@ -138,7 +137,7 @@ module.exports = function (Component) {
                         app.actions.notify(name+" deleted", 'notice', 2000);
                         if (!parentId) return
                         const parentItem = app.actions.inventory.getItemFromInventoryPath(parentId)
-                        app.actions.inventory.getInventoryPath(parentId)
+                        app.actions.inventory.selectInventoryId(parentId)
                         if (!parentItem) return
                         console.log('delete refresh parentId:',parentId)
                         app.actions.inventory.selectCell(parentItem.id, parentItem.parent_id, parentItem.parent_x, parentItem.parent_y, true)
@@ -150,7 +149,7 @@ module.exports = function (Component) {
         selectFavorite(id) {
             console.log('selectFavorite:',id)
             if (id) {
-                app.actions.inventory.getInventoryPath(id)
+                app.actions.inventory.selectInventoryId(id)
             }
         }
 

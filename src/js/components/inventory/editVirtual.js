@@ -127,7 +127,7 @@ module.exports = function (Component) {
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
-                app.actions.inventory.getInventoryPath(parentId)
+                app.actions.inventory.selectInventoryId(parentId)
             })
             
         }

@@ -12,6 +12,11 @@ module.exports = function(Component) {
   
   // withRouter causes this.props.history to exist for this component
   return withRouter(class StateWrapper extends Component {
+                    
+      constructor(props) {
+        super(props);
+        app.state.history = props.history;
+      }
     
 	  render() {
 

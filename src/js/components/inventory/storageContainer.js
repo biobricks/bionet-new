@@ -134,14 +134,6 @@ module.exports = function (Component) {
                     ref.focus(focus, cellLocation.navigate)
                 }
             }
-            
-            if (cellLocation.navigate) {
-                const selectedCell = this.cellRef[cellCoordinates]
-                if (!this.props.item || !selectedCell) return
-                const selectedItem = (selectedCell.props.item) ? selectedCell.props.item.id : this.props.item.id
-                app.actions.inventory.getInventoryPath(selectedItem)
-            } else {
-            }
         }
 
         render() {

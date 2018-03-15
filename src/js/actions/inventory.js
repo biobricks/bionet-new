@@ -1,16 +1,8 @@
 module.exports = {
     
     initialize: function () {
-        /*
-        app.changeState({
-            global: {
-                test:[1,2,3],
-                test2:{}
-            }
-        })
-        */
         
-        app.changeState({
+        app.setState({
             global: {
                 moveItem: {},
                 inventorySelection: {},
@@ -25,32 +17,14 @@ module.exports = {
                 rootId: null
             }
         });
-        return
-        
-        app.changeState({
-            global: {
-                inventorySelection: {},
-                inventoryTypes:{},
-                inventoryItem: null,
-                inventoryItemParent: null,
-                virtualItem: null,
-                inventoryItemParent: null,
-                inventoryLocationPath: null,
-                inventoryPath: null,
-                inventoryRoot: null,
-                rootId: null,
-                moveItem: {},
-                locations:[]
-            }
-        });
     },
     
     getSelectedItem: function() {
         if (!app.state.global.inventorySelection || !app.state.global.inventorySelection.id) return null
         const id = app.state.global.inventorySelection.id
-        console.log('getSelectedItem action:',app.state.global.inventoryPath, app.state.global.inventorySelection)
-        if (app.state.global.inventoryPath && app.state.global.inventoryPath.length>0) {
-            const path = app.state.global.inventoryPath
+        console.log('getSelectedItem action:',app.state.inventoryPath, app.state.inventorySelection)
+        if (app.state.inventoryPath && app.state.inventoryPath.length>0) {
+            const path = app.state.inventoryPath
             const pathItem = path[path.length-1]
             if (pathItem.id === id) return pathItem
             
@@ -65,25 +39,24 @@ module.exports = {
     },
     
     getLastPathItem: function() {
-        if (!app.state.global.inventoryPath || !app.state.global.inventoryPath.length>0) return null
-        const path = app.state.global.inventoryPath
+        if (!app.state.inventoryPath || !app.state.inventoryPath.length>0) return null
+        const path = app.state.inventoryPath
         if (!path || path.length<1) return null
         const item = path[path.length-1]
         return item
     },
     
     getItemFromInventoryPath: function(id, pathIn) {
-        const path = (pathIn) ? pathIn : app.state.global.inventoryPath
+        const path = (pathIn) ? pathIn : app.state.inventoryPath
         if (!path) return null
         //console.log('getItemFromInventoryPath:',path)
-        //return
         for (var i=0; i<path.length; i++) {
             if (path[i].id===id) return path[i]
         }
         return null
     },
     
-    selectCell: function(id, parentId, x, y, navigate) {
+    selectCell: function(id, parentId, x, y, navigate, history) {
         console.log('selectCell action:',id,x,y)
         //console.trace()
         app.changeState({
@@ -97,6 +70,13 @@ module.exports = {
                 }
             }
         });
+        const idn = (id) ? id : parentId
+        if (navigate && idn) {
+            const url = "/inventory/"+idn
+            console.log('selectCell:',url)
+            app.state.history.push(url)
+        }
+        
     },
     
     editItem: function(item) {
@@ -147,8 +127,14 @@ module.exports = {
         return null
     },
     
+    selectInventoryId: function(id, cb) {
+        const url = "/inventory/"+id
+        console.log('getInventoryPath:',url)
+        app.state.history.push(url)
+    },
+    
     getInventoryPath: function(id, cb) {
-        //console.log('getInventoryPath action id:',id)
+        console.log('getInventoryPathRPC action id:',id)
         if (!id) {
             if (cb) cb(null)
             return null
@@ -161,18 +147,6 @@ module.exports = {
                 if (cb) cb(null)
                 return null
             }
-            /*
-            app.changeState({
-                global: {
-                    inventoryPath: null
-                }
-            });
-            */
-            app.changeState({
-                global: {
-                    inventoryLocationPath: locationPathAr
-                }
-            });
             locationPathAr.reverse()
             
             results = locationPathAr.length
@@ -194,13 +168,8 @@ module.exports = {
                         const item = (length>0) ? locationPathAr[length-1] : null
                         const parent = (length>1) ? locationPathAr[length-2] : null
                         //console.log('getInventoryPath change state:', locationPathAr)
-                        app.setState({
-                            global: {
-                                inventoryPath: locationPathAr
-                            }
-                        });
+                        app.state.inventoryPath = locationPathAr
                         if (cb) cb(locationPathAr)
-                        
                     }
                 })
             }
@@ -224,7 +193,6 @@ module.exports = {
                 locations.push(type)
             }
         }
-        
         const typeSpec = {
             materials: materials,
             locations: locations
@@ -239,7 +207,6 @@ module.exports = {
                 inventoryTypes: typeSpec
             }
         });
-        
         const createType = 'storage'
     },
     
@@ -457,7 +424,6 @@ module.exports = {
                     }
                 })
             }
-            //if (cb) cb()
         } else {
             if (cb) cb()
         }

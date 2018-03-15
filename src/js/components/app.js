@@ -82,8 +82,8 @@ module.exports = function(Component) {
               <Route path="/help/:topic" component={Help} />
               
               <Switch>
-                  <Route path="/inventory/:id" component={Inventory}/>
-                  <Route path="/inventory" component={Inventory}/>
+                  <Route path="/inventory/:id" key="with-id" component={Inventory}/>
+                  <Route path="/inventory" key="without-id" component={Inventory}/>
               </Switch>
               
             </div>

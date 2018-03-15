@@ -19,8 +19,10 @@ module.exports = function (Component) {
                 inventoryItem:{},
                 containerSize:150
             }
-            //ashnazg.listen('global.inventoryPath', this.updateInventoryPath.bind(this));
-            //ashnazg.listen('global.moveItem', this.updateMoveItem.bind(this));
+        }
+        
+        componentWillReceiveProps(props) {
+            if (!props.inventoryPath) return
         }
         
         updateInventoryPath(newPath) {

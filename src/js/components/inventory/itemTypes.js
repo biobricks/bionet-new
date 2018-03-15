@@ -11,6 +11,12 @@ module.exports = function (Component) {
             this.componentWillReceiveProps(props)
             this.selectType = this.selectType.bind(this)
             
+            document.addEventListener('keyup', function(e) {
+                if(this.state.active && e.which===9) {
+                    this.setState({active:false})
+                }
+            }.bind(this))
+     
             document.addEventListener('click', function (e) {
                 if (this.state.active || e.target.id===this.props.fid) {
                     console.log('click, type:',e.target.id)

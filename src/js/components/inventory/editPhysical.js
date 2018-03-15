@@ -17,6 +17,7 @@ module.exports = function (Component) {
             this.componentWillReceiveProps(props)
             this.focus = this.focus.bind(this)
             this.close = this.close.bind(this)
+            this.setType = this.setType.bind(this)
             this.inventoryCellLocation=this.inventoryCellLocation.bind(this)
             ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
         }
@@ -51,19 +52,9 @@ module.exports = function (Component) {
         inventoryCellLocation(loc) {
             //console.log('setting parent x,y',loc,this.parent_item,this.id)
             if (this.props.tabular) return
-            //console.log('setting parent x,y',loc,this.parent_item,this.id)
             if (loc.parentId !== this.parent_item) return
-            /*
-            this.setState(
-                {
-                    px:loc.x,
-                    py:loc.y
-                }
-            )
-            */
             this.item.parent_x = loc.x
             this.item.parent_y = loc.y
-            //console.log('inventoryCellLocation',loc, this.item)
         }
         
         enableModal() {
@@ -88,6 +79,10 @@ module.exports = function (Component) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
                 }
             })
+        }
+        
+        setType(type) {
+            this.item.type=type
         }
         
         submit(e) {

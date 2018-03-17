@@ -16,6 +16,8 @@ import util from '../util.js';
 
 module.exports = function(Component) {
 
+  var FreegenesStatus = require('./freegenes_status.js')(Component)
+
   return class Virtual extends Component {
 
     constructor(props) {
@@ -102,6 +104,11 @@ module.exports = function(Component) {
       }
 
 
+      var status = '';
+      if(this.state.virtual.freegenes) {
+        status = (<FreegenesStatus status="0" />);
+      }
+
       var virtual = '';
       if(this.state.virtual) {
 
@@ -137,9 +144,13 @@ module.exports = function(Component) {
 
         if(this.state.virtual.content) {
           content = (
-            <div class="markdown-help" dangerouslySetInnerHTML={{
-              __html: marked(this.state.virtual.content)
-            }} />
+            <div class="content">
+              <hr/>
+              <div class="markdown-help" dangerouslySetInnerHTML={{
+                __html: marked(this.state.virtual.content)
+              }} />
+              <hr/>
+            </div>
           );
         }
 
@@ -151,11 +162,7 @@ module.exports = function(Component) {
             <div>
               <p class="description">{this.state.virtual.description}</p>
             </div>
-            <hr/>
-            <div class="content">
-              {content}
-            </div>
-            <hr/>
+            {content}
             <div>{timestamps}</div>
             <div>{sequence}</div>
           </div>
@@ -190,6 +197,7 @@ module.exports = function(Component) {
 
       return (
         <div>
+          {status}
           <div>
             {virtual}
           </div>

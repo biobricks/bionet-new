@@ -27,6 +27,7 @@ module.exports = function(Component) {
         id: virtualId,
         virtual: undefined,
         name: undefined,
+        description: undefined,
         notice: undefined,
         changed: false,
         error: null
@@ -42,20 +43,29 @@ module.exports = function(Component) {
     changeName(e) {
       if(!e || !e.target) return;
       this.setState({
+        changed: true,
         name: e.target.value
       });
     }
 
-    changeDesc() {
+    changeDesc(e) {
+      if(!e || !e.target) return;
       this.setState({
         changed: true,
-        description: this.simplemde.value()
+        description: e.target.value
+      });
+    }
+
+    changeContent() {
+      this.setState({
+        changed: true,
+        content: this.simplemde.value()
       });
     }
     
     checkRestored() {
       var editorDesc = this.simplemde.value() || '';
-      var dataDesc = (this.state.virtual) ? (this.state.virtual.Description || '') : '';
+      var dataDesc = (this.state.virtual) ? (this.state.virtual.content || '') : '';
       
       if(this.state.virtual && editorDesc && editorDesc.trim() !== dataDesc.trim()) {
                     
@@ -87,11 +97,12 @@ module.exports = function(Component) {
         var o = {
           virtual: data,
           name: data.name,
-          description: data.Description
+          description: data.description,
+          content: data.content
         };
 
         if(!this.simplemde.value().trim() || force) {
-          this.simplemde.value(data.Description);
+          this.simplemde.value(data.content);
         }
 
         this.setState(o);
@@ -110,7 +121,8 @@ module.exports = function(Component) {
       }
       var o = xtend(this.state.virtual, {
         name: this.state.name,
-        Description: this.state.description
+        description: this.state.description,
+        content: this.state.content
       });
 
       app.remote.saveVirtual(o, function(err) {
@@ -119,11 +131,12 @@ module.exports = function(Component) {
           console.error(err);
           return;
         }
-        app.actions.notify(o.name+" saved!");
+        app.actions.notify("Saved");
         this.setState({
           notice: undefined,
           changed: false
         });
+        app.actions.route('/virtual/show/'+this.state.id);
       }.bind(this));
     }
 
@@ -140,11 +153,16 @@ module.exports = function(Component) {
       this.getVirtual(this.state.id, true, function(err, data) {
         if(err) return;
 
-        this.simplemde.value(data.Description || '');
+        this.simplemde.value(data.content || '');
         this.setState({
           notice: undefined,
-          changed: false
+          changed: false,
+          name: data.name,
+          description: data.description,
+          content: data.content
         })
+
+        console.log(this.state);
       }.bind(this));
     }
 
@@ -165,8 +183,8 @@ module.exports = function(Component) {
 
     componentDidMount() {
       if(!this.simplemde) {
-        const showToolbar = (this.props.modal) ? false : true
-        this.simplemde = new SimpleMDE({ 
+
+        var opts = { 
           element: document.getElementById('editor'),
           autoDownloadFontAwesome: false,
           autosave: {
@@ -176,18 +194,27 @@ module.exports = function(Component) {
           },
           spellChecker: false,
           hideIcons: ['image'],
-          toolbar:showToolbar,
           indentWithTabs: false
-        });
+        };
+
+        if(this.props.modal) {
+          opts.toolbar = false;
+        }
+
+        this.simplemde = new SimpleMDE(opts);
 
         this.checkRestored();
 
-        this.simplemde.codemirror.on('change', this.changeDesc.bind(this));
+        this.simplemde.codemirror.on('change', this.changeContent.bind(this));
 
 //        this.listen('virtual.Description', function(newDesc) {
 //          this.simplemde.value(newDesc);
 //        }.bind(this));
       }
+    }
+
+    resizeTextarea(e) {
+      
     }
 
 	  render() {
@@ -212,11 +239,17 @@ module.exports = function(Component) {
             <div class="field">
               <label class="label">Name</label>
               <div class="control">
-                <input class='input' type="text" onInput={this.changeName.bind(this)} value={this.state.name} />
+                <input class="input" type="text" onInput={this.changeName.bind(this)} value={this.state.name} />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Description</label>
+              <div class="control">
+                <textarea class="input description" onInput={this.changeDesc.bind(this)} onChange={this.resizeTextarea.bind(this)} value={this.state.description}></textarea>
               </div>
             </div>
             <div class="editor-container field">
-              <label class="label">Description</label>
+              <label class="label">Content</label>
               <p class="help is-danger">{this.state.notice}</p>
               <textarea id="editor"></textarea>
             </div>

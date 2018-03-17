@@ -4,6 +4,7 @@ import linkState from 'linkstate';
 import {Link} from 'react-router-dom';
 import xtend from 'xtend';
 import strftime from 'strftime';
+import marked from 'marked';
 
 import util from '../util.js';
 
@@ -131,15 +132,30 @@ module.exports = function(Component) {
               <span><Link to={'/virtual/edit/' + this.state.virtual.id}>edit</Link></span>
           );
         }
+        
+        var content = '';
+
+        if(this.state.virtual.content) {
+          content = (
+            <div class="markdown-help" dangerouslySetInnerHTML={{
+              __html: marked(this.state.virtual.content)
+            }} />
+          );
+        }
 
         virtual = (
           <div class="virtual">
             <div>
-              <h3><span>Name: </span>{this.state.virtual.name} {editLink}</h3>
+              <h3>{this.state.virtual.name} {editLink}</h3>
             </div>
             <div>
-              <span>Description: </span><p class="description">{this.state.virtual.Description}</p>
+              <p class="description">{this.state.virtual.description}</p>
             </div>
+            <hr/>
+            <div class="content">
+              {content}
+            </div>
+            <hr/>
             <div>{timestamps}</div>
             <div>{sequence}</div>
           </div>

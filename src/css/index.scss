@@ -119,10 +119,80 @@ body {
   padding-right: 0.5rem;
   height: 1.5rem;
 }
-                              
+   
+  h1 {
+    font-size: 200%;
+    line-height: 200%;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 160%;
+    line-height: 160%;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 125%;
+    line-height: 125%;
+    font-weight: 700;
+  }
+
+  h4 {
+    font-size: 110%;
+    line-height: 110%;
+    font-weight: 700;
+  }
+
+  h5 {
+    font-size: 105%;
+    line-height: 105%;
+    font-weight: 700;
+  }
+
+  h6 {
+    font-weight: 700;
+  }
+                           
 /* app global stuff END */
 
 /* virtual.js BEGIN */
+
+
+.content, .CodeMirror .editor-preview {
+  blockquote {
+    background: #f9f9f9;
+    border-left: 4px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+  }
+
+  ul {
+    list-style-position: inside;
+    list-style-type: disc;
+    padding: 0;
+    margin: 0;
+  }
+  ul li {
+    margin: 0;
+    padding: 0;
+  }
+
+  ol {
+    list-style-position: inside;
+    list-style-type: decimal;
+    padding: 0;
+    margin: 0;
+  }
+  ol li {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+blockquote p {
+  display: inline;
+}
 
 .virtual div {
   padding-top: 1rem;
@@ -138,6 +208,18 @@ p.description {
 
 .editor-container {
   padding-top: 1rem;
+}
+
+
+.editor-container {
+  .CodeMirror, .CodeMirror-scroll {
+    height: auto;
+    min-height: 10em;
+  }
+}
+
+.description {
+  height: 4em;
 }
 
 

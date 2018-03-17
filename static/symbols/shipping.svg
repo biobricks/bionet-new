@@ -1,1 +1,49 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 500 625" style="enable-background:new 0 0 500 500;" xml:space="preserve"><g><path d="M404,204h-38.5v-44.4H119v179.5h41.7c1.4-4.4,2.8-9.7,5.3-14h-33V173.6h218.5v151.5H239c3.2,4,5.6,8.9,7.2,14h105.4h7.2   h6.8v-16.8c0,0,0,0,0-0.1V218H404c10,0,19.1,3.8,26,10h-35v53h48v44.1h-5.9c0.2,0.4,0.5,0.7,0.7,1.1c2.7,4.1,5.2,8.4,7.1,12.9H457   V257C457,227.8,433.2,204,404,204z M409,267v-25h31c1.9,4.6,3,9.7,3,15v10H409z"/><path d="M201.8,312c-18.7,0-34,15.3-34,34c0,18.7,15.3,34,34,34c18.7,0,34-15.3,34-34C235.8,327.3,220.5,312,201.8,312z M201.8,366   c-11,0-20-9-20-20c0-11,9-20,20-20c11,0,20,9,20,20C221.8,357,212.8,366,201.8,366z"/><circle cx="201.8" cy="346" r="13.9"/><path d="M402.1,312c-18.7,0-34,15.3-34,34c0,18.7,15.3,34,34,34c18.7,0,34-15.3,34-34C436.1,327.3,420.8,312,402.1,312z M402.1,366   c-11,0-20-9-20-20c0-11,9-20,20-20c11,0,20,9,20,20C422.1,357,413.1,366,402.1,366z"/><circle cx="402.1" cy="346" r="13.9"/><rect x="43" y="162" width="52" height="14"/><rect x="55" y="192" width="40" height="14"/><path d="M245,299c30.9,0,56-25.1,56-56s-25.1-56-56-56s-56,25.1-56,56S214.1,299,245,299z M245,201c23.2,0,42,18.8,42,42   s-18.8,42-42,42s-42-18.8-42-42S221.8,201,245,201z"/><polygon points="271.8,230 260.2,222 240.7,250.5 227.7,238.8 218.3,249.2 243.3,271.5  "/></g><text x="0" y="515" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">Created by Martin LEBRETON</text><text x="0" y="520" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="100%"
+   height="100%"
+   viewBox="0 0 414 220.4"
+   id="svg3225"
+   xml:space="preserve"><metadata
+     id="metadata3255"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs3253" /><g
+     transform="translate(-43,-159.6)"
+     id="g3227"><path
+       d="M 404,204 H 365.5 V 159.6 H 119 v 179.5 h 41.7 c 1.4,-4.4 2.8,-9.7 5.3,-14 H 133 V 173.6 H 351.5 V 325.1 H 239 c 3.2,4 5.6,8.9 7.2,14 h 105.4 7.2 6.8 v -16.8 c 0,0 0,0 0,-0.1 V 218 H 404 c 10,0 19.1,3.8 26,10 h -35 v 53 h 48 v 44.1 h -5.9 c 0.2,0.4 0.5,0.7 0.7,1.1 2.7,4.1 5.2,8.4 7.1,12.9 H 457 V 257 c 0,-29.2 -23.8,-53 -53,-53 z m 5,63 v -25 h 31 c 1.9,4.6 3,9.7 3,15 v 10 h -34 z"
+       id="path3229" /><path
+       d="m 201.8,312 c -18.7,0 -34,15.3 -34,34 0,18.7 15.3,34 34,34 18.7,0 34,-15.3 34,-34 0,-18.7 -15.3,-34 -34,-34 z m 0,54 c -11,0 -20,-9 -20,-20 0,-11 9,-20 20,-20 11,0 20,9 20,20 0,11 -9,20 -20,20 z"
+       id="path3231" /><circle
+       cx="201.8"
+       cy="346"
+       r="13.9"
+       id="circle3233" /><path
+       d="m 402.1,312 c -18.7,0 -34,15.3 -34,34 0,18.7 15.3,34 34,34 18.7,0 34,-15.3 34,-34 0,-18.7 -15.3,-34 -34,-34 z m 0,54 c -11,0 -20,-9 -20,-20 0,-11 9,-20 20,-20 11,0 20,9 20,20 0,11 -9,20 -20,20 z"
+       id="path3235" /><circle
+       cx="402.10001"
+       cy="346"
+       r="13.9"
+       id="circle3237" /><rect
+       width="52"
+       height="14"
+       x="43"
+       y="162"
+       id="rect3239" /><rect
+       width="40"
+       height="14"
+       x="55"
+       y="192"
+       id="rect3241" /><path
+       d="m 245,299 c 30.9,0 56,-25.1 56,-56 0,-30.9 -25.1,-56 -56,-56 -30.9,0 -56,25.1 -56,56 0,30.9 25.1,56 56,56 z m 0,-98 c 23.2,0 42,18.8 42,42 0,23.2 -18.8,42 -42,42 -23.2,0 -42,-18.8 -42,-42 0,-23.2 18.8,-42 42,-42 z"
+       id="path3243" /><polygon
+       points="218.3,249.2 243.3,271.5 271.8,230 260.2,222 240.7,250.5 227.7,238.8 "
+       id="polygon3245" /></g></svg>

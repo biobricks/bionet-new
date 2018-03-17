@@ -204,6 +204,70 @@ p.description {
 
 /* virtual.js END */
 
+/* freegenes_status.js BEGIN */
+
+
+.status-symbol > div {
+  display: inline-block;
+}
+
+.status-symbol {
+
+  .icon {
+    width: 6rem;
+    height: 6rem;
+    background: #CFCFCF;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    background-position: 50% 50%; 
+    background-repeat: no-repeat; 
+    background-size: 80%;
+    margin-right: 0.5rem;
+    opacity: 0.3;
+  }
+
+  .label {
+    background: none;
+    width: 6rem;
+    height: auto;
+    color: #BBBBBB;
+    text-align: center;
+    line-height: 0.8em;
+    font-size: 0.8rem;
+  }
+
+  .doing {
+    background-color: #1ade07;
+  }
+
+  .done {
+    opacity: 0.8;
+    background-color: #1ade07;
+  }
+
+  .last {
+    margin-right: 0;
+  }
+
+  .optimizing {
+    background-image: url(/static/symbols/good_genes.svg);
+  }
+  .synthesizing {
+    background-image: url(/static/symbols/science.svg);
+  }
+  .sequencing {
+    background-image: url(/static/symbols/dna_research.svg);
+  }
+  .cloning {
+    background-image: url(/static/symbols/plasmid.svg);
+  }
+  .shipping {
+    background-image: url(/static/symbols/shipping.svg);
+  }
+}
+
+/* freegenes_status.js END */
+
 /* edit_virtual.js BEGIN */
 
 .editor-container {

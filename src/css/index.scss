@@ -153,19 +153,7 @@ body {
   h6 {
     font-weight: 700;
   }
-                           
-/* app global stuff END */
 
-/* virtual.js BEGIN */
-
-
-.content, .CodeMirror .editor-preview {
-  blockquote {
-    background: #f9f9f9;
-    border-left: 4px solid #ccc;
-    margin: 1.5em 10px;
-    padding: 0.5em 10px;
-  }
 
   ul {
     list-style-position: inside;
@@ -187,6 +175,29 @@ body {
   ol li {
     margin: 0;
     padding: 0;
+  }
+
+p {
+  padding: 1rem 0;
+}
+
+.footer {
+  font-size: 0.8rem;
+  color: #AAAAAA;
+  text-align: center;
+}
+                           
+/* app global stuff END */
+
+/* virtual.js BEGIN */
+
+
+.content, .CodeMirror .editor-preview {
+  blockquote {
+    background: #f9f9f9;
+    border-left: 4px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
   }
 }
 

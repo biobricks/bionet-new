@@ -27,6 +27,8 @@ module.exports = function(Component) {
   var AdminDelUser = require('./admin_del_user.js')(Component);
   var Scan = require('./scan.js')(Component);
   var Print = require('./print.js')(Component);
+  var Footer = require('./footer.js')(Component);
+  var Attributions = require('./attributions.js')(Component);
 
   return class App extends Component {
 
@@ -85,9 +87,12 @@ module.exports = function(Component) {
                   <Route path="/inventory/:id" key="with-id" component={Inventory}/>
                   <Route path="/inventory" key="without-id" component={Inventory}/>
               </Switch>
-              
+
+
+              <Route path="/attributions" component={Attributions} />              
             </div>
             <PersistentNotify state="pnotify" />
+            <Footer />
           </StateWrapper>
         </Router>
       );

@@ -699,5 +699,11 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       peer.remote.requestMaterialRemote(id, curUser.user.email, settings.physicalAddress, cb);
     },
 
+    // This is a function used by other programs 
+    // to test that authenticated RPC calls are working.
+    foo_user: function(curUser, cb) {
+      cb(null, "bar_user");
+    }
+
   };
 }

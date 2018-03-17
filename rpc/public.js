@@ -40,8 +40,10 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       });
     },
 
-    foo: function(curUser, user, cb) {
-      cb(null, "foo says hi");
+    // This is a function used by other programs 
+    // to test that un-authenticated RPC calls are working.
+    foo: function(curUser, cb) {
+      cb(null, "bar");
     },
 
     checkMasterPassword: function(curUser, password, cb) {

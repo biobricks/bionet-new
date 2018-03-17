@@ -88,7 +88,7 @@ module.exports = function(Component) {
               
             </div>
             <PersistentNotify state="pnotify" />
-          </Wrapper>
+          </StateWrapper>
         </Router>
       );
     }

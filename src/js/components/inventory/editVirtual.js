@@ -8,7 +8,7 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
-    //const EditTable = require('./editTable')(Component)
+    const EditTable = require('./editTable')(Component)
     
     return class EditVirtual extends Component {
         constructor(props) {
@@ -17,18 +17,15 @@ module.exports = function (Component) {
             this.close = this.close.bind(this)
             this.focus = this.focus.bind(this)
             this.setType = this.setType.bind(this)
+            this.assignCells = this.assignCells.bind(this)
             ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
         }
         
         componentWillReceiveProps(nextProps) {
-            //return
-            if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
-            const tabular = nextProps.tabular
             if (!nextProps.item) {
                 this.setState({
-                    active:active,
-                    tabular:tabular
+                    active:active
                 })
                 return
             }
@@ -41,15 +38,14 @@ module.exports = function (Component) {
             
             this.setState({
                 id:item.id,
+                physicals:item.children,
                 attributes:app.actions.inventory.getAttributesForType(item.type),
                 title:titlePrefix,
-                active:active,
-                tabular:tabular
+                active:active
             })
         }
         
         inventoryCellLocation(loc) {
-            if (this.props.tabular) return
             const px = this.item.parent_x
             const py = this.item.parent_y
             this.item.parent_x = loc.x
@@ -83,7 +79,7 @@ module.exports = function (Component) {
         
         submit(e) {
             e.preventDefault();
-            this.close()
+            //this.close()
             
             const item = this.item
             var parentId = null
@@ -120,14 +116,17 @@ module.exports = function (Component) {
                 dbData[fid] = item[fid]
             }
             
-            //saveVirtual: function(virtualObj, physicalInstances, container_id, well_id, cb) {
-            app.actions.inventory.saveVirtual(dbData, item.instances, parentId, wellData, function(err, id) {
+            const thisModule=this
+            app.actions.inventory.saveVirtual(dbData, item.instances, parentId, wellData, function(err, id, physicals) {
+                console.log('physicals saved:',err,id,physicals)
                 if (err) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
                     return
                 }
-                app.actions.notify(dbData.name+" saved", 'notice', 2000);
-                app.actions.inventory.getInventoryPath(parentId)
+                app.actions.notify(dbData.name+" created", 'notice', 2000);
+                if (physicals) {
+                    thisModule.setState({physicals:physicals})
+                }
             })
             
         }
@@ -162,6 +161,10 @@ module.exports = function (Component) {
             //return ''
         }
         
+        assignCells() {
+            this.setState({assignCells:true})
+        }
+        
         render() {
             //console.log('EditPhysical render state:',this.state, this.props)
             const item = this.item
@@ -170,18 +173,26 @@ module.exports = function (Component) {
             //console.log('EditStorageContainer:',selectedItemId)
             const containerSize = 250
             const style = "width:400px; height:400px;border: 1px solid black;"
-            var storageContainer = null
-            const tabular = this.state.tabular
             
             const parent_item = this.parent_item
-            if (parent_item) {
-                var px = 0
-                var py = 0
-                if (item) {
-                    px = item.parent_x
-                    py = item.parent_y
+            var assignCells = null
+            if (this.state.assignCells) {
+                var storageContainer = null
+                if (parent_item) {
+                    var px = 0
+                    var py = 0
+                    if (item) {
+                        px = item.parent_x
+                        py = item.parent_y
+                    }
+                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
                 }
-                storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
+                assignCells = (
+                    <div>
+                        {storageContainer}
+                        <EditTable item={item} items={this.state.physicals}/>
+                    </div>
+                )
             }
                       
             const linkFormData = function(component, fid, valuePath) {
@@ -193,26 +204,15 @@ module.exports = function (Component) {
             }.bind(this)
                 
             const FormInputText = function(props) {
-                //console.log('FormInputText:',props)
-                if (tabular) {
-                    return(
-                        <div class={"tile is-child "+props.class} style="padding:0; margin:0">
-                            <input id={props.fid} class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly} onblur={this.onblur.bind(this)}>
-                                {this.msgFunction(props.msg)}
-                            </input>
+                return (
+                    <div class="field">
+                        <label class="label">{props.label}</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
                         </div>
-                    )
-                } else {
-                    return (
-                        <div class="field">
-                            <label class="label">{props.label}</label>
-                            <div class="control has-icons-left has-icons-right">
-                                <input class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
-                            </div>
-                            {this.msgFunction(props.msg)}
-                        </div>
-                    )
-                }
+                        {this.msgFunction(props.msg)}
+                    </div>
+                )
             }.bind(this)
             
             const attributeDefs = this.state.attributes
@@ -233,65 +233,49 @@ module.exports = function (Component) {
                 types = (currentSelectionType.indexOf('box') >= 0) ? app.state.global.inventoryTypes.materials : app.state.global.inventoryTypes.locations
             }
 
-            if (tabular) {
-                const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''
-                const label = this.item.parent_x+','+this.item.parent_y
-                return (
-                    <form onsubmit={this.submit.bind(this)}>
-                        <div class="tile is-parent is-11"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
-                            <FormInputText fid='name' value={this.item.name} label="Name" class="is-3"/>
-                            <FormInputText fid='loc' value={label} label="Loc"  class="is-1"/>
-                            <ItemTypes type={this.item.type} types={types} setType={this.setType} class="tile is-child is-3" onblur={this.onblur.bind(this)} />
-                            {attributes}
-                        </div>
-                    </form>
-                )
-            } else {
-                //const editTable=(item.type.indexOf('box') >= 0) ? <EditTable item={item} items={item.children}/> : null
-                const editTable = null
-                return (
-                    <div class={"modal "+this.state.active}>
-                      <div class="modal-background" onclick={this.close}></div>
-                          <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 5%);">
-                            <form onsubmit={this.submit.bind(this)}>
+            return (
+                <div class={"modal "+this.state.active}>
+                  <div class="modal-background" onclick={this.close}></div>
+                      <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 5%);">
+                        <form onsubmit={this.submit.bind(this)}>
 
-                                <section class="hero is-info ">
-                                  <div class="hero-body">
-                                    <div class="container">
-                                      <h1 class="title">{this.state.title}</h1>
+                            <section class="hero is-info ">
+                              <div class="hero-body">
+                                <div class="container">
+                                  <h1 class="title">{this.state.title}</h1>
+                                </div>
+                              </div>
+                            </section>
+                            <div class=" post-hero-area">
+                                <div class="columns">
+                                    <div class="column">
+                                        <FormInputText fid='name' value={this.item.name} label="Name" />
+                                        <label class="label">Type</label>
+                                        <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
+                                        <FormInputText fid='instances' value={this.item.name} label="Instances" />
+                                        <div style="margin-top:10px;margin-bottom:30px;">
+                                            {attributes}
+                                        </div>
+                                        <div class="field">
+                                            <div class="control">
+                                                <input type="submit" class="button is-link" value="Create Physicals" />
+                                                <span style="margin-right:20px;">&nbsp;</span>
+                                                <input type="button" class="button is-link" value="Assign Locations" onclick={this.assignCells} />
+                                                <span style="margin-right:20px;">&nbsp;</span>
+                                                <input type="button" class="button is-link" value="Close" onclick={this.close} />
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
-                                </section>
-                                <div class=" post-hero-area">
-                                    <div class="columns">
-                                        <div class="column">
-                                            <FormInputText fid='name' value={this.item.name} label="Name" />
-                                            <label class="label">Type</label>
-                                            <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
-                                            <FormInputText fid='instances' value={this.item.name} label="Instances" />
-                                            <div style="margin-top:10px;margin-bottom:30px;">
-                                                {attributes}
-                                            </div>
-                                            {editTable}
-                                            <div class="field">
-                                                <div class="control">
-                                                    <input type="submit" class="button is-link" value="Save" />
-                                                    <span style="margin-right:20px;">&nbsp;</span>
-                                                    <input type="button" class="button is-link" value="Cancel" onclick={this.close} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="column">
-                                            {storageContainer}
-                                        </div>
+                                    <div class="column">
+                                        {assignCells}
                                     </div>
                                 </div>
-                            </form>
-                            <button class="modal-close" aria-label="close" onclick={this.close}></button>
-                        </div>
+                            </div>
+                        </form>
+                        <button class="modal-close" aria-label="close" onclick={this.close}></button>
                     </div>
-                )
-            }
+                </div>
+            )
         }
     }
 }

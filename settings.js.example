@@ -94,51 +94,66 @@ var settings = {
     [{
       name: "lab",
       title:"Lab",
+      xUnits:1,
+      yUnits:5,
       fields: {
         Description: 'text'
       }
     },{
+      name: "benches",
+      title:"Benches",
+      xUnits:8,
+      yUnits:8
+    },{
+      name: "bench",
+      title:"Bench",
+      xUnits:8,
+      yUnits:8
+    },{
       name: "-80 freezer",
-      title:"-80C Freezer",
+      title:"-80 Freezer",
+      xUnits:1,
+      yUnits:5,
       fields: {
-        Description: 'text',
-        Shelf: 'text',
-        Rack: 'text',
-        Box: 'text'
+        Description: 'text'
       }
     },{
       name: "-20 freezer",
-      title:"-20C Freezer",
+      title:"-20 Freezer",
+      xUnits:1,
+      yUnits:5,
       fields: {
-        Description: 'text',
-        Shelf: 'text',
-        Rack: 'text',
-        Box: 'text'
+        Description: 'text'
       }
     },{
       name: "-4 fridge",
-      title:"4C Fridge",
+      title:"4 Fridge",
+      xUnits:1,
+      yUnits:5,
       fields: {
-        Description: 'text',
-        Shelf: 'text',
-        Rack: 'text',
-        Box: 'text'
+        Description: 'text'
       }
     },{
       name: "freezer rack",
       title:"Rack",
+      xUnits:5,
+      yUnits:4,
       fields: {
         Description: 'text'
       }
     },{
       name: "8 x 12 freezer box",
       title:"8x12 Box",
+      xUnits:12,
+      yUnits:8,
       fields: {
         Description: 'text'
       }
     },{
       name: "9 x 9 freezer box",
       title:"9x9 Box",
+      xUnits:9,
+      yUnits:9,
       fields: {
         Description: 'text'
       }
@@ -157,6 +172,8 @@ var settings = {
     },{
       name: "shelf",
       title:"Shelf",
+      xUnits:4,
+      yUnits:1,
       fields: {
         Description: 'text'
       }
@@ -189,8 +206,8 @@ var settings = {
         Sequence: 'text'
       }
     },{
-      name: "single-stranded",
-      title:"Single-Stranded",
+      name: "oligo",
+      title:"Oligo",
       virtual: true,
       fields: {
         Description: 'text',

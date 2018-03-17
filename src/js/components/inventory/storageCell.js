@@ -22,10 +22,10 @@ module.exports = function (Component) {
         
         onClickCell(e) {
             e.preventDefault();
-            console.log('storageCell onClickCell')
+            //console.log('storageCell onClickCell', this.props)
             const id = (this.props.item) ? this.props.item.id : null
             const navigate = this.props.mode!=='edit'
-            app.actions.inventory.selectCell(id, this.props.parent_id, this.props.parent_x, this.props.parent_y, navigate)
+            app.actions.inventory.selectCell(id, this.props.parent_id, this.props.parent_x, this.props.parent_y, navigate, this.props.history)
         }
 
         onDoubleClickCell(e) {

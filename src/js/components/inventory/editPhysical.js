@@ -17,6 +17,7 @@ module.exports = function (Component) {
             this.componentWillReceiveProps(props)
             this.focus = this.focus.bind(this)
             this.close = this.close.bind(this)
+            this.setType = this.setType.bind(this)
             this.inventoryCellLocation=this.inventoryCellLocation.bind(this)
             ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
         }
@@ -51,19 +52,9 @@ module.exports = function (Component) {
         inventoryCellLocation(loc) {
             //console.log('setting parent x,y',loc,this.parent_item,this.id)
             if (this.props.tabular) return
-            //console.log('setting parent x,y',loc,this.parent_item,this.id)
             if (loc.parentId !== this.parent_item) return
-            /*
-            this.setState(
-                {
-                    px:loc.x,
-                    py:loc.y
-                }
-            )
-            */
             this.item.parent_x = loc.x
             this.item.parent_y = loc.y
-            //console.log('inventoryCellLocation',loc, this.item)
         }
         
         enableModal() {
@@ -83,11 +74,17 @@ module.exports = function (Component) {
             const dbData = this.item
             dbData[id]=value
             console.log('onblur:',id, value, dbData)
+            /*
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
                 }
             })
+            */
+        }
+        
+        setType(type) {
+            this.item.type=type
         }
         
         submit(e) {
@@ -100,9 +97,9 @@ module.exports = function (Component) {
             const selection = app.state.global.inventorySelection
             if (selection && !this.item.id) {
                 dbData.parent_id = selection.parentId
-                dbData.parent_x = selection.x
-                dbData.parent_y = selection.y
             }
+            dbData.parent_x = selection.x
+            dbData.parent_y = selection.y
 
             // merge form data
             delete dbData.salt
@@ -115,7 +112,7 @@ module.exports = function (Component) {
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
-                app.actions.inventory.getInventoryPath(dbData.parent_id)
+                app.actions.inventory.selectInventoryId(id)
             })
             
         }
@@ -134,7 +131,6 @@ module.exports = function (Component) {
         focus(active, navigate) {
             if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
-            //if (active) app.actions.inventory.updateCellLocation(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y )
             if (active) app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
         }
         

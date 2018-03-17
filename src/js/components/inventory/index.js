@@ -3,7 +3,6 @@ import {
 }
 from 'preact'
 import ashnazg from 'ashnazg'
-//import util from '../util.js';
 
 module.exports = function (Component) {
 
@@ -15,43 +14,37 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             ashnazg.listen('global.user', this.loggedInUser.bind(this));
-            ashnazg.listen('global.inventoryPath', this.onUpdatePath.bind(this));
-            ashnazg.listen('global.inventoryPath', this.onUpdatePath.bind(this));
-            window.onpopstate = this.onpopstate.bind(this)
             this.initialized=false
-            this.pushHistory=true
             this.inventoryPath = null
             this.state={
                 inventoryPath:null
             }
         }
         
-        onUpdatePath(path) {
-            console.log('onUpdatePath:',path)
-            if (!this.pushHistory) {
-                this.pushHistory=true
-                return
+        componentWillReceiveProps(props) {
+            const id = (props.match) ? props.match.params.id : null
+            const pid = (this.props.match) ? this.props.match.params.id : null
+            console.log('inventory main id:', id, pid)
+            if (id===pid) return
+            const thisModule=this
+            if (id) {
+                app.actions.inventory.getInventoryPath(id, function(inventoryPath) {
+                    console.log('inventory main, path:',inventoryPath)
+                    thisModule.setState({inventoryPath:inventoryPath})
+                })
+            } else {
+                app.actions.inventory.getRootItem(function(item) {
+                    if (item) {
+                        app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){
+                            thisModule.setState({inventoryPath:inventoryPath})
+                        })
+                    } else {
+                        console.log('getRootItem - no item found')
+                    }
+                })
             }
-            if (!path || path.length<1) return null
-            const selectedItem = path[path.length-1]
-            if (!selectedItem) return null
-            
-            const historyEntry = {
-                id:selectedItem.id,
-                name:selectedItem.name,
-                url:"/inventory/"+selectedItem.id
-            }
-            window.history.pushState(historyEntry, selectedItem.name, historyEntry.url);
-            //console.log('onUpdatePath historyEntry:',historyEntry)
         }
-            
-        onpopstate(e) {
-            console.log('onpopstate:',e.state, history.state)
-            const id = e.state.id
-            this.pushHistory=false
-            if (id) app.actions.inventory.getInventoryPath(id)
-        }
-
+        
         loggedInUser(loggedInUser) {
             console.log('logged in inventory: user', loggedInUser, app.remote, this.initialized)
             
@@ -69,7 +62,7 @@ module.exports = function (Component) {
                 app.actions.inventory.getRootItem(function(item) {
                     if (item) {
                         app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){
-                            app.actions.inventory.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                            thisModule.setState({inventoryPath:inventoryPath})
                         })
                     } else {
                         console.log('getRootItem - no item found')
@@ -83,13 +76,13 @@ module.exports = function (Component) {
                         getRootInventoryPath()
                         return
                     }
-                    const item = inventoryPath[id]
-                    if (item) {
-                        console.log('logged in inventory: id', id, item, inventoryPath)
-                    } else {
-                        console.log('logged in inventory: id not found', this)
+                    const item = app.actions.inventory.getItemFromInventoryPath(id, inventoryPath)
+                    console.log('logged in inventory:', id, item, inventoryPath)
+                    if (!item) {
                         getRootInventoryPath()
+                        return
                     }
+                    thisModule.setState({inventoryPath:inventoryPath})
                 })
             } else {
                 console.log('logged in inventory: no id', this)
@@ -102,17 +95,12 @@ module.exports = function (Component) {
                 return (
                     <div>You must be logged in to view this page.</div>
                 )
-            } else if (!this.initialized) {
-                this.loggedInUser(app.state.global.user)
-                return
             }
-            //console.log('inventory main render, inventoryPath:', app.state.global.inventoryPath)
+            //console.log('inventory main render:', this.props)
             return ( 
                 <div id="inventory_view" class="tile is-ancestor">
-                  <StateWrapper state="inventory">
                     <ActionNavbar state="inventoryNav" menu={app.state.global.inventoryTypes}/>
                     <InventoryPath state="inventoryPath" inventoryPath={app.state.global.inventoryPath}/>
-                  </StateWrapper>
                 </div>
             )
         }

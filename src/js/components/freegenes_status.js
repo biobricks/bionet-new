@@ -57,6 +57,13 @@ module.exports = function(Component) {
       return state;
     }
 
+    getLabelClass(iconNumber) {
+      if(this.state.status == iconNumber) {
+        return "label current";
+      }
+      return "label";
+    }
+
 	  render() {
 
       return (
@@ -64,23 +71,23 @@ module.exports = function(Component) {
 
           <div>
             <div class={this.getClass(1)}></div>
-            <div class="label">Optimized</div>
+            <div class={this.getLabelClass(1)}>Optimizing</div>
           </div>
           <div>
             <div class={this.getClass(2)}></div>
-            <div class="label">Synthesizing</div>
+            <div class={this.getLabelClass(2)}>Synthesizing</div>
           </div>
           <div>
             <div class={this.getClass(3)}></div>
-            <div class="label">Sequencing</div>
+            <div class={this.getLabelClass(3)}>Sequencing</div>
           </div>
           <div>
             <div class={this.getClass(4)}></div>
-            <div class="label">Cloning</div>
+            <div class={this.getLabelClass(4)}>Cloning</div>
           </div>
           <div>
             <div class={this.getClass(5)}></div>
-            <div class="label">Shipping</div>
+            <div class={this.getLabelClass(5)}>Shipping</div>
           </div>
         </div>
       )

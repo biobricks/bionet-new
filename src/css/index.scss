@@ -119,10 +119,91 @@ body {
   padding-right: 0.5rem;
   height: 1.5rem;
 }
-                              
+   
+  h1 {
+    font-size: 200%;
+    line-height: 200%;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 160%;
+    line-height: 160%;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 125%;
+    line-height: 125%;
+    font-weight: 700;
+  }
+
+  h4 {
+    font-size: 110%;
+    line-height: 110%;
+    font-weight: 700;
+  }
+
+  h5 {
+    font-size: 105%;
+    line-height: 105%;
+    font-weight: 700;
+  }
+
+  h6 {
+    font-weight: 700;
+  }
+
+
+  ul {
+    list-style-position: inside;
+    list-style-type: disc;
+    padding: 0;
+    margin: 0;
+  }
+  ul li {
+    margin: 0;
+    padding: 0;
+  }
+
+  ol {
+    list-style-position: inside;
+    list-style-type: decimal;
+    padding: 0;
+    margin: 0;
+  }
+  ol li {
+    margin: 0;
+    padding: 0;
+  }
+
+p {
+  padding: 1rem 0;
+}
+
+.footer {
+  font-size: 0.8rem;
+  color: #AAAAAA;
+  text-align: center;
+}
+                           
 /* app global stuff END */
 
 /* virtual.js BEGIN */
+
+
+.content, .CodeMirror .editor-preview {
+  blockquote {
+    background: #f9f9f9;
+    border-left: 4px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+  }
+}
+
+blockquote p {
+  display: inline;
+}
 
 .virtual div {
   padding-top: 1rem;
@@ -134,10 +215,90 @@ p.description {
 
 /* virtual.js END */
 
+/* freegenes_status.js BEGIN */
+
+
+.status-symbol > div {
+  display: inline-block;
+}
+
+.status-symbol {
+
+  .icon {
+    width: 6rem;
+    height: 6rem;
+    background: #CFCFCF;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    background-position: 50% 50%; 
+    background-repeat: no-repeat; 
+    background-size: 80%;
+    margin-right: 0.5rem;
+    opacity: 0.3;
+  }
+
+  .label {
+    background: none;
+    width: 6rem;
+    height: auto;
+    color: #BBBBBB;
+    text-align: center;
+    line-height: 0.8em;
+    font-size: 0.8rem;
+  }
+
+  .current {
+    color: black;
+  }
+
+  .doing {
+    background-color: #1ade07;
+  }
+
+  .done {
+    opacity: 0.8;
+    background-color: #1ade07;
+  }
+
+  .last {
+    margin-right: 0;
+  }
+
+  .optimizing {
+    background-image: url(/static/symbols/good_genes.svg);
+  }
+  .synthesizing {
+    background-image: url(/static/symbols/science.svg);
+  }
+  .sequencing {
+    background-image: url(/static/symbols/dna_research.svg);
+  }
+  .cloning {
+    background-image: url(/static/symbols/plasmid.svg);
+  }
+  .shipping {
+    background-image: url(/static/symbols/shipping.svg);
+  }
+}
+
+/* freegenes_status.js END */
+
 /* edit_virtual.js BEGIN */
 
 .editor-container {
   padding-top: 1rem;
+}
+
+
+.editor-container {
+  .CodeMirror, .CodeMirror-scroll {
+    height: auto;
+    min-height: 10em;
+  }
+}
+
+.description {
+  height: 4em;
 }
 
 

@@ -4,6 +4,7 @@ import linkState from 'linkstate';
 import {Link} from 'react-router-dom';
 import xtend from 'xtend';
 import strftime from 'strftime';
+import marked from 'marked';
 
 import util from '../util.js';
 
@@ -14,6 +15,8 @@ import util from '../util.js';
 */
 
 module.exports = function(Component) {
+
+  var FreegenesStatus = require('./freegenes_status.js')(Component)
 
   return class Virtual extends Component {
 
@@ -101,6 +104,11 @@ module.exports = function(Component) {
       }
 
 
+      var status = '';
+      if(this.state.virtual && this.state.virtual.freegenes) {
+        status = (<FreegenesStatus status="0" />);
+      }
+
       var virtual = '';
       if(this.state.virtual) {
 
@@ -131,15 +139,30 @@ module.exports = function(Component) {
               <span><Link to={'/virtual/edit/' + this.state.virtual.id}>edit</Link></span>
           );
         }
+        
+        var content = '';
+
+        if(this.state.virtual.content) {
+          content = (
+            <div class="content">
+              <hr/>
+              <div class="markdown-help" dangerouslySetInnerHTML={{
+                __html: marked(this.state.virtual.content)
+              }} />
+              <hr/>
+            </div>
+          );
+        }
 
         virtual = (
           <div class="virtual">
             <div>
-              <h3><span>Name: </span>{this.state.virtual.name} {editLink}</h3>
+              <h3>{this.state.virtual.name} {editLink}</h3>
             </div>
             <div>
-              <span>Description: </span><p class="description">{this.state.virtual.Description}</p>
+              <p class="description">{this.state.virtual.description}</p>
             </div>
+            {content}
             <div>{timestamps}</div>
             <div>{sequence}</div>
           </div>
@@ -174,6 +197,7 @@ module.exports = function(Component) {
 
       return (
         <div>
+          {status}
           <div>
             {virtual}
           </div>

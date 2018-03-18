@@ -65,6 +65,7 @@
     "deep-object-diff": "^1.0.4",
     "deepmerge": "^2.0.0",
     "getusermedia": "^2.0.1",
+    "graphic-smith-waterman": "^1.0.1",
     "gulp": "^3.9.1",
     "gulp-cssimport": "^6.0.0",
     "gulp-inline-source": "^3.1.0",

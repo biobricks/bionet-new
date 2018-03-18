@@ -1,0 +1,151 @@
+/*
+  WARNING: All of this data will be readable by all clients.
+           Do not put any sensitive information in this file.
+*/
+
+
+module.exports = {
+
+  // name of lab to create on first run
+  lab: "EndyLab",
+
+  dataTypes: 
+    [{
+      name: "lab",
+      title:"Lab",
+      xUnits:1,
+      yUnits:5,
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "-80 freezer",
+      title:"-80C Freezer",
+      xUnits:1,
+      yUnits:5,
+      fields: {
+        Description: 'text',
+        Shelf: 'text',
+        Rack: 'text',
+        Box: 'text'
+      }
+    },{
+      name: "-20 freezer",
+      title:"-20C Freezer",
+      xUnits:1,
+      yUnits:5,
+      fields: {
+        Description: 'text',
+        Shelf: 'text',
+        Rack: 'text',
+        Box: 'text'
+      }
+    },{
+      name: "-4 fridge",
+      title:"4C Fridge",
+      xUnits:1,
+      yUnits:5,
+      fields: {
+        Description: 'text',
+        Shelf: 'text',
+        Rack: 'text',
+        Box: 'text'
+      }
+    },{
+      name: "freezer rack",
+      title:"Rack",
+      xUnits:5,
+      yUnits:4,
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "8 x 12 freezer box",
+      title:"8x12 Box",
+      xUnits:12,
+      yUnits:8,
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "9 x 9 freezer box",
+      title:"9x9 Box",
+      xUnits:9,
+      yUnits:9,
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "freezer box",
+      title:"Box",
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "shelving unit",
+      title:"Shelving Unit",
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "shelf",
+      title:"Shelf",
+      xUnits:4,
+      yUnits:1,
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "cabinet",
+      title:"Cabinet",
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "drawer",
+      title:"Drawer",
+      fields: {
+        Description: 'text'
+      }
+    },{
+      name: "organism",
+      title:"Organism",
+      virtual: true,
+      fields: {
+        Genotype: 'text',
+        Sequence: 'text'
+      }
+    },{
+      name: "vector",
+      title:"Vector",
+      virtual: true,
+      fields: {
+        Description: 'text',
+        Sequence: 'text'
+      }
+    },{
+      name: "single-stranded",
+      title:"Single-Stranded",
+      virtual: true,
+      fields: {
+        Description: 'text',
+        Sequence: 'text'
+      }
+    },{
+      name: "double-stranded",
+      title:"Double-Stranded",
+      virtual: true,
+      fields: {
+        Description: 'text',
+        Sequence: 'text'
+      }
+    },{
+      name: "chemical stock",
+      title:"Chemical Stock",
+      virtual: true,
+      fields: {
+        Description: 'text'
+      }
+    }]
+
+};

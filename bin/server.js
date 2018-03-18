@@ -11,6 +11,7 @@ var rpc = require('rpc-multistream'); // rpc and stream multiplexing
 var auth = require('rpc-multiauth'); // authentication
 var accountdown = require('accountdown'); // user/login management
 var uuid = require('uuid').v4;
+var xtend = require('xtend');
 var accounts = require('../libs/user_accounts.js');
 var Mailer = require('../libs/mailer.js');
 var labDeviceServer = require('../libs/lab_device_server.js');
@@ -36,8 +37,10 @@ default: {
 }
 });
 
+// TODO infer client settings filepath from settings filepath
+var clientSettings = require('../settings.client.js');
 var settings = require(argv.settings)(argv);
-
+settings = xtend(settings, clientSettings);
 
 // generate lab icon if it doesn't already exist
 labIcon(settings.lab, path.join(settings.staticPath, 'images', 'lab_icon.png'));
@@ -153,6 +156,10 @@ var ws = websocket.createServer({server: server}, function(stream) {
 //      console.log("  -- ", stream.listeners('error')[1]);
   stream.on('error', function(err) {
     console.error("WebSocket stream error:", err);
+  });
+
+  stream.on('end', function() {
+
   });
 
   var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer, p2p);

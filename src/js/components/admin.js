@@ -22,15 +22,9 @@ module.exports = function(Component) {
 
     componentDidMount() {
 
-      // TODO this is super hacky
-      // We need a function which gets called when the connection is opened
-      if(!app.actions.connection.isConnected()) {
-        setTimeout(function() {
-          this.componentDidMount();
-        }.bind(this), 200);
-
-        return;
-      }
+      util.whenConnected(function() {
+        this.componentDidMount();
+      }.bind(this));
 
       var self = this;
       app.actions.p2p.getPeers(function(err, peers) {

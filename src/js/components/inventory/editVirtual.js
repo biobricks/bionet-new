@@ -53,12 +53,6 @@ module.exports = function (Component) {
             //console.log('inventoryCellLocation',loc, this.item)
         }
         
-        enableModal() {
-            //console.log('enableModal:',app.state.global.enableEditPhysical)
-            const isActive = (app.state.global.enableEditPhysical)  ? 'is-active' : ''
-            this.setState({active:isActive})
-        }
-        
         onblur(e, fid, fvalue) {
             if (!this.item) return
             var id = e.target.id
@@ -94,7 +88,7 @@ module.exports = function (Component) {
                 parentId = item.parent_id
             }
             
-            const selection = app.state.global.inventorySelection
+            const selection = app.state.inventory.selection
             var wellData = {
                 x:1,
                 y:1
@@ -228,9 +222,9 @@ module.exports = function (Component) {
             }
                                     
             var types=[]
-            if (app.state.global.inventoryTypes && parent_item) {
+            if (app.state.inventory.types && parent_item) {
                 const currentSelectionType = parent_item.type.toLowerCase()
-                types = (currentSelectionType.indexOf('box') >= 0) ? app.state.global.inventoryTypes.materials : app.state.global.inventoryTypes.locations
+                types = (currentSelectionType.indexOf('box') >= 0) ? app.state.inventory.types.materials : app.state.inventory.types.locations
             }
 
             return (

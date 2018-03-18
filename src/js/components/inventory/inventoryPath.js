@@ -17,10 +17,12 @@ module.exports = function (Component) {
             this.state = {
                 inventoryPath:null,
                 inventoryItem:{},
-                containerSize:150
+                containerSize:150,
+                moveItem:app.state.inventory.moveItem
             }
             this.containerRef = {}
             app.state.selectCellListener = this.selectCellListener.bind(this)
+            app.state.inventory.listener.moveItem = this.updateMoveItem.bind(this)
         }
         
         componentWillReceiveProps(props) {
@@ -28,11 +30,11 @@ module.exports = function (Component) {
         }
         
         selectCellListener(cellLocation) {
-            console.log('selectCellListener:',cellLocation, this.props)
+            //console.log('selectCellListener:',cellLocation, this.props)
             for (var containerId in this.containerRef) {
                 var container = this.containerRef[containerId]
                 if (container.props.dbid===cellLocation.parentId) {
-                    console.log('selectCellListener, container:',containerId,container)
+                    //console.log('selectCellListener, container:',containerId,container)
                     container.selectCellListener(cellLocation)
                     break
                 }
@@ -90,6 +92,7 @@ module.exports = function (Component) {
         }
         
         updateMoveItem(item) {
+            console.log('updateMoveItem:',item)
             this.setState({moveItem:item})
         }
         
@@ -101,7 +104,7 @@ module.exports = function (Component) {
             const iconStyle = "font-size:20px;"
             var moveId = null
             var moveName = null
-            const moveItem = app.state.global.moveItem
+            const moveItem = this.state.moveItem
             if (moveItem) {
                 moveId = moveItem.id
                 moveName = moveItem.name
@@ -115,7 +118,7 @@ module.exports = function (Component) {
                     </div>
                     <div class="tile">
                         <div class="navbar-end">
-                            <MoveItem name={moveName} moveId={moveId} onclick={this.moveItem} />
+                            <MoveItem name={moveName} moveId={moveId} />
                             <a class="navbar-item mdi mdi-printer"  style={iconStyle} onclick={this.print.bind(this)}></a>
                         </div>
                     </div>

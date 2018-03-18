@@ -42,19 +42,13 @@ module.exports = function (Component) {
             })
         }
 
-        enableModal() {
-            //console.log('enableModal:',app.state.global.enableEditPhysical)
-            const isActive = (app.state.global.enableEditPhysical)  ? 'is-active' : ''
-            this.setState({active:isActive})
-        }
-        
         submit(e) {
             e.preventDefault();
             this.close()
             
             // edit existing item
             var dbData = this.item
-            const selection = app.state.global.inventorySelection
+            const selection = app.state.inventory.selection
             if (selection) {
                 dbData.parent_id = selection.parentId
                 dbData.parent_x = selection.x
@@ -159,11 +153,8 @@ module.exports = function (Component) {
                     attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
                 }
             }
-            const types= (app.state.global.inventoryTypes) ? app.state.global.inventoryTypes.locations : [] 
-                                //<FormInputText fid='type' value={this.item.type} label="Type" />
+            const types= (app.state.inventory.types) ? app.state.inventory.types.locations : [] 
             if (tabular) {
-                //                            <ItemTypes type={this.item.type} types={types} setType={this.setType}/>
-
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="tile is-parent is-11"  style="padding:0; margin:0">
@@ -174,7 +165,6 @@ module.exports = function (Component) {
                     </form>
                 )
             } else {
-                                            //<FormInputText fid='id' value={this.item.id} label="Id" readonly="true"/>
                 return (
                     <div class={"modal "+this.state.active}>
                       <div class="modal-background" onclick={this.close}></div>

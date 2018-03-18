@@ -120,7 +120,7 @@ module.exports = function (Component) {
         }
 
         selectCellListener(cellLocation, edit) {
-            console.log('selectCellListener:',edit, this.dbid, cellLocation, this.props)
+            //console.log('selectCellListener:',edit, this.dbid, cellLocation, this.props)
             if (!cellLocation || this.dbid!==cellLocation.parentId) return
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1

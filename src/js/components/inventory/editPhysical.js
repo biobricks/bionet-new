@@ -57,12 +57,6 @@ module.exports = function (Component) {
             this.item.parent_y = loc.y
         }
         
-        enableModal() {
-            //console.log('enableModal:',app.state.global.enableEditPhysical)
-            const isActive = (app.state.global.enableEditPhysical)  ? 'is-active' : ''
-            this.setState({active:isActive})
-        }
-        
         onblur(e, fid, fvalue) {
             if (!this.item) return
             var id = e.target.id
@@ -94,7 +88,7 @@ module.exports = function (Component) {
             // edit existing item
             var dbData = this.item
             
-            const selection = app.state.global.inventorySelection
+            const selection = app.state.inventory.selection
             if (selection && !this.item.id) {
                 dbData.parent_id = selection.parentId
             }
@@ -139,15 +133,17 @@ module.exports = function (Component) {
         }
         
         editVirtual(e) {
+            console.log('edit virtual, props:',this.props)
             e.preventDefault();
             if (!this.props.item || !this.props.item.virtual_id) return
-            
+            /*
             const editVirtualId = this.props.item.virtual_id
-            app.actions.inventory.editVirtualItem(editVirtualId)
             app.actions.prompt.initRender(<EditVirtual state="EditVirtual" id={editVirtualId} modal="true"/>)
             app.actions.prompt.display('Edit Virtual', function(result) {
-                //console.log('virtual result')
+                console.log('virtual result')
             })
+            */
+            app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
         }
         
         render() {
@@ -220,11 +216,11 @@ module.exports = function (Component) {
             if (parent_item) {
                 const currentSelectionType = parent_item.type.toLowerCase()
                 isBox = currentSelectionType.indexOf('box') >= 0
-                if (app.state.global.inventoryTypes && parent_item) {
-                    types = (isBox) ? app.state.global.inventoryTypes.materials : app.state.global.inventoryTypes.locations
+                if (app.state.inventory.types && parent_item) {
+                    types = (isBox) ? app.state.inventory.types.materials : app.state.inventory.types.locations
                 }
             } else {
-                types = app.state.global.inventoryTypes.locations
+                types = app.state.inventory.types.locations
             }
                     
             var document = null

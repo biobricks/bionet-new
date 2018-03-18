@@ -8,21 +8,28 @@ module.exports = {
                 inventorySelection: {},
                 inventoryTypes:{},
                 inventoryItem: null,
-                inventoryItemParent: null,
                 virtualItem: null,
-                inventoryItemParent: null,
                 inventoryLocationPath: null,
                 inventoryPath:null,
                 inventoryRoot: null,
                 rootId: null
             }
         });
+        app.state.inventory={
+            listener:{},
+            selection:{},
+            physicalItem:null,
+            virtualItem:null,
+            favorites:[],
+            moveItem:null,
+            types:{}
+        }
     },
     
     getSelectedItem: function() {
-        if (!app.state.global.inventorySelection || !app.state.global.inventorySelection.id) return null
-        const id = app.state.global.inventorySelection.id
-        console.log('getSelectedItem action:',app.state.inventoryPath, app.state.inventorySelection)
+        if (!app.state.inventory.selection || !app.state.inventory.selection.id) return null
+        const id = app.state.inventory.selection.id
+        console.log('getSelectedItem action:',app.state.inventoryPath, app.state.inventory.selection)
         if (app.state.inventoryPath && app.state.inventoryPath.length>0) {
             const path = app.state.inventoryPath
             const pathItem = path[path.length-1]
@@ -57,7 +64,7 @@ module.exports = {
     },
     
     selectCell: function(id, parentId, x, y, navigate) {
-        console.log('selectCell action:',id,x,y)
+        //console.log('selectCell action:',id,x,y)
         //console.trace()
         const inventorySelection = {
             id: id,
@@ -66,23 +73,10 @@ module.exports = {
             y: y,
             navigate:navigate
         }
-        app.state.global.inventorySelection = inventorySelection
+        app.state.inventory.selection = inventorySelection
         
         if (navigate) {
             const idn = (id) ? id : parentId
-            /*
-            app.changeState({
-                global: {
-                    inventorySelection: {
-                        id: id,
-                        parentId: parentId,
-                        x: x,
-                        y: y,
-                        navigate:navigate
-                    }
-                }
-            });
-            */
             if (idn) {
                 const url = "/inventory/"+idn
                 console.log('selectCell:',url)
@@ -95,22 +89,17 @@ module.exports = {
     editItem: function(item) {
         console.log('editItem action: ', item)
         const parent =  (item && item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
-        app.setState({
-            global: {
-                inventoryItem: item,
-                inventoryItemParent: parent
-            }
-        });
+        app.state.inventory.physicalItem = item
+        if (app.state.inventory.listener.physicalItem) app.state.inventory.listener.physicalItem(item)
     },
     
-    editVirtualItem: function(item) {
-        console.log('editVirtualItem action: ', item)
-        const parent =  (item && item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
-        app.changeState({
-            global: {
-                virtualItem: item
-            }
-        });
+    editVirtualItem: function(id) {
+        console.log('editVirtualItem action: ', id)
+        if (!id) return null
+        app.remote.get(id, function(err, virtual) {
+            app.state.inventory.virtualItem = virtual
+            if (app.state.inventory.listener.virtualItem) app.state.inventory.listener.virtualItem(virtual)
+        })
     },
     
     getChildren:function(id, cb) {
@@ -132,8 +121,8 @@ module.exports = {
     },
     
     getLocationType: function( type ) {
-        if (!app.state.global.inventoryTypes.locations) return
-        const types = app.state.global.inventoryTypes.locations
+        if (!app.state.inventory.types.locations) return
+        const types = app.state.inventory.types.locations
         for (var i=0; i<types.length; i++) {
             if ( types[i].name === type ) return types[i]
         }
@@ -182,6 +171,7 @@ module.exports = {
                         const parent = (length>1) ? locationPathAr[length-2] : null
                         //console.log('getInventoryPath change state:', locationPathAr)
                         app.state.inventoryPath = locationPathAr
+                        this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
                         if (cb) cb(locationPathAr)
                     }
                 })
@@ -192,7 +182,6 @@ module.exports = {
     getInventoryTypes: function() {
         
         const dataTypes = app.settings.dataTypes
-        //console.log('getInventoryTypes, appSettings:',dataTypes)
 
         const materials = []
         const locations = []
@@ -210,17 +199,7 @@ module.exports = {
             materials: materials,
             locations: locations
         }
-        app.changeState({
-            global: {
-                inventoryTypes: null
-            }
-        });
-        app.changeState({
-            global: {
-                inventoryTypes: typeSpec
-            }
-        });
-        const createType = 'storage'
+        app.state.inventory.types = typeSpec
     },
     
     getRootItem: function(cb) {
@@ -248,127 +227,6 @@ module.exports = {
         })
     },
     
-    init: function (q) {
-        this.getFavorites()
-        if (q) {
-            this.selectInventoryItem(q)
-            return
-        }
-
-        const setRootId = function (id) {
-            app.changeState({
-                global: {
-                    inventory: {
-                        rootId: id
-                    }
-                }
-            });
-        }
-
-        //app.global.inventory
-        var rootItem
-        BIONET.remote.inventoryTree(function (err, children) {
-            if (err) return console.log("ERROR:", err);
-            for (var i = 0; i < children.length; i++) {
-                var item = children[i].value
-                if (!item.parent_id && item.type === 'lab') {
-                    setRootId(item.id)
-                    rootItem = item
-                    this.selectInventoryItem(rootId)
-                    break;
-                }
-            }
-        })
-    },
-
-    refreshInventoryPath: function (id) {
-        console.log('refreshInventoryPath:', id)
-        this.retrieveLocationPath(id, (path) => {
-            BIONET_VIS.signal.setLocationPath.dispatch(id, path)
-            BIONET.signal.getFavorites.dispatch()
-            const selectedChildren = getChildTable(path[id].children)
-            if (id.indexOf('p->') >= 0 || id.indexOf('v-') >= 0) {
-                // todo: set component state
-                //tag.editPart(path[id])
-                //$('#edititem').show()
-            } else {
-                BIONET_DATAGRID.updateDataTable(selectedChildren)
-                    // set component state
-                    //$('#edititem').hide()
-            }
-        })
-    },
-    
-        
-    retrieveLocationPath: function (id, cb) {
-        if (!id) return
-        const locationPath = {}
-        var results = 0
-        BIONET.remote.getLocationPath(id, function (err, locationPathAr) {
-            if (err) {
-                console.log('getLocationPath error:', err)
-                return
-            }
-            results = locationPathAr.length
-            for (var i = 0; i < locationPathAr.length; i++) {
-                var location = locationPathAr[i]
-                var locationId = location.id
-                locationPath[locationId] = location
-                this.getChildren(locationId, (pid, children) => {
-                    locationPath[pid].children = children
-                    if (--results <= 0) {
-                        cb(locationPath)
-                    }
-                })
-            }
-        })
-    },
-
-    selectInventoryItem: function (id, selectionModeVis) {
-        BIONET.signal.setLayout.dispatch(tag.layout)
-        const selectionMode = selectionModeVis || BIONET_VIS.getSelectionMode()
-        if (selectionMode === BIONET.EDIT_SELECTION) {
-            editSelection = BIONET_VIS.getEditSelection()
-            if (editSelection && editSelection.dbData) {
-                if (editSelection.dbData.type === 'physical') {
-                    tag.editMaterial()
-                } else {
-                    tag.editItem()
-                }
-            }
-            return
-        } else if (selectionMode === BIONET.MOVE_SELECTION) {
-            BIONET.signal.highlightItem.dispatch(BIONET_VIS.ZOOM_ITEM, id)
-            BIONET_VIS.setMoveItemId(id)
-            const currentItem = BIONET_VIS.getSelectedItem()
-            console.log('selectInventoryItem: move', id, currentItem)
-            return
-        }
-
-        retrieveLocationPath(id, (path) => {
-            //console.log('retrieveLocationPath:', JSON.stringify(path, null, 2))
-            BIONET_VIS.signal.setLocationPath.dispatch(id, path)
-            const type = BIONET_VIS.getSelectedType()
-            const currentItem = BIONET_VIS.getSelectedItem()
-            console.log('retrieveLocationPath:', path, type, currentItem)
-            if (currentItem) {
-                tag.selectedName = currentItem.name
-            }
-            tag.createType = (type === 'box') ? 'material' : 'storage'
-            const selectedChildren = getChildTable(path[id].children)
-            updateLayout()
-            if (type === 'part' || id.indexOf('v-') >= 0) {
-                $('#edititem').show()
-                tag.editPart(currentItem.dbData)
-            } else {
-                $('#edititem').hide()
-                BIONET_DATAGRID.updateDataTable(selectedChildren)
-                BIONET.signal.getFavorites.dispatch()
-            }
-            tag.update()
-        })
-    },
-
     setSelectionMode: function (e) {
 
     },
@@ -531,12 +389,6 @@ module.exports = {
                 }
                 createVirtual(virtualObj, instances, container_id, well_id)
 
-                /*
-
-                getPhysicalResult {"name":"myNewVector01_0","type":"physical","parent_id":"p-40f35523-9884-4361-8eae-e97466e7b25d","id":"p-9820ba76-5ff0-4270-bbc3-07079a796b76","created":{"user":"tsakach@gmail.com","time":1499278758},"updated":{"user":"tsakach@gmail.com","time":1499278758}}
-
-                {"type":"vector","name":"myNewVector02","creator":{"user":"tsakach@gmail.com","time":"Wed Jul 05 2017"},"Description":"v02","Sequence":"abba","creator.user":"tsakach@gmail.com","creator.time":"Wed Jul 05 2017","Genotype":"abcd"}"
-                */
             }
         }
 
@@ -590,32 +442,15 @@ module.exports = {
     },
     
     setMoveItem: function(item) {
-        app.changeState({
-            global: {
-                moveItem: null
-            }
-        });
-        app.changeState({
-            global: {
-                moveItem: item
-            }
-        });
+        app.state.inventory.moveItem = item
+        if (app.state.inventory.listener.moveItem) app.state.inventory.listener.moveItem(item)
     },
 
     getFavorites: function (cb) {
         console.log('getFavorites action called')
         app.remote.favLocationsTree(function(err, userFavorites) {
-            console.log('getFavorites action:',userFavorites)
-            app.changeState({
-                global: {
-                    favorites: null
-                }
-            });
-            app.changeState({
-                global: {
-                    favorites: userFavorites
-                }
-            });
+            //console.log('getFavorites action:',userFavorites)
+            app.state.inventory.favorites=userFavorites
             if (cb) cb(err, userFavorites)
         })
     },

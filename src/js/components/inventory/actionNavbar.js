@@ -14,8 +14,11 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             this.componentWillReceiveProps(props)
-            ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
-            ashnazg.listen('global.virtualItem', this.editVirtualItemListener.bind(this));
+            
+            app.state.inventory.listener.physicalItem = this.editItemListener.bind(this)
+            app.state.inventory.listener.virtualItem = this.editVirtualItemListener.bind(this)
+            //ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
+            //ashnazg.listen('global.virtualItem', this.editVirtualItemListener.bind(this));
             this.state={
                 enableAddItemMenu:'',
                 enableFavoritesMenu:''
@@ -26,8 +29,8 @@ module.exports = function (Component) {
             if (!nextProps || !nextProps.menu) return
             //console.log('ActionNavBar props:',nextProps.menu, this.state, this.item)
             var physicalMenu = false
-            if (app.state.global.inventorySelection) {
-                const currentItem = app.actions.inventory.getItemFromInventoryPath(app.state.global.inventorySelection.id)
+            if (app.state.inventory.selection) {
+                const currentItem = app.actions.inventory.getItemFromInventoryPath(app.state.inventory.selection.id)
                 if (currentItem && currentItem.type) {
                     const currentSelectionType = currentItem.type.toLowerCase()
                     if (currentSelectionType.indexOf('box')>=0) physicalMenu = true
@@ -50,7 +53,13 @@ module.exports = function (Component) {
             console.log('editVirtualItemListener:',item)
             this.item = item
             this.displayAddVirtualModal=true
-            //this.setState({displayAddPhysicalModal:true})
+            const editVirtualId = item.virtual_id
+            app.actions.prompt.initRender(<EditVirtual state="EditVirtual" id={editVirtualId} modal="true"/>)
+            app.actions.prompt.display('Edit Virtual', function(result) {
+                this.setState({displayAddVirtualModal:true})
+                //console.log('virtual result')
+            })
+            this.setState({displayAddVirtualModal:true})
         }
         
         generateNewItem(parent_id,x,y,type) {
@@ -107,12 +116,12 @@ module.exports = function (Component) {
         
         editItem() {
             var item = null
-            if (!app.state.global.inventorySelection || !app.state.global.inventorySelection.id) {
-                item = this.generateNewItem(app.state.global.inventorySelection.parentId,app.state.global.inventorySelection.x, app.state.global.inventorySelection.y,'')
+            if (!app.state.inventory.selection || !app.state.inventory.selection.id) {
+                item = this.generateNewItem(app.state.inventory.selection.parentId,app.state.inventory.selection.x, app.state.inventory.selection.y,'')
             } else {
                 item = app.actions.inventory.getSelectedItem()
             }
-            console.log('edit item', app.state.global.inventorySelection, item)
+            console.log('edit item', app.state.inventory.selection, item)
             app.actions.inventory.editItem(item)
         }
         
@@ -170,7 +179,9 @@ module.exports = function (Component) {
         }
         
         moveItem() {
-            app.actions.inventory.setMoveItem(app.actions.inventory.getSelectedItem())
+            const item = app.actions.inventory.getSelectedItem()
+            console.log('moveItem:',item)
+            app.actions.inventory.setMoveItem(item)
         }
 
         render() {
@@ -203,11 +214,11 @@ module.exports = function (Component) {
             }
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
-            //console.log('actionNavbar render: app.state.global.inventoryItem', app.state.global.inventoryItem)
+            //console.log('actionNavbar render: app.state.inventory.physicalItem', app.state.inventory.physicalItem)
             
-            const editPhysical = (app.state.global.inventoryItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.global.inventoryItem} />) : null
+            const editPhysical = (app.state.inventory.physicalItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />) : null
                                                                      
-            const editVirtual = (app.state.global.virtualItem) ? (<EditVirtual state="EditVirtual" active="true" item={app.state.global.virtualItem} />) : null
+            const editVirtual = (this.state.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active="true" item={app.state.inventory.virtualItem} />) : null
 
             const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
             return (
@@ -235,7 +246,7 @@ module.exports = function (Component) {
                             <div onclick={this.closeFavoritesMenu.bind(this)} style={closeClickBackground}>
                                 <div class="dropdown-content"  style={"position:fixed;top:265px;left:7px;"}>
                                     <div class="dropdown-item"  style="margin:0;padding:0;">
-                                        <Favorites favorites={app.state.global.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)} selectedItem={app.state.global.inventorySelection}/>
+                                        <Favorites favorites={app.state.inventory.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)} selectedItem={app.state.inventory.selection}/>
                                     </div>
                                 </div>
                             </div>

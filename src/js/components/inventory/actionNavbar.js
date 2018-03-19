@@ -41,44 +41,21 @@ module.exports = function (Component) {
         
         editItemListener(item) {
             console.log('editItem listener:',item)
-            if (!item) return
-            this.item = item
-            this.displayAddPhysicalModal=true
-            this.setState({displayAddPhysicalModal:true})
+            var title = 'Create Physical'
+            if (item && item.name) {
+                title = 'Edit '+item.name
+            }
+            const promptComponent = (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />)
+            app.actions.prompt.display(title, promptComponent, function(result) {
+                console.log('edit result')
+            })
         }
         
         editVirtualItemListener(item) {
-            console.log('editVirtualItemListener:',item)
-            const virtual = {
-                
-            }
-            const promptComponent = (<EditVirtual state="EditVirtual" id={null} modal="true" item={null}/>)
+            const promptComponent = (<EditVirtual state="EditVirtual" id={null} item={null}/>)
             app.actions.prompt.display("Create Virtual", promptComponent, function(result) {
                 console.log('virtual result')
             })
-            
-            /*
-            app.actions.inventory.editVirtualItem( null, function(virtual) {
-                console.log('edit virtual, virtual:',virtual)
-                const promptComponent = <EditVirtual state="EditVirtual" item={virtual} modal="true"/>
-                const promptTitle = 'Edit '+virtual.name
-                app.actions.prompt.display(promptTitle, promptComponent, function(result) {
-                    console.log('virtual result')
-                })
-            })
-            */
-/* 
-            app.actions.prompt.display('Edit Virtual', promptComponent, function(result) {
-                console.log('edit virtual prompt, complete:',result)
-                this.setState({displayAddVirtualModal:result})
-                //console.log('virtual result')
-            })
-*/
-            //this.setState({displayAddVirtualModal:true})
-            
-            /*
-            const editVirtual = (this.state.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active="true" item={app.state.inventory.virtualItem} />) : null
-            */
         }
         
         generateNewItem(parent_id,x,y,type) {
@@ -155,7 +132,6 @@ module.exports = function (Component) {
             } else {
                 item = app.actions.inventory.getSelectedItem()
             }
-            console.log('edit item', app.state.inventory.selection, item)
             app.actions.inventory.editItem(item)
         }
         
@@ -249,13 +225,11 @@ module.exports = function (Component) {
             const actionsContainerHeight = 5*75
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
             //console.log('actionNavbar render: app.state.inventory.physicalItem', app.state.inventory.physicalItem)
-            
-            const editPhysical = (app.state.inventory.physicalItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />) : null
-                                                                     
-            //const editVirtual = (this.state.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active="true" item={app.state.inventory.virtualItem} />) : null
-                                                                       
-            const editVirtual = null
 
+            /*
+            const editPhysical = (app.state.inventory.physicalItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />) : null
+            */
+                                                                     
             const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>
@@ -288,13 +262,10 @@ module.exports = function (Component) {
                             </div>
                         </div>
                     </div>
-
                     <ActionMenuButton icon="pencil" onClick={this.editItem.bind(this)} />
                     <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
                     <ActionMenuButton icon="open-in-app" onClick={this.upload.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
-                    {editPhysical}
-                    {editVirtual}
                 </div>
             )
         }

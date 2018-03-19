@@ -89,7 +89,6 @@ module.exports = {
     
     editItem: function(item) {
         console.log('editItem action: ', item)
-        const parent =  (item && item.parent_id) ? this.getItemFromInventoryPath(item.parent_id) : null
         app.state.inventory.physicalItem = item
         if (app.state.inventory.listener.physicalItem) app.state.inventory.listener.physicalItem(item)
     },
@@ -273,6 +272,10 @@ module.exports = {
     },
 
     generatePhysicals: function (virtualId, seriesName, instances, container_id, well_id, cb) {
+        if (instances===0) {
+            if (cb) cb(null)
+            return
+        }
         const instancesList = []
         for (var instance = 0; instance < instances; instance++) {
             

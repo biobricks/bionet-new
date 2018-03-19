@@ -26,6 +26,16 @@ module.exports = function (Component) {
         
         render() {
             if (!this.state.active) return
+            var controls = null
+            if (this.state.showControls) {
+                controls=(
+                    <div class="control" style="margin-left:20px; margin-bottom:20px;">
+                        <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>
+                        <span style="margin-right:20px;">&nbsp;</span>
+                        <input type="submit" class="button is-link" value="Cancel" />
+                    </div>
+                )
+            }
             console.log('modal prompt render, props:',this.props, this.state)
             const active = (this.state.active) ? 'is-active' : ''
             return(
@@ -44,11 +54,7 @@ module.exports = function (Component) {
                             <div style="padding:20px;">
                                 {this.state.component}
                             </div>
-                            <div class="control" style="margin-left:20px; margin-bottom:20px;">
-                                <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>
-                                <span style="margin-right:20px;">&nbsp;</span>
-                                <input type="submit" class="button is-link" value="Cancel" />
-                            </div>
+                            {controls}
                         </div>
                     </form>
                 <button class="modal-close" aria-label="close" onclick={this.close.bind(this)}></button>

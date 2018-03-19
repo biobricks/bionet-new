@@ -72,7 +72,11 @@ module.exports = function (Component) {
             })
         }
         
-        submit(e) {
+        createPhysicals(e) {
+            this.submit(e,true)
+        }
+        
+        submit(e, keepOpen) {
             e.preventDefault();
             //this.close()
             
@@ -82,10 +86,13 @@ module.exports = function (Component) {
             var y = 1
             var dbData = {}
             if (item) {
+                dbData = item
+                /*
                 dbData = {
                     name:item.name,
                     type:item.type
                 }
+                */
                 parentId = item.parent_id
             }
             
@@ -103,6 +110,7 @@ module.exports = function (Component) {
                 }
                 */
             }
+            if (!keepOpen) app.actions.prompt.reset()
             
             // merge form data
             const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
@@ -118,7 +126,7 @@ module.exports = function (Component) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
                     return
                 }
-                app.actions.notify(dbData.name+" created", 'notice', 2000);
+                app.actions.notify(dbData.name+" saved", 'notice', 2000);
                 if (physicals) {
                     thisModule.setState({physicals:physicals})
                 }
@@ -135,6 +143,7 @@ module.exports = function (Component) {
             this.setState({active:''})
             app.actions.inventory.editVirtualItem(null)
             if (this.props.onClose) this.props.onClose(false)
+            app.actions.prompt.reset()
         }
         
         setType(type) {
@@ -161,7 +170,7 @@ module.exports = function (Component) {
         }
         
         render() {
-            //console.log('EditPhysical render state:',this.state, this.props)
+            console.log('EditVirtual render state:',this.state, this.props)
             const item = this.item
             if (!item) return null
             const selectedItemId = (item) ? item.id : null
@@ -227,20 +236,6 @@ module.exports = function (Component) {
                 const currentSelectionType = parent_item.type.toLowerCase()
                 types = (currentSelectionType.indexOf('box') >= 0) ? app.state.inventory.types.materials : app.state.inventory.types.locations
             }
-            /*
-                <div class={"modal "+this.state.active}>
-                  <div class="modal-background" onclick={this.close}></div>
-                      <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 5%);">
-                    </div>
-                </div>
-                    <section class="hero is-info ">
-                      <div class="hero-body">
-                        <div class="container">
-                          <h1 class="title">{this.state.title}</h1>
-                        </div>
-                      </div>
-                    </section>
-            */
 
             return (
                 <form onsubmit={this.submit.bind(this)}>
@@ -255,11 +250,13 @@ module.exports = function (Component) {
                             </div>
                             <div class="field">
                                 <div class="control">
-                                    <input type="submit" class="button is-link" value="Create Physicals" />
+                                    <input type="button" class="button is-link" value="Create Physicals" onclick={this.createPhysicals.bind(this)}/>
                                     <span style="margin-right:20px;">&nbsp;</span>
                                     <input type="button" class="button is-link" value="Assign Locations" onclick={this.assignCells} />
                                     <span style="margin-right:20px;">&nbsp;</span>
-                                    <input type="button" class="button is-link" value="Close" onclick={this.close} />
+                                    <input type="button" class="button is-link" value="Save" onclick={this.submit.bind(this)} />
+                                    <span style="margin-right:20px;">&nbsp;</span>
+                                    <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
                                 </div>
                             </div>
                         </div>

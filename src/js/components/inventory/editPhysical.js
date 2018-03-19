@@ -9,8 +9,6 @@ module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
     const EditVirtual = require('./editVirtual')(Component)
-    //const EditVirtual = require('../edit_virtual')(Component)
-    //const EditTable = require('./editTable')(Component)
     
     return class EditPhysical extends Component {
         constructor(props) {
@@ -20,7 +18,7 @@ module.exports = function (Component) {
             this.close = this.close.bind(this)
             this.setType = this.setType.bind(this)
             this.inventoryCellLocation=this.inventoryCellLocation.bind(this)
-            ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
+            //ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
         }
         
         componentWillReceiveProps(nextProps) {
@@ -100,6 +98,7 @@ module.exports = function (Component) {
             delete dbData.loc
             console.log('edit physical, submit:',dbData, selection)
             //return
+            app.actions.prompt.reset()
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
@@ -115,6 +114,7 @@ module.exports = function (Component) {
             this.setState({active:''})
             app.actions.inventory.editItem(null)
             if (this.props.onClose) this.props.onClose(false)
+            app.actions.prompt.reset()
         }
         
         onClickRow(e) {
@@ -252,46 +252,52 @@ module.exports = function (Component) {
                 if (parent_item) {
                     storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={this.item.parent_x} py={this.item.parent_y} mode="edit"/>)
                 }
-                return (
+                /*
                     <div class={"modal "+this.state.active}>
                       <div class="modal-background" onclick={this.close}></div>
                           <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 5%);">
-                            <form onsubmit={this.submit.bind(this)}>
-
-                                <section class="hero is-info ">
-                                  <div class="hero-body">
-                                    <div class="container">
-                                      <h1 class="title">{this.state.title}</h1>
-                                    </div>
-                                  </div>
-                                </section>
-                                <div class=" post-hero-area">
-                                    <div class="columns">
-                                        <div class="column">
-                                            <FormInputText fid='name' value={this.item.name} label="Name" />
-                                            <label class="label">Type</label>
-                                            <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
-                                            <div style="margin-top:10px;margin-bottom:30px;">
-                                                {attributes}
-                                            </div>
-                                            {editTable}
-                                            <div class="field">
-                                                <div class="control">
-                                                    <input type="submit" class="button is-link" value="Save" />
-                                                    <span style="margin-right:20px;">&nbsp;</span>
-                                                    <input type="button" class="button is-link" value="Cancel" onclick={this.close} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="column">
-                                            {storageContainer}
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                            <button class="modal-close" aria-label="close" onclick={this.close}></button>
                         </div>
                     </div>
+                        <section class="hero is-info ">
+                          <div class="hero-body">
+                            <div class="container">
+                              <h1 class="title">{this.state.title}</h1>
+                            </div>
+                          </div>
+                        </section>
+                                        <input type="submit" class="button is-link" value="Save" />
+                                        <span style="margin-right:20px;">&nbsp;</span>
+                                        <input type="button" class="button is-link" value="Cancel" onclick={this.close} />
+                                <div class="field">
+                                    <div class="control">
+                                    </div>
+                                </div>
+                */
+                return (
+                    <form onsubmit={this.submit.bind(this)}>
+                        <div class="columns">
+                            <div class="column">
+                                <FormInputText fid='name' value={this.item.name} label="Name" />
+                                <label class="label">Type</label>
+                                <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
+                                <div style="margin-top:10px;margin-bottom:30px;">
+                                    {attributes}
+                                </div>
+                                {editTable}
+                                <div class="field">
+                                    <div class="control">
+                                        <input type="submit" class="button is-link" value="Save" />
+                                        <span style="margin-right:20px;">&nbsp;</span>
+                                        <input type="button" class="button is-link" value="Cancel" onclick={this.close} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                {storageContainer}
+                            </div>
+                        </div>
+                        <button class="modal-close" aria-label="close" onclick={this.close}></button>
+                    </form>
                 )
             }
         }

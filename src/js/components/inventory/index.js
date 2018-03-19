@@ -5,7 +5,6 @@ from 'preact'
 import ashnazg from 'ashnazg'
 
 module.exports = function (Component) {
-    var inventoryActions = require('../../actions/inventory')
     var ActionNavbar = require('./actionNavbar')(Component)
     var InventoryPath = require('./inventoryPath')(Component)
 
@@ -14,7 +13,7 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             this.initialized=false
-            inventoryActions.initialize()
+            app.actions.inventory.initialize()
             this.state={
                 types:app.actions.inventory.getInventoryTypes(),
                 inventoryPath:null
@@ -48,7 +47,6 @@ module.exports = function (Component) {
         
         getRootInventoryPath(cb) {
             if (!app.remote) {
-                app.actions.inventory.initialize()
                 return
             }
             app.actions.inventory.getRootItem(function(item) {
@@ -70,7 +68,6 @@ module.exports = function (Component) {
                 return
             }
             this.initialized=true
-            app.actions.inventory.initialize()
             app.actions.inventory.getInventoryTypes()
             app.actions.inventory.getFavorites()
             const id = (this.props.match) ? this.props.match.params.id : null

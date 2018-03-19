@@ -8,7 +8,8 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
-    const EditVirtual = require('../edit_virtual')(Component)
+    const EditVirtual = require('./editVirtual')(Component)
+    //const EditVirtual = require('../edit_virtual')(Component)
     //const EditTable = require('./editTable')(Component)
     
     return class EditPhysical extends Component {
@@ -136,14 +137,16 @@ module.exports = function (Component) {
             console.log('edit virtual, props:',this.props)
             e.preventDefault();
             if (!this.props.item || !this.props.item.virtual_id) return
-            /*
             const editVirtualId = this.props.item.virtual_id
-            app.actions.prompt.initRender(<EditVirtual state="EditVirtual" id={editVirtualId} modal="true"/>)
-            app.actions.prompt.display('Edit Virtual', function(result) {
-                console.log('virtual result')
+            app.actions.inventory.editVirtualItem( editVirtualId, function(virtual) {
+                console.log('edit virtual, virtual:',virtual)
+                const promptComponent = <EditVirtual state="EditVirtual" item={virtual} modal="true"/>
+                const promptTitle = 'Edit '+virtual.name
+                app.actions.prompt.display(promptTitle, promptComponent, function(result) {
+                    console.log('virtual result')
+                })
             })
-            */
-            app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
+            //app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
         }
         
         render() {

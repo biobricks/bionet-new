@@ -17,8 +17,6 @@ module.exports = function (Component) {
             
             app.state.inventory.listener.physicalItem = this.editItemListener.bind(this)
             app.state.inventory.listener.virtualItem = this.editVirtualItemListener.bind(this)
-            //ashnazg.listen('global.inventoryItem', this.editItemListener.bind(this));
-            //ashnazg.listen('global.virtualItem', this.editVirtualItemListener.bind(this));
             this.state={
                 enableAddItemMenu:'',
                 enableFavoritesMenu:''
@@ -51,15 +49,36 @@ module.exports = function (Component) {
         
         editVirtualItemListener(item) {
             console.log('editVirtualItemListener:',item)
-            this.item = item
-            this.displayAddVirtualModal=true
-            const editVirtualId = item.virtual_id
-            app.actions.prompt.initRender(<EditVirtual state="EditVirtual" id={editVirtualId} modal="true"/>)
-            app.actions.prompt.display('Edit Virtual', function(result) {
-                this.setState({displayAddVirtualModal:true})
+            const virtual = {
+                
+            }
+            const promptComponent = (<EditVirtual state="EditVirtual" id={null} modal="true" item={null}/>)
+            app.actions.prompt.display("Create Virtual", promptComponent, function(result) {
+                console.log('virtual result')
+            })
+            
+            /*
+            app.actions.inventory.editVirtualItem( null, function(virtual) {
+                console.log('edit virtual, virtual:',virtual)
+                const promptComponent = <EditVirtual state="EditVirtual" item={virtual} modal="true"/>
+                const promptTitle = 'Edit '+virtual.name
+                app.actions.prompt.display(promptTitle, promptComponent, function(result) {
+                    console.log('virtual result')
+                })
+            })
+            */
+/* 
+            app.actions.prompt.display('Edit Virtual', promptComponent, function(result) {
+                console.log('edit virtual prompt, complete:',result)
+                this.setState({displayAddVirtualModal:result})
                 //console.log('virtual result')
             })
-            this.setState({displayAddVirtualModal:true})
+*/
+            //this.setState({displayAddVirtualModal:true})
+            
+            /*
+            const editVirtual = (this.state.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active="true" item={app.state.inventory.virtualItem} />) : null
+            */
         }
         
         generateNewItem(parent_id,x,y,type) {
@@ -79,9 +98,26 @@ module.exports = function (Component) {
             this.closeAddItemMenu()
             const parent = app.actions.inventory.getLastPathItem()
             if (!parent) return null
-            const item = this.generateNewItem(parent.id, parent.parent_x, parent.parent_y, e.target.id)
-            if (this.createType) app.actions.inventory.editVirtualItem(item)
-            else app.actions.inventory.editItem(item)
+            const type = e.target.id
+            if (this.createType) {
+                const virtual = {
+                    type:type,
+                    name:'',
+                    parent_id:parent.id,
+                    parent_x:parent.parent_x,
+                    parent_y:parent.parent_y
+                }
+                console.log('add virtual, virtual:',virtual)
+                const promptComponent = <EditVirtual state="EditVirtual" item={virtual}/>
+                const promptTitle = 'Create Virtual '
+                app.actions.prompt.display(promptTitle, promptComponent, function(result) {
+                    console.log('virtual result')
+                })
+            }
+            else {
+                const item = this.generateNewItem(parent.id, parent.parent_x, parent.parent_y, type)
+                app.actions.inventory.editItem(item)
+            }
         }
     
         openAddItemMenu() {
@@ -136,7 +172,7 @@ module.exports = function (Component) {
             const name = item.name
             const parentId = item.parent_id
             console.log('deleting item 1:', id, name, parentId, item)
-            app.actions.prompt.display('Do you wish to delete '+name+'?', function(accept) {
+            app.actions.prompt.display('Do you wish to delete '+name+'?', null, function(accept) {
                 if (accept) {
                     app.actions.inventory.delPhysical(id, function(err,id2) {
                         if (err) {
@@ -218,7 +254,9 @@ module.exports = function (Component) {
             
             const editPhysical = (app.state.inventory.physicalItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />) : null
                                                                      
-            const editVirtual = (this.state.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active="true" item={app.state.inventory.virtualItem} />) : null
+            //const editVirtual = (this.state.displayAddVirtualModal) ? (<EditVirtual state="EditVirtual" active="true" item={app.state.inventory.virtualItem} />) : null
+                                                                       
+            const editVirtual = null
 
             const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
             return (

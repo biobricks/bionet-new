@@ -2,7 +2,7 @@ module.exports = {
     
     initialize: function () {
         
-        app.setState({
+        app.changeState({
             global: {
                 moveItem: {},
                 inventorySelection: {},
@@ -93,11 +93,15 @@ module.exports = {
         if (app.state.inventory.listener.physicalItem) app.state.inventory.listener.physicalItem(item)
     },
     
-    editVirtualItem: function(id) {
+    editVirtualItem: function(id, cb) {
         console.log('editVirtualItem action: ', id)
         if (!id) return null
         app.remote.get(id, function(err, virtual) {
             app.state.inventory.virtualItem = virtual
+            if (cb) {
+                cb(virtual)
+                return
+            }
             if (app.state.inventory.listener.virtualItem) app.state.inventory.listener.virtualItem(virtual)
         })
     },

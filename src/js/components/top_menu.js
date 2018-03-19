@@ -105,7 +105,7 @@ module.exports = function(Component) {
               </div>
             </div>
           </div>
-            <ModalPrompt state="ModalPrompt" prompt={app.state.prompt}/>
+            <ModalPrompt state="prompt"/>
           </nav>
         
 

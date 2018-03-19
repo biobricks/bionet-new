@@ -8,42 +8,25 @@ module.exports = function (Component) {
     return class ModalPrompt extends Component {
         constructor(props) {
             super(props);
-            this.state = {
-                active:false,
-                message:''
-            };
-            this.display = this.display.bind(this)
-        }
-        
-        display(state) {
-            this.setState({active:state})
+            app.actions.prompt.reset()
         }
         
         close(e)
         {
             e.preventDefault();
-            this.display(false)
+            if (this.state.callback) this.state.callback(false)
             app.actions.prompt.reset()
-            if (this.cb) this.cb(false)
         }
         
         accept(e) {
             e.preventDefault();
-            this.display(false)
+            if (this.state.callback) this.state.callback(true)
             app.actions.prompt.reset()
-            app.actions.prompt.callback(e)
-            if (this.cb) this.cb(true)
-        }
-        
-        componentWillReceiveProps(nextProps) {
-            //console.log('prompt:',nextProps)
-            if (!nextProps.prompt) return
-            this.state.message = nextProps.prompt.message
-            this.cb = nextProps.prompt.cb
-            this.display(true)
         }
         
         render() {
+            if (!this.state.active) return
+            console.log('modal prompt render, props:',this.props, this.state)
             const active = (this.state.active) ? 'is-active' : ''
             return(
             <div class={"modal "+active}>
@@ -59,7 +42,7 @@ module.exports = function (Component) {
                         </section>
                         <div class=" post-hero-area">
                             <div style="padding:20px;">
-                                {app.actions.prompt.render()}
+                                {this.state.component}
                             </div>
                             <div class="control" style="margin-left:20px; margin-bottom:20px;">
                                 <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>

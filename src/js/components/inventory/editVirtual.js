@@ -8,7 +8,7 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
-    const EditTable = require('./editTable')(Component)
+    //const EditTable = require('./editTable')(Component)
     
     return class EditVirtual extends Component {
         constructor(props) {
@@ -22,7 +22,8 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            const active = (nextProps.active) ? 'is-active' : ''
+            //const active = (nextProps.active) ? 'is-active' : ''
+            const active='is-active'
             if (!nextProps.item) {
                 this.setState({
                     active:active
@@ -170,6 +171,10 @@ module.exports = function (Component) {
             
             const parent_item = this.parent_item
             var assignCells = null
+            
+            /*
+                        <EditTable item={item} items={this.state.physicals}/>
+            */
             if (this.state.assignCells) {
                 var storageContainer = null
                 if (parent_item) {
@@ -184,7 +189,6 @@ module.exports = function (Component) {
                 assignCells = (
                     <div>
                         {storageContainer}
-                        <EditTable item={item} items={this.state.physicals}/>
                     </div>
                 )
             }
@@ -226,49 +230,48 @@ module.exports = function (Component) {
                 const currentSelectionType = parent_item.type.toLowerCase()
                 types = (currentSelectionType.indexOf('box') >= 0) ? app.state.inventory.types.materials : app.state.inventory.types.locations
             }
-
-            return (
+            /*
                 <div class={"modal "+this.state.active}>
                   <div class="modal-background" onclick={this.close}></div>
                       <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 5%);">
-                        <form onsubmit={this.submit.bind(this)}>
-
-                            <section class="hero is-info ">
-                              <div class="hero-body">
-                                <div class="container">
-                                  <h1 class="title">{this.state.title}</h1>
-                                </div>
-                              </div>
-                            </section>
-                            <div class=" post-hero-area">
-                                <div class="columns">
-                                    <div class="column">
-                                        <FormInputText fid='name' value={this.item.name} label="Name" />
-                                        <label class="label">Type</label>
-                                        <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
-                                        <FormInputText fid='instances' value={this.item.name} label="Instances" />
-                                        <div style="margin-top:10px;margin-bottom:30px;">
-                                            {attributes}
-                                        </div>
-                                        <div class="field">
-                                            <div class="control">
-                                                <input type="submit" class="button is-link" value="Create Physicals" />
-                                                <span style="margin-right:20px;">&nbsp;</span>
-                                                <input type="button" class="button is-link" value="Assign Locations" onclick={this.assignCells} />
-                                                <span style="margin-right:20px;">&nbsp;</span>
-                                                <input type="button" class="button is-link" value="Close" onclick={this.close} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="column">
-                                        {assignCells}
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <button class="modal-close" aria-label="close" onclick={this.close}></button>
                     </div>
                 </div>
+                    <section class="hero is-info ">
+                      <div class="hero-body">
+                        <div class="container">
+                          <h1 class="title">{this.state.title}</h1>
+                        </div>
+                      </div>
+                    </section>
+            */
+
+            return (
+                <form onsubmit={this.submit.bind(this)}>
+                    <div class="columns">
+                        <div class="column">
+                            <FormInputText fid='name' value={this.item.name} label="Name" />
+                            <label class="label">Type</label>
+                            <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
+                            <FormInputText fid='instances' value={this.item.name} label="Instances" />
+                            <div style="margin-top:10px;margin-bottom:30px;">
+                                {attributes}
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <input type="submit" class="button is-link" value="Create Physicals" />
+                                    <span style="margin-right:20px;">&nbsp;</span>
+                                    <input type="button" class="button is-link" value="Assign Locations" onclick={this.assignCells} />
+                                    <span style="margin-right:20px;">&nbsp;</span>
+                                    <input type="button" class="button is-link" value="Close" onclick={this.close} />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            {assignCells}
+                        </div>
+                    </div>
+                    <button class="modal-close" aria-label="close" onclick={this.close}></button>
+                </form>
             )
         }
     }

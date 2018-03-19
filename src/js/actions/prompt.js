@@ -1,32 +1,34 @@
 module.exports = {
-    display: function(message, cb) {
+    display: function(message, component, cb) {
         app.changeState({
-            global: {
-                prompt: {
-                    message:message,
-                    cb:cb
-                }
+            prompt : {
+                message:message,
+                callback:cb,
+                component:component,
+                active:true
             }
-        });
+        })
     },
     initRender: function(component) {
-        this.component = component
+        app.state.prompt.component = component
     },
     initCallback: function(cb) {
-        this.callback = cb
+        app.state.prompt.callback = cb
     },
     callback: function(e) {
-        if (this.callback) this.callback(e)
+        if (app.state.prompt.callback) app.state.prompt.callback(e)
     },
     render: function(element) {
-        return this.component
+        return app.state.prompt.component
     },
     reset: function() {
         app.changeState({
-            global: {
-                prompt: null
+            prompt : {
+                message:null,
+                callback:null,
+                component:null,
+                active:false
             }
-        });
-        
+        })
     }
 }

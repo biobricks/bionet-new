@@ -72,8 +72,8 @@ module.exports = function (Component) {
             if (!item) return
             const id = item.id
             const name = item.name
-            app.actions.prompt.initRender(<PrintLabel/>)
-            app.actions.prompt.display('Print label for '+name+'?', function(accept) {
+            const promptComponent = (<PrintLabel/>)
+            app.actions.prompt.display('Print label for '+name+'?', promptComponent, function(accept) {
                 console.log('print item:',accept)
                 if (accept) {
                 }

@@ -27,7 +27,7 @@ module.exports = function (Component) {
         render() {
             if (!this.state.active) return
             var controls = null
-            if (this.state.showControls) {
+            if (!this.state.component) {
                 controls=(
                     <div class="control" style="margin-left:20px; margin-bottom:20px;">
                         <input type="button" class="button is-link" value="Ok" onclick={this.accept.bind(this)}/>

@@ -82,9 +82,7 @@ module.exports = function (Component) {
         }
         
         generateNewItem(parent_id,x,y,type) {
-            // todo: ashnagz listner is not triggered if unchanged, salt property is temporary work-around
             return {
-                salt: Math.random(),
                 type: type,
                 name: '',
                 parent_id: parent_id,

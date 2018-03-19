@@ -172,9 +172,6 @@ module.exports = function (Component) {
             const parent_item = this.parent_item
             var assignCells = null
             
-            /*
-                        <EditTable item={item} items={this.state.physicals}/>
-            */
             if (this.state.assignCells) {
                 var storageContainer = null
                 if (parent_item) {

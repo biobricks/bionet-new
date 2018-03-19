@@ -97,7 +97,6 @@ module.exports = function (Component) {
             dbData.parent_y = selection.y
 
             // merge form data
-            delete dbData.salt
             delete dbData.loc
             console.log('edit physical, submit:',dbData, selection)
             //return

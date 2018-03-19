@@ -1,7 +1,7 @@
 module.exports = {
     
     initialize: function () {
-        
+        /*
         app.changeState({
             global: {
                 moveItem: {},
@@ -15,6 +15,7 @@ module.exports = {
                 rootId: null
             }
         });
+        */
         app.state.inventory={
             listener:{},
             selection:{},
@@ -95,8 +96,15 @@ module.exports = {
     
     editVirtualItem: function(id, cb) {
         console.log('editVirtualItem action: ', id)
-        if (!id) return null
+        if (!id) {
+            if (cb) cb({})
+            return null
+        }
         app.remote.get(id, function(err, virtual) {
+            if (err) {
+                app.actions.notify('Virtual '+id+' not found', 'error');
+                return
+            }
             app.state.inventory.virtualItem = virtual
             if (cb) {
                 cb(virtual)
@@ -184,7 +192,6 @@ module.exports = {
     },
     
     getInventoryTypes: function() {
-        
         const dataTypes = app.settings.dataTypes
 
         const materials = []
@@ -204,6 +211,7 @@ module.exports = {
             locations: locations
         }
         app.state.inventory.types = typeSpec
+        return typeSpec
     },
     
     getRootItem: function(cb) {

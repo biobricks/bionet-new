@@ -69,9 +69,9 @@ module.exports = function(Component) {
       return (
         <nav class="navbar is-transparent">
           <div class="navbar-brand">
-            <a class="navbar-item">
+            <Link class="navbar-item" to='/'>
               <img src="/static/images/bionet_logo.png" alt="bionet.io"  height="48" />
-            </a>
+            </Link>
 
             <Link class="navbar-item" to="/">
              <img class="lab-icon" src="/static/images/lab_icon.png" />

@@ -4,6 +4,27 @@ import {Link} from 'react-router-dom';
 
 import util from '../util.js';
 
+/*
+
+ * received
+ * optimized but waiting for user verification
+ * synthesizing
+ * synthesis complete but not cloning yet (ready to clone) <- merge with cloning
+ * cloning
+ * sequencing
+ * ready_to_ship
+
+ staged to be built but not cloning: 
+
+ they will add 
+ click it to get a sorted by date-time event log
+ add attempts label "attempt 2"
+ it can fail during: synthesis, cloning and sequencing
+ swap cloning and sequencing
+ clarify who it's shipping to
+
+*/
+
 const status = [
   'received',
   'optimizing',

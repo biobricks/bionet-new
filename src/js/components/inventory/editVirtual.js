@@ -72,13 +72,18 @@ module.exports = function (Component) {
             })
         }
         
-        createPhysicals(e) {
-            this.submit(e,true)
+        saveVirtual(e) {
+            const item = this.item
+            app.actions.inventory.saveVirtual(item, null, null, null, function(err, id, physicals) {
+                if (err) app.actions.notify("Error saving "+item.name, 'error');
+                else app.actions.notify(item.name+" saved", 'notice', 2000);
+            })
+            app.actions.inventory.refreshInventoryPath(item.parent_id)
+            this.close()
         }
         
-        submit(e, keepOpen) {
+        createPhysicals(e) {
             e.preventDefault();
-            //this.close()
             
             const item = this.item
             var parentId = null
@@ -87,12 +92,6 @@ module.exports = function (Component) {
             var dbData = {}
             if (item) {
                 dbData = item
-                /*
-                dbData = {
-                    name:item.name,
-                    type:item.type
-                }
-                */
                 parentId = item.parent_id
             }
             
@@ -101,16 +100,6 @@ module.exports = function (Component) {
                 x:1,
                 y:1
             }
-            if (selection) {
-                // todo: enable selection of start item in box - parent type needs to be box to enable material selection menu
-                /*
-                wellData = {
-                    x:selection.x,
-                    y:selection.y
-                }
-                */
-            }
-            if (!keepOpen) app.actions.prompt.reset()
             
             // merge form data
             const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
@@ -128,10 +117,17 @@ module.exports = function (Component) {
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
                 if (physicals) {
-                    thisModule.setState({physicals:physicals})
+                    thisModule.setState({
+                        physicals:physicals,
+                        assignCells:true
+                    })
+                } else {
+                    thisModule.setState({
+                        physicals:null,
+                        assignCells:true
+                    })
                 }
             })
-            
         }
         
         open() {
@@ -140,8 +136,8 @@ module.exports = function (Component) {
         }
         
         close () {
-            this.setState({active:''})
-            app.actions.inventory.editVirtualItem(null)
+            //this.setState({active:''})
+            //app.actions.inventory.editVirtualItem(null)
             if (this.props.onClose) this.props.onClose(false)
             app.actions.prompt.reset()
         }
@@ -255,26 +251,25 @@ module.exports = function (Component) {
             var virtualForm = null
             var tabularData = null
             if (this.state.assignCells) {
-                        //<EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
                 tabularData = (
-                    <EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
+                    <div style="margin-bottom:20px;">
+                        <EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
+                    </div>
                 )
             } else {
                 virtualForm = (<GenerateVirtualForm />)
             }
 
             return (
-                <form onsubmit={this.submit.bind(this)}>
+                <form onsubmit={this.saveVirtual.bind(this)}>
                     <div class="columns">
                         <div class="column">
                             {virtualForm}
                             {tabularData}
                             <div class="control">
-                                <input type="button" class="button is-link" value="Create Physicals" onclick={this.createPhysicals.bind(this)}/>
+                                <input type="button" class="button is-link" value="Assign Locations" onclick={this.createPhysicals.bind(this)} />
                                 <span style="margin-right:20px;">&nbsp;</span>
-                                <input type="button" class="button is-link" value="Assign Locations" onclick={this.assignCells} />
-                                <span style="margin-right:20px;">&nbsp;</span>
-                                <input type="button" class="button is-link" value="Save" onclick={this.close.bind(this)} />
+                                <input type="button" class="button is-link" value="Save" onclick={this.saveVirtual.bind(this)} />
                                 <span style="margin-right:20px;">&nbsp;</span>
                                 <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
                             </div>

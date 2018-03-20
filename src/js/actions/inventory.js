@@ -15,7 +15,7 @@ module.exports = {
     getSelectedItem: function() {
         if (!app.state.inventory.selection || !app.state.inventory.selection.id) return null
         const id = app.state.inventory.selection.id
-        console.log('getSelectedItem action:',app.state.inventoryPath, app.state.inventory.selection)
+        //console.log('getSelectedItem action:',app.state.inventoryPath, app.state.inventory.selection)
         if (app.state.inventoryPath && app.state.inventoryPath.length>0) {
             const path = app.state.inventoryPath
             const pathItem = path[path.length-1]
@@ -23,7 +23,7 @@ module.exports = {
             
             const children = pathItem.children
             if (!children) return null
-            console.log('getSelectedItem searching child items')
+            //console.log('getSelectedItem searching child items')
             for (var i=0; i<children.length; i++) {
                 if (children[i].id===id) return children[i]
             }
@@ -66,7 +66,7 @@ module.exports = {
             const idn = (id) ? id : parentId
             if (idn) {
                 const url = "/inventory/"+idn
-                console.log('selectCell:',url)
+                //console.log('selectCell:',url)
                 app.state.history.push(url)
             }
         }
@@ -75,13 +75,13 @@ module.exports = {
     },
     
     editItem: function(item) {
-        console.log('editItem action: ', item, app.state.inventory )
+        //console.log('editItem action: ', item, app.state.inventory )
         app.state.inventory.physicalItem = item
         if (app.state.inventory.listener.physicalItem) app.state.inventory.listener.physicalItem(item)
     },
     
     editVirtualItem: function(id, cb) {
-        console.log('editVirtualItem action: ', id)
+        //console.log('editVirtualItem action: ', id)
         if (!id) {
             if (cb) cb(null)
             else if (app.state.inventory.listener.virtualItem) app.state.inventory.listener.virtualItem(null)
@@ -127,14 +127,23 @@ module.exports = {
         return null
     },
     
+    refreshInventoryPath: function(id, cb) {
+        const url = "/inventory/"+id+"?r=true"
+        //console.log('refreshInventoryPath:',url)
+        app.state.inventory.refresh=true
+        app.state.history.push(url)
+    },
+    
     selectInventoryId: function(id, cb) {
         const url = "/inventory/"+id
-        console.log('getInventoryPath:',url)
+        //console.log('getInventoryPath:',url)
         app.state.history.push(url)
     },
     
     getInventoryPath: function(id, cb) {
         console.log('getInventoryPathRPC action id:',id)
+        //console.trace()
+        app.state.inventory.refresh=false
         if (!id) {
             if (cb) cb(null)
             return null
@@ -201,21 +210,13 @@ module.exports = {
     getRootItem: function(cb) {
         var rootItem
         app.remote.inventoryTree(function (err, children) {
-            if (err) return console.log("ERROR:", err);
-
+            if (err) {
+                console.log("getRootItem error:", err);
+                return 
+            }
             for (var i = 0; i < children.length; i++) {
                 var item = children[i].value
-                if (!item.parent_id && item.type === 'lab') {;
-                    app.changeState({
-                        global: {
-                            inventoryRoot: null
-                        }
-                    });
-                    app.changeState({
-                        global: {
-                            inventoryRoot: item
-                        }
-                    });
+                if (!item.parent_id && item.type === 'lab') {
                     if (cb) cb(item)
                     break;
                 }
@@ -308,9 +309,17 @@ module.exports = {
         const thisModule = this
         console.log('saveVirtual action:',virtualObj, physicalInstances, container_id, well_id)
         app.remote.saveVirtual(virtualObj, function (err, virtualId) {
-            if (!err) thisModule.generatePhysicals(virtualId, virtualObj.name, physicalInstances, container_id, well_id, function(physicals) {
-                if (cb) cb(err,virtualId, physicals)
-            })
+            if (err) {
+                console.log('saveVirtual error:',err)
+                return
+            }
+            if (container_id) {
+                thisModule.generatePhysicals(virtualId, virtualObj.name, physicalInstances, container_id, well_id, function(physicals) {
+                    if (cb) cb(err,virtualId, physicals)
+                })
+            } else {
+                if (cb) cb(err,virtualId)
+            }
         });
     },
 
@@ -447,7 +456,7 @@ module.exports = {
     },
 
     getFavorites: function (cb) {
-        console.log('getFavorites action called')
+        //console.log('getFavorites action called')
         app.remote.favLocationsTree(function(err, userFavorites) {
             //console.log('getFavorites action:',userFavorites)
             app.state.inventory.favorites=userFavorites

@@ -16,7 +16,7 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            //if (nextProps.active !== this.state.active) this.setState({active:nextProps.active})
+            if (nextProps.active !== this.state.active) this.setState({active:nextProps.active})
             //this.setState({active:nextProps.active})
         }
         
@@ -24,7 +24,7 @@ module.exports = function (Component) {
             e.preventDefault();
             //console.log('storageCell onClickCell', this.props)
             const id = (this.props.item) ? this.props.item.id : null
-            const navigate = this.props.mode!=='edit'
+            const navigate = this.props.mode !== 'edit'
             app.actions.inventory.selectCell(id, this.props.parent_id, this.props.parent_x, this.props.parent_y, navigate, this.props.history)
         }
 
@@ -40,11 +40,11 @@ module.exports = function (Component) {
         }
         
         focus(active, navigate) {
+            if (active) console.log('setting focus for cell: ', this.props.label)
             this.setState({active:active})
         }
         
         render() {
-                //if (this.props.active) console.log('rendering active cell:',this.props.label)
                 const width = this.props.width
                 const fontSize = (this.props.width>15) ? 11 : 8
                 const lineHeight = this.props.height-1
@@ -58,6 +58,7 @@ module.exports = function (Component) {
                 
                 const cellBackground = (this.props.occupied) ? '#ffffff' : '#a0a0a0'
                 var backgroundColor = (this.state.active) ? '#00ffff' : cellBackground
+                if (this.state.active) console.log('rendering active cell:',this.props.label, backgroundColor)
                 
                 const colStyle = "border: "+cellBorderWidth+"px solid black; height:"+this.props.height+"px; max-height:"+this.props.height+"px;width:"+this.props.width+"px;margin:0px;padding:0;padding-right:1px;background-color:"+backgroundColor+";font-weight:"+fontWeight+";"+textAlign
                 

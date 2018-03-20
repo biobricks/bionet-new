@@ -26,7 +26,7 @@ module.exports = function (Component) {
             this.type = nextProps.type
             this.populateContainer(nextProps.items, xunits, yunits)
             const tiles = this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType, nextProps.selectedItem, nextProps.px, nextProps.py, nextProps.mode)
-            if (nextProps.mode==='edit') app.state.editContainerListener = this.selectCellListener.bind(this)
+            if (nextProps.mode==='edit') app.state.inventory.listener.editContainerListener = this.selectCellListener.bind(this)
             return tiles
         }
 
@@ -39,7 +39,7 @@ module.exports = function (Component) {
             return ''
         }
 
-        subdivideContainer(pwidth, pheight, pxunits, pyunits, containerLabel, childType, selectedItemId, px, py, mode) {
+        subdivideContainer(pwidth, pheight, pxunits, pyunits, containerLabel, childType, selectedItemId, px1, py1, mode) {
             //console.log('subdivideContainer', pxunits, pyunits, pwidth, selectedItemId, px, py)
             const xunits = (pxunits===0) ? 1 : pxunits
             const yunits = (pyunits===0) ? 1 : pyunits
@@ -47,6 +47,12 @@ module.exports = function (Component) {
             const height = pheight
             const dx = width / xunits
             const dy = height / yunits
+            var px = px1
+            var py = py1
+            if (!selectedItemId && app.state.inventory.selection) {
+                px = app.state.inventory.selection.x
+                py = app.state.inventory.selection.y
+            }
             //console.log('subdivideContainer', xunits, yunits, width, height, dx, dy)
             const thisModule = this
             const generateCols =function(row) {
@@ -58,14 +64,14 @@ module.exports = function (Component) {
                     var cell = thisModule.cellMap[label]
                     var name = label
                     var isOccupied = false
-                    var isActive = y === py && x === px
+                    var isActive = (y === py && x === px)
                     if (cell) {
                         isOccupied = true
                         if (cell.name) name=cell.name
                     }
                     //if (isActive) console.log('generating active cell:',label)
                     var ref = (cell) => { if (cell) thisModule.cellRef[cell.props.label] = cell; }
-                    var storageCell = <StorageCell state="inventorySelection" label={label} ref={ref} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.dbid} parent_x={x} parent_y={y} active={isActive} mode={mode}/>
+                    var storageCell = <StorageCell state={"cell_"+label+"_parent_"+thisModule.dbid} label={label} ref={ref} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.dbid} parent_x={x} parent_y={y} active={isActive} mode={mode}/>
                     cols.push(storageCell)
                 }
                 return cols

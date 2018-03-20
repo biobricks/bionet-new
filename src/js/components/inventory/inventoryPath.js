@@ -39,7 +39,10 @@ module.exports = function (Component) {
                     break
                 }
             }
-            if (app.state.editContainerListener) app.state.editContainerListener(cellLocation, true)
+            if (app.state.inventory.listener.editContainerListener) {
+                console.log('invoking editContainerListener')
+                app.state.inventory.listener.editContainerListener(cellLocation, true)
+            }
         }
         
         updateInventoryPath(newPath) {

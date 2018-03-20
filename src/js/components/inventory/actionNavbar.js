@@ -14,13 +14,15 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             this.componentWillReceiveProps(props)
-            
-            app.state.inventory.listener.physicalItem = this.editItemListener.bind(this)
-            app.state.inventory.listener.virtualItem = this.editVirtualItemListener.bind(this)
             this.state={
                 enableAddItemMenu:'',
                 enableFavoritesMenu:''
             }
+        }
+        
+        componentWillMount() {
+            app.state.inventory.listener.physicalItem = this.editItemListener.bind(this)
+            app.state.inventory.listener.virtualItem = this.editVirtualItemListener.bind(this)
         }
         
         componentWillReceiveProps(nextProps) {
@@ -51,11 +53,21 @@ module.exports = function (Component) {
             })
         }
         
-        editVirtualItemListener(item) {
-            const promptComponent = (<EditVirtual state="EditVirtual" id={null} item={null}/>)
-            app.actions.prompt.display("Create Virtual", promptComponent, function(result) {
-                console.log('virtual result')
-            })
+        editVirtualItemListener(virtual) {
+            if (virtual) {
+                console.log('edit virtual, virtual:',virtual)
+                const promptComponent = <EditVirtual state="EditVirtual" item={virtual} modal="true"/>
+                const promptTitle = 'Edit '+virtual.name
+                app.actions.prompt.display(promptTitle, promptComponent, function(result) {
+                    console.log('virtual result')
+                })
+            } else {
+                const promptComponent = (<EditVirtual state="EditVirtual" id={null} item={null}/>)
+                app.actions.prompt.display("Create Virtual", promptComponent, function(result) {
+                    console.log('virtual result')
+                })
+            }
+            
         }
         
         generateNewItem(parent_id,x,y,type) {

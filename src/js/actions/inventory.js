@@ -1,21 +1,6 @@
 module.exports = {
     
     initialize: function () {
-        /*
-        app.changeState({
-            global: {
-                moveItem: {},
-                inventorySelection: {},
-                inventoryTypes:{},
-                inventoryItem: null,
-                virtualItem: null,
-                inventoryLocationPath: null,
-                inventoryPath:null,
-                inventoryRoot: null,
-                rootId: null
-            }
-        });
-        */
         app.state.inventory={
             listener:{},
             selection:{},
@@ -74,6 +59,7 @@ module.exports = {
             y: y,
             navigate:navigate
         }
+        app.state.inventory.selection_prior = app.state.inventory.selection
         app.state.inventory.selection = inventorySelection
         
         if (navigate) {
@@ -85,10 +71,11 @@ module.exports = {
             }
         }
         if (app.state.selectCellListener) app.state.selectCellListener(inventorySelection)
+        if (app.state.inventory.listener.editCell) app.state.inventory.listener.editCell(inventorySelection)
     },
     
     editItem: function(item) {
-        console.log('editItem action: ', item)
+        console.log('editItem action: ', item, app.state.inventory )
         app.state.inventory.physicalItem = item
         if (app.state.inventory.listener.physicalItem) app.state.inventory.listener.physicalItem(item)
     },
@@ -96,20 +83,20 @@ module.exports = {
     editVirtualItem: function(id, cb) {
         console.log('editVirtualItem action: ', id)
         if (!id) {
-            if (cb) cb({})
+            if (cb) cb(null)
+            else if (app.state.inventory.listener.virtualItem) app.state.inventory.listener.virtualItem(null)
             return null
         }
         app.remote.get(id, function(err, virtual) {
             if (err) {
                 app.actions.notify('Virtual '+id+' not found', 'error');
-                return
+                return null
             }
             app.state.inventory.virtualItem = virtual
             if (cb) {
                 cb(virtual)
-                return
-            }
-            if (app.state.inventory.listener.virtualItem) app.state.inventory.listener.virtualItem(virtual)
+            } else if (app.state.inventory.listener.virtualItem) app.state.inventory.listener.virtualItem(virtual)
+            return null
         })
     },
     
@@ -179,10 +166,8 @@ module.exports = {
                         
                         const length = locationPathAr.length
                         const item = (length>0) ? locationPathAr[length-1] : null
-                        const parent = (length>1) ? locationPathAr[length-2] : null
-                        //console.log('getInventoryPath change state:', locationPathAr)
                         app.state.inventoryPath = locationPathAr
-                        this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                        //if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
                         if (cb) cb(locationPathAr)
                     }
                 })

@@ -11,6 +11,9 @@ module.exports = function (Component) {
             this.rowRef={}
             this.deselectRows.bind(this)
         }
+        componentWillMount() {
+            app.state.inventory.listener.editCell = this.updateRow.bind(this)
+        }
         
         tabularHeader() {
             const items = this.props.items
@@ -61,27 +64,21 @@ module.exports = function (Component) {
             }
             return tabularData
         }
+    
+        updateRow(selection) {
+            for(var id in this.rowRef){
+                var ref = this.rowRef[id]
+                ref.updateSelection(selection)
+            }
+        }
                                  
         deselectRows(selectedId) {
             //console.log('deselectRows:',this.rowRef, selectedId)
             for(var id in this.rowRef){
                 var ref = this.rowRef[id]
-                //console.log('rowref:',ref)
                 if (ref) {
                     const hasFocus = selectedId === ref.props.id
                     ref.focus(hasFocus, false)
-                    if (hasFocus) {
-                        var parent_id = null
-                        var parent_x = 0
-                        var parent_y = 0
-                        const item = ref.props.item
-                        if (item) {
-                            parent_id = item.parent_id
-                            parent_x = item.parent_x
-                            parent_y = item.parent_y
-                        }
-                        app.actions.inventory.selectCell(selectedId, parent_id, parent_x, parent_y, false)
-                    }
                 }
             }
         }

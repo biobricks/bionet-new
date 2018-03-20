@@ -89,26 +89,14 @@ module.exports = function (Component) {
         
         render() {
             //console.log('EditPhysical render state:',this.state, this.props)
+            
             const item = this.item
             if (!item) return null
             const selectedItemId = (item) ? item.id : null
-            //console.log('EditStorageContainer:',selectedItemId)
-            const containerSize = 400
+
             const style = "width:400px; height:400px;border: 1px solid black;"
-            var storageContainer = null
             const tabular = this.state.tabular
             
-            const parent_item = this.parent_item
-            if (parent_item) {
-                var px = 0
-                var py = 0
-                if (item) {
-                    px = item.parent_x
-                    py = item.parent_y
-                }
-                storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} />)
-            }
-                      
             const linkFormData = function(component, fid, valuePath) {
               return event => {
                 var update = {};
@@ -120,8 +108,6 @@ module.exports = function (Component) {
             const FormInputText = function(props) {
                 //console.log('FormInputText:',props)
                 if (tabular) {
-                    //                    <div class="tile is-child is-3">Name</div>
-
                     return(
                         <div class="tile is-child is-3" style="padding:0; margin:0">
                             <input class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}>
@@ -165,6 +151,18 @@ module.exports = function (Component) {
                     </form>
                 )
             } else {
+                const containerSize = 400
+                var storageContainer = null
+                const parent_item = this.parent_item
+                if (parent_item) {
+                    var px = 0
+                    var py = 0
+                    if (item) {
+                        px = item.parent_x
+                        py = item.parent_y
+                    }
+                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} />)
+                }
                 return (
                     <div class={"modal "+this.state.active}>
                       <div class="modal-background" onclick={this.close}></div>

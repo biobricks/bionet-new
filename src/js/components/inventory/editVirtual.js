@@ -8,7 +8,7 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
-    //const EditTable = require('./editTable')(Component)
+    const EditTable = require('./editTable')(Component)
     
     return class EditVirtual extends Component {
         constructor(props) {
@@ -236,28 +236,47 @@ module.exports = function (Component) {
                 const currentSelectionType = parent_item.type.toLowerCase()
                 types = (currentSelectionType.indexOf('box') >= 0) ? app.state.inventory.types.materials : app.state.inventory.types.locations
             }
+                    
+            const GenerateVirtualForm = function(props) {
+                return (
+                    <div>
+                        <FormInputText fid='name' value={this.item.name} label="Name" />
+                        <label class="label">Type</label>
+                        <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
+                        <FormInputText fid='instances' value={this.item.name} label="Instances" />
+                        <div style="margin-top:10px;margin-bottom:30px;">
+                            {attributes}
+                        </div>
+                    </div>
+                )
+            }.bind(this)
+            
+            
+            var virtualForm = null
+            var tabularData = null
+            if (this.state.assignCells) {
+                        //<EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
+                tabularData = (
+                    <EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
+                )
+            } else {
+                virtualForm = (<GenerateVirtualForm />)
+            }
 
             return (
                 <form onsubmit={this.submit.bind(this)}>
                     <div class="columns">
                         <div class="column">
-                            <FormInputText fid='name' value={this.item.name} label="Name" />
-                            <label class="label">Type</label>
-                            <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
-                            <FormInputText fid='instances' value={this.item.name} label="Instances" />
-                            <div style="margin-top:10px;margin-bottom:30px;">
-                                {attributes}
-                            </div>
-                            <div class="field">
-                                <div class="control">
-                                    <input type="button" class="button is-link" value="Create Physicals" onclick={this.createPhysicals.bind(this)}/>
-                                    <span style="margin-right:20px;">&nbsp;</span>
-                                    <input type="button" class="button is-link" value="Assign Locations" onclick={this.assignCells} />
-                                    <span style="margin-right:20px;">&nbsp;</span>
-                                    <input type="button" class="button is-link" value="Save" onclick={this.submit.bind(this)} />
-                                    <span style="margin-right:20px;">&nbsp;</span>
-                                    <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
-                                </div>
+                            {virtualForm}
+                            {tabularData}
+                            <div class="control">
+                                <input type="button" class="button is-link" value="Create Physicals" onclick={this.createPhysicals.bind(this)}/>
+                                <span style="margin-right:20px;">&nbsp;</span>
+                                <input type="button" class="button is-link" value="Assign Locations" onclick={this.assignCells} />
+                                <span style="margin-right:20px;">&nbsp;</span>
+                                <input type="button" class="button is-link" value="Save" onclick={this.close.bind(this)} />
+                                <span style="margin-right:20px;">&nbsp;</span>
+                                <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
                             </div>
                         </div>
                         <div class="column">

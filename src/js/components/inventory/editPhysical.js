@@ -8,7 +8,6 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
-    const EditVirtual = require('./editVirtual')(Component)
     
     return class EditPhysical extends Component {
         constructor(props) {
@@ -41,6 +40,7 @@ module.exports = function (Component) {
             const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
             
             this.setState({
+                item:item,
                 attributes:attributes,
                 title:titlePrefix,
                 active:active
@@ -52,32 +52,36 @@ module.exports = function (Component) {
             //console.log('setting parent x,y',loc,this.parent_item,this.id)
             if (this.props.tabular) return
             if (loc.parentId !== this.parent_item) return
-            this.item.parent_x = loc.x
-            this.item.parent_y = loc.y
+            const item = this.state.item
+            item.parent_x = loc.x
+            item.parent_y = loc.y
+            this.setState({item:item})
         }
         
         onblur(e, fid, fvalue) {
-            if (!this.item) return
+            if (!this.state.item) return
             var id = e.target.id
             var value = e.target.value
             if (fid) {
                 id = fid
                 value = fvalue
             }
-            const dbData = this.item
+            const dbData = this.state.item
             dbData[id]=value
-            console.log('onblur:',id, value, dbData)
-            /*
-            app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
-                if (err) {
-                    app.actions.notify("Error saving "+dbData.name, 'error');
-                }
-            })
-            */
+            this.setState({item:dbData})
+            if (dbData.id) {
+                app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
+                    if (err) {
+                        app.actions.notify("Error saving "+dbData.name, 'error');
+                    }
+                })
+            }
         }
         
         setType(type) {
-            this.item.type=type
+            const item = this.state.item
+            item.type=type
+            this.setState({item:item})
         }
         
         submit(e) {
@@ -85,10 +89,10 @@ module.exports = function (Component) {
             this.close()
             
             // edit existing item
-            var dbData = this.item
+            var dbData = this.state.item
             
             const selection = app.state.inventory.selection
-            if (selection && !this.item.id) {
+            if (selection && !dbData.id) {
                 dbData.parent_id = selection.parentId
             }
             dbData.parent_x = selection.x
@@ -125,7 +129,25 @@ module.exports = function (Component) {
         focus(active, navigate) {
             if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
-            if (active) app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
+            if (active) {
+                app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
+            }
+        }
+        updateSelection(selection) {
+            if (!this.state.isFocused || !this.state.item) return
+            const dbData = this.state.item
+            dbData.parent_x = selection.x
+            dbData.parent_y = selection.y
+            console.log('updateSelection, dbdata:',dbData, selection)
+            this.setState({item:dbData})
+            if (dbData.id) {
+                app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
+                    if (err) {
+                        app.actions.notify("Error saving "+dbData.name, 'error');
+                    }
+                })
+            }
+            
         }
         
         msgFunction(msg) {
@@ -136,35 +158,25 @@ module.exports = function (Component) {
             console.log('edit virtual, props:',this.props)
             e.preventDefault();
             if (!this.props.item || !this.props.item.virtual_id) return
-            const editVirtualId = this.props.item.virtual_id
-            app.actions.inventory.editVirtualItem( editVirtualId, function(virtual) {
-                console.log('edit virtual, virtual:',virtual)
-                const promptComponent = <EditVirtual state="EditVirtual" item={virtual} modal="true"/>
-                const promptTitle = 'Edit '+virtual.name
-                app.actions.prompt.display(promptTitle, promptComponent, function(result) {
-                    console.log('virtual result')
-                })
-            })
-            //app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
+            app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
         }
         
         render() {
             //console.log('EditPhysical render state:',this.state, this.props)
-            const item = this.item
+            
+            const item = this.state.item
             if (!item) return null
-            const selectedItemId = (item) ? item.id : null
-            //console.log('EditStorageContainer:',selectedItemId)
-            const containerSize = 250
+            
+            const selectedItemId = item.id
             const style = "width:400px; height:400px;border: 1px solid black;"
             const tabular = this.props.tabular
-            
             const parent_item = this.parent_item
                       
             const linkFormData = function(component, fid, valuePath) {
               return event => {
                 var update = {};
                 update[fid] = event.currentTarget.value;
-                Object.assign(this.item, update)
+                Object.assign(item, update)
               };
             }.bind(this)
                 
@@ -225,20 +237,20 @@ module.exports = function (Component) {
                 types = app.state.inventory.types.locations
             }
                     
-            var document = null
-            if (isBox) {
-                document = (<ActionButton dbid={selectedItemId} onclick={this.editVirtual.bind(this)} icon="file-document" />)
-            }
 
             if (tabular) {
+                var document = null
+                if (isBox) {
+                    document = (<ActionButton dbid={selectedItemId} onclick={this.editVirtual.bind(this)} icon="file-document" />)
+                }
                 const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''
-                const label = this.item.parent_x+','+this.item.parent_y
+                const label = item.parent_x+','+item.parent_y
                 //console.log('tabular:',this.props.classProps)
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="tile is-parent is-11"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
-                            <FormInputText fid='name' value={this.item.name} label="Name" classProps={this.props.classProps[0].class}/>
-                            <ItemTypes type={this.item.type} types={types} setType={this.setType} classProps={this.props.classProps[1].class} onblur={this.onblur.bind(this)} />
+                            <FormInputText fid='name' value={item.name} label="Name" classProps={this.props.classProps[0].class}/>
+                            <ItemTypes type={item.type} types={types} setType={this.setType} classProps={this.props.classProps[1].class} onblur={this.onblur.bind(this)} />
                             <FormInputText fid='loc' value={label} label="Loc"  classProps={this.props.classProps[2].class}/>
                             {document}
                             {attributes}
@@ -247,39 +259,20 @@ module.exports = function (Component) {
                 )
             } else {
                 //const editTable=(item.type.indexOf('box') >= 0) ? <EditTable item={item} items={item.children}/> : null
+                const containerSize = 250
                 const editTable = null
                 var storageContainer = null
                 if (parent_item) {
-                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={this.item.parent_x} py={this.item.parent_y} mode="edit"/>)
+                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={item.parent_x} py={item.parent_y} mode="edit"/>)
                 }
-                /*
-                    <div class={"modal "+this.state.active}>
-                      <div class="modal-background" onclick={this.close}></div>
-                          <div class="modal-content" style="background-color:#ffffff;padding:10px;width:calc(100vw - 5%);">
-                        </div>
-                    </div>
-                        <section class="hero is-info ">
-                          <div class="hero-body">
-                            <div class="container">
-                              <h1 class="title">{this.state.title}</h1>
-                            </div>
-                          </div>
-                        </section>
-                                        <input type="submit" class="button is-link" value="Save" />
-                                        <span style="margin-right:20px;">&nbsp;</span>
-                                        <input type="button" class="button is-link" value="Cancel" onclick={this.close} />
-                                <div class="field">
-                                    <div class="control">
-                                    </div>
-                                </div>
-                */
+
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="columns">
                             <div class="column">
-                                <FormInputText fid='name' value={this.item.name} label="Name" />
+                                <FormInputText fid='name' value={item.name} label="Name" />
                                 <label class="label">Type</label>
-                                <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
+                                <ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
                                 <div style="margin-top:10px;margin-bottom:30px;">
                                     {attributes}
                                 </div>

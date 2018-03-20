@@ -127,15 +127,23 @@ module.exports = {
         return null
     },
     
+    refreshInventoryPath: function(id, cb) {
+        const url = "/inventory/"+id+"?r=true"
+        //console.log('refreshInventoryPath:',url)
+        app.state.inventory.refresh=true
+        app.state.history.push(url)
+    },
+    
     selectInventoryId: function(id, cb) {
         const url = "/inventory/"+id
-        console.log('getInventoryPath:',url)
+        //console.log('getInventoryPath:',url)
         app.state.history.push(url)
     },
     
     getInventoryPath: function(id, cb) {
         console.log('getInventoryPathRPC action id:',id)
         //console.trace()
+        app.state.inventory.refresh=false
         if (!id) {
             if (cb) cb(null)
             return null

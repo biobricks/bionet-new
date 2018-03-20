@@ -78,6 +78,7 @@ module.exports = function (Component) {
                 if (err) app.actions.notify("Error saving "+item.name, 'error');
                 else app.actions.notify(item.name+" saved", 'notice', 2000);
             })
+            app.actions.inventory.refreshInventoryPath(item.parent_id)
             this.close()
         }
         

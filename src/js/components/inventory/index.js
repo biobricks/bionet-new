@@ -24,8 +24,8 @@ module.exports = function (Component) {
         componentWillReceiveProps(props) {
             const id = (props.match) ? props.match.params.id : null
             const pid = (this.props.match) ? this.props.match.params.id : null
-            //console.log('inventory main id:', id, pid)
-            if (id !== pid) this.getInventoryPath(id)
+            console.log('inventory main id:', id, pid, this.props)
+            if (id !== pid || app.state.inventory.refresh) this.getInventoryPath(id)
         }
         
         getInventoryPath(id) {

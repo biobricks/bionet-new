@@ -251,17 +251,14 @@ module.exports = function (Component) {
             var virtualForm = null
             var tabularData = null
             if (this.state.assignCells) {
-                        //<EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
                 tabularData = (
-                    <EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
+                    <div style="margin-bottom:20px;">
+                        <EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
+                    </div>
                 )
             } else {
                 virtualForm = (<GenerateVirtualForm />)
             }
-           /*
-            <input type="button" class="button is-link" value="Create Physicals" onclick={this.createPhysicals.bind(this)}/>
-            <span style="margin-right:20px;">&nbsp;</span>
-            */
 
             return (
                 <form onsubmit={this.saveVirtual.bind(this)}>

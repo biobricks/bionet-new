@@ -25,7 +25,10 @@ module.exports = function (Component) {
             const id = (props.match) ? props.match.params.id : null
             const pid = (this.props.match) ? this.props.match.params.id : null
             //console.log('inventory main id:', id, pid)
-            if (id===pid && id) return
+            if (id !== pid) this.getInventoryPath(id)
+        }
+        
+        getInventoryPath(id) {
             const thisModule=this
             if (id) {
                 app.actions.inventory.getInventoryPath(id, function(inventoryPath) {
@@ -71,33 +74,7 @@ module.exports = function (Component) {
             app.actions.inventory.getInventoryTypes()
             app.actions.inventory.getFavorites()
             const id = (this.props.match) ? this.props.match.params.id : null
-            const thisModule = this
-            
-            if (id) {
-                app.actions.inventory.getInventoryPath(id, function(inventoryPath){
-                    if (!inventoryPath) {
-                        thisModule.getRootInventoryPath(function(ip) {
-                            thisModule.setState({inventoryPath:ip})
-                        })
-                    }
-                    else {
-                        const item = app.actions.inventory.getItemFromInventoryPath(id, inventoryPath)
-                        //console.log('logged in inventory:', id, item, inventoryPath)
-                        if (!item) {
-                            thisModule.getRootInventoryPath(function(ip) {
-                                thisModule.setState({inventoryPath:ip})
-                            })
-                        } else {
-                            thisModule.setState({inventoryPath:inventoryPath})
-                        }
-                    }
-                })
-            } else {
-                //console.log('logged in inventory: no id', this)
-                thisModule.getRootInventoryPath(function(ip) {
-                    thisModule.setState({inventoryPath:ip})
-                })
-            }
+            this.getInventoryPath(id)
         }
         
         componentDidMount() {

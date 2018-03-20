@@ -135,6 +135,7 @@ module.exports = {
     
     getInventoryPath: function(id, cb) {
         console.log('getInventoryPathRPC action id:',id)
+        //console.trace()
         if (!id) {
             if (cb) cb(null)
             return null
@@ -201,21 +202,13 @@ module.exports = {
     getRootItem: function(cb) {
         var rootItem
         app.remote.inventoryTree(function (err, children) {
-            if (err) return console.log("ERROR:", err);
-
+            if (err) {
+                console.log("getRootItem error:", err);
+                return 
+            }
             for (var i = 0; i < children.length; i++) {
                 var item = children[i].value
-                if (!item.parent_id && item.type === 'lab') {;
-                    app.changeState({
-                        global: {
-                            inventoryRoot: null
-                        }
-                    });
-                    app.changeState({
-                        global: {
-                            inventoryRoot: item
-                        }
-                    });
+                if (!item.parent_id && item.type === 'lab') {
                     if (cb) cb(item)
                     break;
                 }

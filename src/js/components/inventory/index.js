@@ -92,7 +92,7 @@ module.exports = function (Component) {
             //console.log('inventory main render:', this.props, this.state)
             return (
                 <div id="inventory_view" class="tile is-ancestor">
-                    <ActionNavbar state="inventoryNav" menu={this.state.types}/>
+                    <ActionNavbar state="inventoryNav" inventoryPath={this.state.inventoryPath} menu={this.state.types}/>
                     <InventoryPath state="inventoryPath" inventoryPath={this.state.inventoryPath}/>
                 </div>
             )

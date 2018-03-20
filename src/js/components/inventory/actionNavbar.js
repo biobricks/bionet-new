@@ -27,14 +27,12 @@ module.exports = function (Component) {
         
         componentWillReceiveProps(nextProps) {
             if (!nextProps || !nextProps.menu) return
-            //console.log('ActionNavBar props:',nextProps.menu, this.state, this.item)
+            console.log('ActionNavBar props:',nextProps.menu, this.state, nextProps)
             var physicalMenu = false
-            if (app.state.inventory.selection) {
-                const currentItem = app.actions.inventory.getItemFromInventoryPath(app.state.inventory.selection.id)
-                if (currentItem && currentItem.type) {
-                    const currentSelectionType = currentItem.type.toLowerCase()
-                    if (currentSelectionType.indexOf('box')>=0) physicalMenu = true
-                }
+            const currentItem = app.actions.inventory.getLastPathItem()
+            if (currentItem && currentItem.type) {
+                const currentSelectionType = currentItem.type.toLowerCase()
+                if (currentSelectionType.indexOf('box')>=0) physicalMenu = true
             }
             const menuDef = (physicalMenu) ? nextProps.menu.materials : nextProps.menu.locations 
             this.createType = physicalMenu

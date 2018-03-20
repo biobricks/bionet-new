@@ -106,7 +106,7 @@ module.exports = function(Component) {
 
       var status = '';
       if(this.state.virtual && this.state.virtual.freegenes) {
-        status = (<FreegenesStatus status="0" />);
+        status = (<FreegenesStatus status={util.getFreegenesStatus(this.state.virtual)} />);
       }
 
       var virtual = '';

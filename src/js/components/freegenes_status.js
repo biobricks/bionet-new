@@ -10,14 +10,23 @@ const status = [
   'synthesizing',
   'sequencing',
   'cloning',
-  'shipping'
+  'shipping',
+  'failed'
+];
+
+const statusDesc = [
+  "The DNA synthesis request has been received by the FreeGenes project",
+  "The submitted DNA sequence is being optimized for synthesis and cloning",
+  "The DNA is currently being synthesized",
+  "The synthesized DNA is currently being sequenced",
+  "The synthesized and sequence-verified DNA is being cloned into a plasmid",
+  "The synthesized DNA is currently being shipped",
+  "The DNA synthesis or cloning failed after multiple attempts. Contact the FreeGenes project for more info."
 ];
 
 module.exports = function(Component) {
 
   return class FreegenesStatus extends Component {
-
-    
 
     constructor(props) {
       super(props);
@@ -64,6 +73,10 @@ module.exports = function(Component) {
       return "label";
     }
 
+    getStatusDesc() {
+      
+    }
+
 	  render() {
 
       return (
@@ -88,6 +101,11 @@ module.exports = function(Component) {
           <div>
             <div class={this.getClass(5)}></div>
             <div class={this.getLabelClass(5)}>Shipping</div>
+          </div>
+
+          <div>
+          
+            <p>This biomaterial was submitted to the FreeGenes project for synthesis. {statusDesc[this.state.status]}.</p>
           </div>
         </div>
       )

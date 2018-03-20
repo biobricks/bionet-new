@@ -64,5 +64,43 @@ module.exports = {
     }    
 
     return str.replace(/[^UTGACRYMKSWHBVDN-]+/g, '');
+  },
+
+  // get free genes status from a virtual
+
+  /*
+    Notes on status progress:
+    
+    ordered -> build_ready (all fragments arrived or abandoned (they cannot build it) -> building (being assembled) -> build_complete (if this is "Good_sequence" then it is complete. any other value means not complete. complete means: is the assembly and cloning successful?, if not build_attempts array length is how many attempts including in-progress attempt)
+    
+  */
+  getFreegenesStatus(v) {
+    if(!v.status) return null;
+    var s = v;
+
+    if(s.abandoned) {
+      return 'failed';
+    }
+    
+    if(s.build_complete && s.build_complete.match(/good[-_]sequence/i)) {
+      return 'shipping';
+    } 
+
+    if(s.building) {
+      return 'cloning';
+    }
+
+    if(s.build_ready) {
+      return 'sequencing';
+    }
+
+    if(s.ordered) {
+      return 'synthesizing';
+    }
+
+    // TODO we don't have a way to differentiate 'optimizing' with 'received'
+
+    return 'optimizing';
+    
   }
 }

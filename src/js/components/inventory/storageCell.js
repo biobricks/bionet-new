@@ -40,7 +40,7 @@ module.exports = function (Component) {
         }
         
         focus(active, navigate) {
-            if (active) console.log('setting focus for cell: ', this.props.label)
+            //if (active) console.log('setting focus for cell: ', this.props.label)
             this.setState({active:active})
         }
         
@@ -58,7 +58,7 @@ module.exports = function (Component) {
                 
                 const cellBackground = (this.props.occupied) ? '#ffffff' : '#a0a0a0'
                 var backgroundColor = (this.state.active) ? '#00ffff' : cellBackground
-                if (this.state.active) console.log('rendering active cell:',this.props.label, backgroundColor)
+                //if (this.state.active) console.log('rendering active cell:',this.props.label, backgroundColor)
                 
                 const colStyle = "border: "+cellBorderWidth+"px solid black; height:"+this.props.height+"px; max-height:"+this.props.height+"px;width:"+this.props.width+"px;margin:0px;padding:0;padding-right:1px;background-color:"+backgroundColor+";font-weight:"+fontWeight+";"+textAlign
                 

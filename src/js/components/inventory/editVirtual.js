@@ -116,6 +116,7 @@ module.exports = function (Component) {
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
+                //app.actions.prompt.setTitle('Assign locations for physicals')
                 if (physicals) {
                     thisModule.setState({
                         physicals:physicals,

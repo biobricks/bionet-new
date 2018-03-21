@@ -48,7 +48,7 @@ module.exports = function (Component) {
             const selectedItem = this.props.item
             const items = this.props.items
             const headerTitle = this.headerTitle
-            console.log('updateTabularData:',items, selectedItem)
+            //console.log('updateTabularData:',items, selectedItem)
             this.rowRef={}
             const thisModule = this
             if (!selectedItem || !items) return

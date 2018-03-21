@@ -40,7 +40,7 @@ module.exports = function (Component) {
                 }
             }
             if (app.state.inventory.listener.editContainerListener) {
-                console.log('invoking editContainerListener')
+                //console.log('invoking editContainerListener')
                 app.state.inventory.listener.editContainerListener(cellLocation, true)
             }
         }

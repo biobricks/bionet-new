@@ -10,7 +10,9 @@ const Component = validator(ashnazg.extend(PreactComponent))
 var App = require('./components/app.js')(Component)
 
 app.rpc = require('./rpc.js');
-app.settings = require('../../settings.js')()
+app.settings = require('../../settings.client.js');
+
+console.log("SETTINGS:", app.settings);
 
 function renderAll() {
   var container = document.getElementById('container');

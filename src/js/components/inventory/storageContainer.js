@@ -35,8 +35,8 @@ module.exports = function (Component) {
         
         componentDidMount() {
             if (this.props.mode==='edit') {
-                const parentId = (this.props.item) ? this.props.item.id : null
-                app.actions.inventory.selectCell(null, parentId, 1, 1, false)
+                console.log('storage container componentDidMount:',this.props)
+                app.actions.inventory.selectCell(null, this.props.dbid, this.props.px, this.props.py, false)
             }
         }
 

@@ -50,8 +50,8 @@ module.exports = {
     },
     
     selectCell: function(id, parentId, x, y, navigate) {
-        //console.log('selectCell action:',id,x,y)
-        //console.trace()
+        console.log('selectCell action:',id,parentId,x,y,navigate)
+        console.trace()
         const inventorySelection = {
             id: id,
             parentId: parentId,
@@ -175,7 +175,8 @@ module.exports = {
                         const length = locationPathAr.length
                         const item = (length>0) ? locationPathAr[length-1] : null
                         app.state.inventoryPath = locationPathAr
-                        //if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                        if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                        //app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
                         if (cb) cb(locationPathAr)
                     }
                 })

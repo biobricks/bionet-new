@@ -5,6 +5,12 @@ var validations = require('../common/validations.js');
 
 module.exports = function(settings, users, accounts, db, index, mailer, p2p) { 
   return {
+      
+    getInventoryRoot: function(curUser, cb) {
+        index.inventoryTree.getRoot(function(err, path, key) {
+            cb(err, path, key)
+        });
+    },
 
     getPeerInfo: function(curUser, cb) {
       cb(null, {

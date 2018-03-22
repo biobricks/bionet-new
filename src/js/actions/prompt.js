@@ -9,17 +9,16 @@ module.exports = {
             }
         })
     },
-    initRender: function(component) {
-        app.state.prompt.component = component
-    },
-    initCallback: function(cb) {
-        app.state.prompt.callback = cb
+    setTitle: function(title) {
+        console.log('prompt title:',title)
+        app.changeState({
+            prompt : {
+                message:title
+            }
+        })
     },
     callback: function(e) {
         if (app.state.prompt.callback) app.state.prompt.callback(e)
-    },
-    render: function(element) {
-        return app.state.prompt.component
     },
     reset: function() {
         app.changeState({

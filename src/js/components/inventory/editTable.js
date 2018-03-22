@@ -11,6 +11,7 @@ module.exports = function (Component) {
             this.rowRef={}
             this.deselectRows.bind(this)
         }
+        
         componentWillMount() {
             app.state.inventory.listener.editCell = this.updateRow.bind(this)
         }
@@ -48,7 +49,7 @@ module.exports = function (Component) {
             const selectedItem = this.props.item
             const items = this.props.items
             const headerTitle = this.headerTitle
-            console.log('updateTabularData:',items, selectedItem)
+            //console.log('updateTabularData:',items, selectedItem)
             this.rowRef={}
             const thisModule = this
             if (!selectedItem || !items) return
@@ -66,6 +67,7 @@ module.exports = function (Component) {
         }
     
         updateRow(selection) {
+            if (this.props.mode!=='edit') return
             for(var id in this.rowRef){
                 var ref = this.rowRef[id]
                 ref.updateSelection(selection)
@@ -74,13 +76,17 @@ module.exports = function (Component) {
                                  
         deselectRows(selectedId) {
             //console.log('deselectRows:',this.rowRef, selectedId)
+            const occupied = {}
             for(var id in this.rowRef){
                 var ref = this.rowRef[id]
                 if (ref) {
                     const hasFocus = selectedId === ref.props.id
                     ref.focus(hasFocus, false)
+                    const label=ref.getLabel()
+                    occupied[label]=ref.props.item
                 }
             }
+            if (app.state.inventory.listener.editContainerListener) app.state.inventory.listener.editContainerListener(occupied)
         }
 
         render() {

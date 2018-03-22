@@ -15,7 +15,7 @@ module.exports = function (Component) {
             this.initialized=false
             app.actions.inventory.initialize()
             this.state={
-                types:app.actions.inventory.getInventoryTypes(),
+                types:{},
                 inventoryPath:null
             }
             ashnazg.listen('global.user', this.loggedInUser.bind(this));
@@ -24,25 +24,30 @@ module.exports = function (Component) {
         componentWillReceiveProps(props) {
             const id = (props.match) ? props.match.params.id : null
             const pid = (this.props.match) ? this.props.match.params.id : null
-            console.log('inventory main id:', id, pid, this.props)
+            //console.log('inventory main id:', id, pid, this.props)
             if (id !== pid || app.state.inventory.refresh) this.getInventoryPath(id)
+        }
+        componentWillMount() {
+            this.setState({
+                types:app.actions.inventory.getInventoryTypes()
+            })    
         }
         
         getInventoryPath(id) {
             const thisModule=this
             if (id) {
                 app.actions.inventory.getInventoryPath(id, function(inventoryPath) {
-                    console.log('inventory main, path:',inventoryPath)
+                    //console.log('inventory main, path:',inventoryPath)
                     thisModule.setState({inventoryPath:inventoryPath})
                 })
             } else {
-                app.actions.inventory.getRootItem(function(item) {
-                    if (item) {
-                        app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){
+                app.actions.inventory.getRootItem(function(err, rootId) {
+                    if (err) {
+                        console.log('getRootItem - no item found')
+                    } else {
+                        app.actions.inventory.getInventoryPath(rootId, function(inventoryPath){
                             thisModule.setState({inventoryPath:inventoryPath})
                         })
-                    } else {
-                        console.log('getRootItem - no item found')
                     }
                 })
             }
@@ -52,14 +57,14 @@ module.exports = function (Component) {
             if (!app.remote) {
                 return
             }
-            app.actions.inventory.getRootItem(function(item) {
-                if (item) {
-                    app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){
-                        if (cb) cb(inventoryPath)
-                    })
-                } else {
+            app.actions.inventory.getRootItem(function(err, rootId) {
+                if (err) {
                     console.log('getRootItem - no item found')
                     if (cb) cb(null)
+                } else {
+                    app.actions.inventory.getInventoryPath(rootId, function(inventoryPath){
+                        if (cb) cb(inventoryPath)
+                    })
                 }
             })
         }

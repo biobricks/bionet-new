@@ -197,9 +197,6 @@ module.exports = function(Component) {
         id: virtualId,
         error: null
       });
-      if (this.props.modal) {
-          app.actions.prompt.initCallback(this.save.bind(this))
-      }
       util.whenConnected(function() {
         this.getVirtual(this.state.id);
       }.bind(this));

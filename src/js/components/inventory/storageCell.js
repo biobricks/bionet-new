@@ -12,12 +12,26 @@ module.exports = function (Component) {
             this.getCellCoordinates = this.getCellCoordinates.bind(this)
             this.onDoubleClickCell = this.onDoubleClickCell.bind(this)
             this.clickCount = 0
+            this.state = {
+                active:props.active,
+                occupied:props.occupied
+            }
             this.setState({active:props.active})
         }
         
         componentWillReceiveProps(nextProps) {
-            if (nextProps.active !== this.state.active) this.setState({active:nextProps.active})
-            //this.setState({active:nextProps.active})
+            
+            if (nextProps.active !== this.state.active) {
+                this.setState({
+                    active:nextProps.active
+                })
+            }
+            
+            if (nextProps.occupied !== this.state.occupied) {
+                this.setState({
+                    occupied:nextProps.occupied
+                })
+            }
         }
         
         onClickCell(e) {
@@ -39,9 +53,18 @@ module.exports = function (Component) {
             return this.props.label
         }
         
-        focus(active, navigate) {
-            if (active) console.log('setting focus for cell: ', this.props.label)
-            this.setState({active:active})
+        focus(active, occupied) {
+            //if (active) console.log('setting focus for cell: ', this.props.label)
+            this.setState({
+                active:active
+            })
+        }
+        
+        occupied(occ) {
+            const occupied = this.props.occupied || occ
+            this.setState({
+                occupied:occupied
+            })
         }
         
         render() {
@@ -56,9 +79,9 @@ module.exports = function (Component) {
                 const fontWeight = 300
                 const cellBorderWidth = 1
                 
-                const cellBackground = (this.props.occupied) ? '#ffffff' : '#a0a0a0'
+                const cellBackground = (this.state.occupied) ? '#ffffff' : '#a0a0a0'
                 var backgroundColor = (this.state.active) ? '#00ffff' : cellBackground
-                if (this.state.active) console.log('rendering active cell:',this.props.label, backgroundColor)
+                //if (this.state.active) console.log('rendering active cell:',this.props.label, backgroundColor)
                 
                 const colStyle = "border: "+cellBorderWidth+"px solid black; height:"+this.props.height+"px; max-height:"+this.props.height+"px;width:"+this.props.width+"px;margin:0px;padding:0;padding-right:1px;background-color:"+backgroundColor+";font-weight:"+fontWeight+";"+textAlign
                 

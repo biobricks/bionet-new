@@ -116,6 +116,7 @@ module.exports = function (Component) {
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
+                //app.actions.prompt.setTitle('Assign locations for physicals')
                 if (physicals) {
                     thisModule.setState({
                         physicals:physicals,
@@ -136,10 +137,9 @@ module.exports = function (Component) {
         }
         
         close () {
-            //this.setState({active:''})
-            //app.actions.inventory.editVirtualItem(null)
-            if (this.props.onClose) this.props.onClose(false)
+            this.setState({active:''})
             app.actions.prompt.reset()
+            if (this.props.onClose) this.props.onClose(false)
         }
         
         setType(type) {
@@ -152,13 +152,9 @@ module.exports = function (Component) {
         }
         
         focus(active, navigate) {
-            if (active) console.log('focus selectedRow:',this.props.item)
+            //if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
             if (active) app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
-        }
-        
-        msgFunction(msg) {
-            //return ''
         }
         
         assignCells() {
@@ -210,7 +206,6 @@ module.exports = function (Component) {
                         <div class="control has-icons-left has-icons-right">
                             <input class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
                         </div>
-                        {this.msgFunction(props.msg)}
                     </div>
                 )
             }.bind(this)
@@ -253,7 +248,7 @@ module.exports = function (Component) {
             if (this.state.assignCells) {
                 tabularData = (
                     <div style="margin-bottom:20px;">
-                        <EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
+                        <EditTable item={item} items={this.state.physicals} height={window.innerHeight} mode="edit" />
                     </div>
                 )
             } else {

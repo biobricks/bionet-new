@@ -26,8 +26,18 @@ module.exports = function (Component) {
             this.type = nextProps.type
             this.populateContainer(nextProps.items, xunits, yunits)
             const tiles = this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType, nextProps.selectedItem, nextProps.px, nextProps.py, nextProps.mode)
-            if (nextProps.mode==='edit') app.state.inventory.listener.editContainerListener = this.selectCellListener.bind(this)
+            if (nextProps.mode==='edit') {
+                app.state.inventory.listener.editContainerListener = this.editContainerListener.bind(this)
+                app.state.selectCellListener = this.selectCellListener.bind(this)
+            }
             return tiles
+        }
+        
+        componentDidMount() {
+            if (this.props.mode==='edit') {
+                const parentId = (this.props.item) ? this.props.item.id : null
+                app.actions.inventory.selectCell(null, parentId, 1, 1, false)
+            }
         }
 
         generateLabel(parent_x, parent_y, xunits, yunits) {
@@ -49,11 +59,7 @@ module.exports = function (Component) {
             const dy = height / yunits
             var px = px1
             var py = py1
-            if (!selectedItemId && app.state.inventory.selection) {
-                px = app.state.inventory.selection.x
-                py = app.state.inventory.selection.y
-            }
-            //console.log('subdivideContainer', xunits, yunits, width, height, dx, dy)
+            //console.log('subdivideContainer', xunits, yunits, width, height, px, py)
             const thisModule = this
             const generateCols =function(row) {
                 const cols=[]
@@ -110,8 +116,8 @@ module.exports = function (Component) {
                 var px=0
                 var py=0
                 if (this.type && this.type.toLowerCase()==='lab') {
-                    px = 0
-                    py = i
+                    px = (item.parent_x) ? item.parent_x-1 : 0
+                    py = (item.parent_y) ? item.parent_y-1 : i
                 } else {
                     px = item.parent_x-1
                     py = item.parent_y-1
@@ -125,19 +131,31 @@ module.exports = function (Component) {
             return this.props.dbid
         }
 
-        selectCellListener(cellLocation, edit) {
-            //console.log('selectCellListener:',edit, this.dbid, cellLocation, this.props)
-            if (!cellLocation || this.dbid!==cellLocation.parentId) return
+        editContainerListener(occupied) {
+            if (!occupied) return
+            console.log('editContainerListener ',occupied)
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
-            const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)
-            
             for (var cellLabel in this.cellRef) {
                 var ref = this.cellRef[cellLabel]
                 if (ref) {
-                    //const focus = cellLocation.navigate && cellCoordinates === ref.props.label
+                    ref.occupied(occupied[cellLabel])
+                }
+            }
+        }
+
+        selectCellListener(cellLocation, edit) {
+            //console.log('selectCellListener:',edit, this.dbid, cellLocation, this.props)
+            if (!cellLocation) return
+            const xunits = (this.xunits) ? this.xunits : 1
+            const yunits = (this.yunits) ? this.yunits : 1
+            const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)
+            for (var cellLabel in this.cellRef) {
+                var ref = this.cellRef[cellLabel]
+                //console.log('selectCell:',ref.props.label, cellCoordinates)
+                if (ref) {
                     const focus = cellCoordinates === ref.props.label
-                    ref.focus(focus, cellLocation.navigate)
+                    ref.focus(focus)
                 }
             }
         }

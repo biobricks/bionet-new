@@ -7,10 +7,10 @@ window.app = app;
 app.actions = require('./actions/index');
 
 const Component = validator(ashnazg.extend(PreactComponent))
-var App = require('./components/app.js')(Component)
 
 app.rpc = require('./rpc.js');
 app.settings = require('../../settings.client.js');
+var App = require('./components/app.js')(Component)
 
 console.log("SETTINGS:", app.settings);
 

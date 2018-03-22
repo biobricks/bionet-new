@@ -408,6 +408,19 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         }
       }, cb);
     },
+      
+    getParentPath: function(curUser, id, cb) {
+        index.inventoryTree.path(id, {pathArray:true}, function(err, path) {
+            if (path && path.length > 0) {
+                index.inventoryTree.getFromPath(path[0], function(err,key,value) {
+                    if (cb) cb(err, key, value)
+                })
+            } else {
+                cb('Error, path not found')
+            }
+        })
+        //return index.inventoryTree.parentPathFromPath(path)
+    },
 
     getLocationPath: function (curUser, id, cb) {
       

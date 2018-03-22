@@ -17,7 +17,6 @@ module.exports = function (Component) {
             this.close = this.close.bind(this)
             this.setType = this.setType.bind(this)
             this.inventoryCellLocation=this.inventoryCellLocation.bind(this)
-            //ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
         }
         
         componentWillReceiveProps(nextProps) {
@@ -69,6 +68,9 @@ module.exports = function (Component) {
             const dbData = this.state.item
             dbData[id]=value
             this.setState({item:dbData})
+            
+            ///todo: saving rowdata causes inventory tree to be corrupted
+            /*
             if (dbData.id) {
                 app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                     if (err) {
@@ -76,6 +78,7 @@ module.exports = function (Component) {
                     }
                 })
             }
+            */
         }
         
         setType(type) {
@@ -133,6 +136,7 @@ module.exports = function (Component) {
                 app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
             }
         }
+
         updateSelection(selection) {
             if (!this.state.isFocused || !this.state.item) return
             const dbData = this.state.item
@@ -147,11 +151,6 @@ module.exports = function (Component) {
                     }
                 })
             }
-            
-        }
-        
-        msgFunction(msg) {
-            //return ''
         }
         
         editVirtual(e) {
@@ -159,6 +158,14 @@ module.exports = function (Component) {
             e.preventDefault();
             if (!this.props.item || !this.props.item.virtual_id) return
             app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
+        }
+        
+        getLabel() {
+            if (this.props.item) {
+                const item = this.props.item
+                const label = item.parent_x+','+item.parent_y
+                return label
+            }
         }
         
         render() {
@@ -186,7 +193,6 @@ module.exports = function (Component) {
                     return(
                         <div class={"tile is-child "+props.classProps} style="padding:0; margin:0">
                             <input id={props.fid} class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly} onblur={this.onblur.bind(this)}>
-                                {this.msgFunction(props.msg)}
                             </input>
                         </div>
                     )
@@ -197,7 +203,6 @@ module.exports = function (Component) {
                             <div class="control has-icons-left has-icons-right">
                                 <input class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
                             </div>
-                            {this.msgFunction(props.msg)}
                         </div>
                     )
                 }

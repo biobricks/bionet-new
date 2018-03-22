@@ -59,7 +59,6 @@ module.exports = {
             y: y,
             navigate:navigate
         }
-        app.state.inventory.selection_prior = app.state.inventory.selection
         app.state.inventory.selection = inventorySelection
         
         if (navigate) {
@@ -209,12 +208,23 @@ module.exports = {
     
     getRootItem: function(cb) {
         var rootItem
+        app.remote.getInventoryRoot(function(err,path,key) {
+            console.log('getRootItem:',key,err,path)
+            cb(err,key)
+        })
+        /*
+        const rpath = app.remote.getParentPath('p-1686a689-0f54-4044-9735-3c4e99ab7f0d', function(err,rootId, rootName){
+            console.log('getRootItem:', rootId, rootName, err)
+        })
+        */
+        /*
         app.remote.inventoryTree(function (err, children) {
             if (err) {
                 console.log("getRootItem error:", err);
                 return 
             }
             for (var i = 0; i < children.length; i++) {
+                
                 var item = children[i].value
                 if (!item.parent_id && item.type === 'lab') {
                     if (cb) cb(item)
@@ -222,6 +232,7 @@ module.exports = {
                 }
             }
         })
+        */
     },
     
     setSelectionMode: function (e) {

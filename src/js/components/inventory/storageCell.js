@@ -40,7 +40,7 @@ module.exports = function (Component) {
         }
         
         focus(active, navigate) {
-            //if (active) console.log('setting focus for cell: ', this.props.label)
+            if (active) console.log('setting focus for cell: ', this.props.label)
             this.setState({active:active})
         }
         

@@ -24,7 +24,7 @@ module.exports = function (Component) {
         componentWillReceiveProps(props) {
             const id = (props.match) ? props.match.params.id : null
             const pid = (this.props.match) ? this.props.match.params.id : null
-            console.log('inventory main id:', id, pid, this.props)
+            //console.log('inventory main id:', id, pid, this.props)
             if (id !== pid || app.state.inventory.refresh) this.getInventoryPath(id)
         }
         componentWillMount() {
@@ -37,7 +37,7 @@ module.exports = function (Component) {
             const thisModule=this
             if (id) {
                 app.actions.inventory.getInventoryPath(id, function(inventoryPath) {
-                    console.log('inventory main, path:',inventoryPath)
+                    //console.log('inventory main, path:',inventoryPath)
                     thisModule.setState({inventoryPath:inventoryPath})
                 })
             } else {

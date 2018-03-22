@@ -27,7 +27,7 @@ module.exports = function (Component) {
         
         componentWillReceiveProps(nextProps) {
             if (!nextProps || !nextProps.menu) return
-            console.log('ActionNavBar props:',nextProps.menu, this.state, nextProps)
+            //console.log('ActionNavBar props:',nextProps.menu, this.state, nextProps)
             var physicalMenu = false
             const currentItem = app.actions.inventory.getLastPathItem()
             if (currentItem && currentItem.type) {

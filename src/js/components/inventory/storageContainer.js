@@ -49,11 +49,7 @@ module.exports = function (Component) {
             const dy = height / yunits
             var px = px1
             var py = py1
-            if (!selectedItemId && app.state.inventory.selection) {
-                px = app.state.inventory.selection.x
-                py = app.state.inventory.selection.y
-            }
-            //console.log('subdivideContainer', xunits, yunits, width, height, dx, dy)
+            console.log('subdivideContainer', xunits, yunits, width, height, px, py)
             const thisModule = this
             const generateCols =function(row) {
                 const cols=[]
@@ -112,6 +108,8 @@ module.exports = function (Component) {
                 if (this.type && this.type.toLowerCase()==='lab') {
                     px = 0
                     py = i
+                    item.parent_x = px
+                    item.parent_y = py
                 } else {
                     px = item.parent_x-1
                     py = item.parent_y-1
@@ -127,13 +125,14 @@ module.exports = function (Component) {
 
         selectCellListener(cellLocation, edit) {
             //console.log('selectCellListener:',edit, this.dbid, cellLocation, this.props)
-            if (!cellLocation || this.dbid!==cellLocation.parentId) return
+            //if (!cellLocation || this.dbid!==cellLocation.parentId) return
+            if (!cellLocation) return
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
             const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)
-            
             for (var cellLabel in this.cellRef) {
                 var ref = this.cellRef[cellLabel]
+                console.log('selectCell:',ref.props.label, cellCoordinates)
                 if (ref) {
                     //const focus = cellLocation.navigate && cellCoordinates === ref.props.label
                     const focus = cellCoordinates === ref.props.label

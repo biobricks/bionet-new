@@ -232,7 +232,7 @@ module.exports = function (Component) {
                     var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
                     var value = (item && item[fieldId]) ? item[fieldId] : ''
                     var classProps = (this.props.classProps && (i+3<this.props.classProps.length)) ? this.props.classProps[i+3].class : ''
-                    attributes.push( <FormInputText fid={fieldId} label={label} value={value}  classProps={classProps}/> )
+                    attributes.push( <FormInputText fid={fieldId} label={label} value={value}  classProps={classProps[3+i].class}/> )
                 }
             }
                                     

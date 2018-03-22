@@ -59,7 +59,6 @@ module.exports = {
             y: y,
             navigate:navigate
         }
-        app.state.inventory.selection_prior = app.state.inventory.selection
         app.state.inventory.selection = inventorySelection
         
         if (navigate) {

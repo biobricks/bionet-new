@@ -59,7 +59,7 @@ module.exports = function (Component) {
             const dy = height / yunits
             var px = px1
             var py = py1
-            console.log('subdivideContainer', xunits, yunits, width, height, px, py)
+            //console.log('subdivideContainer', xunits, yunits, width, height, px, py)
             const thisModule = this
             const generateCols =function(row) {
                 const cols=[]
@@ -116,8 +116,8 @@ module.exports = function (Component) {
                 var px=0
                 var py=0
                 if (this.type && this.type.toLowerCase()==='lab') {
-                    px = 0
-                    py = i
+                    px = (item.parent_x) ? item.parent_x-1 : 0
+                    py = (item.parent_y) ? item.parent_y-1 : i
                 } else {
                     px = item.parent_x-1
                     py = item.parent_y-1
@@ -152,7 +152,7 @@ module.exports = function (Component) {
             const cellCoordinates = this.generateLabel(cellLocation.x, cellLocation.y, xunits, yunits)
             for (var cellLabel in this.cellRef) {
                 var ref = this.cellRef[cellLabel]
-                console.log('selectCell:',ref.props.label, cellCoordinates)
+                //console.log('selectCell:',ref.props.label, cellCoordinates)
                 if (ref) {
                     const focus = cellCoordinates === ref.props.label
                     ref.focus(focus)

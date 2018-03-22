@@ -152,7 +152,7 @@ module.exports = function (Component) {
         }
         
         focus(active, navigate) {
-            if (active) console.log('focus selectedRow:',this.props.item)
+            //if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
             if (active) app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
         }

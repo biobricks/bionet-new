@@ -257,12 +257,12 @@ module.exports = function (Component) {
                 const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''
                 const label = item.parent_x+','+item.parent_y
                 //console.log('tabular:',this.props.classProps)
-                const navArrowStyle = "font-size:20px;line-height:35px;color:#000000;display:flex;justify-content:center;margin-right:20px;"
+                const navArrowStyle = "font-size:20px;line-height:35px;color:#808080;display:flex;justify-content:center;margin-right:0px;"
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="tile is-parent is-11"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
-                            <div  class={this.props.classProps[0].class} style="justify-content:center;line-height:30px;">
-                                <a onclick={this.navigateItem.bind(this)} class={"mdi mdi-arrow-right-bold"} style={navArrowStyle}></a>
+                            <div class={"tile is-child "+this.props.classProps[0].class} style="justify-content:center;line-height:30px;">
+                                <a onclick={this.navigateItem.bind(this)} class={"mdi mdi-arrow-right"} style={navArrowStyle}></a>
                             </div>
                             <FormInputText fid='name' value={item.name} label="Name" classProps={this.props.classProps[1].class}/>
                             <ItemTypes type={item.type} types={types} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />

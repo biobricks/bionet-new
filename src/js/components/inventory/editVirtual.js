@@ -137,10 +137,9 @@ module.exports = function (Component) {
         }
         
         close () {
-            //this.setState({active:''})
-            //app.actions.inventory.editVirtualItem(null)
-            if (this.props.onClose) this.props.onClose(false)
+            this.setState({active:''})
             app.actions.prompt.reset()
+            if (this.props.onClose) this.props.onClose(false)
         }
         
         setType(type) {
@@ -156,10 +155,6 @@ module.exports = function (Component) {
             if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
             if (active) app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
-        }
-        
-        msgFunction(msg) {
-            //return ''
         }
         
         assignCells() {
@@ -211,7 +206,6 @@ module.exports = function (Component) {
                         <div class="control has-icons-left has-icons-right">
                             <input class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
                         </div>
-                        {this.msgFunction(props.msg)}
                     </div>
                 )
             }.bind(this)

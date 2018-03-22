@@ -15,7 +15,7 @@ module.exports = function (Component) {
             this.initialized=false
             app.actions.inventory.initialize()
             this.state={
-                types:app.actions.inventory.getInventoryTypes(),
+                types:{},
                 inventoryPath:null
             }
             ashnazg.listen('global.user', this.loggedInUser.bind(this));
@@ -26,6 +26,11 @@ module.exports = function (Component) {
             const pid = (this.props.match) ? this.props.match.params.id : null
             console.log('inventory main id:', id, pid, this.props)
             if (id !== pid || app.state.inventory.refresh) this.getInventoryPath(id)
+        }
+        componentWillMount() {
+            this.setState({
+                types:app.actions.inventory.getInventoryTypes()
+            })    
         }
         
         getInventoryPath(id) {

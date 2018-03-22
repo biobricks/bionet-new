@@ -163,6 +163,12 @@ module.exports = function(Component) {
               <p class="description">{this.state.virtual.description}</p>
             </div>
             {content}
+            <div>
+              <span style="font-weight:bold">Provenance:</span> {this.state.virtual.provenance || "Unknown"}
+            </div>
+            <div>
+              <span style="font-weight:bold">Terms and condition:</span> {this.state.virtual.terms || "Not specified"}
+            </div>
             <div>{timestamps}</div>
             <div>{sequence}</div>
           </div>

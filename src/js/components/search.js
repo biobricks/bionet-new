@@ -223,9 +223,12 @@ module.exports = function(Component) {
 
     search(e) {
       e.preventDefault();
+      var query = this.state.query.text || '';
+      query = query.trim();
+
       var url = '/search/';
       if(this.state.query && this.state.query.text) {
-        url += encodeURIComponent(this.state.query.text);
+        url += encodeURIComponent(query);
         url += '/' + encodeURIComponent(this.state.page || 1);
         url += '/' + encodeURIComponent(this.state.query.scope || 'local');
         url += '/' + encodeURIComponent(this.state.query.type || 'human');

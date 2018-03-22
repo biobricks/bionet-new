@@ -69,7 +69,8 @@ module.exports = function (Component) {
             for (var i=0; i<newPath.length; i++) {
                 var item = newPath[i]
                 var nextItem = (i<newPath.length-1) ? newPath[i+1] : {}
-                var yUnits = (item.type==='lab') ? item.children.length : item.yUnits
+                var yUnits = item.yUnits
+                //var yUnits = (item.type==='lab') ? item.children.length : item.yUnits
                 var ref = (container) => { if (container) thisModule.containerRef[container.props.dbid] = container; }
                 var px=null
                 var py=null

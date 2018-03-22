@@ -14,7 +14,7 @@ module.exports = {
       name: "lab",
       title:"Lab",
       xUnits:1,
-      yUnits:5,
+      yUnits:6,
       fields: {
         Description: 'text'
       }
@@ -91,6 +91,8 @@ module.exports = {
     },{
       name: "shelving unit",
       title:"Shelving Unit",
+      xUnits:1,
+      yUnits:5,
       fields: {
         Description: 'text'
       }
@@ -105,6 +107,8 @@ module.exports = {
     },{
       name: "cabinet",
       title:"Cabinet",
+      xUnits:1,
+      yUnits:5,
       fields: {
         Description: 'text'
       }

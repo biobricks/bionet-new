@@ -73,16 +73,19 @@ module.exports = function (Component) {
         }
         
         saveVirtual(e) {
+            this.createPhysicals(e,true)
+            /*
             const item = this.item
             app.actions.inventory.saveVirtual(item, null, null, null, function(err, id, physicals) {
                 if (err) app.actions.notify("Error saving "+item.name, 'error');
                 else app.actions.notify(item.name+" saved", 'notice', 2000);
             })
             app.actions.inventory.refreshInventoryPath(item.parent_id)
+            */
             this.close()
         }
         
-        createPhysicals(e) {
+        createPhysicals(e, saveVirtualOnly) {
             e.preventDefault();
             
             const item = this.item
@@ -107,28 +110,35 @@ module.exports = function (Component) {
                 var fid = attributes[i].name.toLowerCase()
                 dbData[fid] = item[fid]
             }
+            const instances = (saveVirtualOnly) ? null : item.instances
             
             const thisModule=this
-            app.actions.inventory.saveVirtual(dbData, item.instances, parentId, wellData, function(err, id, physicals) {
-                console.log('physicals saved:',err,id,physicals)
+            app.actions.inventory.saveVirtual(dbData, instances, parentId, wellData, function(err, id, physicals) {
+                
                 if (err) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
+                
                 if (thisModule.item) thisModule.item.id = id
                 //app.actions.prompt.setTitle('Assign locations for physicals')
-                if (physicals) {
-                    thisModule.setState({
-                        physicals:physicals,
-                        assignCells:true
-                    })
-                } else {
-                    thisModule.setState({
-                        physicals:null,
-                        assignCells:true
-                    })
+                
+                if (!saveVirtualOnly) {
+                    console.log('physicals saved:',err,id,physicals)
+                    if (physicals) {
+                        thisModule.setState({
+                            physicals:physicals,
+                            assignCells:true
+                        })
+                    } else {
+                        thisModule.setState({
+                            physicals:null,
+                            assignCells:true
+                        })
+                    }
                 }
+                
             })
         }
         

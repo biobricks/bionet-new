@@ -119,6 +119,12 @@ module.exports = {
         Description: 'text'
       }
     },{
+      name: "bin",
+      title:"Bin",
+      fields: {
+        Description: 'text'
+      }
+    },{
       name: "organism",
       title:"Organism",
       virtual: true,

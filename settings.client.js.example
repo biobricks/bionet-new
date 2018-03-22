@@ -19,37 +19,38 @@ module.exports = {
         Description: 'text'
       }
     },{
+      name: "benches",
+      title:"Benches",
+      xUnits:8,
+      yUnits:8
+    },{
+      name: "bench",
+      title:"Bench",
+      xUnits:8,
+      yUnits:8
+    },{
       name: "-80 freezer",
-      title:"-80C Freezer",
+      title:"-80 Freezer",
       xUnits:1,
       yUnits:5,
       fields: {
-        Description: 'text',
-        Shelf: 'text',
-        Rack: 'text',
-        Box: 'text'
+        Description: 'text'
       }
     },{
       name: "-20 freezer",
-      title:"-20C Freezer",
+      title:"-20 Freezer",
       xUnits:1,
       yUnits:5,
       fields: {
-        Description: 'text',
-        Shelf: 'text',
-        Rack: 'text',
-        Box: 'text'
+        Description: 'text'
       }
     },{
       name: "-4 fridge",
-      title:"4C Fridge",
+      title:"4 Fridge",
       xUnits:1,
       yUnits:5,
       fields: {
-        Description: 'text',
-        Shelf: 'text',
-        Rack: 'text',
-        Box: 'text'
+        Description: 'text'
       }
     },{
       name: "freezer rack",
@@ -124,8 +125,8 @@ module.exports = {
         Sequence: 'text'
       }
     },{
-      name: "single-stranded",
-      title:"Single-Stranded",
+      name: "oligo",
+      title:"Oligo",
       virtual: true,
       fields: {
         Description: 'text',
@@ -146,6 +147,6 @@ module.exports = {
       fields: {
         Description: 'text'
       }
-    }]
+    }],
 
 };

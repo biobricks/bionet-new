@@ -11,15 +11,15 @@ function del(curUser, db, dbName, key, cb) {
   if(!db[dbName]) return cb(new Error("database '"+dbname+"' does not exit"));
   if(!key) return cb(new Error("Missing key"));
   
-  key = db.translateKey(key, db[dbName]);
+  var tkey = db.translateKey(key, db[dbName]);
     
-  db.db.get(key, function(err, o) {
+  db.db.get(tkey, function(err, o) {
     if(err) return cb(err);
     var now = (new Date).getTime();
     var dKey = (Number.MAX_SAFE_INTEGER - now).toString() + uuid();
     db.deleted.put(dKey, {
       db: dbName,
-      key: key,
+      key: tkey,
       deletedAt: now,
       deletedBy: curUser.user.username,
       data: JSON.parse(o)
@@ -27,7 +27,7 @@ function del(curUser, db, dbName, key, cb) {
 
       if(err) return cb(err);
       
-      db.db.del(key, cb);
+      db[dbName].del(key, cb);
       
     });
   });
@@ -208,8 +208,8 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       
       var ucDB = db.userCart(o.user);
       
-      // TODO is it too dangerous to use the physical's name as a key here?
-      // they should be unique, but are we really ensuring that?
+      // TODO if we ever switch from enforicing unique physical names
+      //      then this needs to change
       ucDB.put(name, o, cb);
     },
     

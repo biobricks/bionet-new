@@ -21,7 +21,7 @@ module.exports = function (Component) {
                 moveItem:app.state.inventory.moveItem
             }
             this.containerRef = {}
-            app.state.selectCellListener = this.selectCellListener.bind(this)
+            //app.state.selectCellListener = this.selectCellListener.bind(this)
             app.state.inventory.listener.moveItem = this.updateMoveItem.bind(this)
         }
         
@@ -33,6 +33,7 @@ module.exports = function (Component) {
         
         selectCellListener(cellLocation) {
             //console.log('selectCellListener:',cellLocation, this.props)
+            /*
             for (var containerId in this.containerRef) {
                 var container = this.containerRef[containerId]
                 if (containerId === cellLocation.parentId) {
@@ -41,6 +42,7 @@ module.exports = function (Component) {
                     break
                 }
             }
+            */
             if (app.state.inventory.listener.editContainerListener) {
                 //console.log('invoking editContainerListener')
                 app.state.inventory.listener.editContainerListener(cellLocation, true)

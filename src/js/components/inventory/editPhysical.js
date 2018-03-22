@@ -17,7 +17,6 @@ module.exports = function (Component) {
             this.close = this.close.bind(this)
             this.setType = this.setType.bind(this)
             this.inventoryCellLocation=this.inventoryCellLocation.bind(this)
-            //ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
         }
         
         componentWillReceiveProps(nextProps) {
@@ -137,7 +136,7 @@ module.exports = function (Component) {
                 app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
             }
         }
-        /*
+
         updateSelection(selection) {
             if (!this.state.isFocused || !this.state.item) return
             const dbData = this.state.item
@@ -152,15 +151,21 @@ module.exports = function (Component) {
                     }
                 })
             }
-            
         }
-        */
         
         editVirtual(e) {
             console.log('edit virtual, props:',this.props)
             e.preventDefault();
             if (!this.props.item || !this.props.item.virtual_id) return
             app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
+        }
+        
+        getLabel() {
+            if (this.props.item) {
+                const item = this.props.item
+                const label = item.parent_x+','+item.parent_y
+                return label
+            }
         }
         
         render() {

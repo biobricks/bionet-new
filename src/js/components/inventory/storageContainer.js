@@ -26,7 +26,10 @@ module.exports = function (Component) {
             this.type = nextProps.type
             this.populateContainer(nextProps.items, xunits, yunits)
             const tiles = this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType, nextProps.selectedItem, nextProps.px, nextProps.py, nextProps.mode)
-            if (nextProps.mode==='edit') app.state.inventory.listener.editContainerListener = this.selectCellListener.bind(this)
+            if (nextProps.mode==='edit') {
+                app.state.inventory.listener.editContainerListener = this.editContainerListener.bind(this)
+                app.state.selectCellListener = this.selectCellListener.bind(this)
+            }
             return tiles
         }
 
@@ -121,9 +124,21 @@ module.exports = function (Component) {
             return this.props.dbid
         }
 
+        editContainerListener(occupied) {
+            if (!occupied) return
+            console.log('editContainerListener ',occupied)
+            const xunits = (this.xunits) ? this.xunits : 1
+            const yunits = (this.yunits) ? this.yunits : 1
+            for (var cellLabel in this.cellRef) {
+                var ref = this.cellRef[cellLabel]
+                if (ref) {
+                    ref.occupied(occupied[cellLabel])
+                }
+            }
+        }
+
         selectCellListener(cellLocation, edit) {
             //console.log('selectCellListener:',edit, this.dbid, cellLocation, this.props)
-            //if (!cellLocation || this.dbid!==cellLocation.parentId) return
             if (!cellLocation) return
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
@@ -132,9 +147,8 @@ module.exports = function (Component) {
                 var ref = this.cellRef[cellLabel]
                 console.log('selectCell:',ref.props.label, cellCoordinates)
                 if (ref) {
-                    //const focus = cellLocation.navigate && cellCoordinates === ref.props.label
                     const focus = cellCoordinates === ref.props.label
-                    ref.focus(focus, cellLocation.navigate)
+                    ref.focus(focus)
                 }
             }
         }

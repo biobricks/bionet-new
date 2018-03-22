@@ -254,6 +254,9 @@ if(!argv.nop2p) {
   }
 }
 
+// TODO this is just for debugging purposes
+index.rebuild();
+
 // prevent crashes from uncaught exceptions
 //process.on('uncaughtException', function(err) {
 //  console.log("Uncaught exception:", err.stack)

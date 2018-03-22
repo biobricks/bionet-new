@@ -108,8 +108,6 @@ module.exports = function (Component) {
                 if (this.type && this.type.toLowerCase()==='lab') {
                     px = 0
                     py = i
-                    item.parent_x = px
-                    item.parent_y = py
                 } else {
                     px = item.parent_x-1
                     py = item.parent_y-1

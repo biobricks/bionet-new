@@ -41,13 +41,13 @@ module.exports = function (Component) {
                     thisModule.setState({inventoryPath:inventoryPath})
                 })
             } else {
-                app.actions.inventory.getRootItem(function(item) {
-                    if (item) {
-                        app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){
+                app.actions.inventory.getRootItem(function(err, rootId) {
+                    if (err) {
+                        console.log('getRootItem - no item found')
+                    } else {
+                        app.actions.inventory.getInventoryPath(rootId, function(inventoryPath){
                             thisModule.setState({inventoryPath:inventoryPath})
                         })
-                    } else {
-                        console.log('getRootItem - no item found')
                     }
                 })
             }
@@ -57,14 +57,14 @@ module.exports = function (Component) {
             if (!app.remote) {
                 return
             }
-            app.actions.inventory.getRootItem(function(item) {
-                if (item) {
-                    app.actions.inventory.getInventoryPath(item.id, function(inventoryPath){
-                        if (cb) cb(inventoryPath)
-                    })
-                } else {
+            app.actions.inventory.getRootItem(function(err, rootId) {
+                if (err) {
                     console.log('getRootItem - no item found')
                     if (cb) cb(null)
+                } else {
+                    app.actions.inventory.getInventoryPath(rootId, function(inventoryPath){
+                        if (cb) cb(inventoryPath)
+                    })
                 }
             })
         }

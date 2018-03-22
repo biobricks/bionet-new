@@ -32,6 +32,13 @@ module.exports = function (Component) {
             }
             return tiles
         }
+        
+        componentDidMount() {
+            if (this.props.mode==='edit') {
+                const parentId = (this.props.item) ? this.props.item.id : null
+                app.actions.inventory.selectCell(null, parentId, 1, 1, false)
+            }
+        }
 
         generateLabel(parent_x, parent_y, xunits, yunits) {
             const x = parent_x

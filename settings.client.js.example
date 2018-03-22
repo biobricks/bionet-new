@@ -22,12 +22,18 @@ module.exports = {
       name: "benches",
       title:"Benches",
       xUnits:8,
-      yUnits:8
+      yUnits:8,
+      fields: {
+        Description: 'text'
+      }
     },{
       name: "bench",
       title:"Bench",
       xUnits:8,
-      yUnits:8
+      yUnits:8,
+      fields: {
+        Description: 'text'
+      }
     },{
       name: "-80 freezer",
       title:"-80 Freezer",
@@ -113,6 +119,7 @@ module.exports = {
       title:"Organism",
       virtual: true,
       fields: {
+        Description: 'text',
         Genotype: 'text',
         Sequence: 'text'
       }

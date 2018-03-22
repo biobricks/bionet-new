@@ -50,8 +50,8 @@ module.exports = {
     },
     
     selectCell: function(id, parentId, x, y, navigate) {
-        console.log('selectCell action:',id,parentId,x,y,navigate)
-        console.trace()
+        //console.log('selectCell action:',id,parentId,x,y,navigate)
+        //console.trace()
         const inventorySelection = {
             id: id,
             parentId: parentId,

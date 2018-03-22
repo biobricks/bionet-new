@@ -28,6 +28,8 @@ module.exports = function(Component) {
         virtual: undefined,
         name: undefined,
         description: undefined,
+        provenance: undefined,
+        terms: 'openmta',
         notice: undefined,
         changed: false,
         error: null
@@ -45,6 +47,22 @@ module.exports = function(Component) {
       this.setState({
         changed: true,
         name: e.target.value
+      });
+    }
+
+    changeProv(e) {
+      if(!e || !e.target) return;
+      this.setState({
+        changed: true,
+        provenance: e.target.value
+      });
+    }
+
+    changeTerms(e) {
+      if(!e || !e.target) return;
+      this.setState({
+        changed: true,
+        terms: e.target.value
       });
     }
 
@@ -98,6 +116,8 @@ module.exports = function(Component) {
           virtual: data,
           name: data.name,
           description: data.description,
+          provenance: data.provenance,
+          terms: data.terms,
           content: data.content
         };
 
@@ -122,6 +142,8 @@ module.exports = function(Component) {
       var o = xtend(this.state.virtual, {
         name: this.state.name,
         description: this.state.description,
+        provenance: this.state.provenance,
+        terms: this.state.terms,
         content: this.state.content
       });
 
@@ -159,10 +181,13 @@ module.exports = function(Component) {
           changed: false,
           name: data.name,
           description: data.description,
+          provenance: undefined,
+          terms: 'openmta',
           content: data.content
         })
 
-        console.log(this.state);
+        // TODO should we always route back?
+        app.actions.route('/virtual/show/'+this.state.id);
       }.bind(this));
     }
 
@@ -227,7 +252,7 @@ module.exports = function(Component) {
                 <input type="submit" class="button is-link" value="Save" disabled={!this.state.changed} />
               </div>
               <div class="control">
-                <button class="button is-text" onClick={this.cancel.bind(this)} disabled={!this.state.changed}>Cancel</button>
+                <button class="button is-text" onClick={this.cancel.bind(this)}>Cancel</button>
                 </div>
             </div>
           )
@@ -252,6 +277,24 @@ module.exports = function(Component) {
               <label class="label">Content</label>
               <p class="help is-danger">{this.state.notice}</p>
               <textarea id="editor"></textarea>
+            </div>
+            <div class="field">
+              <label class="label">Provenance</label>
+              <div class="control">
+                <input class="input" onInput={this.changeProv.bind(this)} value={this.state.provenance} />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Terms and conditions</label>
+              <div class="control">
+                <select class="input" onInput={this.changeTerms.bind(this)} value={this.state.terms}>
+
+                  <option value="openmta" selected>OpenMTA</option>
+                  <option value="limbo">Limbo</option>
+                  <option value="ubmta">UBMTA</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
             </div>
             {formControls}
           </form>

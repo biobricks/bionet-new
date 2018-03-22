@@ -38,6 +38,8 @@ module.exports = {
   // `onlyAvailable`: Only return virtuals that have a physical
   blast: function(query, page, perPage, opts, cb) {
 
+    query = query.trim();
+
     if(page < 1) page = 1;
     if(perPage < 1) perPage = 1;
 
@@ -63,6 +65,8 @@ module.exports = {
     opts = opts || {}
     opts.offset = ((page - 1) * perPage);
 //    opts.maxResults = perPage;
+
+    query = query.trim();
 
     return app.remote.searchVirtuals(query, opts);
   },

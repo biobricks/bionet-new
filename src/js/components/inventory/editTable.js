@@ -67,6 +67,7 @@ module.exports = function (Component) {
         }
     
         updateRow(selection) {
+            if (this.props.mode!=='edit') return
             for(var id in this.rowRef){
                 var ref = this.rowRef[id]
                 ref.updateSelection(selection)

@@ -248,7 +248,7 @@ module.exports = function (Component) {
             if (this.state.assignCells) {
                 tabularData = (
                     <div style="margin-bottom:20px;">
-                        <EditTable item={item} items={this.state.physicals} height={window.innerHeight} />
+                        <EditTable item={item} items={this.state.physicals} height={window.innerHeight} mode="edit" />
                     </div>
                 )
             } else {

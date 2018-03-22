@@ -37,7 +37,7 @@ module.exports = function (Component) {
             const headers=[]
             for (var i=0; i<headerTitle.length; i++) {
                 var header = headerTitle[i]
-                headers.push(<div class={"tile is-child "+header.class} style={(i===0)?"padding-left: calc(0.625em - 1px);":""}>{header.name}</div>)
+                 headers.push(<div class={"tile is-child "+header.class} style={(i===0)?"padding-left: calc(0.625em - 1px);":""}>{header.name}</div>)
             }
             this.headerTitle = headerTitle
             

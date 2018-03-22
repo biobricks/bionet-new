@@ -118,6 +118,13 @@ module.exports = function (Component) {
             this.setState({moveItem:item})
         }
         
+        navigateParent(e) {
+            const path = this.props.inventoryPath
+            const selectedItem = path[path.length-1]
+            if (!selectedItem) return null
+            app.actions.inventory.selectInventoryId(selectedItem.parent_id)
+        }
+        
         selectedItemHeader() {
             const path = this.props.inventoryPath
             if (!path || path.length<1) return null
@@ -131,11 +138,13 @@ module.exports = function (Component) {
                 moveId = moveItem.id
                 moveName = moveItem.name
             }
+            const navArrowStyle = "font-size:20px;color:#808080;justify-content:center;margin-right:20px;cursor:pointer;"
+            const navArrow = (path.length>1) ? (<span onclick={this.navigateParent.bind(this)} class={"mdi mdi-arrow-left"} style={navArrowStyle}/>) : null
             return (
                 <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
                     <div class="tile is-7">
                         <div class="navbar-start">
-                            <h1 class="title is-5" style="padding:12px">{selectedItem.name}</h1>
+                            <h1 class="title is-5" style="padding:12px">{navArrow}{selectedItem.name}</h1>
                         </div>
                     </div>
                     <div class="tile">

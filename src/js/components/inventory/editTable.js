@@ -20,6 +20,7 @@ module.exports = function (Component) {
             const items = this.props.items
             if (!items || items.length<1) return null
             const headerTitle=[]
+            headerTitle.push({name:'Nav',class:'is-1'})
             headerTitle.push({name:'Name',class:'is-4'})
             headerTitle.push({name:'Type',class:'is-3'})
             headerTitle.push({name:'Loc',class:'is-1'})

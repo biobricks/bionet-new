@@ -74,14 +74,6 @@ module.exports = function (Component) {
         
         saveVirtual(e) {
             this.createPhysicals(e,true)
-            /*
-            const item = this.item
-            app.actions.inventory.saveVirtual(item, null, null, null, function(err, id, physicals) {
-                if (err) app.actions.notify("Error saving "+item.name, 'error');
-                else app.actions.notify(item.name+" saved", 'notice', 2000);
-            })
-            app.actions.inventory.refreshInventoryPath(item.parent_id)
-            */
             this.close()
         }
         

@@ -449,6 +449,51 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       }
       getParentLocation(id);
     },
+    getLocationPathChildren: function (curUser, id, cb) {
+        if (id[0] !== 'p') {
+            cb(new Error("getLocationPathChildren only works for physicals"));
+        }
+        const getChildren=function(parentItem, cb) {
+            const children=[]
+            const s = index.inventoryTree.stream(parentItem.path, {depth:1})
+            s.on('data', function(child) {
+                children.push(child.value)
+            })
+            s.on('error', function(err) {
+                if (cb) cb(err)
+            })
+            s.on('end', function() {
+                if (cb) cb(null, parentItem.key, children)
+            });
+        }
+        
+        index.inventoryTree.path(id, function(err,parentPath) {
+            const pathArray = []
+            var pc = 0
+            const s = index.inventoryTree.parentStream(parentPath)
+            s.on('data', function(item) {
+                pc++
+                pathArray.push(item.value)
+                getChildren(item, function(err,id,children) {
+                    if (err) {
+                        s.destroy()
+                        cb(err)
+                        return
+                    }
+                    for (var i=0; i<pathArray.length; i++) {
+                        if (pathArray[i].id===id) {
+                            pathArray[i].children = children
+                            break
+                        }
+                    }
+                    if (--pc <= 0) cb(null,pathArray)
+                })
+            })
+            s.on('error', function(err) {
+                if (cb) cb(err)
+            })
+        })
+      },
 
     // TODO use indexes for this!
     getByHumanID: function(curUser, humanID, cb) {

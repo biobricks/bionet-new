@@ -141,6 +141,7 @@ module.exports = {
     
     getInventoryPath: function(id, cb) {
         console.log('getInventoryPathRPC action id:',id)
+        
         //console.trace()
         app.state.inventory.refresh=false
         if (!id) {
@@ -148,8 +149,7 @@ module.exports = {
             return null
         }
         const locationPath = {}
-        var results = 0
-        app.remote.getLocationPath(id, function (err, locationPathAr) {
+        app.remote.getLocationPathChildren(id, function (err, locationPathAr) {
             if (err) {
                 console.log('getInventoryPath error:', err)
                 if (cb) cb(null)
@@ -157,7 +157,6 @@ module.exports = {
             }
             locationPathAr.reverse()
             
-            results = locationPathAr.length
             for (var i = 0; i < locationPathAr.length; i++) {
                 var location = locationPathAr[i]
                 var locationId = location.id
@@ -167,19 +166,11 @@ module.exports = {
                     location.yUnits = locationType.yUnits
                 }
                 locationPath[locationId] = location
-                this.getChildren(locationId, (pid, children) => {
-                    locationPath[pid].children = children
-                    //console.log('getInventoryPath children:', results)
-                    if (--results <= 0) {
-                        
-                        const length = locationPathAr.length
-                        const item = (length>0) ? locationPathAr[length-1] : null
-                        app.state.inventoryPath = locationPathAr
-                        if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
-                        //app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
-                        if (cb) cb(locationPathAr)
-                    }
-                })
+                const length = locationPathAr.length
+                const item = (length>0) ? locationPathAr[length-1] : null
+                app.state.inventoryPath = locationPathAr
+                if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+                if (cb) cb(locationPathAr)
             }
         }.bind(this ))
     },

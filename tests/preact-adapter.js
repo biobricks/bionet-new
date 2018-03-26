@@ -1,6 +1,7 @@
 import Preact from 'preact';
 import renderToString from 'preact-render-to-string';
 import ShallowRenderer from 'react-test-renderer/shallow';
+import TestUtils from 'preact-test-utils';
 import values from 'object.values';
 import { EnzymeAdapter } from 'enzyme';
 import {

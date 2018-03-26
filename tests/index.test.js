@@ -53594,11 +53594,17 @@ describe('Test', function () {
     describe('render', function () {
         it('should render', function () {
             var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, null));
-            (0, _chai.expect)(wrapper.hasClass('ui-btn')).to.equal(false);
+            //console.log('*****html****'+wrapper.html())
+            //process.stdout.write(wrapper.html())           
+            (0, _chai.expect)(wrapper.find('.nav.panel')).to.have.length(1);
+        });
+        it('should render', function () {
+            var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, null));
+            (0, _chai.expect)(wrapper.find('.p.panel-heading')).to.have.length(1);
         });
         it('should render type', function () {
             var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, { type: 'primary' }));
-            (0, _chai.expect)(wrapper.hasClass('ui-btn-primary')).to.equal(false);
+            (0, _chai.expect)(wrapper.find('.a.panel-block')).to.have.length(1);
         });
         it('should support event', function () {
             var test = false;
@@ -53732,6 +53738,7 @@ var PreactAdapter = function (_EnzymeAdapter) {
               context: context
             });
             instance = _preact2.default.render(wrappedEl, domNode);
+            console.log('preact wrapper render', domNode);
             if (typeof callback === 'function') {
               callback();
             }

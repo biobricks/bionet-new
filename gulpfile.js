@@ -5,8 +5,20 @@ var sass = require('gulp-sass');
 var cssimport = require('gulp-cssimport');
 var inlineSource = require('gulp-inline-source');
 var js = require('./bin/build.js');
+var jest = require('gulp-jest').default;
+ 
+gulp.task('jest', function () {
+    process.env.NODE_ENV = 'test';
+    return gulp.src('__tests__').pipe(jest({
+    "preprocessorIgnorePatterns": [
+      "<rootDir>/dist/", "<rootDir>/node_modules/"
+    ],
+    "automock": false
+  }));
+});
 
 gulp.task('build:js', js.build); 
+gulp.task('test:js', js.test); 
 
 gulp.task('watch:js', js.watch);
 
@@ -31,6 +43,7 @@ gulp.task('build:html', function() {
     .pipe(gulp.dest('./static/build'));
 });
 
+gulp.task('test', ['test:js', 'build:css','jest']);
 
 gulp.task('build', ['build:js', 'build:css']);
 

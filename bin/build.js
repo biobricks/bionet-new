@@ -21,7 +21,7 @@ function getTime() {
 function build(opts) {
   opts = opts || {};
 
-  var output = path.join(__dirname, '..', 'static', 'build', 'bundle.js');
+  var output = opts.output || path.join(__dirname, '..', 'static', 'build', 'bundle.js');
 
   function onBuildEnd(msg) {
     console.log("Completed".green + ((msg) ? (': ' + msg) : ''));
@@ -64,7 +64,7 @@ function build(opts) {
   }
 
   var b = browserify({
-    entries: [path.join(__dirname, '..', 'src', 'js', 'index.js')],
+    entries: [opts.source || path.join(__dirname, '..', 'src', 'js', 'index.js')],
     cache: {},
     packageCache: {}
   })
@@ -98,12 +98,12 @@ function build(opts) {
   });
 
   b.transform('browserify-markdown');
-
-  b.transform('aliasify', {
-    aliases: {
+  var alias = opts.alias || {
       "react": "preact-compat",
       "react-dom": "preact-compat"
-    },
+  } 
+  b.transform('aliasify', {
+    aliases: alias,
     global: true
   });
 
@@ -129,6 +129,21 @@ if (require.main === module) {
 
   module.exports = {
     build: build,
+      
+    test: function(opts) {
+        opts = opts || opts;
+        opts.output = path.join(__dirname, '..', 'tests', 'index.test.js');
+        opts.source = path.join(__dirname, '..', 'tests', 'index.js');
+        opts.dev = true;
+        opts.alias = {
+          'react-dom/server': 'preact-render-to-string',
+          'react-addons-test-utils': 'preact-test-utils',
+          'react-addons-transition-group': 'preact-transition-group',
+          'react': 'preact-compat-enzyme',
+          'react-dom': 'preact-compat-enzyme'
+        }
+      return build(opts);
+    },
 
     watch: function(opts) {
       opts = opts || opts;

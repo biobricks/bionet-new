@@ -7,7 +7,7 @@ var inlineSource = require('gulp-inline-source');
 var js = require('./bin/build.js');
 var jest = require('gulp-jest').default;
  
-gulp.task('jest', function () {
+gulp.task('test', function () {
     process.env.NODE_ENV = 'test';
     return gulp.src('__tests__').pipe(jest({
     "preprocessorIgnorePatterns": [
@@ -18,7 +18,7 @@ gulp.task('jest', function () {
 });
 
 gulp.task('build:js', js.build); 
-gulp.task('test:js', js.test); 
+gulp.task('buildtest:js', js.buildtest); 
 
 gulp.task('watch:js', js.watch);
 
@@ -43,7 +43,7 @@ gulp.task('build:html', function() {
     .pipe(gulp.dest('./static/build'));
 });
 
-gulp.task('test', ['test:js', 'build:css','jest']);
+gulp.task('buildtest', ['buildtest:js', 'build:css']);
 
 gulp.task('build', ['build:js', 'build:css']);
 

@@ -130,11 +130,11 @@ if (require.main === module) {
   module.exports = {
     build: build,
       
-    test: function(opts) {
+    buildtest: function(opts) {
         opts = opts || opts;
         opts.output = path.join(__dirname, '..', 'tests', 'index.test.js');
         opts.source = path.join(__dirname, '..', 'tests', 'index.js');
-        opts.dev = true;
+        opts.test = true;
         opts.alias = {
           'react-dom/server': 'preact-render-to-string',
           'react-addons-test-utils': 'preact-test-utils',

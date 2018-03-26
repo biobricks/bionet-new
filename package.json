@@ -13,8 +13,8 @@
     "dev": "bin/dev.js",
     "postinstall": "bin/postinstall.sh",
     "start": "bin/server.js",
-    "test": "gulp test",
-    "jest": "jest"
+    "buildtest": "gulp buildtest",
+    "test": "jest"
   },
   "dependencies": {
     "accountdown": "^4.1.0",

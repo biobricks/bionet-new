@@ -83,6 +83,7 @@ class PreactAdapter extends EnzymeAdapter {
             context,
           });
           instance = Preact.render(wrappedEl, domNode);
+          console.log('preact wrapper render', domNode)
           if (typeof callback === 'function') {
             callback();
           }

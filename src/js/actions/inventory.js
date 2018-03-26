@@ -200,31 +200,26 @@ module.exports = {
     
     getRootItem: function(cb) {
         var rootItem
+        /*
         app.remote.getInventoryRoot(function(err,path,key) {
             console.log('getRootItem:',key,err,path)
             cb(err,key)
         })
-        /*
-        const rpath = app.remote.getParentPath('p-1686a689-0f54-4044-9735-3c4e99ab7f0d', function(err,rootId, rootName){
-            console.log('getRootItem:', rootId, rootName, err)
-        })
         */
-        /*
         app.remote.inventoryTree(function (err, children) {
+            //console.log('getRootItem:',children)
             if (err) {
                 console.log("getRootItem error:", err);
                 return 
             }
             for (var i = 0; i < children.length; i++) {
-                
                 var item = children[i].value
                 if (!item.parent_id && item.type === 'lab') {
-                    if (cb) cb(item)
+                    if (cb) cb(null,item.id)
                     break;
                 }
             }
         })
-        */
     },
     
     setSelectionMode: function (e) {
@@ -449,6 +444,7 @@ module.exports = {
 
     addFavorite: function (m, cb) {
         app.remote.saveFavLocation(m, null, null, function (err) {
+            console.log('addFavorite action:',m,err)
             if (cb) cb(err)
         })
     },
@@ -461,8 +457,11 @@ module.exports = {
     getFavorites: function (cb) {
         //console.log('getFavorites action called')
         app.remote.favLocationsTree(function(err, userFavorites) {
-            //console.log('getFavorites action:',userFavorites)
-            app.state.inventory.favorites=userFavorites
+            console.log('getFavorites action:',err,userFavorites)
+            //app.state.inventory.favorites=userFavorites
+            app.changeState({
+                favorites: userFavorites
+            })
             if (cb) cb(err, userFavorites)
         })
     },

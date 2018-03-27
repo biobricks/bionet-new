@@ -62,7 +62,7 @@ module.exports = function (Component) {
             const active = (this.state.active) ? ' is-active' : ''
             const classProps = (this.props.classProps) ? this.props.classProps+' ' : ''
             return(
-                <div id={"wrapper"+this.props.fid} class={"dropdown tile"+active+classProps}>
+                <div id={"wrapper"+this.props.fid} class={"dropdown tile "+active+classProps}>
                   <div class="dropdown-trigger" style="min-width:100%;width:100%">
                     <button type="button" id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3"  style="min-width:100%;width:100%;justify-content:flex-start">
                       <span id={this.props.fid}>{this.state.type}</span>

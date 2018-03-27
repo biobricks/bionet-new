@@ -140,7 +140,9 @@ if (require.main === module) {
           'react-addons-test-utils': 'preact-test-utils',
           'react-addons-transition-group': 'preact-transition-group',
           'react': 'preact-compat-enzyme',
-          'react-dom': 'preact-compat-enzyme'
+          'react-dom': 'preact-compat-enzyme',
+          'react-test-renderer/shallow': "preact-test-utils",
+          'react-test-renderer': "preact-test-utils"
         }
       return build(opts);
     },

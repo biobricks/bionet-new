@@ -169,7 +169,7 @@ module.exports = function (Component) {
         getLabel() {
             if (this.props.item) {
                 const item = this.props.item
-                const label = item.parent_x+','+item.parent_y
+                const label = (item.parent_x && item.parent_y) ? item.parent_x+','+item.parent_y : ''
                 return label
             }
         }
@@ -200,10 +200,11 @@ module.exports = function (Component) {
                 
             const FormInputText = function(props) {
                 //console.log('FormInputText:',props)
+                const value = (props.value) ? props.value : ''
                 if (tabular) {
                     return(
                         <div class={"tile is-child "+props.classProps} style="padding:0; margin:0">
-                            <input id={props.fid} class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly} onblur={this.onblur.bind(this)}>
+                            <input id={props.fid} class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={value} readonly={props.readonly} onblur={this.onblur.bind(this)}>
                             </input>
                         </div>
                     )
@@ -212,7 +213,7 @@ module.exports = function (Component) {
                         <div class="field">
                             <label class="label">{props.label}</label>
                             <div class="control has-icons-left has-icons-right">
-                                <input id={props.fid} class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
+                                <input id={props.fid} class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={value} readonly={props.readonly}/>
                             </div>
                         </div>
                     )
@@ -260,7 +261,7 @@ module.exports = function (Component) {
                     document = (<ActionButton dbid={selectedItemId} onclick={this.editVirtual.bind(this)} icon="file-document" />)
                 }
                 const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''
-                const label = item.parent_x+','+item.parent_y
+                const label = (item.parent_x && item.parent_y) ? item.parent_x+','+item.parent_y : ''
                 //console.log('tabular:',this.props.classProps)
                 const navArrowStyle = "font-size:20px;line-height:35px;color:#808080;display:flex;justify-content:center;margin-right:0px;"
                 return (

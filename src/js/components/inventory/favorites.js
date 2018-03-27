@@ -9,12 +9,12 @@ module.exports = function (Component) {
         
         constructor(props) {
             super(props);
+            //this.state.favorites = app.state.favorites
         }
         
         render() {
-            if (!this.props.favorites) return null
             const favorites = this.props.favorites
-            //console.log('render favorites:',this.props)
+            console.log('render favorites:',favorites)
             const thisModule = this
             const selectFavorite = function(e) {
                 e.preventDefault();
@@ -38,10 +38,12 @@ module.exports = function (Component) {
             }
             
             const favs=[]
-            for (var i=0; i<favorites.length; i++) {
-                var favorite = favorites[i].favorite
-                var material = favorites[i].material
-                favs.push(<Favorite favorite={favorites[i]} />)
+            if (favorites) {
+                for (var i=0; i<favorites.length; i++) {
+                    var favorite = favorites[i].favorite
+                    var material = favorites[i].material
+                    favs.push(<Favorite favorite={favorites[i]} />)
+                }
             }
             var itemName='itemx'
             if (this.props.selectedItem) {

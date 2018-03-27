@@ -53331,14 +53331,14 @@ module.exports = function (Component) {
             _classCallCheck(this, Favorites);
 
             return _possibleConstructorReturn(this, (Favorites.__proto__ || Object.getPrototypeOf(Favorites)).call(this, props));
+            //this.state.favorites = app.state.favorites
         }
 
         _createClass(Favorites, [{
             key: 'render',
             value: function render() {
-                if (!this.props.favorites) return null;
                 var favorites = this.props.favorites;
-                //console.log('render favorites:',this.props)
+                console.log('render favorites:', favorites);
                 var thisModule = this;
                 var selectFavorite = function selectFavorite(e) {
                     e.preventDefault();
@@ -53364,10 +53364,12 @@ module.exports = function (Component) {
                 };
 
                 var favs = [];
-                for (var i = 0; i < favorites.length; i++) {
-                    var favorite = favorites[i].favorite;
-                    var material = favorites[i].material;
-                    favs.push((0, _preact.h)(Favorite, { favorite: favorites[i] }));
+                if (favorites) {
+                    for (var i = 0; i < favorites.length; i++) {
+                        var favorite = favorites[i].favorite;
+                        var material = favorites[i].material;
+                        favs.push((0, _preact.h)(Favorite, { favorite: favorites[i] }));
+                    }
                 }
                 var itemName = 'itemx';
                 if (this.props.selectedItem) {
@@ -53585,36 +53587,212 @@ _preactJsxChai.options.functions = false;
 _chai2.default.use(_preactJsxChai2.default);
 
 global.sleep = function (ms) {
-    return new Promise(function (resolve) {
-        return setTimeout(resolve, ms);
-    });
+  return new Promise(function (resolve) {
+    return setTimeout(resolve, ms);
+  });
 };
 
+var favorites = [{
+  "favorite": {
+    "type": "_ref",
+    "name": "_ref_697979a6-9801-4b04-a899-e17f74bda530",
+    "parent_id": "p-e3d5fe69-65af-4499-9c37-8322f2b8ca24",
+    "material_id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
+    "id": "p-6c2722bd-e755-4b1e-8d9d-5b5137ab3e4f",
+    "created": {
+      "user": "tsakach",
+      "time": 1522104639
+    },
+    "updated": {
+      "user": "tsakach",
+      "time": 1522104639
+    }
+  },
+  "material": {
+    "name": "Rack 1.1",
+    "parent_id": "p-c9c05149-8b62-49da-aab7-3eb27ae12e0c",
+    "id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
+    "type": "freezer rack",
+    "label": null,
+    "created": {
+      "user": "ccmeyer@stanford.edu",
+      "time": 1496958878
+    },
+    "updated": {
+      "user": "conarymeyer@gmail.com",
+      "time": 1501869020
+    },
+    "parent_x": 1,
+    "parent_y": 1
+  }
+}, {
+  "favorite": {
+    "type": "_ref",
+    "name": "_ref_7b5d1e68-d7f5-4674-8953-281883eb8dc3",
+    "parent_id": "p-e3d5fe69-65af-4499-9c37-8322f2b8ca24",
+    "material_id": "p-8976478c-3532-4c51-820a-96b5a2411bfd",
+    "id": "p-a11e3625-a6f2-459f-a753-32e5b24aee1e",
+    "created": {
+      "user": "tsakach",
+      "time": 1522105695
+    },
+    "updated": {
+      "user": "tsakach",
+      "time": 1522105695
+    }
+  },
+  "material": {
+    "name": "KG_Test-Box",
+    "parent_id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
+    "id": "p-8976478c-3532-4c51-820a-96b5a2411bfd",
+    "type": "9 x 9 freezer box",
+    "label": null,
+    "created": {
+      "user": "email@gmail.com",
+      "time": 1498081465
+    },
+    "updated": {
+      "user": "ccmeyer@stanford.edu",
+      "time": 1498510296
+    },
+    "parent_x": 2,
+    "parent_y": 2
+  }
+}, {
+  "favorite": {
+    "type": "_ref",
+    "name": "_ref_aa359c33-bda9-49c1-864c-da383fd25419",
+    "parent_id": "p-e3d5fe69-65af-4499-9c37-8322f2b8ca24",
+    "material_id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
+    "id": "p-d0d234c0-eed6-4679-8892-206a2a478f79",
+    "created": {
+      "user": "tsakach",
+      "time": 1522105676
+    },
+    "updated": {
+      "user": "tsakach",
+      "time": 1522105676
+    }
+  },
+  "material": {
+    "name": "Rack 1.1",
+    "parent_id": "p-c9c05149-8b62-49da-aab7-3eb27ae12e0c",
+    "id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
+    "type": "freezer rack",
+    "label": null,
+    "created": {
+      "user": "ccmeyer@stanford.edu",
+      "time": 1496958878
+    },
+    "updated": {
+      "user": "conarymeyer@gmail.com",
+      "time": 1501869020
+    },
+    "parent_x": 1,
+    "parent_y": 1
+  }
+}, {
+  "favorite": {
+    "type": "_ref",
+    "name": "_ref_c415ff66-43a7-4681-b6d1-994e6a79912e",
+    "parent_id": "p-e3d5fe69-65af-4499-9c37-8322f2b8ca24",
+    "material_id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
+    "id": "p-8e2cb8db-ecde-4daa-998e-28a5754ae4d1",
+    "created": {
+      "user": "tsakach",
+      "time": 1522104919
+    },
+    "updated": {
+      "user": "tsakach",
+      "time": 1522104919
+    }
+  },
+  "material": {
+    "name": "Rack 1.1",
+    "parent_id": "p-c9c05149-8b62-49da-aab7-3eb27ae12e0c",
+    "id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
+    "type": "freezer rack",
+    "label": null,
+    "created": {
+      "user": "ccmeyer@stanford.edu",
+      "time": 1496958878
+    },
+    "updated": {
+      "user": "conarymeyer@gmail.com",
+      "time": 1501869020
+    },
+    "parent_x": 1,
+    "parent_y": 1
+  }
+}, {
+  "favorite": {
+    "type": "_ref",
+    "name": "_ref_e2c02f52-d668-4a81-bf02-ed61506bd6ff",
+    "parent_id": "p-e3d5fe69-65af-4499-9c37-8322f2b8ca24",
+    "material_id": "p-c9c05149-8b62-49da-aab7-3eb27ae12e0c",
+    "id": "p-4e407430-14f2-4647-89dc-74f12a290731",
+    "created": {
+      "user": "tsakach",
+      "time": 1522104975
+    },
+    "updated": {
+      "user": "tsakach",
+      "time": 1522104975
+    }
+  },
+  "material": {
+    "name": "Shelf 1 (Upper)",
+    "parent_id": "p-1686a689-0f54-4044-9735-3c4e99ab7f0d",
+    "id": "p-c9c05149-8b62-49da-aab7-3eb27ae12e0c",
+    "type": "shelf",
+    "label": null,
+    "created": {
+      "user": "ccmeyer@stanford.edu",
+      "time": 1496958833
+    },
+    "updated": {
+      "user": "endy@stanford.edu",
+      "time": 1501870460
+    },
+    "parent_x": 1,
+    "parent_y": 1,
+    "labelImagePath": "/home/bionet/bionet/user_static/labels/p-c9c05149-8b62-49da-aab7-3eb27ae12e0c.png"
+  }
+}];
+
 describe('Test', function () {
-    describe('render', function () {
-        it('should render', function () {
-            var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, null));
-            //console.log('*****html****'+wrapper.html())
-            //process.stdout.write(wrapper.html())           
-            (0, _chai.expect)(wrapper.find('.nav.panel')).to.have.length(1);
-        });
-        it('should render', function () {
-            var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, null));
-            (0, _chai.expect)(wrapper.find('.p.panel-heading')).to.have.length(1);
-        });
-        it('should render type', function () {
-            var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, { type: 'primary' }));
-            (0, _chai.expect)(wrapper.find('.a.panel-block')).to.have.length(1);
-        });
-        it('should support event', function () {
-            var test = false;
-            var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, { onClick: function onClick() {
-                    return test = true;
-                } }));
-            wrapper.simulate('click');
-            (0, _chai.expect)(test).to.equal(true);
-        });
+  describe('render', function () {
+    var favorites = {};
+    it('should render', function () {
+      var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, { favorites: favorites }));
+      //console.log('*****html****'+wrapper.html())
+      wrapper.debug();
+      //process.stdout.write(wrapper.html())           
+      (0, _chai.expect)(wrapper.find('nav')).to.have.length(1);
     });
+    it('should render', function () {
+      var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, null));
+      //expect(wrapper.find('.p.panel-heading')).to.have.length(1);
+      (0, _chai.expect)(wrapper.find('p')).to.have.length(1);
+    });
+    it('should render type', function () {
+      var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, null));
+      //wrapper.setProps({ 'favorites':favorites });
+      (0, _chai.expect)(wrapper.find('a')).to.have.length(1);
+    });
+    it('should render type', function () {
+      var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, { type: 'primary' }));
+      (0, _chai.expect)(wrapper.find('a.panel-block')).to.have.length(1);
+    });
+    it('should support event', function () {
+      var test = false;
+      var wrapper = (0, _enzyme.mount)((0, _preact.h)(Favorites, { onClick: function onClick() {
+          return test = true;
+        } }));
+      wrapper.simulate('click');
+      (0, _chai.expect)(test).to.equal(true);
+    });
+  });
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -53624,9 +53802,9 @@ describe('Test', function () {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _preact = require('preact');
 
@@ -53668,6 +53846,211 @@ var KEY = '__k';
 var REF = '__r';
 var TEXT_NODE = 3;
 
+var FunctionalComponent = 1;
+var ClassComponent = 2;
+var HostRoot = 3;
+var HostPortal = 4;
+var HostComponent = 5;
+var HostText = 6;
+var Fragment = 10;
+
+function nodeAndSiblingsArray(nodeWithSibling) {
+  var array = [];
+  var node = nodeWithSibling;
+  while (node != null) {
+    array.push(node);
+    node = node.sibling;
+  }
+  return array;
+}
+
+function flatten(arr) {
+  var result = [];
+  var stack = [{ i: 0, array: arr }];
+  while (stack.length) {
+    var n = stack.pop();
+    while (n.i < n.array.length) {
+      var el = n.array[n.i];
+      n.i += 1;
+      if (Array.isArray(el)) {
+        stack.push(n);
+        stack.push({ i: 0, array: el });
+        break;
+      }
+      result.push(el);
+    }
+  }
+  return result;
+}
+
+function toTree(vnode) {
+  if (!vnode) {
+    return null;
+  }
+  //const node = findCurrentFiberUsingSlowPath(vnode);
+  //const node = vnode._component
+  //console.log('***node:',node.toString())
+  var node = vnode;
+  console.log('***node.type:', node.nodeType, node.nodeName.toLowerCase());
+  switch (1) {
+    //switch (node.nodeType) {
+    case HostRoot:
+      // 3
+      return toTree(node.child);
+    case HostPortal:
+      // 4
+      return toTree(node.child);
+    case ClassComponent:
+      return {
+        nodeType: 'class',
+        type: node.type,
+        props: _extends({}, node.memoizedProps),
+        key: (0, _enzymeAdapterUtils.ensureKeyOrUndefined)(node.key),
+        ref: node.ref,
+        instance: node.stateNode,
+        rendered: childrenToTree(node.child)
+      };
+    case Fragment:
+      // 10
+      return childrenToTree(node.child);
+    case FunctionalComponent:
+      // 1
+      var instance = node._component;
+      var renderedNodes = flatten(nodeAndSiblingsArray(node.child).map(toTree));
+      var children = [].slice.call(node.childNodes);
+      if (renderedNodes.length === 0) {
+        renderedNodes = children.map(toTree);
+      }
+      if (instance) {
+        return {
+          nodeType: 'function',
+          type: node.nodeName.toLowerCase(),
+          props: node.__preactattr_,
+          key: instance[KEY],
+          ref: instance[REF],
+          instance: node,
+          rendered: renderedNodes
+        };
+      }
+    /*
+    if (node.nodeType === TEXT_NODE) {
+      return node.nodeValue
+    }
+    return {
+      nodeType: 'host',
+      type: node.nodeName.toLowerCase(),
+      props: node.__preactattr_,
+      instance: node,
+      rendered: renderedNodes,
+    }
+    */
+    /*
+    return {
+      nodeType: 'function',
+      type: node.type,
+      props: { ...node.memoizedProps },
+      key: ensureKeyOrUndefined(node.key),
+      ref: node.ref,
+      instance: null,
+      rendered: childrenToTree(node.child),
+    };
+    */
+    case HostComponent:
+      {
+        // 5
+        var _renderedNodes = flatten(nodeAndSiblingsArray(node.child).map(toTree));
+        var _children = [].slice.call(node.childNodes);
+        if (_renderedNodes.length === 0) {
+          _renderedNodes = _children.map(toTree);
+        }
+        /*
+        renderedNodes = [node.memoizedProps.children];
+        nodeType: 'class',
+        type: instance.constructor,
+        props: props,
+        key: instance[KEY],
+        ref: instance[REF],
+        instance: instance,
+        rendered: {
+        nodeType: 'host',
+        type: node.nodeName.toLowerCase(),
+        props: hostNodeProps,
+        instance: node,
+        children: children.map(instanceToTree)
+        }
+        return {
+        nodeType: 'host',
+        type: node.type,
+        props: { ...node.memoizedProps },
+        key: ensureKeyOrUndefined(node.key),
+        ref: node.ref,
+        instance: node.stateNode,
+        rendered: renderedNodes,
+        };
+        */
+        var _instance = node._component;
+        if (_instance) {
+          return {
+            nodeType: 'host',
+            type: _instance.constructor,
+            props: _instance.props,
+            key: _instance[KEY],
+            ref: _instance[REF],
+            instance: node.stateNode,
+            rendered: _renderedNodes
+          };
+        }
+        if (node.nodeType === TEXT_NODE) {
+          return node.nodeValue;
+        }
+        return {
+          nodeType: 'host',
+          type: node.nodeName.toLowerCase(),
+          props: node.__preactattr_,
+          instance: node,
+          rendered: _children.map(instanceToTree)
+        };
+      }
+    case HostText:
+      // 6
+      return node.__preactattr_;
+    default:
+      throw new Error('Enzyme Internal Error: unknown node with tag ' + node.tag);
+  }
+}
+function childrenToTree(node) {
+  if (!node) {
+    return null;
+  }
+  var children = nodeAndSiblingsArray(node);
+  if (children.length === 0) {
+    return null;
+  } else if (children.length === 1) {
+    return toTree(children[0]);
+  }
+  return flatten(children.map(toTree));
+}
+
+function _nodeToHostNode(_node) {
+  // NOTE(lmr): node could be a function component
+  // which wont have an instance prop, but we can get the
+  // host node associated with its return value at that point.
+  // Although this breaks down if the return value is an array,
+  // as is possible with React 16.
+  var node = _node;
+  while (node && !Array.isArray(node) && node.instance === null) {
+    node = node.rendered;
+  }
+  if (Array.isArray(node)) {
+    // TODO(lmr): throw warning regarding not being able to get a host node here
+    throw new Error('Trying to get host node of an array');
+  }
+  // if the SFC returned null effectively, there is no host node.
+  if (!node) {
+    return null;
+  }
+  return ReactDOM.findDOMNode(node.instance);
+}
 function instanceToTree(node) {
   if (!node) {
     return null;
@@ -53676,22 +54059,34 @@ function instanceToTree(node) {
   var hostNodeProps = node.__preactattr_;
   var children = [].slice.call(node.childNodes);
   // If _component exists this node is the root of a composite
+  //children: children.map(instanceToTree)
+  /*
+      return {
+        nodeType: 'class',
+        type: instance.constructor,
+        props: props,
+        key: instance[KEY],
+        ref: instance[REF],
+        instance: instance,
+        rendered: {
+          nodeType: 'host',
+          type: node.nodeName.toLowerCase(),
+          props: hostNodeProps,
+          instance: node,
+          children: flatten(children.map(toTree))
+        }
+      }
+  */
   if (instance) {
     var props = instance.props;
     return {
-      nodeType: 'class',
-      type: instance.constructor,
-      props: props,
+      nodeType: 'host',
+      type: node.nodeName.toLowerCase(),
+      props: hostNodeProps,
       key: instance[KEY],
       ref: instance[REF],
-      instance: instance,
-      rendered: {
-        nodeType: 'host',
-        type: node.nodeName.toLowerCase(),
-        props: hostNodeProps,
-        instance: node,
-        children: children.map(instanceToTree)
-      }
+      instance: node,
+      rendered: flatten(children.map(toTree))
     };
   }
 
@@ -53738,12 +54133,13 @@ var PreactAdapter = function (_EnzymeAdapter) {
               context: context
             });
             instance = _preact2.default.render(wrappedEl, domNode);
-            console.log('preact wrapper render', domNode);
             if (typeof callback === 'function') {
               callback();
             }
           } else {
-            instance.setChildProps(el.props, context, callback);
+            //instance.setChildProps(el.props, context, callback);
+            //todo: setprops is async on preact but sync on react
+            instance.setProps(el.props, context, callback);
           }
         },
         unmount: function unmount() {
@@ -53751,8 +54147,9 @@ var PreactAdapter = function (_EnzymeAdapter) {
           instance = null;
         },
         getNode: function getNode() {
-          var tree = instanceToTree(instance);
-          return instance ? tree.rendered : null;
+          //console.log('getNode:',instance.nodeName)
+          //return instance ? toTree(instance).rendered : null;
+          return instance ? instanceToTree(instance) : null;
         },
         simulateEvent: function simulateEvent(node, event, mock) {
           var mappedEvent = (0, _enzymeAdapterUtils.mapNativeEventNames)(event);
@@ -53793,6 +54190,8 @@ var PreactAdapter = function (_EnzymeAdapter) {
             return (0, _enzymeAdapterUtils.elementToTree)(cachedNode);
           }
           var output = renderer.getRenderOutput();
+          //            rendered: elementToTree(output),
+
           return {
             nodeType: renderer._instance ? 'class' : 'function',
             type: cachedNode.nodeName,
@@ -53800,7 +54199,7 @@ var PreactAdapter = function (_EnzymeAdapter) {
             key: cachedNode[KEY] || undefined,
             ref: cachedNode[REF],
             instance: renderer._instance,
-            rendered: (0, _enzymeAdapterUtils.elementToTree)(output)
+            rendered: Array.isArray(output) ? flatten(output).map(_enzymeAdapterUtils.elementToTree) : (0, _enzymeAdapterUtils.elementToTree)(output)
           };
         },
         simulateEvent: function simulateEvent(node, event) {
@@ -53872,8 +54271,14 @@ var PreactAdapter = function (_EnzymeAdapter) {
   }, {
     key: 'nodeToHostNode',
     value: function nodeToHostNode(node) {
-      return node.instance && node.instance.base || node.instance;
+      return _nodeToHostNode(node);
     }
+    /*
+    nodeToHostNode(node) {
+    return node.instance && node.instance.base || node.instance;
+    }
+    */
+
   }, {
     key: 'isValidElement',
     value: function isValidElement(element) {

@@ -266,7 +266,7 @@ module.exports = function (Component) {
                             <div onclick={this.closeFavoritesMenu.bind(this)} style={closeClickBackground}>
                                 <div class="dropdown-content"  style={"position:fixed;top:265px;left:7px;"}>
                                     <div class="dropdown-item"  style="margin:0;padding:0;">
-                                        <Favorites favorites={app.state.inventory.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)} selectedItem={app.state.inventory.selection}/>
+                                        <Favorites state="favorites" favorites={this.state.favorites} selectFunction={this.selectFavorite.bind(this)} addFunction={this.addFavorite.bind(this)} selectedItem={app.state.inventory.selection}/>
                                     </div>
                                 </div>
                             </div>

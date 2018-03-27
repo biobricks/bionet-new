@@ -1,0 +1,1 @@
+import inventoryTest from './inventory'

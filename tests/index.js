@@ -35,11 +35,11 @@ const favorites =
       "material_id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
       "id": "p-6c2722bd-e755-4b1e-8d9d-5b5137ab3e4f",
       "created": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522104639
       },
       "updated": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522104639
       }
     },
@@ -50,11 +50,11 @@ const favorites =
       "type": "freezer rack",
       "label": null,
       "created": {
-        "user": "ccmeyer",
+        "user": "user2",
         "time": 1496958878
       },
       "updated": {
-        "user": "conarymeyer",
+        "user": "user2",
         "time": 1501869020
       },
       "parent_x": 1,
@@ -69,11 +69,11 @@ const favorites =
       "material_id": "p-8976478c-3532-4c51-820a-96b5a2411bfd",
       "id": "p-a11e3625-a6f2-459f-a753-32e5b24aee1e",
       "created": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522105695
       },
       "updated": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522105695
       }
     },
@@ -84,11 +84,11 @@ const favorites =
       "type": "9 x 9 freezer box",
       "label": null,
       "created": {
-        "user": "email@gmail.com",
+        "user": "user2",
         "time": 1498081465
       },
       "updated": {
-        "user": "ccmeyer",
+        "user": "user2",
         "time": 1498510296
       },
       "parent_x": 2,
@@ -103,11 +103,11 @@ const favorites =
       "material_id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
       "id": "p-d0d234c0-eed6-4679-8892-206a2a478f79",
       "created": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522105676
       },
       "updated": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522105676
       }
     },
@@ -118,11 +118,11 @@ const favorites =
       "type": "freezer rack",
       "label": null,
       "created": {
-        "user": "ccmeyer@stanford.edu",
+        "user": "user2",
         "time": 1496958878
       },
       "updated": {
-        "user": "conarymeyer@gmail.com",
+        "user": "user2",
         "time": 1501869020
       },
       "parent_x": 1,
@@ -137,11 +137,11 @@ const favorites =
       "material_id": "p-154f1429-0dad-4a49-b88f-6199cd1f0c2b",
       "id": "p-8e2cb8db-ecde-4daa-998e-28a5754ae4d1",
       "created": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522104919
       },
       "updated": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522104919
       }
     },
@@ -152,11 +152,11 @@ const favorites =
       "type": "freezer rack",
       "label": null,
       "created": {
-        "user": "ccmeyer@stanford.edu",
+        "user": "user2",
         "time": 1496958878
       },
       "updated": {
-        "user": "conarymeyer@gmail.com",
+        "user": "user2",
         "time": 1501869020
       },
       "parent_x": 1,
@@ -171,11 +171,11 @@ const favorites =
       "material_id": "p-c9c05149-8b62-49da-aab7-3eb27ae12e0c",
       "id": "p-4e407430-14f2-4647-89dc-74f12a290731",
       "created": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522104975
       },
       "updated": {
-        "user": "tsakach",
+        "user": "user1",
         "time": 1522104975
       }
     },
@@ -186,11 +186,11 @@ const favorites =
       "type": "shelf",
       "label": null,
       "created": {
-        "user": "ccmeyer",
+        "user": "user2",
         "time": 1496958833
       },
       "updated": {
-        "user": "endy",
+        "user": "user2",
         "time": 1501870460
       },
       "parent_x": 1,

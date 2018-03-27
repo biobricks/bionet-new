@@ -10,21 +10,6 @@ module.exports = function (Component) {
             super(props);
             this.componentWillReceiveProps(props)
             this.selectType = this.selectType.bind(this)
-            
-            document.addEventListener('keyup', function(e) {
-                if(this.state.active && e.which===9) {
-                    this.setState({active:false})
-                }
-            }.bind(this))
-     
-            document.addEventListener('click', function (e) {
-                if (this.state.active || e.target.id===this.props.fid) {
-                    console.log('click, type:',e.target.id)
-                    e.preventDefault()
-                    this.setState({active:!this.state.active})
-                }
-            }.bind(this))
-            
         }
         
         componentWillReceiveProps(nextProps) {
@@ -32,6 +17,17 @@ module.exports = function (Component) {
                 type:nextProps.type,
                 types:nextProps.types
             })
+        }
+        
+        componentDidMount() {
+            document.addEventListener('click', function (e) {
+                console.log('click: ',this.state.active, e.target.id, this.props.fid)
+                if (this.state.active && e.target.id===this.props.fid) {
+                    console.log('click, type:',e.target.id)
+                    e.preventDefault()
+                    this.setState({active:!this.state.active})
+                }
+            }.bind(this))
         }
         
         selectType(e) {
@@ -63,11 +59,12 @@ module.exports = function (Component) {
                 typeElements.push(<DropdownItem type={type.name} title={type.title} active={selectedType === type.name} />)
             }
                                   
-            const active = (this.state.active) ? 'is-active' : ''
+            const active = (this.state.active) ? ' is-active' : ''
+            const classProps = (this.props.classProps) ? this.props.classProps+' ' : ''
             return(
-                <div class={"dropdown "+active+" tile "+this.props.classProps}>
-                  <div class={"dropdown-trigger"}  style="min-width:100%;width:100%">
-                    <button id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3"  style="min-width:100%;width:100%;justify-content:flex-start">
+                <div id={"wrapper"+this.props.fid} class={"dropdown tile"+active+classProps}>
+                  <div class="dropdown-trigger" style="min-width:100%;width:100%">
+                    <button type="button" id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3"  style="min-width:100%;width:100%;justify-content:flex-start">
                       <span id={this.props.fid}>{this.state.type}</span>
                       <span id={this.props.fid} class="icon is-small">
                         <a class="mdi mdi-menu-down" style="color:black;"></a>

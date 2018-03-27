@@ -14,7 +14,7 @@ module.exports = function (Component) {
         
         render() {
             const favorites = this.props.favorites
-            console.log('render favorites:',favorites)
+            //console.log('render favorites:',favorites)
             const thisModule = this
             const selectFavorite = function(e) {
                 e.preventDefault();
@@ -33,7 +33,7 @@ module.exports = function (Component) {
                         //<i class="fas fa-book"></i>
                         //</span>
                 return (
-                    <a id={fav.material.id} class="panel-block is-active" onclick={selectFavorite}>{fav.material.name}</a>
+                    <a id={fav.material.id} className="panel-block is-active" onclick={selectFavorite}>{fav.material.name}</a>
                 )
             }
             
@@ -54,9 +54,9 @@ module.exports = function (Component) {
                 }
             }
             return (
-                <nav class="panel">
-                    <p class="panel-heading">Favorites</p>
-                    <a class="panel-block is-active" onclick={this.props.addFunction}>{"Add "+itemName+" to favorites"}</a>
+                <nav className="panel">
+                    <p className="panel-heading">Favorites</p>
+                    <a className="panel-block is-active" onclick={this.props.addFunction}>{"Add "+itemName+" to favorites"}</a>
                     {favs}
                 </nav>
             )

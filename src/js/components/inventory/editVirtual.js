@@ -164,6 +164,11 @@ module.exports = function (Component) {
             this.setState({assignCells:true})
         }
         
+        componentDidMount() {
+          const nameInput = document.getElementById('name');
+          if (nameInput) nameInput.focus(true);
+        }
+        
         render() {
             console.log('EditVirtual render state:',this.state, this.props)
             const item = this.item

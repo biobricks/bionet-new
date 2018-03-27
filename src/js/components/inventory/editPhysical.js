@@ -174,6 +174,11 @@ module.exports = function (Component) {
             }
         }
         
+        componentDidMount() {
+          const nameInput = document.getElementById('name');
+          if (nameInput) nameInput.focus(true);
+        }
+        
         render() {
             //console.log('EditPhysical render state:',this.state, this.props)
             
@@ -207,7 +212,7 @@ module.exports = function (Component) {
                         <div class="field">
                             <label class="label">{props.label}</label>
                             <div class="control has-icons-left has-icons-right">
-                                <input class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
+                                <input id={props.fid} class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={props.value} readonly={props.readonly}/>
                             </div>
                         </div>
                     )

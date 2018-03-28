@@ -38,13 +38,13 @@ module.exports = function (Component) {
             e.preventDefault();
             //console.log('storageCell onClickCell', this.props)
             const id = (this.props.item) ? this.props.item.id : null
-            const navigate = this.props.mode !== 'edit'
+            const navigate = this.props.mode !== 'edit' && id
             app.actions.inventory.selectCell(id, this.props.parent_id, this.props.parent_x, this.props.parent_y, navigate, this.props.history)
         }
 
         onDoubleClickCell(e) {
             e.preventDefault();
-            console.log('onDoubleClickCell',e)
+            //console.log('onDoubleClickCell',e)
             if (this.props.item && this.props.item.id) app.actions.inventory.editItem(this.props.item)
             else app.actions.inventory.editItem({id:null, name:'new item', parent_id:this.props.parent_id, parent_x:this.props.parent_x, parent_y:this.props.parent_y})
         }
@@ -78,12 +78,8 @@ module.exports = function (Component) {
                 
                 const fontWeight = 300
                 const cellBorderWidth = 1
-                
-                const cellBackground = (this.state.occupied) ? '#ffffff' : '#a0a0a0'
-                var backgroundColor = (this.state.active) ? '#00ffff' : cellBackground
-                //if (this.state.active) console.log('rendering active cell:',this.props.label, backgroundColor)
-                
-                const colStyle = "border: "+cellBorderWidth+"px solid black; height:"+this.props.height+"px; max-height:"+this.props.height+"px;width:"+this.props.width+"px;margin:0px;padding:0;padding-right:1px;background-color:"+backgroundColor+";font-weight:"+fontWeight+";"+textAlign
+            
+                const colStyle = "border: "+cellBorderWidth+"px solid black; height:"+this.props.height+"px; max-height:"+this.props.height+"px;width:"+this.props.width+"px;margin:0px;padding:0;padding-right:0px;font-weight:"+fontWeight+";"+textAlign
                 
                 const cellName = (this.props.item) ? this.props.item.name : ''
                 const CellLabel = function(props) {
@@ -91,11 +87,16 @@ module.exports = function (Component) {
                     else if (width>20) return (<span style={cellLabelStyle}>{props.text}</span>)
                     return null
                 }.bind(this)
-                const classNameActive = (this.state.active) ? 'is-active-cell' : ''
-                const classNameOccupied = (this.state.occupied) ? 'is-occupied-cell' : ''
+                    
+                //if (this.state.active ) console.log('rendering cell:',this.props.label, this.state.active, this.state.occupied, this.props.state)
+
+                var className = 'is-empty-cell '
+                if (this.state.active) className = 'is-active-cell '
+                else if (this.state.occupied) className = 'is-occupied-cell '
+                    
                 return (
                     <div id={this.props.id} className="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} >
-                        <div className={classNameActive+' '+classNameOccupied} style={"width:100%;"+textOverflow}>
+                        <div className={className} style={"width:100%;"+textOverflow}>
                             <CellLabel text={this.props.label} name={cellName}/>
                         </div>
                     </div>

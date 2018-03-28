@@ -35,7 +35,7 @@ module.exports = function (Component) {
         
         componentDidMount() {
             if (this.props.mode==='edit') {
-                console.log('storage container componentDidMount:',this.props)
+                //console.log('storage container componentDidMount:',this.props)
                 app.actions.inventory.selectCell(null, this.props.dbid, this.props.px, this.props.py, false)
             }
         }
@@ -59,7 +59,7 @@ module.exports = function (Component) {
             const dy = height / yunits
             var px = px1
             var py = py1
-            //console.log('subdivideContainer', xunits, yunits, width, height, px, py)
+            //console.log('subdivideContainer', this.props)
             const thisModule = this
             const generateCols =function(row) {
                 const cols=[]
@@ -77,7 +77,8 @@ module.exports = function (Component) {
                     }
                     //if (isActive) console.log('generating active cell:',label)
                     var ref = (cell) => { if (cell) thisModule.cellRef[cell.props.label] = cell; }
-                    var storageCell = <StorageCell state={"cell_"+label+"_parent_"+thisModule.dbid} label={label} ref={ref} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.dbid} parent_x={x} parent_y={y} active={isActive} mode={mode}/>
+                    const state = "cell_"+label+"_parent_"+thisModule.dbid
+                    var storageCell = <StorageCell state={state} label={label} ref={ref} name={name} childType={childType} width={dx} height={dy} occupied={isOccupied} item={cell} parent_id={thisModule.dbid} parent_x={x} parent_y={y} active={isActive} mode={mode}/>
                     cols.push(storageCell)
                 }
                 return cols
@@ -133,7 +134,7 @@ module.exports = function (Component) {
 
         editContainerListener(occupied) {
             if (!occupied) return
-            console.log('editContainerListener ',occupied)
+            //console.log('editContainerListener ',occupied)
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1
             for (var cellLabel in this.cellRef) {
@@ -145,7 +146,7 @@ module.exports = function (Component) {
         }
 
         selectCellListener(cellLocation, edit) {
-            //console.log('selectCellListener:',edit, this.dbid, cellLocation, this.props)
+            //console.log('selectCellListener, storageContainer:',edit, this.dbid, cellLocation, this.props)
             if (!cellLocation) return
             const xunits = (this.xunits) ? this.xunits : 1
             const yunits = (this.yunits) ? this.yunits : 1

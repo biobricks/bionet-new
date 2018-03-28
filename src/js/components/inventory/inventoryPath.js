@@ -21,7 +21,7 @@ module.exports = function (Component) {
                 moveItem:app.state.inventory.moveItem
             }
             this.containerRef = {}
-            //app.state.selectCellListener = this.selectCellListener.bind(this)
+            app.state.selectCellListener = this.selectCellListener.bind(this)
             app.state.inventory.listener.moveItem = this.updateMoveItem.bind(this)
         }
         
@@ -32,17 +32,15 @@ module.exports = function (Component) {
         }
         
         selectCellListener(cellLocation) {
-            //console.log('selectCellListener:',cellLocation, this.props)
-            /*
+            //console.log('selectCellListener, inventoryPath',cellLocation, this.props)
             for (var containerId in this.containerRef) {
                 var container = this.containerRef[containerId]
                 if (containerId === cellLocation.parentId) {
-                    console.log('selectCellListener, container:',containerId,container.props.item.name)
+                    //console.log('selectCellListener, container:',containerId,container.props.item.name)
                     container.selectCellListener(cellLocation)
                     break
                 }
             }
-            */
             if (app.state.inventory.listener.editContainerListener) {
                 //console.log('invoking editContainerListener')
                 app.state.inventory.listener.editContainerListener(cellLocation, true)
@@ -96,7 +94,7 @@ module.exports = function (Component) {
             const name = item.name
             const promptComponent = (<PrintLabel/>)
             app.actions.prompt.display('Print label for '+name+'?', promptComponent, function(accept) {
-                console.log('print item:',accept)
+                //console.log('print item:',accept)
                 if (accept) {
                 }
             })
@@ -114,7 +112,7 @@ module.exports = function (Component) {
         }
         
         updateMoveItem(item) {
-            console.log('updateMoveItem:',item)
+            //console.log('updateMoveItem:',item)
             this.setState({moveItem:item})
         }
         
@@ -131,13 +129,6 @@ module.exports = function (Component) {
             const selectedItem = path[path.length-1]
             if (!selectedItem) return null
             const iconStyle = "font-size:20px;"
-            var moveId = null
-            var moveName = null
-            const moveItem = this.state.moveItem
-            if (moveItem) {
-                moveId = moveItem.id
-                moveName = moveItem.name
-            }
             const navArrowStyle = "font-size:20px;color:#808080;justify-content:center;margin-right:20px;cursor:pointer;"
             const navArrow = (path.length>1) ? (<span onclick={this.navigateParent.bind(this)} class={"mdi mdi-arrow-left"} style={navArrowStyle}/>) : null
             return (
@@ -149,7 +140,7 @@ module.exports = function (Component) {
                     </div>
                     <div class="tile">
                         <div class="navbar-end">
-                            <MoveItem name={moveName} moveId={moveId} />
+                            <MoveItem item={this.state.moveItem}/>
                             <a class="navbar-item mdi mdi-printer"  style={iconStyle} onclick={this.print.bind(this)}></a>
                         </div>
                     </div>

@@ -17,6 +17,7 @@ module.exports = function (Component) {
                 type:nextProps.type,
                 types:nextProps.types
             })
+            //console.log('types:',JSON.stringify(nextProps.types, null, 2))
         }
         
         componentDidMount() {
@@ -50,7 +51,7 @@ module.exports = function (Component) {
             const DropdownItem = function(props) {
                 const active = (props.active) ? 'is-active' : ''
                 return (
-                      <div id={props.type} class={"dropdown-item "+active} onclick={thisComponent.selectType}>{props.title}</div>
+                      <div id={props.type} className={"dropdown-item "+active} onclick={thisComponent.selectType}>{props.title}</div>
                 )
             }
             
@@ -64,17 +65,17 @@ module.exports = function (Component) {
             const active = (this.state.active) ? ' is-active' : ''
             const classProps = (this.props.classProps) ? this.props.classProps+' ' : ''
             return(
-                <div id={"wrapper"+this.props.fid} class={"dropdown tile "+active+classProps}>
-                  <div class="dropdown-trigger" style="min-width:100%;width:100%">
-                    <button type="button" id={this.props.fid} class="button" aria-haspopup="true" aria-controls="dropdown-menu3"  style="min-width:100%;width:100%;justify-content:flex-start">
+                <div id={"wrapper"+this.props.fid} className={"dropdown tile "+active+classProps}>
+                  <div className="dropdown-trigger" style="min-width:100%;width:100%">
+                    <button type="button" id={this.props.fid} className="button" aria-haspopup="true" aria-controls="dropdown-menu3"  style="min-width:100%;width:100%;justify-content:flex-start">
                       <span id={this.props.fid}>{this.state.type}</span>
-                      <span id={this.props.fid} class="icon is-small">
-                        <a class="mdi mdi-menu-down" style="color:black;"></a>
+                      <span id={this.props.fid} className="icon is-small">
+                        <a className="mdi mdi-menu-down" style="color:black;"></a>
                       </span>
                     </button>
                   </div>
-                  <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content" style="position:fixed;">
+                  <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                    <div className="dropdown-content" style="position:fixed;">
                         {typeElements}
                     </div>
                   </div>

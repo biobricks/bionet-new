@@ -1,29 +1,10 @@
-import { configure } from 'enzyme';
-var Adapter = require('../../preact-adapter.js')
-configure({ adapter: new Adapter() });
-
-import React from 'react';
-import ReactDOM from 'react-dom';
+import {h, render, createElement} from 'preact'
 import { mount } from 'enzyme';
-import { expect } from 'chai';
-
-import {h, render, createElement, Component as PreactComponent} from 'preact'
-import ashnazg from 'ashnazg'
-import validator from '../../../src/js/validator.js'
-const Component = validator(ashnazg.extend(PreactComponent))
-var Favorites = require('../../../src/js/components/inventory/favorites')(Component);
-
-import 'regenerator-runtime/runtime';
 import chai from 'chai';
+import { expect } from 'chai';
+import 'regenerator-runtime/runtime';
 import assertJsx, { options } from 'preact-jsx-chai';
 
-// when checking VDOM assertions, don't compare functions, just nodes and attributes:
-//options.functions = false;
-
-// activate the JSX assertion extension:
-chai.use(assertJsx);
-
-global.sleep = ms => new Promise( resolve => setTimeout(resolve, ms) );
 
 const favorites = 
 [
@@ -200,31 +181,32 @@ const favorites =
   }
 ]
 
-describe('Test', () => {
-    describe('Favorites', () => {
-        it('should render html', () => {
-            const wrapper = mount(<Favorites/>);
-            const html=wrapper.html()
-            console.log(html)
-            expect(html.length).to.be.above(0)
-        })
-        it('should render 1 nav.panel element', () => {
-            const wrapper = mount(<Favorites/>);
-            expect(wrapper.find('nav.panel')).to.have.length(1);
-        });
-        it('should render 1 p.panel-heading element', () => {
-            const wrapper = mount(<Favorites type="primary"/>);
-            expect(wrapper.find('p.panel-heading').length).to.equal(1);
-        });
-        it('should render 6 a.panel-block elements', () => {
-            const wrapper = mount(<Favorites favorites={favorites}/>);
-            expect(wrapper.find('a.panel-block')).to.have.length(6);
-        });
-        it('should support event onClick', () => {
-            let test = false;
-            const wrapper = mount(<Favorites onClick={() => test = true}/>);
-            wrapper.simulate('click');
-            expect(test).to.equal(true);
-        })
+describe('Favorites', () => {
+    var Favorites = require('../../../src/js/components/inventory/favorites')(global.Component);
+    it('should render html', () => {
+        const wrapper = mount(<Favorites/>);
+        const html=wrapper.html()
+        //console.log(html)
+        expect(html.length).to.be.above(0)
+    })
+    it('should render 1 nav.panel element', () => {
+        const wrapper = mount(<Favorites/>);
+        expect(wrapper.find('nav.panel')).to.have.length(1);
     });
+    it('should render 1 p.panel-heading element', () => {
+        const wrapper = mount(<Favorites type="primary"/>);
+        expect(wrapper.find('p.panel-heading').length).to.equal(1);
+    });
+    it('should render 6 a.panel-block elements', () => {
+        const wrapper = mount(<Favorites favorites={favorites}/>);
+        expect(wrapper.find('a.panel-block')).to.have.length(6);
+    });
+    /*
+    it('should support event onClick', () => {
+        let test = false;
+        const wrapper = mount(<Favorites onClick={() => test = true}/>);
+        wrapper.simulate('click');
+        expect(test).to.equal(true);
+    })
+    */
 });

@@ -1,1 +1,4 @@
-import favoritesTest from './favoritesTest.js'
+describe('Inventory component tests', () => {
+    require('./favoritesTest.js')
+    require('./itemTypesTest.js')
+});

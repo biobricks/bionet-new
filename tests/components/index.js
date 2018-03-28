@@ -1,1 +1,3 @@
-import inventoryTest from './inventory'
+describe('Component tests', () => {
+    require('./inventory')
+});

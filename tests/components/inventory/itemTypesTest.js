@@ -4,6 +4,7 @@ import chai from 'chai';
 import { expect } from 'chai';
 import 'regenerator-runtime/runtime';
 import assertJsx, { options } from 'preact-jsx-chai';
+const componentTestUtils = new ComponentTestUtils()
 
 
 const bioTypes = [
@@ -228,14 +229,11 @@ describe('ItemTypes', () => {
     
     it('should not render html', () => {
         const wrapper = mount(<ItemTypes/>);
-        const html=wrapper.html()
-        const length = (!html || html.length===0) ? 0 : html.length
-        expect(length).to.equal(0)
+        componentTestUtils.noHtml(wrapper)
     })
     it('should render html', () => {
         const wrapper = mount(<ItemTypes types={physicalTypes}/>);
-        const html=wrapper.html()
-        expect(html.length).to.be.above(0)
+        componentTestUtils.hasHtml(wrapper)
     })
     it('should render 1 div.dropdown element', () => {
         const wrapper = mount(<ItemTypes types={physicalTypes}/>);

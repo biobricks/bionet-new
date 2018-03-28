@@ -237,9 +237,14 @@ module.exports = function (Component) {
             }
                     
             const GenerateVirtualForm = function(props) {
+                var originator = null
+                if (item.created) {
+                    originator = (<div style="margin-bottom:10px;">Originator: {item.created.user}<br/></div>)
+                }
                 return (
                     <div>
                         <FormInputText fid='name' value={this.item.name} label="Name" />
+                        {originator}
                         <label class="label">Type</label>
                         <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
                         <FormInputText fid='instances' value={this.item.name} label="Instances" />

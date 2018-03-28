@@ -285,9 +285,8 @@ module.exports = function (Component) {
                 var storageContainer = null
                 var originator = null
                 if (item.created) {
-                    originator = (<div>Originator: {item.created.user}<br/></div>)
+                    originator = (<div style="margin-bottom:10px;">Originator: {item.created.user}<br/></div>)
                 }
-                    (item.created)
                 if (parent_item) {
                     storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={item.parent_x} py={item.parent_y} mode="edit"/>)
                 }

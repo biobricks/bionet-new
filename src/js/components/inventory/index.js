@@ -23,10 +23,10 @@ module.exports = function (Component) {
         
         componentWillReceiveProps(props) {
             const id = (props.match) ? props.match.params.id : null
-            const pid = (this.props.match) ? this.props.match.params.id : null
-            //console.log('inventory main id:', id, pid, this.props)
-            if (id !== pid || app.state.inventory.refresh) this.getInventoryPath(id)
+            //console.log('inventory main props:', id, this.state.id, this.props)
+            if (id !== this.state.id) this.getInventoryPath(id)
         }
+        
         componentWillMount() {
             this.setState({
                 types:app.actions.inventory.getInventoryTypes()
@@ -34,11 +34,15 @@ module.exports = function (Component) {
         }
         
         getInventoryPath(id) {
+            console.log('getInventoryPath, id:',id)
             const thisModule=this
             if (id) {
                 app.actions.inventory.getInventoryPath(id, function(inventoryPath) {
-                    //console.log('inventory main, path:',inventoryPath)
-                    thisModule.setState({inventoryPath:inventoryPath})
+                    //console.log('getInventoryPath2, id:',id)
+                    thisModule.setState({
+                        id:id,
+                        inventoryPath:inventoryPath
+                    })
                 })
             } else {
                 app.actions.inventory.getRootItem(function(err, rootId) {
@@ -46,11 +50,21 @@ module.exports = function (Component) {
                         console.log('getRootItem - no item found')
                     } else {
                         app.actions.inventory.getInventoryPath(rootId, function(inventoryPath){
-                            thisModule.setState({inventoryPath:inventoryPath})
+                            //console.log('getInventoryPath3, rootid:',id)
+                            thisModule.setState({
+                                id:rootId,
+                                inventoryPath:inventoryPath
+                            })
                         })
                     }
                 })
             }
+        }
+        
+        shouldComponentUpdate(nextProps, nextState) {
+            const idProp = (nextProps.match) ? nextProps.match.params.id : null
+            const idState = nextState.id
+            return idState === idProp
         }
         
         getRootInventoryPath(cb) {
@@ -79,6 +93,7 @@ module.exports = function (Component) {
             app.actions.inventory.getInventoryTypes()
             app.actions.inventory.getFavorites()
             const id = (this.props.match) ? this.props.match.params.id : null
+            console.log('logged in user')
             this.getInventoryPath(id)
         }
         
@@ -98,7 +113,7 @@ module.exports = function (Component) {
             return (
                 <div id="inventory_view" class="tile is-ancestor">
                     <ActionNavbar state="inventoryNav" inventoryPath={this.state.inventoryPath} menu={this.state.types}/>
-                    <InventoryPath state="inventoryPath" inventoryPath={this.state.inventoryPath}/>
+                    <InventoryPath state="inventoryPath" id={this.state.id} inventoryPath={this.state.inventoryPath}/>
                 </div>
             )
         }

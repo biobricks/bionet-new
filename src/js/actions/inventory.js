@@ -15,9 +15,9 @@ module.exports = {
     getSelectedItem: function() {
         if (!app.state.inventory.selection || !app.state.inventory.selection.id) return null
         const id = app.state.inventory.selection.id
-        //console.log('getSelectedItem action:',app.state.inventoryPath, app.state.inventory.selection)
-        if (app.state.inventoryPath && app.state.inventoryPath.length>0) {
-            const path = app.state.inventoryPath
+        //console.log('getSelectedItem action:',app.state.inventory.path, app.state.inventory.selection)
+        if (app.state.inventory.path && app.state.inventory.path.length>0) {
+            const path = app.state.inventory.path
             const pathItem = path[path.length-1]
             if (pathItem.id === id) return pathItem
             
@@ -32,15 +32,15 @@ module.exports = {
     },
     
     getLastPathItem: function() {
-        if (!app.state.inventoryPath || !app.state.inventoryPath.length>0) return null
-        const path = app.state.inventoryPath
+        if (!app.state.inventory.path || !app.state.inventory.path.length>0) return null
+        const path = app.state.inventory.path
         if (!path || path.length<1) return null
         const item = path[path.length-1]
         return item
     },
     
     getItemFromInventoryPath: function(id, pathIn) {
-        const path = (pathIn) ? pathIn : app.state.inventoryPath
+        const path = (pathIn) ? pathIn : app.state.inventory.path
         if (!path) return null
         //console.log('getItemFromInventoryPath:',path)
         for (var i=0; i<path.length; i++) {
@@ -150,6 +150,7 @@ module.exports = {
         }
         const locationPath = {}
         app.remote.getLocationPathChildren(id, function (err, locationPathAr) {
+            console.log('getInventoryPath, cb',locationPathAr)
             if (err) {
                 console.log('getInventoryPath error:', err)
                 if (cb) cb(null)
@@ -166,13 +167,19 @@ module.exports = {
                     location.yUnits = locationType.yUnits
                 }
                 locationPath[locationId] = location
-                const length = locationPathAr.length
-                const item = (length>0) ? locationPathAr[length-1] : null
-                app.state.inventoryPath = locationPathAr
-                if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
-                if (cb) cb(locationPathAr)
             }
+            const length = locationPathAr.length
+            const item = (length>0) ? locationPathAr[length-1] : null
+            app.state.inventory.path = locationPathAr
+            if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+            //console.log('getInventoryPath action:')
+            if (cb) cb(locationPathAr)
         }.bind(this ))
+    },
+    
+    getRootPathItem: function() {
+        if (!app.state.inventory.path || !app.state.inventory.path.length>0) return null
+        return app.state.inventory.path[0]
     },
     
     getInventoryTypes: function() {

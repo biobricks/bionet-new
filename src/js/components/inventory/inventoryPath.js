@@ -27,8 +27,10 @@ module.exports = function (Component) {
         
         componentWillReceiveProps(props) {
             if (!props.inventoryPath) return
-            //console.log('inventory path props:',props)
-            this.updateInventoryPath(props.inventoryPath)
+            //if (props.id !== this.state.id) {
+                console.log('inventory path props:',props)
+                this.updateInventoryPath(props.inventoryPath, props.id)
+            //}
         }
         
         selectCellListener(cellLocation) {
@@ -47,7 +49,7 @@ module.exports = function (Component) {
             }
         }
         
-        updateInventoryPath(newPath) {
+        updateInventoryPath(newPath, id) {
             if (!newPath) return
             //console.log('update inventory path:',newPath)
             
@@ -59,6 +61,7 @@ module.exports = function (Component) {
             
             const findInChildren = function(id, children) {
                 //console.log('findInChildren:',id,children)
+                if (!children) return 0
                 for (var i=0; i<children.length; i++) if (id===children[i].id) return i
                 return 0
             }
@@ -81,7 +84,10 @@ module.exports = function (Component) {
                 )
             }
             //this.focusCells(newPath)
-            this.setState({inventoryPath:inventoryPath})
+            this.setState({
+                id:id,
+                inventoryPath:inventoryPath
+            })
             return inventoryPath
         }
         

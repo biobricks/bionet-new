@@ -126,12 +126,10 @@ module.exports = function (Component) {
         }
         
         homeItem() {
-            console.log('home item:', app.state.inventoryPath)
-            if (!app.state.inventoryPath || !app.state.inventoryPath.length>0) return
-            const root = app.state.inventoryPath[0]
-            const id = root.id
-            if (id) {
-                app.actions.inventory.selectInventoryId(id)
+            //console.log('home item:', app.state.inventoryPath)
+            const root = app.actions.inventory.getRootPathItem()
+            if (root && root.id) {
+                app.actions.inventory.selectInventoryId(root.id)
             }
         }
         

@@ -468,30 +468,41 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         }
         
         index.inventoryTree.path(id, function(err,parentPath) {
-            const pathArray = []
-            var pc = 0
+            const pathItems = []
             const s = index.inventoryTree.parentStream(parentPath)
             s.on('data', function(item) {
-                pc++
-                pathArray.push(item.value)
-                getChildren(item, function(err,id,children) {
-                    if (err) {
-                        s.destroy()
-                        cb(err)
-                        return
-                    }
-                    for (var i=0; i<pathArray.length; i++) {
-                        if (pathArray[i].id===id) {
-                            pathArray[i].children = children
-                            break
-                        }
-                    }
-                    if (--pc <= 0) cb(null,pathArray)
-                })
+                pathItems.push(item)
             })
             s.on('error', function(err) {
                 if (cb) cb(err)
             })
+            s.on('end', function() {
+                var pc = 0
+                const pathArray = []
+                for (var i=0; i<pathItems.length; i++) {
+                    pathArray.push(pathItems[i].value)
+                    getChildren(pathItems[i], function(err,id,children) {
+                        if (err) {
+                            console.log('getInventoryChildren, err:',err)
+                            s.destroy()
+                            cb(err)
+                            return
+                        }
+                        //if (children && children.length>0) {
+                            for (var i=0; i<pathArray.length; i++) {
+                                if (pathArray[i].id===id) {
+                                    pathArray[i].children = children
+                                    break
+                                }
+                            }
+                        //}
+                        if (++pc >= pathItems.length) {
+                            console.log('getLocationPathChildren cb:',pathArray.length,pc)
+                            cb(null,pathArray)
+                        }
+                    })
+                }
+            });
         })
       },
 

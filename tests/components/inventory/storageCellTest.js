@@ -4,6 +4,7 @@ import chai from 'chai';
 import { expect } from 'chai';
 import 'regenerator-runtime/runtime';
 import assertJsx, { options } from 'preact-jsx-chai';
+const componentTestUtils = new ComponentTestUtils()
 
 describe('StorageCell', () => {
 
@@ -32,27 +33,36 @@ describe('StorageCell', () => {
     
     it('should render html', () => {
         const wrapper = mount(<StorageCell/>);
-        const html=wrapper.html()
-        expect(html.length).to.be.above(0)
+        componentTestUtils.hasHtml(wrapper)
     })
     it('should render 1 div.tooltip element', () => {
         const wrapper = mount(
-            <StorageCell state="cell_1" label="2,3" name="tb22" childType={null} width="100" height="110" occupied="false" item={itemData9x9Box} parent_id="p-parent"  parent_x="2" parent_y="3" active={false} mode={null}/>
+            <StorageCell state="cell_1" label="2,3" name="tb22" childType={null} width="100" height="110" occupied={false} item={itemData9x9Box} parent_id="p-parent"  parent_x="2" parent_y="3" active={false} mode={null}/>
         );
         expect(wrapper.find('div.tooltip').length).to.equal(1);
     });
-    it('should render inactive cell', () => {
+    it('should render empty unselected cell', () => {
         const wrapper = mount(
-            <StorageCell state="cell_1" label="2,3" name="tb22" childType={null} width="100" height="110" occupied="false" item={itemData9x9Box} parent_id="p-parent"  parent_x="2" parent_y="3" active={false} mode={null}/>
+            <StorageCell state="cell_1" label="2,3" name="tb22" childType={null} width="100" height="110" occupied={false} item={itemData9x9Box} parent_id="p-parent"  parent_x="2" parent_y="3" active={false} mode={null}/>
         );
-        //const html=wrapper.html()
-        //console.log(html)
+        expect(wrapper.find('div.is-empty-cell').length).to.equal(1);
         expect(wrapper.find('div.is-active-cell').length).to.equal(0);
+        expect(wrapper.find('div.is-occupied-cell').length).to.equal(0);
     });
-    it('should render active cell', () => {
+    it('should render selected cell', () => {
         const wrapper = mount(
-            <StorageCell state="cell_1" label="2,3" name="tb22" childType={null} width="100" height="110" occupied="false" item={itemData9x9Box} parent_id="p-parent"  parent_x="2" parent_y="3" active={true} mode={null}/>
+            <StorageCell state="cell_1" label="2,3" name="tb22" childType={null} width="100" height="110" occupied={false} item={itemData9x9Box} parent_id="p-parent"  parent_x="2" parent_y="3" active={true} mode={null}/>
         );
+        expect(wrapper.find('div.is-empty-cell').length).to.equal(0);
         expect(wrapper.find('div.is-active-cell').length).to.equal(1);
+        expect(wrapper.find('div.is-occupied-cell').length).to.equal(0);
+    });
+    it('should render occupied unselected cell', () => {
+        const wrapper = mount(
+            <StorageCell state="cell_1" label="2,3" name="tb22" childType={null} width="100" height="110" occupied={true} item={itemData9x9Box} parent_id="p-parent"  parent_x="2" parent_y="3" active={false} mode={null}/>
+        );
+        expect(wrapper.find('div.is-empty-cell').length).to.equal(0);
+        expect(wrapper.find('div.is-active-cell').length).to.equal(0);
+        expect(wrapper.find('div.is-occupied-cell').length).to.equal(1);
     });
 });

@@ -4,6 +4,7 @@ import chai from 'chai';
 import { expect } from 'chai';
 import 'regenerator-runtime/runtime';
 import assertJsx, { options } from 'preact-jsx-chai';
+const componentTestUtils = new ComponentTestUtils()
 
 
 const favorites = 
@@ -185,9 +186,7 @@ describe('Favorites', () => {
     var Favorites = require('../../../src/js/components/inventory/favorites')(global.Component);
     it('should render html', () => {
         const wrapper = mount(<Favorites/>);
-        const html=wrapper.html()
-        //console.log(html)
-        expect(html.length).to.be.above(0)
+        componentTestUtils.hasHtml(wrapper)
     })
     it('should render 1 nav.panel element', () => {
         const wrapper = mount(<Favorites/>);

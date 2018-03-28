@@ -20,14 +20,16 @@ module.exports = function (Component) {
         }
         
         componentDidMount() {
-            document.addEventListener('click', function (e) {
-                console.log('click: ',this.state.active, e.target.id, this.props.fid)
-                if (this.state.active && e.target.id===this.props.fid) {
-                    console.log('click, type:',e.target.id)
-                    e.preventDefault()
-                    this.setState({active:!this.state.active})
-                }
-            }.bind(this))
+            const clickId = this.props.fid
+            const clickElement = document.getElementById(clickId)
+            if (clickElement) {
+                clickElement.addEventListener('click', function (e) {
+                    if (e.target.id===clickId) {
+                        e.preventDefault()
+                        this.setState({active:!this.state.active})
+                    }
+                }.bind(this))
+            }
         }
         
         selectType(e) {

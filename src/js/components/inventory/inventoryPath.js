@@ -60,7 +60,7 @@ module.exports = function (Component) {
             const inventoryPath = []
             
             const findInChildren = function(id, children) {
-                console.log('findInChildren:',id,children)
+                //console.log('findInChildren:',id,children)
                 for (var i=0; i<children.length; i++) if (id===children[i].id) return i
                 return 0
             }

@@ -283,6 +283,11 @@ module.exports = function (Component) {
                 const containerSize = 250
                 const editTable = null
                 var storageContainer = null
+                var originator = null
+                if (item.created) {
+                    originator = (<div>Originator: {item.created.user}<br/></div>)
+                }
+                    (item.created)
                 if (parent_item) {
                     storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={item.parent_x} py={item.parent_y} mode="edit"/>)
                 }
@@ -292,6 +297,7 @@ module.exports = function (Component) {
                         <div class="columns">
                             <div class="column">
                                 <FormInputText fid='name' value={item.name} label="Name" />
+                                {originator}
                                 <label class="label">Type</label>
                                 <ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
                                 <div style="margin-top:10px;margin-bottom:30px;">

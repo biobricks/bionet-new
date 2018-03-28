@@ -4,6 +4,7 @@ import chai from 'chai';
 import { expect } from 'chai';
 import 'regenerator-runtime/runtime';
 import assertJsx, { options } from 'preact-jsx-chai';
+import ComponentTestUtils from '../componentTestUtils'
 const componentTestUtils = new ComponentTestUtils()
 
 describe('StorageCell', () => {

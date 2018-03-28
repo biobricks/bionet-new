@@ -91,10 +91,11 @@ module.exports = function (Component) {
                     else if (width>20) return (<span style={cellLabelStyle}>{props.text}</span>)
                     return null
                 }.bind(this)
-                                       
+                const classNameActive = (this.state.active) ? 'is-active-cell' : ''
+                const classNameOccupied = (this.state.occupied) ? 'is-occupied-cell' : ''
                 return (
-                    <div id={this.props.id} class="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} >
-                        <div style={"width:100%;"+textOverflow}>
+                    <div id={this.props.id} className="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} >
+                        <div className={classNameActive+' '+classNameOccupied} style={"width:100%;"+textOverflow}>
                             <CellLabel text={this.props.label} name={cellName}/>
                         </div>
                     </div>

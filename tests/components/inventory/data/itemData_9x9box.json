@@ -1,0 +1,70 @@
+{
+  "type": "9 x 9 freezer box",
+  "name": "tb22",
+  "parent_id": "p-e067a19d-cfed-4957-bda2-beaab63d77c3",
+  "parent_x": 2,
+  "parent_y": 3,
+  "description": "tb22 d",
+  "id": "p-de036cb8-9db2-49fe-af12-807a4886fdad",
+  "created": {
+    "user": "user1",
+    "time": 1522195979
+  },
+  "updated": {
+    "user": "user2",
+    "time": 1522195979
+  },
+  "children": [
+    {
+      "name": "tbv1a_0",
+      "type": "physical",
+      "virtual_id": "v-9918833e-31bd-416d-961c-10e60d593104",
+      "parent_id": "p-de036cb8-9db2-49fe-af12-807a4886fdad",
+      "parent_x": 2,
+      "parent_y": 3,
+      "id": "p-8092bb23-48f7-4cd9-8539-65cba6950308",
+      "created": {
+        "user": "user1",
+        "time": 1522196544
+      },
+      "updated": {
+        "user": "user2",
+        "time": 1522196544
+      }
+    },
+    {
+      "name": "tbv1a_1",
+      "type": "physical",
+      "virtual_id": "v-9918833e-31bd-416d-961c-10e60d593104",
+      "parent_id": "p-de036cb8-9db2-49fe-af12-807a4886fdad",
+      "parent_x": 2,
+      "parent_y": 3,
+      "id": "p-9a122974-52af-4162-b31f-5ffda9ca02f4",
+      "created": {
+        "user": "user1",
+        "time": 1522196515
+      },
+      "updated": {
+        "user": "user2",
+        "time": 1522196515
+      }
+    },
+    {
+      "name": "tbv1a_2",
+      "type": "physical",
+      "virtual_id": "v-9918833e-31bd-416d-961c-10e60d593104",
+      "parent_id": "p-de036cb8-9db2-49fe-af12-807a4886fdad",
+      "parent_x": 1,
+      "parent_y": 3,
+      "id": "p-dcb5e02f-3e11-4a34-b1ca-ebde4e540f7e",
+      "created": {
+        "user": "user1",
+        "time": 1522196521
+      },
+      "updated": {
+        "user": "user1",
+        "time": 1522196521
+      }
+    }
+  ]
+}

@@ -20,7 +20,7 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
+            //if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
             
             var item={}
@@ -32,6 +32,7 @@ module.exports = function (Component) {
             }
             
             this.item = item
+            //if (item) console.log('editphysical props:',JSON.stringify(item,null,2))
             this.id = item.id
             this.parent_item = (item.parent_id) ? app.actions.inventory.getItemFromInventoryPath(item.parent_id) : null
             

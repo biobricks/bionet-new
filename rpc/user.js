@@ -488,16 +488,15 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
                             cb(err)
                             return
                         }
-                        //if (children && children.length>0) {
+                        if (children && children.length>0) {
                             for (var i=0; i<pathArray.length; i++) {
                                 if (pathArray[i].id===id) {
                                     pathArray[i].children = children
                                     break
                                 }
                             }
-                        //}
+                        }
                         if (++pc >= pathItems.length) {
-                            console.log('getLocationPathChildren cb:',pathArray.length,pc)
                             cb(null,pathArray)
                         }
                     })

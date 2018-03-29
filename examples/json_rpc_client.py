@@ -40,7 +40,7 @@ def main():
     except ProtocolError as err:
         print("while calling .foo_user(): %s" % err.message)
 
-    res = bionet.login('myUsername', 'myPassword')
+    res = bionet.login('juul', 'foobarbaz')
     print "logged in and got: %s" % res 
 
     res = bionet.foo_user()

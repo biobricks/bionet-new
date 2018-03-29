@@ -21,7 +21,7 @@ module.exports = function(db, users, accounts) {
         db.ensureUserData(users, user, accounts, function(err, user) {
           if(err) return cb(err);            
           
-          // ToDo don't hard-code group
+          // TODO don't hard-code group
           console.log("ID:", id);
           cb(null, id, {user: user, group: 'user'});
         });

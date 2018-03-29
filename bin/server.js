@@ -252,7 +252,7 @@ function jsonRPCLogin(res, username, password, cb) {
 // create the JSON-RPC 2.0 middleware
 var jsonRPCMiddleware = jsonRPC.middleware(jsonRPCLogin, rpcMethods);
 
-// Create a JSON-RPC 2.0 route for use with the `routes` node module
+// create a JSON-RPC 2.0 route for use with the `routes` node module
 var jsonRPCRoute = jsonRPC.route(jsonRPCMiddleware, userCookieAuth, function(err, tokenData, cb) {
   if(err) return cb(err);
 
@@ -260,10 +260,23 @@ var jsonRPCRoute = jsonRPC.route(jsonRPCMiddleware, userCookieAuth, function(err
   // after the login token has been authenticated (if any)
   // and the callback is the actual RPC function called.
 
-  // TODO we need to actually fetch the user data from the db
-  //      like in ./libs/login.js
+  if(!tokenData) {
+    return cb();
+  }
+  
+  // TODO we just need to look up the user by username
+  //      but right now the only way we have to do that is by using .verify
+  users.verify('basic', creds, function(err, ok, id) {
+    if(err) return cb()
+    if(!ok) return cb();
+    
+    users.get(id, function(err, user) {
+      if(err) return cb();
 
-  cb(null, tokenData);
+      // TODO don't hard-code group
+      cb(null, {user: user, group: 'user'});
+    });
+  });
 })
 
 // mount the JSON-RPC 2.0 API at /rpc

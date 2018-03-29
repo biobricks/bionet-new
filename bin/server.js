@@ -16,6 +16,7 @@ var accounts = require('../libs/user_accounts.js');
 var Mailer = require('../libs/mailer.js');
 var labDeviceServer = require('../libs/lab_device_server.js');
 var labIcon = require('../libs/lab_icon.js');
+var jsonRPC = require('../libs/json_rpc.js');
 
 var Writable = require('stream').Writable;
 var Readable = require('stream').Readable;
@@ -106,15 +107,6 @@ router.addRoute('/user-static/*', function(req, res, match) {
 });
 
 
-router.addRoute('/static/*', function(req, res, match) {
-  return ecstatic(req, res);
-});
-
-router.addRoute('/*', function(req, res, match) {
-  var rs = fs.createReadStream(path.join(settings.staticPath, 'index.html'));
-  rs.pipe(res);
-});
-
 
 var server = http.createServer(function(req, res) {
   var m = router.match(req.url);
@@ -147,13 +139,23 @@ console.log("Starting http server on " + (settings.hostname || '*') + " port " +
 
 server.listen(settings.port, settings.hostname)
 
-//var WebSocketServer = require('ws').Server;
-//var ws = new WebSocketServer({server: server});
+
+var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer, p2p);
+
+// these functions only available to users in the 'user' group
+rpcMethods.user = require('../rpc/user.js')(settings, users, accounts, db, index, mailer, p2p);
+
+var login = require('../libs/login.js')(db, users, accounts);
+
+var rpcMethodsAuth = auth({
+  userDataAsFirstArgument: true, 
+  secret: settings.loginToken.secret,
+  login: login
+}, rpcMethods, 'group');
 
 // initialize the websocket server on top of the webserver
 var ws = websocket.createServer({server: server}, function(stream) {
-//      console.log("AAAAAAAAAAAAAA", stream.listenerCount('error'));
-//      console.log("  -- ", stream.listeners('error')[1]);
+
   stream.on('error', function(err) {
     console.error("WebSocket stream error:", err);
   });
@@ -161,18 +163,6 @@ var ws = websocket.createServer({server: server}, function(stream) {
   stream.on('end', function() {
 
   });
-
-  var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer, p2p);
-
-
-  // these functions only available to users in the 'user' group
-  rpcMethods.user = require('../rpc/user.js')(settings, users, accounts, db, index, mailer, p2p);
-
-  var rpcMethodsAuth = auth({
-    userDataAsFirstArgument: true, 
-    secret: settings.loginToken.secret,
-    login: require('../libs/login.js')(db, users, accounts)
-  }, rpcMethods, 'group');
 
   // initialize the rpc server on top of the websocket stream
   var rpcServer = rpc(rpcMethodsAuth, {
@@ -235,7 +225,49 @@ ws.on('error', function(err) {
 db.init();
 
 
-var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer);
+// initialize the JSON-RPC 2.0 API
+
+function jsonRPCLogin(res, username, password, cb) {
+  var loginData = {
+    username: username,
+    password, password
+  }
+  // first log in normally
+  login(loginData, function(err, userID, userData) {
+    if(err) return cb(err);
+
+    // then run the HTTP cookie authenticator's login function
+    // which ensures that the client saves the login token as a cookie
+    userCookieAuth.login(res, userID, userData, function(err, token) {
+      // a bug in old versions of rpc-multiauth
+      // sometimes means we get a string instead of an error object back
+      if(typeof err === 'string') err = new Error(err);
+      if(err) return cb(err);
+
+      cb(null, userData, token);
+    });
+  });
+}
+
+// create the JSON-RPC 2.0 middleware
+var jsonRPCMiddleware = jsonRPC.middleware(jsonRPCLogin, rpcMethods);
+
+// Create a JSON-RPC 2.0 route for use with the `routes` node module
+var jsonRPCRoute = jsonRPC.route(jsonRPCMiddleware, userCookieAuth, function(err, tokenData, cb) {
+  if(err) return cb(err);
+
+  // This function runs on each JSON-RPC call
+  // after the login token has been authenticated (if any)
+  // and the callback is the actual RPC function called.
+
+  // TODO we need to actually fetch the user data from the db
+  //      like in ./libs/login.js
+
+  cb(null, tokenData);
+})
+
+// mount the JSON-RPC 2.0 API at /rpc
+router.addRoute('/rpc', jsonRPCRoute);
 
 // initialize peer to peer connectivity
 var p2p;
@@ -253,6 +285,15 @@ if(!argv.nop2p) {
     }
   }
 }
+
+router.addRoute('/static/*', function(req, res, match) {
+  return ecstatic(req, res);
+});
+
+router.addRoute('/*', function(req, res, match) {
+  var rs = fs.createReadStream(path.join(settings.staticPath, 'index.html'));
+  rs.pipe(res);
+});
 
 // TODO this is just for debugging purposes
 index.rebuild();

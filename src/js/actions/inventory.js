@@ -149,9 +149,11 @@ module.exports = {
             return null
         }
         const locationPath = {}
+        
         const debugcb=function(msg,data) {
             console.log('getInventoryPath,'+msg,data)
         }
+        
         app.remote.getLocationPathChildren(id, function (err, locationPathAr) {
             console.log('getInventoryPath, cb',locationPathAr)
             if (err) {

@@ -50,7 +50,7 @@ module.exports = function (Component) {
                         console.log('getRootItem - no item found')
                     } else {
                         app.actions.inventory.getInventoryPath(rootId, function(inventoryPath){
-                            //console.log('getInventoryPath3, rootid:',id)
+                            console.log('getInventoryPath3, rootid:',rootId, thisModule.state, thisModule.props, inventoryPath)
                             thisModule.setState({
                                 id:rootId,
                                 inventoryPath:inventoryPath
@@ -64,6 +64,7 @@ module.exports = function (Component) {
         shouldComponentUpdate(nextProps, nextState) {
             const idProp = (nextProps.match) ? nextProps.match.params.id : null
             const idState = nextState.id
+            if (!idProp && idState) return true
             return idState === idProp
         }
         
@@ -86,7 +87,7 @@ module.exports = function (Component) {
         loggedInUser(loggedInUser) {
             //console.log('logged in inventory: user', loggedInUser, app.remote, this.initialized)
             
-            if (!loggedInUser || this.initialized) {
+            if (!loggedInUser) {
                 return
             }
             this.initialized=true
@@ -109,7 +110,7 @@ module.exports = function (Component) {
                     <div>You must be logged in to view this page.</div>
                 )
             }
-            //console.log('inventory main render:', this.props, this.state)
+            console.log('inventory main render:', this.props, this.state)
             return (
                 <div id="inventory_view" class="tile is-ancestor">
                     <ActionNavbar state="inventoryNav" inventoryPath={this.state.inventoryPath} menu={this.state.types}/>

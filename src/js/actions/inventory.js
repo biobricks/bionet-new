@@ -149,6 +149,9 @@ module.exports = {
             return null
         }
         const locationPath = {}
+        const debugcb=function(msg,data) {
+            console.log('getInventoryPath,'+msg,data)
+        }
         app.remote.getLocationPathChildren(id, function (err, locationPathAr) {
             console.log('getInventoryPath, cb',locationPathAr)
             if (err) {
@@ -174,7 +177,7 @@ module.exports = {
             if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
             //console.log('getInventoryPath action:')
             if (cb) cb(locationPathAr)
-        }.bind(this ))
+        }.bind(this),debugcb.bind(this))
     },
     
     getRootPathItem: function() {

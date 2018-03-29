@@ -477,7 +477,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
                 if (cb) cb(err)
             })
             s.on('end', function() {
-                if (cb2) cb2('getLocationPathChildren, pathItems:',pathItems)
+                if (cb2) cb2('getLocationPathChildren, path %s, pathItems:',parentPath, pathItems)
                 var pc = 0
                 const pathArray = []
                 for (var i=0; i<pathItems.length; i++) {

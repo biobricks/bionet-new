@@ -477,13 +477,13 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
                 if (cb) cb(err)
             })
             s.on('end', function() {
-                cb2('getLocationPathChildren, pathItems:',pathItems)
+                if (cb2) cb2('getLocationPathChildren, pathItems:',pathItems)
                 var pc = 0
                 const pathArray = []
                 for (var i=0; i<pathItems.length; i++) {
                     pathArray.push(pathItems[i].value)
                     getChildren(pathItems[i], function(err,id,children) {
-                        cb2('getLocationPathChildren getChildren:',id,children,(children)?children.length:0)
+                        if (cb2) cb2('getLocationPathChildren getChildren:',id,children,(children)?children.length:0)
                         if (err) {
                             console.log('getInventoryChildren, err:',err)
                             s.destroy()

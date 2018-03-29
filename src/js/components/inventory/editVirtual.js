@@ -22,8 +22,9 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            //const active = (nextProps.active) ? 'is-active' : ''
-            const active='is-active'
+            console.log('editVirtual, props:',nextProps)
+            const active = (nextProps.active) ? 'is-active' : ''
+            //const active='is-active'
             if (!nextProps.item) {
                 this.setState({
                     active:active
@@ -33,6 +34,7 @@ module.exports = function (Component) {
             
             var item = nextProps.item
             this.item = item
+            this.mode = (item.id) ? 'edit' : 'create'
             var titlePrefix = (item.id) ? 'Edit '+item.name : 'Create '+item.type
             this.id = item.id
             this.parent_item = app.actions.inventory.getItemFromInventoryPath(item.parent_id)
@@ -77,7 +79,7 @@ module.exports = function (Component) {
             this.close()
         }
         
-        createPhysicals(e, saveVirtualOnly) {
+        createPhysicals(e, savePhysicals) {
             e.preventDefault();
             
             const item = this.item
@@ -102,7 +104,8 @@ module.exports = function (Component) {
                 var fid = attributes[i].name.toLowerCase()
                 dbData[fid] = item[fid]
             }
-            const instances = (saveVirtualOnly) ? null : item.instances
+            const instances = (savePhysicals) ? null : item.instances
+            //const instances = (savePhysicals) ? item.instances : null
             
             const thisModule=this
             app.actions.inventory.saveVirtual(dbData, instances, parentId, wellData, function(err, id, physicals) {
@@ -111,12 +114,11 @@ module.exports = function (Component) {
                     app.actions.notify("Error saving "+dbData.name, 'error');
                     return
                 }
-                app.actions.notify(dbData.name+" saved", 'notice', 2000);
                 
                 if (thisModule.item) thisModule.item.id = id
                 //app.actions.prompt.setTitle('Assign locations for physicals')
-                
-                if (!saveVirtualOnly) {
+                console.log('saveVirtual result, ',savePhysicals, thisModule.mode)
+                if (!savePhysicals) {
                     console.log('physicals saved:',err,id,physicals)
                     if (physicals) {
                         thisModule.setState({
@@ -128,6 +130,12 @@ module.exports = function (Component) {
                             physicals:null,
                             assignCells:true
                         })
+                    }
+                } else {
+                    app.actions.notify(dbData.name+" saved", 'notice', 2000);
+                    if (thisModule.mode==='create') {
+                        console.log('saveVirtual, forcing refresh:',thisModule.parent_item.id)
+                        app.actions.inventory.forceRefresh(thisModule.parent_item.id)
                     }
                 }
                 

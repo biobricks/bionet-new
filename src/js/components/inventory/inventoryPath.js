@@ -15,7 +15,7 @@ module.exports = function (Component) {
             super(props);
             //console.log('view props:', JSON.stringify(props))
             this.state = {
-                inventoryPath:null,
+                inventoryPathRendered:null,
                 inventoryItem:{},
                 containerSize:150,
                 moveItem:app.state.inventory.moveItem
@@ -86,7 +86,7 @@ module.exports = function (Component) {
             //this.focusCells(newPath)
             this.setState({
                 id:id,
-                inventoryPath:inventoryPath
+                inventoryPathRendered:inventoryPath
             })
             return inventoryPath
         }
@@ -155,19 +155,15 @@ module.exports = function (Component) {
         }
         
         render() {
-            
-            //const path = this.state.inventoryPath
-            //const path = this.updateInventoryPath(this.props.inventoryPath)
-            const path=this.state.inventoryPath
-            //console.log('render path:',path)
+            const path=this.state.inventoryPathRendered
+            //console.log('render path:',path,this.props.inventoryPath)
             if (!path) return
-            
             const ipath = this.props.inventoryPath
             if (!ipath) return
             
             const currentItem = ipath[path.length-1]
             var childItems = (currentItem) ? currentItem.children : null
-            //console.log('inventory path render:',ipath,currentItem)
+            console.log('inventory path render:',path,currentItem)
             
             const selectedItemHeader = this.selectedItemHeader()
             

@@ -113,9 +113,9 @@ module.exports = function (Component) {
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
-                app.actions.inventory.selectInventoryId(id)
+                //console.log('savePhysical, forcing path refresh:',id)
+                app.actions.inventory.forceRefresh(id)
             })
-            
         }
         
         close () {

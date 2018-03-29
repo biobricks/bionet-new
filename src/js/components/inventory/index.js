@@ -24,7 +24,7 @@ module.exports = function (Component) {
         componentWillReceiveProps(props) {
             const id = (props.match) ? props.match.params.id : null
             //console.log('inventory main props:', id, this.state.id, this.props)
-            if (id !== this.state.id) this.getInventoryPath(id)
+            if (id !== this.state.id || app.state.inventory.forceRefresh) this.getInventoryPath(id)
         }
         
         componentWillMount() {
@@ -64,6 +64,11 @@ module.exports = function (Component) {
         shouldComponentUpdate(nextProps, nextState) {
             const idProp = (nextProps.match) ? nextProps.match.params.id : null
             const idState = nextState.id
+            if (app.state.inventory.forceRefresh) {
+                console.log('inventory main, forcing refresh:',nextProps)
+                app.state.inventory.forceRefresh=false
+                return true
+            }
             if (!idProp && idState) return true
             return idState === idProp
         }

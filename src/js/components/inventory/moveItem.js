@@ -32,7 +32,7 @@ module.exports = function (Component) {
                     }
                     else {
                         app.actions.notify(moveItem.name+" moved", 'notice', 2000);
-                        app.actions.inventory.selectInventoryId(container.id)
+                        app.actions.inventory.forceRefresh(container.id)
                     }
                 })
             }

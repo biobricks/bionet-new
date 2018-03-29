@@ -310,21 +310,25 @@ module.exports = {
         }
     },
     
+    forceRefresh: function(id) {
+        setTimeout(function(){
+            app.state.inventory.forceRefresh=true
+            this.selectInventoryId(id)
+        }.bind(this), 1);
+    },
+    
     saveVirtual: function(virtualObj, physicalInstances, container_id, well_id, cb) {
         const thisModule = this
         console.log('saveVirtual action:',virtualObj, physicalInstances, container_id, well_id)
+        if (physicalInstances) {
+            thisModule.generatePhysicals(virtualObj.id, virtualObj.name, physicalInstances, container_id, well_id, function(physicals) {
+                if (cb) cb(null,virtualObj.id, physicals)
+            })
+            return
+        }
         app.remote.saveVirtual(virtualObj, function (err, virtualId) {
-            if (err) {
-                console.log('saveVirtual error:',err)
-                return
-            }
-            if (container_id) {
-                thisModule.generatePhysicals(virtualId, virtualObj.name, physicalInstances, container_id, well_id, function(physicals) {
-                    if (cb) cb(err,virtualId, physicals)
-                })
-            } else {
-                if (cb) cb(err,virtualId)
-            }
+            if (err) console.log('saveVirtual error:',err)
+            if (cb) cb(err,virtualId)
         });
     },
 

@@ -127,7 +127,10 @@ module.exports = function (Component) {
         
         homeItem() {
             app.actions.inventory.getRootItem(function(err, rootId) {
-                console.log('home item: root:', rootId)
+                if (err) {
+                    app.actions.notify(err.message, 'error');
+                    return
+                }
                 if (rootId) {
                     app.actions.inventory.selectInventoryId(rootId)
                 }
@@ -159,7 +162,7 @@ module.exports = function (Component) {
                 if (accept) {
                     app.actions.inventory.delPhysical(id, function(err,id2) {
                         if (err) {
-                            app.actions.notify("Error deleting item", 'error');
+                            app.actions.notify(err.message, 'error');
                             return
                         }
                         app.actions.notify(name+" deleted", 'notice', 2000);
@@ -185,7 +188,10 @@ module.exports = function (Component) {
             const item = app.actions.inventory.getSelectedItem()
             if (!item) return
             app.actions.inventory.addFavorite(item, function(err) {
-                if (err) app.actions.notify("Error adding "+item.name+" to favorites", 'error', 8000);
+                if (err) {
+                    app.actions.notify(err.message, 'error');
+                    return
+                }
                 else {
                     app.actions.notify(item.name+" added to favorites", 'notice', 2000);
                     app.actions.inventory.getFavorites()

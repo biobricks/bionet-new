@@ -44,7 +44,6 @@ module.exports = function (Component) {
                             id:id,
                             inventoryPath:err
                         })
-                        //app.actions.notify(err.message, 'error');
                         return
                     }
                     thisModule.setState({
@@ -56,7 +55,6 @@ module.exports = function (Component) {
                 app.actions.inventory.getRootItem(function(err, rootId) {
                     if (err) {
                         console.log('getRootItem, error:',err)
-                        //app.actions.notify(err.message, 'error');
                         thisModule.setState({
                             id:rootId,
                             inventoryPath:err

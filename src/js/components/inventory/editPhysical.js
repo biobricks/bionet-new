@@ -109,7 +109,7 @@ module.exports = function (Component) {
             app.actions.prompt.reset()
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
-                    app.actions.notify("Error saving "+dbData.name, 'error');
+                    app.actions.notify(err.message, 'error');
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
@@ -154,7 +154,8 @@ module.exports = function (Component) {
             if (dbData.id) {
                 app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                     if (err) {
-                        app.actions.notify("Error saving "+dbData.name, 'error');
+                        app.actions.notify(err.message, 'error');
+                        return
                     }
                 })
             }

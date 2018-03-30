@@ -69,7 +69,8 @@ module.exports = function (Component) {
             console.log('onblur:',id, value, dbData)
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
-                    app.actions.notify("Error saving "+dbData.name, 'error');
+                    app.actions.notify(err.message, 'error');
+                    return
                 }
             })
         }
@@ -111,7 +112,7 @@ module.exports = function (Component) {
             app.actions.inventory.saveVirtual(dbData, instances, parentId, wellData, function(err, id, physicals) {
                 
                 if (err) {
-                    app.actions.notify("Error saving "+dbData.name, 'error');
+                    app.actions.notify(err.message, 'error');
                     return
                 }
                 
@@ -119,7 +120,7 @@ module.exports = function (Component) {
                 //app.actions.prompt.setTitle('Assign locations for physicals')
                 console.log('saveVirtual result, ',savePhysicals, thisModule.mode)
                 if (!savePhysicals) {
-                    console.log('physicals saved:',err,id,physicals)
+                    console.log('physicals saved:',id,physicals)
                     if (physicals) {
                         thisModule.setState({
                             physicals:physicals,

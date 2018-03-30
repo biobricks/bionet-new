@@ -177,8 +177,13 @@ module.exports = function (Component) {
         }
         
         componentDidMount() {
+            if (!window.editPhysical) window.editPhysical=1
+            else window.editPhysical++
+            /*
+            // todo: the focus method does not work in some browser configurations
           const nameInput = document.getElementById('name');
-          //if (nameInput && nameInput.focus) nameInput.focus(true);
+          if (nameInput && nameInput.focus) nameInput.focus(true);
+          */
         }
         
         render() {
@@ -266,15 +271,16 @@ module.exports = function (Component) {
                 const label = (item.parent_x && item.parent_y) ? item.parent_x+','+item.parent_y : ''
                 //console.log('tabular:',this.props.classProps)
                 const navArrowStyle = "font-size:20px;line-height:35px;color:#808080;display:flex;justify-content:center;margin-right:0px;"
+                const itemName = item.name
                 return (
-                    <form onsubmit={this.submit.bind(this)}>
-                        <div className="tile is-parent is-11 tabular-row"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
+                    <form onsubmit={this.submit.bind(this)} style="padding:0;">
+                        <div className="tabular-row tile is-parent is-11"  style={focusStyle+'padding:0;margin:0;box-sizing:border-box;'} onclick={this.onClickRow.bind(this)}>
                             <div className={"tile is-child "+this.props.classProps[0].class} style="justify-content:center;line-height:30px;">
                                 <a onclick={this.navigateItem.bind(this)} class={"mdi mdi-arrow-right"} style={navArrowStyle}></a>
                             </div>
-                            <FormInputText fid='name' value={item.name} label="Name" classProps={this.props.classProps[1].class}/>
+                            <FormInputText fid={itemName+'_name'} value={item.name} label="Name" classProps={this.props.classProps[1].class}/>
                             <ItemTypes type={item.type} types={types} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />
-                            <FormInputText fid='loc' value={label} label="Loc"  classProps={this.props.classProps[3].class}/>
+                            <FormInputText fid={itemName+'_loc'} value={label} label="Loc"  classProps={this.props.classProps[3].class}/>
                             {document}
                             {attributes}
                         </div>

@@ -156,8 +156,13 @@ module.exports = function (Component) {
         
         render() {
             const path=this.state.inventoryPathRendered
-            //console.log('render path:',path,this.props.inventoryPath)
+            console.log('render path:',path,this.props.inventoryPath)
             if (!path) return
+            if (typeof this.props.inventoryPath === 'object' && this.props.inventoryPath.constructor.name==='Error') {
+                return (
+                    <h6 style="margin-top:15px;">{this.props.inventoryPath.message}</h6>
+                )
+            }
             const ipath = this.props.inventoryPath
             if (!ipath) return
             

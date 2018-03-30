@@ -3,4 +3,6 @@ describe('Inventory component tests', () => {
     require('./itemTypesTest.js')
     require('./storageCellTest.js')
     require('./moveItemTest.js')
+    require('./editTableTest.js')
 });
+

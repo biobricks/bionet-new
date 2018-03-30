@@ -126,11 +126,12 @@ module.exports = function (Component) {
         }
         
         homeItem() {
-            //console.log('home item:', app.state.inventoryPath)
-            const root = app.actions.inventory.getRootPathItem()
-            if (root && root.id) {
-                app.actions.inventory.selectInventoryId(root.id)
-            }
+            app.actions.inventory.getRootItem(function(err, rootId) {
+                console.log('home item: root:', rootId)
+                if (rootId) {
+                    app.actions.inventory.selectInventoryId(rootId)
+                }
+            })
         }
         
         editItem() {

@@ -177,7 +177,7 @@ module.exports = function (Component) {
         
         componentDidMount() {
           const nameInput = document.getElementById('name');
-          //if (nameInput && nameInput.focus()) nameInput.focus(true);
+          //if (nameInput && nameInput.focus) nameInput.focus(true);
         }
         
         render() {

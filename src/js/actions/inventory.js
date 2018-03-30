@@ -145,7 +145,7 @@ module.exports = {
         //console.trace()
         app.state.inventory.refresh=false
         if (!id) {
-            if (cb) cb(null)
+            if (cb) cb(new Error('Key not specified for inventory path'))
             return null
         }
         const locationPath = {}
@@ -157,9 +157,9 @@ module.exports = {
         app.remote.getLocationPathChildren(id, function (err, locationPathAr) {
             console.log('getInventoryPath, cb',locationPathAr)
             if (err) {
-                console.log('getInventoryPath error:', err)
-                if (cb) cb(null)
-                return null
+                console.log('getInventoryPath error:', err.message)
+                if (cb) cb(err, null)
+                return
             }
             locationPathAr.reverse()
             
@@ -178,7 +178,7 @@ module.exports = {
             app.state.inventory.path = locationPathAr
             if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
             //console.log('getInventoryPath action:')
-            if (cb) cb(locationPathAr)
+            if (cb) cb(null, locationPathAr)
         }.bind(this),debugcb.bind(this))
     },
     

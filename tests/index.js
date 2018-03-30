@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import 'regenerator-runtime/runtime';
 import chai from 'chai';
 import assertJsx, { options } from 'preact-jsx-chai';
+import sinon from 'sinon';
 
 var Adapter = require('./preact-adapter.js')
 configure({ adapter: new Adapter() });

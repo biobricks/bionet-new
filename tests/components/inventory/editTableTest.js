@@ -14,7 +14,7 @@ describe('EditTable', () => {
     const EditTable = require('../../../src/js/components/inventory/editTable')(Component);
     const EditPhysical = require('../../../src/js/components/inventory/editPhysical')(Component);
     const itemData_5x4rack = require('./data/itemData_5x4rack.json')
-    
+    const itemAttributes =  [{"name":"Description","value":"text"}]
     const inventoryUtils = new InventoryUtils()
     inventoryUtils.initialize()
     
@@ -60,15 +60,17 @@ describe('EditTable', () => {
         expect(EditTable.prototype.componentWillMount.callCount,'window.editPhysical:'+window.editPhysical).to.equal(1);
     });
     it('should contain input element with id tb31_a_name and is able to set focus', () => {
-        const wrapper = mount(<EditTable item={itemData_5x4rack} items={itemData_5x4rack.children}/>);
+        const wrapper = mount(<EditTable item={itemData_5x4rack} items={itemData_5x4rack.children} attributes={itemAttributes}/>);
         const html = wrapper.html()
         const testContainer = document.getElementById('test_container');
         testContainer.innerHTML = html
+        testContainer.style = "display:block;"
         const nameInput = document.getElementById('tb31_a_name');
         const result = (nameInput && nameInput.focus) ? 1 : -1
         expect(result,'input element not found focus input item:'+nameInput+' window.editPhysical:'+window.editPhysical).to.equal(1);
         nameInput.focus()
         const isFocused = (nameInput === document.activeElement) ? 1 : -1
         expect(isFocused,' input element is not focused'+window.editPhysical).to.equal(1);
+        testContainer.style = "display:none;"
     });
 });

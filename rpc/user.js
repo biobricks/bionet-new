@@ -145,9 +145,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       })
       s.pipe(d);
 
-//      d.on('data', function(data) {
-//      });
-
       d.on('end', cb);
       d.on('error', cb);
     },

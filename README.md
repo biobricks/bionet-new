@@ -93,6 +93,7 @@ Then edit each of the settings.js files to suit your needs.
 # Generate key pair for labdevice (printer/scanner) server
 
 ```
+mkdir -p labdevice/client_keys
 cd labdevice/
 ssh-keygen -t rsa -f hostkey -N ""
 cd ../

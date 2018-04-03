@@ -287,7 +287,6 @@ var p2p;
 if(!argv.nop2p) {
   p2p = require('../libs/p2p.js')(rpcMethods, settings);
 
-  // TODO move this as an option to settings.js
   if(settings.staticPeers) {
     var i;
     for(i=0; i < settings.staticPeers.length; i++) {

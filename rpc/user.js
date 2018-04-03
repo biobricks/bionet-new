@@ -446,7 +446,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       }
       getParentLocation(id);
     },
-    getLocationPathChildren: function (curUser, id, cb) {
+    getLocationPathChildren: function (curUser, id, cb, cb2) {
         if (id[0] !== 'p') {
             cb(new Error("getLocationPathChildren only works for physicals"));
         }
@@ -465,6 +465,14 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         }
         
         index.inventoryTree.path(id, function(err,parentPath) {
+            if (err) {
+                if (cb) cb(err)
+                return
+            }
+            if (!parentPath) {
+                if (cb) cb(new Error('Null parent path returned for '+id))
+                return
+            }
             const pathItems = []
             const s = index.inventoryTree.parentStream(parentPath)
             s.on('data', function(item) {
@@ -474,13 +482,15 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
                 if (cb) cb(err)
             })
             s.on('end', function() {
+                if (cb2) cb2('getLocationPathChildren, path %s, pathItems:',parentPath, pathItems)
                 var pc = 0
                 const pathArray = []
                 for (var i=0; i<pathItems.length; i++) {
                     pathArray.push(pathItems[i].value)
                     getChildren(pathItems[i], function(err,id,children) {
+                        if (cb2) cb2('getLocationPathChildren getChildren:',id,children,(children)?children.length:0)
                         if (err) {
-                            console.log('getInventoryChildren, err:',err)
+                            console.log('getLocationPathChildren, getChildren err:',err)
                             s.destroy()
                             cb(err)
                             return

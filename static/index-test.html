@@ -1,0 +1,19 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bionet component test suite</title>
+    <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+    <link href="/static/build/index.css" type="text/css" rel="stylesheet" media="screen" />
+    <script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.1.2/chai.js"></script>
+    <script>mocha.setup('bdd')</script>
+    <script src="/static/build/index.test.js"></script>
+</head>
+<body>
+<div id="mocha"></div>
+    <script>
+        mocha.run();
+    </script>
+<div id="test_container" style="display:none;"></div>
+</body>
+</html>

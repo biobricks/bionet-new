@@ -28,7 +28,8 @@ module.exports = function (Component) {
                 //return
                 app.actions.inventory.saveToInventory(moveItem, null, null, function(err, id) {
                     if (err) {
-                        app.actions.notify("Error moving "+moveItem.name, 'error');
+                        app.actions.notify(err.message, 'error');
+                        return
                     }
                     else {
                         app.actions.notify(moveItem.name+" moved", 'notice', 2000);

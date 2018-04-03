@@ -126,11 +126,15 @@ module.exports = function (Component) {
         }
         
         homeItem() {
-            //console.log('home item:', app.state.inventoryPath)
-            const root = app.actions.inventory.getRootPathItem()
-            if (root && root.id) {
-                app.actions.inventory.selectInventoryId(root.id)
-            }
+            app.actions.inventory.getRootItem(function(err, rootId) {
+                if (err) {
+                    app.actions.notify(err.message, 'error');
+                    return
+                }
+                if (rootId) {
+                    app.actions.inventory.selectInventoryId(rootId)
+                }
+            })
         }
         
         editItem() {
@@ -158,7 +162,7 @@ module.exports = function (Component) {
                 if (accept) {
                     app.actions.inventory.delPhysical(id, function(err,id2) {
                         if (err) {
-                            app.actions.notify("Error deleting item", 'error');
+                            app.actions.notify(err.message, 'error');
                             return
                         }
                         app.actions.notify(name+" deleted", 'notice', 2000);
@@ -184,7 +188,10 @@ module.exports = function (Component) {
             const item = app.actions.inventory.getSelectedItem()
             if (!item) return
             app.actions.inventory.addFavorite(item, function(err) {
-                if (err) app.actions.notify("Error adding "+item.name+" to favorites", 'error', 8000);
+                if (err) {
+                    app.actions.notify(err.message, 'error');
+                    return
+                }
                 else {
                     app.actions.notify(item.name+" added to favorites", 'notice', 2000);
                     app.actions.inventory.getFavorites()

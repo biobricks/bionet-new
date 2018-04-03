@@ -15,8 +15,9 @@ and in this js remap types to same types are used in bulma $colors
 module.exports = function(msg, type, timeout) {
   if(!msg) return;
   if(typeof timeout !== 'number') timeout = 5000;
+  const messageText = (typeof msg ==='string') ? msg.replace(/\r?\n/g, '<br/>') :  "Notify error: message typeof \""+ typeof msg +"\" not supported"
   new Noty({
-    text: msg.replace(/\r?\n/g, '<br/>'),
+    text: messageText,
     theme: 'mint',
     type: type || 'warning', 
     timeout: timeout

@@ -132,7 +132,7 @@ if (require.main === module) {
       
     buildtest: function(opts) {
         opts = opts || opts;
-        opts.output = path.join(__dirname, '..', 'tests', 'index.test.js');
+        opts.output = path.join(__dirname, '..', 'static', 'build', 'index.test.js');
         opts.source = path.join(__dirname, '..', 'tests', 'index.js');
         opts.test = true;
         opts.alias = {

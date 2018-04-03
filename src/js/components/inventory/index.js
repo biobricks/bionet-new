@@ -37,8 +37,15 @@ module.exports = function (Component) {
             console.log('getInventoryPath, id:',id)
             const thisModule=this
             if (id) {
-                app.actions.inventory.getInventoryPath(id, function(inventoryPath) {
+                app.actions.inventory.getInventoryPath(id, function(err, inventoryPath) {
                     //console.log('getInventoryPath2, id:',id)
+                    if (err) {
+                        thisModule.setState({
+                            id:id,
+                            inventoryPath:err
+                        })
+                        return
+                    }
                     thisModule.setState({
                         id:id,
                         inventoryPath:inventoryPath
@@ -47,9 +54,22 @@ module.exports = function (Component) {
             } else {
                 app.actions.inventory.getRootItem(function(err, rootId) {
                     if (err) {
-                        console.log('getRootItem - no item found')
+                        console.log('getRootItem, error:',err)
+                        thisModule.setState({
+                            id:rootId,
+                            inventoryPath:err
+                        })
+                        return
                     } else {
-                        app.actions.inventory.getInventoryPath(rootId, function(inventoryPath){
+                        app.actions.inventory.getInventoryPath(rootId, function(err, inventoryPath){
+                            if (err) {
+                                app.actions.notify(err.message, 'error');
+                                thisModule.setState({
+                                    id:rootId,
+                                    inventoryPath:err
+                                })
+                                return
+                            }
                             console.log('getInventoryPath3, rootid:',rootId, thisModule.state, thisModule.props, inventoryPath)
                             thisModule.setState({
                                 id:rootId,
@@ -71,22 +91,6 @@ module.exports = function (Component) {
             }
             if (!idProp && idState) return true
             return idState === idProp
-        }
-        
-        getRootInventoryPath(cb) {
-            if (!app.remote) {
-                return
-            }
-            app.actions.inventory.getRootItem(function(err, rootId) {
-                if (err) {
-                    console.log('getRootItem - no item found')
-                    if (cb) cb(null)
-                } else {
-                    app.actions.inventory.getInventoryPath(rootId, function(inventoryPath){
-                        if (cb) cb(inventoryPath)
-                    })
-                }
-            })
         }
         
         loggedInUser(loggedInUser) {
@@ -111,6 +115,7 @@ module.exports = function (Component) {
         
         render() {
             if (!app.state.global.user) {
+                // todo: this message could be displayed for reasons other than not having a logged in user
                 return (
                     <div>You must be logged in to view this page.</div>
                 )

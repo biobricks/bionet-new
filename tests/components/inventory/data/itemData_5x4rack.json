@@ -1,0 +1,105 @@
+{
+  "name": "Rack 1M.3",
+  "parent_id": "p-c9c05149-8b62-49da-aab7-3eb27ae12e0c",
+  "id": "p-139e533e-2286-477a-99cf-21bbe85cc76e",
+  "type": "freezer rack",
+  "label": null,
+  "created": {
+    "user": "ccmeyer@stanford.edu",
+    "time": 1496958885
+  },
+  "updated": {
+    "user": "ccmeyer@stanford.edu",
+    "time": 1496959049
+  },
+  "parent_x": 3,
+  "parent_y": 1,
+  "children": [
+    {
+      "type": "9 x 9 freezer box",
+      "name": "tb31_a",
+      "parent_id": "p-139e533e-2286-477a-99cf-21bbe85cc76e",
+      "parent_x": 3,
+      "parent_y": 1,
+      "id": "p-5e58e2e4-89bb-4939-896a-81f09da5efd6",
+      "created": {
+        "user": "tsakach",
+        "time": 1522301659
+      },
+      "updated": {
+        "user": "tsakach",
+        "time": 1522301659
+      }
+    },
+    {
+      "type": "9 x 9 freezer box",
+      "name": "tb45",
+      "parent_id": "p-139e533e-2286-477a-99cf-21bbe85cc76e",
+      "parent_x": 2,
+      "parent_y": 1,
+      "id": "p-5b1a0ccb-c640-413c-bba2-1dea3bfa3c00",
+      "created": {
+        "user": "tsakach",
+        "time": 1522300796
+      },
+      "updated": {
+        "user": "tsakach",
+        "time": 1522301609
+      },
+      "children": [
+        {
+          "name": "tb45_v3_0",
+          "type": "physical",
+          "parent_id": "p-5b1a0ccb-c640-413c-bba2-1dea3bfa3c00",
+          "parent_x": 1,
+          "parent_y": 1,
+          "id": "p-eba42443-5426-4bea-a106-d8e13fc564cb",
+          "created": {
+            "user": "tsakach",
+            "time": 1522300809
+          },
+          "updated": {
+            "user": "tsakach",
+            "time": 1522300809
+          }
+        },
+        {
+          "name": "tb45_v3_1",
+          "type": "physical",
+          "parent_id": "p-5b1a0ccb-c640-413c-bba2-1dea3bfa3c00",
+          "parent_x": 2,
+          "parent_y": 1,
+          "id": "p-ab3355ad-8b5b-4459-a8e5-cdfac92f9352",
+          "created": {
+            "user": "tsakach",
+            "time": 1522300809
+          },
+          "updated": {
+            "user": "tsakach",
+            "time": 1522300809
+          }
+        },
+        {
+          "name": "tb45_v3_2",
+          "type": "physical",
+          "parent_id": "p-5b1a0ccb-c640-413c-bba2-1dea3bfa3c00",
+          "parent_x": 3,
+          "parent_y": 1,
+          "id": "p-39e32fd7-b0d5-4e64-b0b0-3b56ca868280",
+          "created": {
+            "user": "tsakach",
+            "time": 1522300809
+          },
+          "updated": {
+            "user": "tsakach",
+            "time": 1522300809
+          }
+        }
+      ],
+      "xUnits": 9,
+      "yUnits": 9
+    }
+  ],
+  "xUnits": 5,
+  "yUnits": 4
+}

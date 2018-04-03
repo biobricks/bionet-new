@@ -1,3 +1,3 @@
-describe('Component tests', () => {
+describe('Bionet component test suite', () => {
     require('./inventory')
 });

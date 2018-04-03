@@ -109,7 +109,7 @@ module.exports = function (Component) {
             app.actions.prompt.reset()
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
-                    app.actions.notify("Error saving "+dbData.name, 'error');
+                    app.actions.notify(err.message, 'error');
                     return
                 }
                 app.actions.notify(dbData.name+" saved", 'notice', 2000);
@@ -154,7 +154,8 @@ module.exports = function (Component) {
             if (dbData.id) {
                 app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                     if (err) {
-                        app.actions.notify("Error saving "+dbData.name, 'error');
+                        app.actions.notify(err.message, 'error');
+                        return
                     }
                 })
             }
@@ -176,8 +177,13 @@ module.exports = function (Component) {
         }
         
         componentDidMount() {
+            if (!window.editPhysical) window.editPhysical=1
+            else window.editPhysical++
+            /*
+            // todo: the focus method does not work in some browser configurations
           const nameInput = document.getElementById('name');
-          if (nameInput) nameInput.focus(true);
+          if (nameInput && nameInput.focus) nameInput.focus(true);
+          */
         }
         
         render() {
@@ -204,16 +210,16 @@ module.exports = function (Component) {
                 const value = (props.value) ? props.value : ''
                 if (tabular) {
                     return(
-                        <div class={"tile is-child "+props.classProps} style="padding:0; margin:0">
-                            <input id={props.fid} class="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={value} readonly={props.readonly} onblur={this.onblur.bind(this)}>
+                        <div className={"tile is-child "+props.classProps} style="padding:0; margin:0">
+                            <input id={props.fid} className="input" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={value} readonly={props.readonly} onblur={this.onblur.bind(this)}>
                             </input>
                         </div>
                     )
                 } else {
                     return (
                         <div class="field">
-                            <label class="label">{props.label}</label>
-                            <div class="control has-icons-left has-icons-right">
+                            <label className="label">{props.label}</label>
+                            <div className="control has-icons-left has-icons-right">
                                 <input id={props.fid} class="input" style="padding-left: 0.75em;" type="text" placeholder={props.label} oninput={linkFormData(this, props.fid)} value={value} readonly={props.readonly}/>
                             </div>
                         </div>
@@ -224,8 +230,8 @@ module.exports = function (Component) {
             const ActionButton = function(props) {
                 const classProps = (props.classProps) ? props.classProps : ''
                 return (
-                    <div onclick={props.onclick} class={"tile is-1 "+classProps} style="padding:0; margin:0;align-items:center;cursor:pointer;">
-                        <div class={"tile button is-small mdi mdi-18px mdi-"+props.icon} style="color:#606060;"></div>
+                    <div onclick={props.onclick} className={"tile is-1 "+classProps} style="padding:0; margin:0;align-items:center;cursor:pointer;">
+                        <div className={"tile button is-small mdi mdi-18px mdi-"+props.icon} style="color:#606060;"></div>
                     </div>
                    )
             }
@@ -265,15 +271,16 @@ module.exports = function (Component) {
                 const label = (item.parent_x && item.parent_y) ? item.parent_x+','+item.parent_y : ''
                 //console.log('tabular:',this.props.classProps)
                 const navArrowStyle = "font-size:20px;line-height:35px;color:#808080;display:flex;justify-content:center;margin-right:0px;"
+                const itemName = item.name
                 return (
-                    <form onsubmit={this.submit.bind(this)}>
-                        <div class="tile is-parent is-11"  style={"box-sizing:border-box;padding:0; margin:0;"+focusStyle} onclick={this.onClickRow.bind(this)}>
-                            <div class={"tile is-child "+this.props.classProps[0].class} style="justify-content:center;line-height:30px;">
+                    <form onsubmit={this.submit.bind(this)} style="padding:0;">
+                        <div className="tabular-row tile is-parent is-11"  style={focusStyle+'padding:0;margin:0;box-sizing:border-box;'} onclick={this.onClickRow.bind(this)}>
+                            <div className={"tile is-child "+this.props.classProps[0].class} style="justify-content:center;line-height:30px;">
                                 <a onclick={this.navigateItem.bind(this)} class={"mdi mdi-arrow-right"} style={navArrowStyle}></a>
                             </div>
-                            <FormInputText fid='name' value={item.name} label="Name" classProps={this.props.classProps[1].class}/>
+                            <FormInputText fid={itemName+'_name'} value={item.name} label="Name" classProps={this.props.classProps[1].class}/>
                             <ItemTypes type={item.type} types={types} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />
-                            <FormInputText fid='loc' value={label} label="Loc"  classProps={this.props.classProps[3].class}/>
+                            <FormInputText fid={itemName+'_loc'} value={label} label="Loc"  classProps={this.props.classProps[3].class}/>
                             {document}
                             {attributes}
                         </div>

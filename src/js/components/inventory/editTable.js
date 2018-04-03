@@ -13,7 +13,8 @@ module.exports = function (Component) {
         }
         
         componentWillMount() {
-            app.state.inventory.listener.editCell = this.updateRow.bind(this)
+            if (app.state.inventory.listener) app.state.inventory.listener.editCell = this.updateRow.bind(this)
+            //console.log('EditTable props:',JSON.stringify(this.props.item,null,2),JSON.stringify(this.props.items,null,2))
         }
         
         tabularHeader() {
@@ -53,10 +54,9 @@ module.exports = function (Component) {
             //console.log('updateTabularData:',items, selectedItem)
             this.rowRef={}
             const thisModule = this
-            if (!selectedItem || !items) return
             
-            if (items.length<1) {
-                return (<div style="padding-left: calc(0.625em - 1px)">{selectedItem.name} is empty.</div>)
+            if (!selectedItem || !items || items.length<1) {
+                return (<div className="empty-table" style="padding-left: calc(0.625em - 1px)">{selectedItem.name} is empty.</div>)
             }
             const tabularData=[]
             const ref=(row) => { if (row) thisModule.rowRef[row.props.id] = row; }

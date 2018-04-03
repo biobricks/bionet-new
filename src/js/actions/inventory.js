@@ -89,31 +89,14 @@ module.exports = {
         app.remote.get(id, function(err, virtual) {
             if (err) {
                 app.actions.notify('Virtual '+id+' not found', 'error');
-                return null
+                if (cb) cb(err)
+                return
             }
             app.state.inventory.virtualItem = virtual
             if (cb) {
                 cb(virtual)
             } else if (app.state.inventory.listener.virtualItem) app.state.inventory.listener.virtualItem(virtual)
             return null
-        })
-    },
-    
-    getChildren:function(id, cb) {
-        app.remote.getChildren(id, function(err, children) {
-            if (err) return console.error(err);
-            const ichildren = []
-            var ypos=0
-            for (var i = 0; i < children.length; i++) {
-                var child = children[i]
-                if (id === child.value.parent_id) {
-                    var value = child.value
-                    if (!value.parent_x) value.parent_x = 1
-                    if (!value.parent_y) value.parent_y = ypos++
-                    ichildren.push(value)
-                }
-            }
-            cb(id, ichildren)
         })
     },
     
@@ -145,16 +128,21 @@ module.exports = {
         //console.trace()
         app.state.inventory.refresh=false
         if (!id) {
-            if (cb) cb(null)
+            if (cb) cb(new Error('Key not specified for inventory path'))
             return null
         }
         const locationPath = {}
+        
+        const debugcb=function(msg,data) {
+            console.log('getInventoryPath,'+msg,data)
+        }
+        
         app.remote.getLocationPathChildren(id, function (err, locationPathAr) {
             console.log('getInventoryPath, cb',locationPathAr)
             if (err) {
-                console.log('getInventoryPath error:', err)
-                if (cb) cb(null)
-                return null
+                console.log('getInventoryPath error:', err.message)
+                if (cb) cb(err, null)
+                return
             }
             locationPathAr.reverse()
             
@@ -173,8 +161,8 @@ module.exports = {
             app.state.inventory.path = locationPathAr
             if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
             //console.log('getInventoryPath action:')
-            if (cb) cb(locationPathAr)
-        }.bind(this ))
+            if (cb) cb(null, locationPathAr)
+        }.bind(this),debugcb.bind(this))
     },
     
     getRootPathItem: function() {
@@ -217,6 +205,7 @@ module.exports = {
             //console.log('getRootItem:',children)
             if (err) {
                 console.log("getRootItem error:", err);
+                if (cb) cb(err)
                 return 
             }
             for (var i = 0; i < children.length; i++) {
@@ -296,6 +285,10 @@ module.exports = {
             for (var i = 0; i < instancesList.length; i++) {
                 console.log('saving physical:',instancesList[i])
                 this.saveToInventory(instancesList[i], null, null, function (err,id,x,y) {
+                    if (err) {
+                        if (cb) cb(err)
+                        return
+                    }
                     for (var j=0; j<instancesList.length; j++) {
                         var instance = instancesList[j]
                         if (instance.parent_x === x && instance.parent_y === y) instance.id = id

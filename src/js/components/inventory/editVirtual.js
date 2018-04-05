@@ -257,6 +257,18 @@ module.exports = function (Component) {
             } else {
                 virtualForm = (<GenerateVirtualForm />)
             }
+                               
+            const nextStep = (assignCells) ?
+                (
+                    <span style="margin-right:20px;">
+                        <input type="button" class="button is-link" value="Save" onclick={this.saveVirtual.bind(this)} />
+                    </span>
+                )
+                :(
+                    <span style="margin-right:20px;">
+                        <input type="button" class="button is-link" value="Assign Locations" onclick={this.createPhysicals.bind(this)} />
+                    </span>
+                )
 
             return (
                 <form onsubmit={this.saveVirtual.bind(this)}>
@@ -264,12 +276,11 @@ module.exports = function (Component) {
                         <div class="column">
                             {virtualForm}
                             {tabularData}
-                            <div class="control">
-                                <input type="button" class="button is-link" value="Assign Locations" onclick={this.createPhysicals.bind(this)} />
-                                <span style="margin-right:20px;">&nbsp;</span>
-                                <input type="button" class="button is-link" value="Save" onclick={this.saveVirtual.bind(this)} />
-                                <span style="margin-right:20px;">&nbsp;</span>
-                                <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
+                            <div>
+                                {nextStep}
+                                <span class="control">
+                                    <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
+                                </span>
                             </div>
                         </div>
                         <div class="column">

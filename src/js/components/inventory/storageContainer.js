@@ -106,6 +106,98 @@ module.exports = function (Component) {
             )
             return tiles
         }
+
+        subdivideContainer2(pwidth, pheight, pxunits, pyunits, containerLabel, childType, selectedItemId, px, py, mode) {
+            //console.log('subdivideContainer', pxunits, pyunits, pwidth, selectedItemId, px, py)
+            
+            const rowStyle = "width:"+width+"px;max-height:"+dy+"px;margin:0;padding:0px;"
+            
+            const subdivisions = this.generateSubdivisions(pwidth, pheight, pxunits, pyunits, containerLabel, selectedItemId, px, py, mode)
+            this.mapOccupiedCellstoSubdivisions(subdivisions, this.cellMap, px, py)
+            
+            for (i = 0; i<subdivisions.length; i++) {
+                var row = subdivisions[i]
+                var cols=[]
+                for (j=0; j<row.length; j++) {
+                    var col = row[j]
+                    var ref = (item) => { if (item) thisModule.cellRef[cell.props.label] = item; }
+                    var storageCell = <StorageCell state={col.id} label={col.label} ref={ref} name={col.name} width={col.width} height={col.height} occupied={col.isOccupied} item={col.item} parent_id={col.parent_id} parent_x={col.parent_x} parent_y={col.parent_y} active={col.isActive} mode={mode}/>
+                    cols.push(storageCell)
+                }
+                rows.push(<div id="inventory_item" class="tile" style={rowStyle}>{cols}</div>)
+            }
+            const tileStyle = "max-width:"+width+"px;height:"+dy+"px;margin:0;padding:0px;"
+            return (<div class="tile is-vertical" style={tileStyle}>{rows}</div>)
+        }
+                          
+        mapOccupiedCellstoSubdivisions(subdivisions, cellMap, px, py) {
+            for (i = 0; i<subdivisions.length; i++) {
+                var row = subdivisions[i]
+                var cols=[]
+                for (j=0; j<row.length; j++) {
+                    var col = row[j]
+                    col.isActive = (col.parent_x === px && col.parent_y === py)
+                    var cell = cellMap[col.id]
+                    if (cell) {
+                        col.isOccupied = true
+                        col.name = (cell.name) ? cell.name : col.label
+                        col.item = cell
+                    } else {
+                        col.isOccupied = false
+                        col.name = col.label
+                    }
+                }
+            }
+        }
+
+        generateSubdivisions(parent_id, pwidth, pheight, pxunits, pyunits, containerLabel, selectedItemId, px1, py1, mode) {
+            //console.log('subdivideContainer', pxunits, pyunits, pwidth, selectedItemId, px, py)
+            
+            const xunits = (pxunits===0) ? 1 : pxunits
+            const yunits = (pyunits===0) ? 1 : pyunits
+            const width = pwidth
+            const height = pheight
+            const dx = width / xunits
+            const dy = height / yunits
+            var px = px1
+            var py = py1
+            
+            const generateLabel=function(parent_x, parent_y, xunits, yunits) {
+                const x = parent_x
+                const y = parent_y
+                if (xunits>1 && yunits>1) return x+','+y
+                if (xunits>1) return x
+                if (yunits>1) return y
+                return ''
+            }
+            
+            const generateCols =function(row) {
+                const cols=[]
+                const y = row+1
+                for (var col=0; col<xunits; col++) {
+                    var x = col+1
+                    var label = generateLabel(x, y, xunits, yunits)
+                    const cellId = "cell_"+label+"_parent_"+parent_id
+                    var storageCell = {
+                        cellId:cellId,
+                        label:label,
+                        parent_id:parent_id,
+                        parent_x:x,
+                        parent_y:y,
+                        width:dx,
+                        height:dy
+                    }
+                    cols.push(storageCell)
+                }
+                return cols
+            }
+                              
+            const rows=[]
+            for (var y=0; y<yunits; y++) {
+                rows.push ( generateCols(y) )
+            }
+            return rows
+        }
         
         populateContainer(items, xunits, yunits) {
             //console.log('populateContainer:', items)

@@ -49,7 +49,7 @@ module.exports = function (Component) {
         
         inventoryCellLocation(loc) {
             console.log('inventoryCellLocation',loc)
-            if (!loc.id) return
+            if (!loc.id ||!this.state.physicals) return
             const physicals = this.state.physicals
             for (var i=0; i<physicals.length; i++) {
                 if (physicals[i].id===loc.id) {

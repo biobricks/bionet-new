@@ -18,7 +18,7 @@ module.exports = function (Component) {
             this.focus = this.focus.bind(this)
             this.setType = this.setType.bind(this)
             this.assignCells = this.assignCells.bind(this)
-            ashnazg.listen('global.inventoryCellLocation', this.inventoryCellLocation.bind(this));
+            if (app.state.inventory.listener) app.state.inventory.listener.assignPhysical = this.inventoryCellLocation.bind(this);
         }
         
         componentWillReceiveProps(nextProps) {
@@ -48,11 +48,17 @@ module.exports = function (Component) {
         }
         
         inventoryCellLocation(loc) {
-            const px = this.props.parent.parent_x
-            const py = this.item.parent_y
-            this.props.parent.parent_x = loc.x
-            this.props.parent.parent_y = loc.y
-            //console.log('inventoryCellLocation',loc, this.item)
+            console.log('inventoryCellLocation',loc)
+            if (!loc.id) return
+            const physicals = this.state.physicals
+            for (var i=0; i<physicals.length; i++) {
+                if (physicals[i].id===loc.id) {
+                    physicals[i].parent_x = loc.x
+                    physicals[i].parent_y = loc.y
+                    this.setState({physicals:physicals})
+                    return
+                }
+            }
         }
         
         onblur(e, fid, fvalue) {
@@ -77,6 +83,7 @@ module.exports = function (Component) {
         saveVirtual(e) {
             const name = (this.item) ? this.item.name : ''
             app.actions.notify(name+" saved", 'notice', 2000);
+            // todo: save location of last selected row and inventory cell location
             app.actions.inventory.forceRefresh(this.props.parent.id)
             this.close()
         }

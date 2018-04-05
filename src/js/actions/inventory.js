@@ -71,6 +71,7 @@ module.exports = {
         }
         if (app.state.selectCellListener) app.state.selectCellListener(inventorySelection)
         if (app.state.inventory.listener.editCell) app.state.inventory.listener.editCell(inventorySelection)
+        if (app.state.inventory.listener.assignPhysical) app.state.inventory.listener.assignPhysical(inventorySelection)
     },
     
     editItem: function(item) {

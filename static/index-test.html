@@ -12,6 +12,16 @@
 <body>
 <div id="mocha"></div>
     <script>
+        window.addEventListener("unhandledrejection", function(err, promise) { 
+            console.error('unhandledrejection:',err)
+        setTimeout(() => {
+          err.promise.catch(() => {});
+        }, 1);
+            return true
+        });
+        window.addEventListener('rejectionhandled', event => {
+          console.log('rejectionhandled fired: ' + event.reason);
+        }); 
         mocha.run();
     </script>
 <div id="test_container" style="display:none;"></div>

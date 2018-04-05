@@ -41,6 +41,7 @@ module.exports = function (Component) {
             this.setState({
                 id:item.id,
                 physicals:item.children,
+                mergedPhysicals:[],
                 attributes:app.actions.inventory.getAttributesForType(item.type),
                 title:titlePrefix,
                 active:active
@@ -49,7 +50,7 @@ module.exports = function (Component) {
         
         inventoryCellLocation(loc) {
             console.log('inventoryCellLocation',loc)
-            if (!loc.id ||!this.state.physicals) return
+            if (!loc.id ||!this.state.physicals ||!this.state.assignCells) return
             const physicals = this.state.physicals
             for (var i=0; i<physicals.length; i++) {
                 if (physicals[i].id===loc.id) {
@@ -81,11 +82,10 @@ module.exports = function (Component) {
         }
         
         saveVirtual(e) {
+            this.close()
             const name = (this.item) ? this.item.name : ''
             app.actions.notify(name+" saved", 'notice', 2000);
-            // todo: save location of last selected row and inventory cell location
             app.actions.inventory.forceRefresh(this.props.parent.id)
-            this.close()
         }
         
         createPhysicals(e) {
@@ -109,12 +109,14 @@ module.exports = function (Component) {
                     y:1
                 }
                 app.actions.inventory.generatePhysicals(dbData.id, dbData.name, instances, thisModule.props.parent.id, wellData, function(err, physicals) {
-                    console.log('generatePhysicals result, ',physicals, thisModule.mode)
                     if (err) {
                         app.actions.notify(err.message, 'error');
                         return
                     }
+                    const mergedPhysicals = physicals.concat(thisModule.props.parent.children)
+                    console.log('generatePhysicals result, ',physicals, mergedPhysicals)
                     thisModule.setState({
+                        mergedPhysicals:mergedPhysicals,
                         physicals:physicals,
                         assignCells:true
                     })
@@ -178,7 +180,7 @@ module.exports = function (Component) {
                         px = parent_item.parent_x
                         py = parent_item.parent_y
                     }
-                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={this.state.physicals} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
+                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={this.state.mergedPhysicals} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
                 }
                 assignCells = (
                     <div>

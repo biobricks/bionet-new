@@ -37,7 +37,6 @@ module.exports = function (Component) {
             this.mode = (item.id) ? 'edit' : 'create'
             var titlePrefix = (item.id) ? 'Edit '+item.name : 'Create '+item.type
             this.id = item.id
-            this.parent_item = app.actions.inventory.getItemFromInventoryPath(item.parent_id)
             
             this.setState({
                 id:item.id,
@@ -49,10 +48,10 @@ module.exports = function (Component) {
         }
         
         inventoryCellLocation(loc) {
-            const px = this.item.parent_x
+            const px = this.props.parent.parent_x
             const py = this.item.parent_y
-            this.item.parent_x = loc.x
-            this.item.parent_y = loc.y
+            this.props.parent.parent_x = loc.x
+            this.props.parent.parent_y = loc.y
             //console.log('inventoryCellLocation',loc, this.item)
         }
         
@@ -76,70 +75,43 @@ module.exports = function (Component) {
         }
         
         saveVirtual(e) {
-            this.createPhysicals(e,true)
+            const name = (this.item) ? this.item.name : ''
+            app.actions.notify(name+" saved", 'notice', 2000);
+            app.actions.inventory.forceRefresh(this.props.parent.id)
             this.close()
         }
         
-        createPhysicals(e, savePhysicals) {
+        createPhysicals(e) {
             e.preventDefault();
             
-            const item = this.item
-            var parentId = null
-            var x = 1
-            var y = 1
-            var dbData = {}
-            if (item) {
-                dbData = item
-                parentId = item.parent_id
-            }
-            
-            const selection = app.state.inventory.selection
-            var wellData = {
-                x:1,
-                y:1
-            }
-            
-            // merge form data
-            const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
-            for (var i=0; i<attributes.length; i++) {
-                var fid = attributes[i].name.toLowerCase()
-                dbData[fid] = item[fid]
-            }
-            const instances = (savePhysicals) ? null : item.instances
-            //const instances = (savePhysicals) ? item.instances : null
+            var dbData = (this.item) ? this.item : {}
+            const instances = dbData.instances
             
             const thisModule=this
-            app.actions.inventory.saveVirtual(dbData, instances, parentId, wellData, function(err, id, physicals) {
-                
+            delete dbData.instances
+            app.actions.inventory.saveVirtual(dbData, function(err, virtual_id) {
                 if (err) {
                     app.actions.notify(err.message, 'error');
                     return
                 }
-                
-                if (thisModule.item) thisModule.item.id = id
-                //app.actions.prompt.setTitle('Assign locations for physicals')
-                console.log('saveVirtual result, ',savePhysicals, thisModule.mode)
-                if (!savePhysicals) {
-                    console.log('physicals saved:',id,physicals)
-                    if (physicals) {
-                        thisModule.setState({
-                            physicals:physicals,
-                            assignCells:true
-                        })
-                    } else {
-                        thisModule.setState({
-                            physicals:null,
-                            assignCells:true
-                        })
-                    }
-                } else {
-                    app.actions.notify(dbData.name+" saved", 'notice', 2000);
-                    if (thisModule.mode==='create') {
-                        console.log('saveVirtual, forcing refresh:',thisModule.parent_item.id)
-                        app.actions.inventory.forceRefresh(thisModule.parent_item.id)
-                    }
+                console.log('saveVirtual result, ',virtual_id)
+                dbData.id = virtual_id
+                app.actions.notify(dbData.name+" created", 'notice', 2000);
+                var wellData = {
+                    x:1,
+                    y:1
                 }
-                
+                app.actions.inventory.generatePhysicals(dbData.id, dbData.name, instances, thisModule.props.parent.id, wellData, function(err, physicals) {
+                    console.log('generatePhysicals result, ',physicals, thisModule.mode)
+                    if (err) {
+                        app.actions.notify(err.message, 'error');
+                        return
+                    }
+                    thisModule.setState({
+                        physicals:physicals,
+                        assignCells:true
+                    })
+                })
             })
         }
         
@@ -166,7 +138,7 @@ module.exports = function (Component) {
         focus(active, navigate) {
             //if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
-            if (active) app.actions.inventory.selectCell(this.props.id, this.props.item.parent_id, this.props.item.parent_x, this.props.item.parent_y, false )
+            if (active) app.actions.inventory.selectCell(this.props.id, this.props.parent.id, this.props.parent.parent_x, this.props.parent.parent_y, false )
         }
         
         assignCells() {
@@ -187,7 +159,7 @@ module.exports = function (Component) {
             const containerSize = 250
             const style = "width:400px; height:400px;border: 1px solid black;"
             
-            const parent_item = this.parent_item
+            const parent_item = this.props.parent
             var assignCells = null
             
             if (this.state.assignCells) {
@@ -196,10 +168,10 @@ module.exports = function (Component) {
                     var px = 0
                     var py = 0
                     if (item) {
-                        px = item.parent_x
-                        py = item.parent_y
+                        px = parent_item.parent_x
+                        py = parent_item.parent_y
                     }
-                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={parent_item.children} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
+                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={this.state.physicals} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
                 }
                 assignCells = (
                     <div>

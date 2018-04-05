@@ -52,15 +52,16 @@ module.exports = function (Component) {
         }
         
         editVirtualItemListener(virtual) {
+            const parent = app.actions.inventory.getSelectedItem()
             if (virtual) {
                 console.log('edit virtual, virtual:',virtual)
-                const promptComponent = <EditVirtual state="EditVirtual" item={virtual} modal="true"/>
+                const promptComponent = <EditVirtual state="EditVirtual" item={virtual} modal="true" parent={parent}/>
                 const promptTitle = 'Edit '+virtual.name
                 app.actions.prompt.display(promptTitle, promptComponent, function(result) {
                     console.log('virtual result')
                 })
             } else {
-                const promptComponent = (<EditVirtual state="EditVirtual" id={null} item={null}/>)
+                const promptComponent = (<EditVirtual state="EditVirtual" id={null} item={null} parent={parent}/>)
                 app.actions.prompt.display("Create Virtual", promptComponent, function(result) {
                     console.log('virtual result')
                 })
@@ -87,13 +88,10 @@ module.exports = function (Component) {
             if (this.createType) {
                 const virtual = {
                     type:type,
-                    name:'',
-                    parent_id:parent.id,
-                    parent_x:parent.parent_x,
-                    parent_y:parent.parent_y
+                    name:''
                 }
                 console.log('add virtual, virtual:',virtual)
-                const promptComponent = <EditVirtual state="EditVirtual" item={virtual}/>
+                const promptComponent = <EditVirtual state="EditVirtual" item={virtual} parent={parent}/>
                 const promptTitle = 'Create Virtual '
                 app.actions.prompt.display(promptTitle, promptComponent, function(result) {
                     console.log('virtual result')

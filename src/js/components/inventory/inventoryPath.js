@@ -18,7 +18,9 @@ module.exports = function (Component) {
                 inventoryPathRendered:null,
                 inventoryItem:{},
                 containerSize:150,
-                moveItem:app.state.inventory.moveItem
+                moveItem:app.state.inventory.moveItem,
+                attributes:{}
+                
             }
             this.containerRef = {}
             app.state.selectCellListener = this.selectCellListener.bind(this)
@@ -169,6 +171,7 @@ module.exports = function (Component) {
             const currentItem = ipath[path.length-1]
             var childItems = (currentItem) ? currentItem.children : null
             console.log('inventory path render:',path,currentItem)
+            const attributes = app.actions.inventory.getAttributesForType(currentItem.type)
             
             const selectedItemHeader = this.selectedItemHeader()
             
@@ -189,7 +192,7 @@ module.exports = function (Component) {
                             {path}
                         </div>
                         <br/>
-                        <EditTable item={currentItem} items={childItems} height={tableHeight} />
+                        <EditTable item={currentItem} items={childItems} height={tableHeight} attributes={attributes}/>
                     </div>
                 </div>
             )

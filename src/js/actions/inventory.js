@@ -294,7 +294,7 @@ module.exports = {
                         if (instance.parent_x === x && instance.parent_y === y) instance.id = id
                     }
                     if (--nrem <= 0) {
-                        if (cb) cb(instancesList)
+                        if (cb) cb(null,instancesList)
                     }
                 })
             }
@@ -310,15 +310,8 @@ module.exports = {
         }.bind(this), 1);
     },
     
-    saveVirtual: function(virtualObj, physicalInstances, container_id, well_id, cb) {
-        const thisModule = this
-        console.log('saveVirtual action:',virtualObj, physicalInstances, container_id, well_id)
-        if (physicalInstances) {
-            thisModule.generatePhysicals(virtualObj.id, virtualObj.name, physicalInstances, container_id, well_id, function(physicals) {
-                if (cb) cb(null,virtualObj.id, physicals)
-            })
-            return
-        }
+    saveVirtual: function(virtualObj, cb) {
+        console.log('saveVirtual action:',virtualObj)
         app.remote.saveVirtual(virtualObj, function (err, virtualId) {
             if (err) console.log('saveVirtual error:',err)
             if (cb) cb(err,virtualId)

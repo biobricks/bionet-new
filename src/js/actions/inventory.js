@@ -166,6 +166,106 @@ module.exports = {
         }.bind(this),debugcb.bind(this))
     },
     
+    mapOccupiedCellstoSubdivisions: function(subdivisions, cellMap, px, py) {
+        for (var i = 0; i<subdivisions.length; i++) {
+            var row = subdivisions[i]
+            var cols=[]
+            for (var j=0; j<row.length; j++) {
+                var col = row[j]
+                col.isActive = (col.parent_x === px && col.parent_y === py)
+                var cell = cellMap[col.label]
+                if (cell) {
+                    col.isOccupied = true
+                    col.name = (cell.name) ? cell.name : col.label
+                    col.item = cell
+                } else {
+                    col.isOccupied = false
+                    col.name = col.label
+                }
+            }
+        }
+    },
+    
+    generateLabel:function(parent_x, parent_y, xunits, yunits) {
+        const x = parent_x
+        const y = parent_y
+        if (xunits>1 && yunits>1) return x+','+y
+        if (xunits>1) return x
+        if (yunits>1) return y
+        return ''
+    },
+
+    generateSubdivisions: function(parent_id, pwidth, pheight, pxunits, pyunits, containerLabel, selectedItemId, px1, py1, mode) {
+        //console.log('subdivideContainer', pxunits, pyunits, pwidth, selectedItemId, px, py)
+
+        const xunits = (!pxunits || pxunits===0) ? 1 : pxunits
+        const yunits = (!pyunits || pyunits===0) ? 1 : pyunits
+        const width = pwidth
+        const height = pheight
+        const dx = width / xunits
+        const dy = height / yunits
+        var px = px1
+        var py = py1
+
+        const generateCols =function(row) {
+            const cols=[]
+            const y = row+1
+            for (var col=0; col<xunits; col++) {
+                var x = col+1
+                var label = app.actions.inventory.generateLabel(x, y, xunits, yunits)
+                const cellId = "cell_"+label+"_parent_"+parent_id
+                var storageCell = {
+                    cellId:cellId,
+                    label:label,
+                    parent_id:parent_id,
+                    parent_x:x,
+                    parent_y:y,
+                    width:dx,
+                    height:dy
+                }
+                cols.push(storageCell)
+            }
+            return cols
+        }
+
+        const rows=[]
+        for (var y=0; y<yunits; y++) {
+            rows.push ( generateCols(y) )
+        }
+        return rows
+    },
+    
+    populateContainer: function(items, type, xunits, yunits) {
+        //console.log('populateContainer:', items)
+        var cellMap={}
+        if (!items) return cellMap
+        for (var i=0; i<items.length; i++) {
+            var item = items[i]
+            var px=0
+            var py=0
+            if (type && type.toLowerCase()==='lab') {
+                px = (item.parent_x) ? item.parent_x-1 : 0
+                py = (item.parent_y) ? item.parent_y-1 : i
+            } else {
+                px = item.parent_x-1
+                py = item.parent_y-1
+            }
+            var cellId = app.actions.inventory.generateLabel(px+1, py+1, xunits, yunits)
+            cellMap[cellId]=item
+        }
+        return cellMap
+    },
+    
+    getEmptyCellArray: function(subdivisions) {
+        const emptyCellArray=[]
+        for (var i=0; i<subdivisions.length; i++) {
+            Array.prototype.push.apply(emptyCellArray, subdivisions[i].filter( function(cell) {
+                return !cell.isOccupied
+            }));
+        }
+        return emptyCellArray
+    },
+    
     getRootPathItem: function() {
         if (!app.state.inventory.path || !app.state.inventory.path.length>0) return null
         return app.state.inventory.path[0]

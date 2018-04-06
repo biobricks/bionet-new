@@ -35,6 +35,8 @@ module.exports = function (Component) {
         
         getInventoryPath(id) {
             console.log('getInventoryPath, id:',id)
+          // TODO can we standardize on: `const self = this` ?
+          //      module has no meaning in js or react anyway
             const thisModule=this
             if (id) {
                 app.actions.inventory.getInventoryPath(id, function(err, inventoryPath) {

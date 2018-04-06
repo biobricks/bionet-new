@@ -169,6 +169,19 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       del(curUser, db, 'physical', id, cb);
     },
 
+    delVirtual: function(curUser, id, cb) {
+      db.instancesOfVirtual(id, function(err, physicals) {
+        if(err) return cb(err);
+
+        if(physicals && physicals.length) {
+          return cb(new Error("Cannot delete virtual while physical instances still exist. Delete all physical instances first."));
+        }
+
+        // TODO undelete
+        db.virtual.del(id, cb);
+      });
+    },
+
     physicalAutocomplete: function(curUser, query, cb) {
 
       query = query.trim().toLowerCase();

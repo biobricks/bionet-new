@@ -8,5 +8,6 @@ module.exports = {
   inventory: require('./inventory'),
   p2p: require('./p2p'),
   search: require('./search'),
-  prompt: require('./prompt')
+  prompt: require('./prompt'),
+  virtual: require('./virtual')
 }

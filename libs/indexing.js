@@ -8,7 +8,8 @@ var blastLevel = require('blast-level');
 module.exports = function(settings, db) {
 
   var inventoryTree = treeIndex(db.physical, sublevel(db.index, 't'), {
-    parentProp: 'parent_id'
+    parentProp: 'parent_id',
+    orphanPath: null // ignore orphans
   });
 
   /*

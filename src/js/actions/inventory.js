@@ -1,7 +1,7 @@
 module.exports = {
     
     initialize: function () {
-        app.state.inventory={
+        app.state.inventory = {
             listener:{},
             selection:{},
             physicalItem:null,
@@ -66,7 +66,10 @@ module.exports = {
             if (idn) {
                 const url = "/inventory/"+idn
                 //console.log('selectCell:',url)
-                app.state.history.push(url)
+
+              // TODO You are not allowed to directly modify the state.
+              //      It must be done using app.setState or app.changeState
+                app.state.history.push(url) 
             }
         }
         if (app.state.selectCellListener) app.state.selectCellListener(inventorySelection)
@@ -135,6 +138,8 @@ module.exports = {
         console.log('getInventoryPathRPC action id:',id)
         
         //console.trace()
+        // TODO You are not allowed to manipulate state directly.
+        //      You must use .setState or .changeState
         app.state.inventory.refresh=false
         if (!id) {
             if (cb) cb(new Error('Key not specified for inventory path'))
@@ -196,6 +201,7 @@ module.exports = {
     },
     
     mapOccupiedCellstoSubdivisions: function(subdivisions, cellMap, px, py) {
+      console.log("CELLMAP:", cellMap)
         for (var i = 0; i<subdivisions.length; i++) {
             var row = subdivisions[i]
             var cols=[]
@@ -241,6 +247,7 @@ module.exports = {
             const y = row+1
             for (var col=0; col<xunits; col++) {
                 var x = col+1
+
                 var label = app.actions.inventory.generateLabel(x, y, xunits, yunits)
                 const cellId = "cell_"+label+"_parent_"+parent_id
                 var storageCell = {
@@ -265,7 +272,7 @@ module.exports = {
     },
     
     generateCellMap: function(items, type, xunits, yunits) {
-        //console.log('generateCellMap:', items)
+//        console.log('generateCellMap:', items)
         var cellMap={}
         if (!items) return cellMap
         for (var i=0; i<items.length; i++) {

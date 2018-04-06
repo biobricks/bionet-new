@@ -44,6 +44,21 @@ module.exports = function(Component) {
       return strftime('%b %o %Y', new Date(unixEpochTime * 1000));
     }
 
+    delVirtual() {
+      if(!this.state.id) {
+        app.actions.notify("Cannot delete: Unknown virtual", 'error');
+        return;
+      }
+      app.actions.virtual.delete(id, function(err) {
+        if(err) {
+          app.actions.notify(err, 'error');
+          return;
+        }
+        // TODO go back instead?
+        app.actions.route('/');
+      });
+    }
+
     getVirtual(id) {
 
       // TODO why is this running twice on reload?
@@ -133,10 +148,12 @@ module.exports = function(Component) {
             );
         }
 
-        var editLink = '';
+        var modifyLinks = '';
         if(app.state.global.user) {
-          editLink = (
-              <span><Link to={'/virtual/edit/' + this.state.virtual.id}>edit</Link></span>
+          modifyLinks = (
+            <span>
+              <span><Link to={'/virtual/edit/' + this.state.virtual.id}>edit</Link> | <a href="#" onClick={this.delVirtual.bind(this)}>delete</a></span>
+            </span>
           );
         }
         
@@ -157,7 +174,7 @@ module.exports = function(Component) {
         virtual = (
           <div class="virtual">
             <div>
-              <h3>{this.state.virtual.name} {editLink}</h3>
+              <h3>{this.state.virtual.name} {modifyLinks}</h3>
             </div>
             <div>
               <p class="description">{this.state.virtual.description}</p>

@@ -23,6 +23,11 @@ module.exports = function (Component) {
                 
             }
             this.containerRef = {}
+
+          
+          // TODO You are not allowed to directly modify the state.
+          //      It must be done using .setState or .changeState
+          //      You are also not allowed to put functions into the state.
             app.state.selectCellListener = this.selectCellListener.bind(this)
             app.state.inventory.listener.moveItem = this.updateMoveItem.bind(this)
         }
@@ -30,9 +35,12 @@ module.exports = function (Component) {
         componentWillReceiveProps(props) {
             if (!props.inventoryPath) return
             //if (props.id !== this.state.id) {
-                console.log('inventory path props:',props)
-                this.updateInventoryPath(props.inventoryPath, props.id)
-            //}
+//                console.log('inventory path props:',props)
+
+          this.setState({
+            id: props.id,
+            inventoryPath: props.inventoryPath
+          });
         }
         
         selectCellListener(cellLocation) {
@@ -79,16 +87,24 @@ module.exports = function (Component) {
                     px = (nextItem.parent_x) ? nextItem.parent_x : 1
                     py = (nextItem.parent_y) ? nextItem.parent_y : findInChildren(nextItem.id,item.children)+1
                 }
+
                 inventoryPath.push(
                     <StorageContainer dbid={item.id} type={item.type} ref={ref} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} selectedItem={nextItem.id} px={px} py={py}/>
                 )
             }
             //this.focusCells(newPath)
+
+            // FIXED You should not be putting HTML into the state.
+            //      All HTML should be rendered from the state 
+            //      in the render() function
+
+/*          
             this.setState({
                 id:id,
                 inventoryPathRendered:inventoryPath
             })
-            return inventoryPath
+*/
+            return inventoryPath;
         }
         
         print() {
@@ -155,29 +171,38 @@ module.exports = function (Component) {
         }
         
         render() {
-            const path=this.state.inventoryPathRendered
-            console.log('render path:',path,this.props.inventoryPath)
+
+            const path = this.updateInventoryPath(this.state.inventoryPath, this.state.id);
+//            console.log('render path:', path, this.state.inventoryPath)
             if (!path) return
-            if (typeof this.props.inventoryPath === 'object' && this.props.inventoryPath.constructor.name==='Error') {
+            if (typeof this.state.inventoryPath === 'object' && this.state.inventoryPath.constructor.name === 'Error') {
                 return (
-                    <h6 style="margin-top:15px;">{this.props.inventoryPath.message}</h6>
+                    <h6 style="margin-top:15px;">{this.state.inventoryPath.message}</h6>
                 )
             }
-            const ipath = this.props.inventoryPath
+            const ipath = this.state.inventoryPath
             if (!ipath) return
             
             const currentItem = ipath[path.length-1]
             var childItems = (currentItem) ? currentItem.children : null
-            console.log('inventory path render:',path,currentItem)
+//            console.log('inventory path render:',path,currentItem)
             const attributes = app.actions.inventory.getAttributesForType(currentItem.type)
             
             const selectedItemHeader = this.selectedItemHeader()
-            
+          
+          // TODO We should use CSS classes instead of inline styles.
+          // TODO We should generally use rem in instead of px
+          //      (but border 1px is fine).
+          // TODO Why is size based on a state variable? This seems bad.
             const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
             const itemChild = "border:1px solid grey;margin:0;padding:0;"
+
+          // TODO we should avoid calc statements if at all possible
+          //      (but sometimes it is not possible)
             const itemMaxHeight = "margin:0;padding:0;height:calc(100vh - "+this.state.containerSize+"px - 40px)"
             const pathChild = "border: 1px solid grey; height:"+this.state.containerSize+"px;margin:0;padding:0;"
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
+          // TODO Again this should be CSS rules. Not calculated in javascript.
             const tableHeight =  window.innerHeight-this.state.containerSize-100
             
             return (

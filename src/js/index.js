@@ -12,8 +12,6 @@ app.rpc = require('./rpc.js');
 app.settings = require('../../settings.client.js');
 var App = require('./components/app.js')(Component)
 
-console.log("SETTINGS:", app.settings);
-
 function renderAll() {
   var container = document.getElementById('container');
   /*

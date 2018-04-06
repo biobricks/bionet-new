@@ -11,9 +11,7 @@ module.exports = function (Component) {
         constructor(props) {
             super(props);
             //console.log('StorageContainer props:', JSON.stringify(props))
-            this.cellMap = {}
             this.cellRef = {}
-            this.initialize(props)
         }
         
         initialize(nextProps) {
@@ -24,7 +22,6 @@ module.exports = function (Component) {
             this.yunits = yunits
             this.dbid = nextProps.dbid
             this.type = nextProps.type
-            this.cellMap = app.actions.inventory.populateContainer(nextProps.items, nextProps.type, xunits, yunits)
             const tiles = this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType, nextProps.selectedItem, nextProps.px, nextProps.py, nextProps.mode)
             if (nextProps.mode==='edit') {
                 app.state.inventory.listener.editContainerListener = this.editContainerListener.bind(this)
@@ -42,14 +39,14 @@ module.exports = function (Component) {
 
         subdivideContainer(pwidth, pheight, pxunits, pyunits, containerLabel, childType, selectedItemId, px, py, mode) {
             //console.log('subdivideContainer', pxunits, pyunits, pwidth, selectedItemId, px, py)
-            
-            const subdivisions = app.actions.inventory.generateSubdivisions(this.dbid, pwidth, pheight, pxunits, pyunits, containerLabel, selectedItemId, px, py, mode)
-            app.actions.inventory.mapOccupiedCellstoSubdivisions(subdivisions, this.cellMap, px, py)
-            const emptyCellArray =app.actions.inventory.getEmptyCellArray(subdivisions) 
-            console.log('subdivide container, emptyCellArray:',JSON.stringify(emptyCellArray,null,2))
-            
-            //console.log('subdivide container:',JSON.stringify(subdivisions,null,2))
-
+            const subdivisions = this.props.item.subdivisions
+            this.subdivisions = subdivisions
+            if (!subdivisions || !subdivisions.length) return null
+            if (this.props.items) {
+                const item = this.props.item
+                var cellMap = app.actions.inventory.generateCellMap(this.props.items, item.type, pxunits, pyunits)
+                app.actions.inventory.mapOccupiedCellstoSubdivisions(subdivisions, cellMap, px, py)
+            }
             const dy = pheight / pyunits
             const rows=[]
             const rowStyle = "width:"+pwidth+"px;max-height:"+dy+"px;margin:0;padding:0px;"
@@ -62,7 +59,7 @@ module.exports = function (Component) {
                 for (var j=0; j<row.length; j++) {
                     var col = row[j]
                     var ref = (item) => { if (item) thisModule.cellRef[item.props.label] = item; }
-                    var storageCell = <StorageCell state={col.id} label={col.label} ref={ref} name={col.name} width={col.width} height={col.height} occupied={col.isOccupied} item={col.item} parent_id={col.parent_id} parent_x={col.parent_x} parent_y={col.parent_y} active={col.isActive} mode={mode}/>
+                    var storageCell = <StorageCell state={col.id} label={col.label} ref={ref} name={col.name} width={col.width} height={dy} occupied={col.isOccupied} item={col.item} parent_id={col.parent_id} parent_x={col.parent_x} parent_y={col.parent_y} active={col.isActive} mode={mode}/>
                     cols.push(storageCell)
                 }
                 rows.push(<div id="inventory_item" class="tile" style={rowStyle}>{cols}</div>)

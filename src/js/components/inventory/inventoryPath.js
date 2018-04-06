@@ -55,9 +55,7 @@ module.exports = function (Component) {
             if (!newPath) return
             //console.log('update inventory path:',newPath)
             
-            var containerSize = window.innerWidth/8
-            containerSize = (containerSize > 150) ? 150: containerSize
-            if (!containerSize) containerSize = 150
+            var containerSize = app.actions.inventory.getContainerSize()
             const thisModule = this
             const inventoryPath = []
             
@@ -82,7 +80,7 @@ module.exports = function (Component) {
                     py = (nextItem.parent_y) ? nextItem.parent_y : findInChildren(nextItem.id,item.children)+1
                 }
                 inventoryPath.push(
-                    <StorageContainer dbid={item.id} type={item.type} ref={ref} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} items={item.children} selectedItem={nextItem.id} px={px} py={py}/>
+                    <StorageContainer dbid={item.id} type={item.type} ref={ref} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} selectedItem={nextItem.id} px={px} py={py}/>
                 )
             }
             //this.focusCells(newPath)

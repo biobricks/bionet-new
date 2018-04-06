@@ -108,13 +108,15 @@ module.exports = function (Component) {
                     x:1,
                     y:1
                 }
-                app.actions.inventory.generatePhysicals(dbData.id, dbData.name, instances, thisModule.props.parent.id, wellData, function(err, physicals) {
+                const subdivisions = thisModule.props.parent.subdivisions
+                const emptyCellArray = app.actions.inventory.getEmptyCellArray(subdivisions) 
+                app.actions.inventory.generatePhysicals(dbData.id, dbData.name, instances, thisModule.props.parent.id, emptyCellArray, function(err, physicals) {
                     if (err) {
                         app.actions.notify(err.message, 'error');
                         return
                     }
                     const mergedPhysicals = physicals.concat(thisModule.props.parent.children)
-                    console.log('generatePhysicals result, ',physicals, mergedPhysicals)
+                    //console.log('generatePhysicals result, ',physicals, mergedPhysicals)
                     thisModule.setState({
                         mergedPhysicals:mergedPhysicals,
                         physicals:physicals,
@@ -180,7 +182,7 @@ module.exports = function (Component) {
                         px = parent_item.parent_x
                         py = parent_item.parent_y
                     }
-                    storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={this.state.mergedPhysicals} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
+                    storageContainer = (<StorageContainer dbid={parent_item.id} item={parent_item} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} items={this.state.mergedPhysicals} selectedItem={selectedItemId}  px={px} py={py} mode="edit"/>)
                 }
                 assignCells = (
                     <div>

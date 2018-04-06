@@ -123,6 +123,14 @@ module.exports = {
         app.state.history.push(url)
     },
     
+    getContainerSize: function() {
+        var containerSize = window.innerWidth/8
+        containerSize = (containerSize > 150) ? 150: containerSize
+        if (!containerSize) containerSize = 150
+        app.state.inventory.containerSize = containerSize
+        return containerSize
+    },
+    
     getInventoryPath: function(id, cb) {
         console.log('getInventoryPathRPC action id:',id)
         
@@ -137,6 +145,7 @@ module.exports = {
         const debugcb=function(msg,data) {
             console.log('getInventoryPath,'+msg,data)
         }
+        var containerSize = this.getContainerSize()
         
         app.remote.getLocationPathChildren(id, function (err, locationPathAr) {
             console.log('getInventoryPath, cb',locationPathAr)
@@ -147,13 +156,33 @@ module.exports = {
             }
             locationPathAr.reverse()
             
+            const findInChildren = function(id, children) {
+                if (!children) return 0
+                for (var i=0; i<children.length; i++) if (id===children[i].id) return i
+                return 0
+            }
+            
             for (var i = 0; i < locationPathAr.length; i++) {
                 var location = locationPathAr[i]
                 var locationId = location.id
                 var locationType = this.getLocationType(location.type)
                 if (locationType) {
-                    location.xUnits = locationType.xUnits
-                    location.yUnits = locationType.yUnits
+                    var px=null
+                    var py=null
+                    var nextLocation = (i<locationPathAr.length-1) ? locationPathAr[i+1] : {}
+                    if (nextLocation.id) {
+                        px = (nextLocation.parent_x) ? nextLocation.parent_x : 1
+                        py = (nextLocation.parent_y) ? nextLocation.parent_y : findInChildren(nextLocation.id,location.children)+1
+                    }
+                    var xunits = (!locationType.xUnits || locationType.xUnits===0) ? 1: locationType.xUnits
+                    var yunits = (!locationType.yUnits || locationType.yUnits===0) ? 1: locationType.yUnits
+                    location.xUnits = xunits
+                    location.yUnits = yunits
+                    const subdivisions = this.generateSubdivisions(location.id, containerSize, containerSize, xunits, yunits, px, py)
+                    var cellMap = this.generateCellMap(location.children, location.type, xunits, yunits)
+                    this.mapOccupiedCellstoSubdivisions(subdivisions, cellMap, px, py)
+                    location.subdivisions = subdivisions
+                    //console.log('locationPathSubdivision:',JSON.stringify(subdivisions,null,2))
                 }
                 locationPath[locationId] = location
             }
@@ -195,7 +224,7 @@ module.exports = {
         return ''
     },
 
-    generateSubdivisions: function(parent_id, pwidth, pheight, pxunits, pyunits, containerLabel, selectedItemId, px1, py1, mode) {
+    generateSubdivisions: function(parent_id, pwidth, pheight, pxunits, pyunits,  px1, py1) {
         //console.log('subdivideContainer', pxunits, pyunits, pwidth, selectedItemId, px, py)
 
         const xunits = (!pxunits || pxunits===0) ? 1 : pxunits
@@ -235,8 +264,8 @@ module.exports = {
         return rows
     },
     
-    populateContainer: function(items, type, xunits, yunits) {
-        //console.log('populateContainer:', items)
+    generateCellMap: function(items, type, xunits, yunits) {
+        //console.log('generateCellMap:', items)
         var cellMap={}
         if (!items) return cellMap
         for (var i=0; i<items.length; i++) {
@@ -352,7 +381,7 @@ module.exports = {
         return attributes
     },
 
-    generatePhysicals: function (virtualId, seriesName, instances, container_id, well_id, cb) {
+    generatePhysicals: function (virtualId, seriesName, instances, container_id, emptyCellArray, cb) {
         if (instances===0) {
             if (cb) cb(null)
             return
@@ -362,13 +391,14 @@ module.exports = {
             
             // todo: generate hash value for new physical instance to avoid naming collisions
             const name = seriesName + '_' + instance
-            var parent_x, parent_y
-            if (well_id) {
-                parent_x = well_id.x
-                parent_y = well_id.y
+            var x=1
+            var y=1
+            if (emptyCellArray && emptyCellArray[instance]) {
+                var cell = emptyCellArray[instance]
+                x = cell.parent_x
+                y = cell.parent_y
             } else {
-                parent_x = 1
-                parent_y = 1
+                x = instance+1
             }
             
             const dbData = {
@@ -376,8 +406,8 @@ module.exports = {
                 type: 'physical',
                 virtual_id:virtualId,
                 parent_id: container_id,
-                parent_x: parent_x+instance,
-                parent_y: parent_y
+                parent_x: x,
+                parent_y: y
             }
             instancesList.push(dbData)
         }

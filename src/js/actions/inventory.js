@@ -277,6 +277,7 @@ module.exports = {
         if (!items) return cellMap
         for (var i=0; i<items.length; i++) {
             var item = items[i]
+            if (!item || !item.parent_x || !item.parent_y) continue
             var px=0
             var py=0
             if (type && type.toLowerCase()==='lab') {

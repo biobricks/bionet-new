@@ -115,7 +115,8 @@ module.exports = function (Component) {
                         app.actions.notify(err.message, 'error');
                         return
                     }
-                    const mergedPhysicals = physicals.concat(thisModule.props.parent.children)
+                    const children = thisModule.props.parent.children
+                    const mergedPhysicals = (children && children.length && children.length>0 ) ? physicals.concat(children) : physicals
                     //console.log('generatePhysicals result, ',physicals, mergedPhysicals)
                     thisModule.setState({
                         mergedPhysicals:mergedPhysicals,

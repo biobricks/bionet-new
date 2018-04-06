@@ -174,7 +174,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         if(err) return cb(err);
 
         if(physicals && physicals.length) {
-          return cb(new Error("Cannot delete virtual while physical instances still exist. Delete all physical instances first."));
+          return cb(new Error("You must delete all physical instances before deleting a virtual"));
         }
 
         // TODO undelete

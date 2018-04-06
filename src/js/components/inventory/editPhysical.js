@@ -161,11 +161,13 @@ module.exports = function (Component) {
             }
         }
         
-        editVirtual(e) {
+        showVirtual(e) {
             console.log('edit virtual, props:',this.props)
             e.preventDefault();
             if (!this.props.item || !this.props.item.virtual_id) return
-            app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
+
+          app.actions.route('/virtual/show/'+this.props.item.virtual_id);
+//            app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
         }
         
         getLabel() {
@@ -265,7 +267,7 @@ module.exports = function (Component) {
             if (tabular) {
                 var document = null
                 if (isBox) {
-                    document = (<ActionButton dbid={selectedItemId} onclick={this.editVirtual.bind(this)} icon="file-document" />)
+                    document = (<ActionButton dbid={selectedItemId} onclick={this.showVirtual.bind(this)} icon="file-document" />)
                 }
                 const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''
                 const label = (item.parent_x && item.parent_y) ? item.parent_x+','+item.parent_y : ''

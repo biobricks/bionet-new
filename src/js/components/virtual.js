@@ -35,6 +35,7 @@ module.exports = function(Component) {
 
       util.whenConnected(function() {
         if(!this.state.id) return;
+        if(this.state.virtual) return;
 
         this.getVirtual(this.state.id);
       }.bind(this));
@@ -49,13 +50,15 @@ module.exports = function(Component) {
         app.actions.notify("Cannot delete: Unknown virtual", 'error');
         return;
       }
-      app.actions.virtual.delete(id, function(err) {
+      app.actions.virtual.delete(this.state.id, function(err) {
         if(err) {
           app.actions.notify(err, 'error');
           return;
         }
         // TODO go back instead?
         app.actions.route('/');
+        app.actions.notify("Deleted virtual");
+        return;
       });
     }
 
@@ -101,6 +104,8 @@ module.exports = function(Component) {
       });
 
       util.whenConnected(function() {
+        // TODO whenConnected should automatically never be called more than once
+        if(this.state.virtual) return;
         this.getVirtual(this.state.id);
       }.bind(this));
     }
@@ -184,7 +189,13 @@ module.exports = function(Component) {
               <span style="font-weight:bold">Provenance:</span> {this.state.virtual.provenance || "Unknown"}
             </div>
             <div>
-              <span style="font-weight:bold">Terms and condition:</span> {this.state.virtual.terms || "Not specified"}
+              <span style="font-weight:bold">Genotype:</span> {this.state.virtual.genotype || "None"}
+            </div>
+            <div>
+              <span style="font-weight:bold">Sequence:</span> {this.state.virtual.sequence || "None"}
+            </div>
+            <div>
+              <span style="font-weight:bold">Terms and condition:</span> {this.state.virtual.terms || "Limbo"}
             </div>
             <div>{timestamps}</div>
             <div>{sequence}</div>

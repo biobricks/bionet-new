@@ -13,8 +13,7 @@ module.exports = {
     opts = xtend({
       withVirtuals: false // TODO not yet implemented
     }, opts || {});
-
-    
+ 
     app.remote.delVirtual(id, cb);
   }
 

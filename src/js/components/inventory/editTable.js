@@ -27,7 +27,7 @@ module.exports = function (Component) {
             headerTitle.push({name:'Well',class:'is-1'})
             const type = items[0].type
             if (type==='physical') {
-                headerTitle.push({name:'Docs',class:'is-1'})
+                headerTitle.push({name:'Virtual',class:'is-1'})
             }
             //const attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
             var attributes = this.props.attributes

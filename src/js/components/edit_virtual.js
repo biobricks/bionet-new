@@ -29,6 +29,7 @@ module.exports = function(Component) {
         name: undefined,
         description: undefined,
         provenance: undefined,
+        genotype: undefined,
         terms: 'openmta',
         notice: undefined,
         changed: false,
@@ -55,6 +56,22 @@ module.exports = function(Component) {
       this.setState({
         changed: true,
         provenance: e.target.value
+      });
+    }
+
+    changeGenotype(e) {
+      if(!e || !e.target) return;
+      this.setState({
+        changed: true,
+        genotype: e.target.value
+      });
+    }
+
+    changeSeq(e) {
+      if(!e || !e.target) return;
+      this.setState({
+        changed: true,
+        sequence: e.target.value
       });
     }
 
@@ -117,7 +134,9 @@ module.exports = function(Component) {
           name: data.name,
           description: data.description,
           provenance: data.provenance,
-          terms: data.terms,
+          genotype: data.genotype,
+          sequence: data.sequence,
+          terms: data.terms || 'limbo',
           content: data.content
         };
 
@@ -143,6 +162,8 @@ module.exports = function(Component) {
         name: this.state.name,
         description: this.state.description,
         provenance: this.state.provenance,
+        genotype: this.state.genotype,
+        sequence: this.state.sequence,
         terms: this.state.terms,
         content: this.state.content
       });
@@ -164,7 +185,10 @@ module.exports = function(Component) {
 
     cancel(e) {
       e.preventDefault();
-      if(!this.state.changed) return;
+      if(!this.state.changed) {
+        app.actions.route('/virtual/show/'+this.state.id);
+        return;
+      }
 
       var choice = confirm("You have unsaved changes. Really throw these away?");
       if(!choice) return;
@@ -181,8 +205,10 @@ module.exports = function(Component) {
           changed: false,
           name: data.name,
           description: data.description,
-          provenance: undefined,
-          terms: 'openmta',
+          provenance: data.provenance,
+          genotype: data.genotype,
+          sequence: data.sequence,
+          terms: data.terms || 'limbo',
           content: data.content
         })
 
@@ -254,7 +280,7 @@ module.exports = function(Component) {
             </div>
           )
       }
-      
+      console.log("TERMS 2:", this.state.terms)
       return (
         <div>
           <form onSubmit={this.save.bind(this)}>
@@ -282,11 +308,23 @@ module.exports = function(Component) {
               </div>
             </div>
             <div class="field">
+              <label class="label">Genotype</label>
+              <div class="control">
+                <input class="input" onInput={this.changeGenotype.bind(this)} value={this.state.genotype} />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Sequence</label>
+              <div class="control">
+                <textarea class="textarea" rows="5" onInput={this.changeSeq.bind(this)} value={this.state.sequence}></textarea>
+              </div>
+            </div>
+            <div class="field">
               <label class="label">Terms and conditions</label>
               <div class="control">
                 <select class="input" onInput={this.changeTerms.bind(this)} value={this.state.terms}>
 
-                  <option value="openmta" selected>OpenMTA</option>
+                  <option value="openmta">OpenMTA</option>
                   <option value="limbo">Limbo</option>
                   <option value="ubmta">UBMTA</option>
                   <option value="other">Other</option>

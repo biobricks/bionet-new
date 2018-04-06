@@ -201,7 +201,7 @@ module.exports = {
     },
     
     mapOccupiedCellstoSubdivisions: function(subdivisions, cellMap, px, py) {
-      console.log("CELLMAP:", cellMap)
+
         for (var i = 0; i<subdivisions.length; i++) {
             var row = subdivisions[i]
             var cols=[]

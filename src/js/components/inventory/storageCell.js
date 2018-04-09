@@ -44,6 +44,7 @@ module.exports = function (Component) {
 
         onDoubleClickCell(e) {
             e.preventDefault();
+            if (this.props.mode === 'edit') return
             //console.log('onDoubleClickCell',e)
             if (this.props.item && this.props.item.id) app.actions.inventory.editItem(this.props.item)
             else app.actions.inventory.editItem({id:null, name:'new item', parent_id:this.props.parent_id, parent_x:this.props.parent_x, parent_y:this.props.parent_y})

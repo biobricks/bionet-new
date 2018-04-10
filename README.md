@@ -14,7 +14,7 @@ Then do everything below as the bionet user.
 
 ```
 sudo aptitude install git # if you don't already have git installed
-git clone https://github.com/biobricks/bionet
+git clone https://github.com/biobricks/bionet-new
 ```
 
 # Installing pre-requisites
@@ -45,7 +45,7 @@ sudo apt install nodejs
 
 ```
 # install node packages
-cd bionet/
+cd bionet-new/
 npm install
 ```
 
@@ -56,8 +56,6 @@ ElasticSearch is required if you want human language search (fuzzy matching). If
 Follow [this guide](https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-repositories.html) to install from the official repository so you'll get security updates.
 
 ## BLAST+
-
-The current version does not yet support BLAST through the web UI so for most folk this is not yet relevant.
 
 BLAST+ is required if you want to be able to run BLAST queries on DNA, RNA or Amino Acid sequences. As with ElasticSearch only exact matching is possible if BLAST is not installed.
 
@@ -84,8 +82,10 @@ cd ..
 # Configuring
 
 ```
-cd bionet/
+cd bionet-new/
+mkdir -p static/build
 cp settings.js.example settings.js 
+cp settings.client.js.example settings.client.js 
 ```
 
 Then edit each of the settings.js files to suit your needs.
@@ -111,7 +111,7 @@ sudo apt install postfix
 
 # Building and development
 
-To begin developing simple run:
+To begin developing simply run:
 
 ```
 npm run dev
@@ -309,7 +309,7 @@ production/db_backup.sh
 
 You will need to tweak the `MAX_BACKUP_SIZE`, `BIONET_PATH` and `DB_BACKUP_PATH` at the beginning of the script.
 
-You can restore from a backup by first deleting the old database (obviously be careful) using `rm -rf bionet/db` and then running:
+You can restore from a backup by first deleting the old database (obviously be careful) using `rm -rf bionet-new/db` and then running:
 
 ```
 ./bin/db.js import ./myfile.json

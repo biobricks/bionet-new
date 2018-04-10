@@ -120,6 +120,10 @@ body {
   padding-right: 0.5rem;
   height: 1.5rem;
 }
+
+.bold {
+  font-weight: bold;
+}
    
   h1 {
     font-size: 200%;
@@ -317,3 +321,24 @@ p.description {
 
 
 /* request_material.js END */
+
+
+/* addExisting.js BEGIN */
+
+.autocomplete-container {
+  min-height: 30rem;
+}
+
+.autocomplete-input {
+  padding-bottom: 3rem;
+}
+
+.autocomplete-list {
+  list-style-type: none;
+}
+
+.autocomplete-list li {
+  cursor: pointer;
+}
+
+/* addExisting.js END */

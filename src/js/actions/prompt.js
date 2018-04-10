@@ -1,10 +1,11 @@
 module.exports = {
     display: function(message, component, cb) {
+ 
         app.changeState({
             prompt : {
                 message:message,
-                callback:cb,
-                component:component,
+                callback:cb, // TODO saving function ref to state not allowed
+                component:component, // TODO saving html to state not allowed
                 active:true
             }
         })

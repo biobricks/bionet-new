@@ -64,7 +64,7 @@ module.exports = {
   exact: function(query, page, perPage, opts) {
     opts = opts || {}
     opts.offset = ((page - 1) * perPage);
-//    opts.maxResults = perPage;
+    opts.maxResults = perPage;
 
     query = query.trim();
 

@@ -7,6 +7,7 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const EditPhysical = require('./editPhysical')(Component)
     const EditVirtual = require('./editVirtual')(Component)
+    const AddExisting = require('./addExisting')(Component)
     const Favorites = require('./favorites')(Component)
     
     return class ActionNavBar extends Component {
@@ -24,16 +25,22 @@ module.exports = function (Component) {
             app.state.inventory.listener.physicalItem = this.editItemListener.bind(this)
             app.state.inventory.listener.virtualItem = this.editVirtualItemListener.bind(this)
         }
+
+        isInstanceContainerSelected() {
+          const currentItem = app.actions.inventory.getLastPathItem()
+          if (currentItem && currentItem.type) {
+            const currentSelectionType = currentItem.type.toLowerCase()
+            // TODO this is not a good way to tell the difference between types
+            if (currentSelectionType.indexOf('box')>=0) return true;
+          }
+          return false
+        }
         
         componentWillReceiveProps(nextProps) {
             if (!nextProps || !nextProps.menu) return
             //console.log('ActionNavBar props:',nextProps.menu, this.state, nextProps)
-            var physicalMenu = false
-            const currentItem = app.actions.inventory.getLastPathItem()
-            if (currentItem && currentItem.type) {
-                const currentSelectionType = currentItem.type.toLowerCase()
-                if (currentSelectionType.indexOf('box')>=0) physicalMenu = true
-            }
+            var physicalMenu = this.isInstanceContainerSelected();
+
             const menuDef = (physicalMenu) ? nextProps.menu.materials : nextProps.menu.locations 
             this.createType = physicalMenu
             this.setState({menuDef:menuDef})
@@ -79,6 +86,15 @@ module.exports = function (Component) {
             }
         }
             
+        addExisting(e) {
+
+          const parent = app.actions.inventory.getSelectedItem();
+          const promptComponent = (<AddExisting parent={parent} />)
+          app.actions.prompt.display("Create physical", promptComponent, function(result) {
+            console.log('virtual result')
+          })          
+        }
+
         addItemClick(e) {
             //console.log('add menu item:',e.target.id, this.editPhysical)
             this.closeAddItemMenu()
@@ -214,8 +230,12 @@ module.exports = function (Component) {
                 if (!menuDef) return null
                 const menu = []
                 const DropdownMenuItem = function(props) {
-                    return <a id={props.id} class="dropdown-item {props.isActive}" onClick={props.onClick}>{props.label}</a>
+                    return <a id={props.id} class={'dropdown-item ' + ((props.emphasis) ? 'bold' : '')} onClick={props.onClick}>{props.label}</a>
                 }
+
+              if(this.isInstanceContainerSelected()) {
+                menu.push(<DropdownMenuItem label="Existing" emphasis onClick={this.addExisting.bind(this)} />)
+              }
                 for (var i=0; i<menuDef.length; i++) {
                     var item = menuDef[i]
                     menu.push(<DropdownMenuItem id={item.name} label={item.title} onClick={this.addItemClick.bind(this)} />)

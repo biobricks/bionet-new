@@ -318,8 +318,8 @@ module.exports = function (Component) {
                                 <label class="label">Type</label>
                                 <ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
                                 <div style="margin-top:10px;margin-bottom:30px;">
-                                    <FormInputText fid="xUnits" label="Cows" value={xUnits}/>
-                                    <FormInputText fid="yUnits" label="Rols" value={yUnits}/>
+                                    <FormInputText fid="xUnits" label="Cols" value={xUnits}/>
+                                    <FormInputText fid="yUnits" label="Rows" value={yUnits}/>
                                     {attributes}
                                 </div>
                                 {editTable}

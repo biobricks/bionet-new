@@ -171,24 +171,28 @@ module.exports = {
                 var location = locationPathAr[i]
                 var locationId = location.id
                 var locationType = this.getLocationType(location.type)
-                if (locationType) {
-                    var px=null
-                    var py=null
-                    var nextLocation = (i<locationPathAr.length-1) ? locationPathAr[i+1] : {}
-                    if (nextLocation.id) {
-                        px = (nextLocation.parent_x) ? nextLocation.parent_x : 1
-                        py = (nextLocation.parent_y) ? nextLocation.parent_y : findInChildren(nextLocation.id,location.children)+1
-                    }
-                    var xunits = (!locationType.xUnits || locationType.xUnits===0) ? 1: locationType.xUnits
-                    var yunits = (!locationType.yUnits || locationType.yUnits===0) ? 1: locationType.yUnits
-                    location.xUnits = xunits
-                    location.yUnits = yunits
-                    const subdivisions = this.generateSubdivisions(location.id, containerSize, containerSize, xunits, yunits, px, py)
-                    var cellMap = this.generateCellMap(location.children, location.type, xunits, yunits)
-                    this.mapOccupiedCellstoSubdivisions(subdivisions, cellMap, px, py)
-                    location.subdivisions = subdivisions
-                    //console.log('locationPathSubdivision:',JSON.stringify(subdivisions,null,2))
+                var xu = location.xUnits
+                var yu = location.yUnits
+                var xunits = (location.xUnits) ? location.xUnits : (locationType) ? locationType.xUnits : 1
+                var yunits = (location.yUnits) ? location.yUnits : (locationType) ? locationType.yUnits : 1
+                location.xUnits = xunits
+                location.yUnits = yunits
+                console.log('getInventoryPath:',location,xu, yu,    xunits,yunits)
+                var px=null
+                var py=null
+                var nextLocation = (i<locationPathAr.length-1) ? locationPathAr[i+1] : {}
+                if (nextLocation.id) {
+                    px = (nextLocation.parent_x) ? nextLocation.parent_x : 1
+                    py = (nextLocation.parent_y) ? nextLocation.parent_y : findInChildren(nextLocation.id,location.children)+1
                 }
+                //var xunits = (!locationType.xUnits || locationType.xUnits===0) ? 1: locationType.xUnits
+                //var yunits = (!locationType.yUnits || locationType.yUnits===0) ? 1: locationType.yUnits
+                const subdivisions = this.generateSubdivisions(location.id, containerSize, containerSize, xunits, yunits, px, py)
+                var cellMap = this.generateCellMap(location.children, location.type, xunits, yunits)
+                this.mapOccupiedCellstoSubdivisions(subdivisions, cellMap, px, py)
+                location.subdivisions = subdivisions
+                //console.log('locationPathSubdivision:',JSON.stringify(subdivisions,null,2))
+
                 locationPath[locationId] = location
             }
             const length = locationPathAr.length
@@ -313,6 +317,18 @@ module.exports = {
 
         const materials = []
         const locations = []
+
+        // add generalized container type
+        locations.push({
+          name: "container",
+          title:"Container",
+          xUnits:1,
+          yUnits:1,
+          fields: {
+            Description: 'text'
+          }
+        })
+            
         for (var i = 0; i < dataTypes.length; i++) {
             const type = dataTypes[i]
             if (type.virtual === true) {

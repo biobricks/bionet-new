@@ -300,6 +300,10 @@ module.exports = function (Component) {
                 if (parent_item) {
                     storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={item.parent_x} py={item.parent_y} mode="edit"/>)
                 }
+                    
+                const locationType = app.actions.inventory.getLocationType(item.type)
+                const xUnits = item.xUnits || (locationType) ? locationType.xUnits : 1
+                const yUnits = item.yUnits || (locationType) ? locationType.yUnits : 1
 
                 return (
                     <form onsubmit={this.submit.bind(this)}>
@@ -310,6 +314,8 @@ module.exports = function (Component) {
                                 <label class="label">Type</label>
                                 <ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
                                 <div style="margin-top:10px;margin-bottom:30px;">
+                                    <FormInputText fid="xUnits" label="Rows" value={xUnits}/>
+                                    <FormInputText fid="yUnits" label="Cols" value={yUnits}/>
                                     {attributes}
                                 </div>
                                 {editTable}

@@ -302,8 +302,12 @@ module.exports = function (Component) {
                 }
                     
                 const locationType = app.actions.inventory.getLocationType(item.type)
-                const xUnits = item.xUnits || (locationType) ? locationType.xUnits : 1
-                const yUnits = item.yUnits || (locationType) ? locationType.yUnits : 1
+                
+                var xUnits = (item.xUnits) ? item.xUnits : (locationType) ? locationType.xUnits : 1
+                var yUnits = (item.yUnits) ? item.yUnits : (locationType) ? locationType.yUnits : 1
+                
+                //const xUnits = item.xUnits || (locationType) ? locationType.xUnits : 1
+                //const yUnits = item.yUnits || (locationType) ? locationType.yUnits : 1
 
                 return (
                     <form onsubmit={this.submit.bind(this)}>

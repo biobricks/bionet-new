@@ -125,6 +125,8 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         });
       }
 
+      console.log("CALLED!");
+
       var skipped = 0;
       var pushed = 0;
       var results = s.pipe(through.obj(function(data, enc, next) {

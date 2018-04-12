@@ -315,6 +315,22 @@ You can restore from a backup by first deleting the old database (obviously be c
 ./bin/db.js import ./myfile.json
 ```
 
+# API
+
+There are two versions of the API. A javascript-only API requiring specific libraries and a JSON-RPC 2.0 standards-compatible API. Both APIs expose the same functionality, but with some limitations and modifications in the features of the JSON-RPC 2.0 API works due to its request-response nature. The JSON-RPC 2.0 API can be easily used from any programming language capable of HTTP requests.
+
+## Javascript API
+
+The javascript API is the must full-featured, with support for streams, persistent connections and multiplexing multiple RPC calls and streams over a single websocket. This API relies on the [rpc-multistream](https://www.npmjs.com/package/rpc-multistream) and [rpc-multiauth](https://www.npmjs.com/package/rpc-multiauth) libraries. The simplest way to use it is with the [bionet-client](https://www.npmjs.com/package/bionet-client) library.
+
+## JSON-RPC 2.0
+
+The JSON-RPC 2.0 API exposes the same functions as the javascript API but whenever an API function would have returned a readable stream (either directly or through a callback) the readable stream is converted to a string, buffer or array depending on the type of data output by the stream. Functionality where a writable stream is returned by the javascript API is not available through this API. Duplex streams are converted to readable streams so only the readable endpoint is available.
+
+The authentication for this API is handled using cookies.
+
+Documentation and python examples for the JSON-RPC 2.0 API are in the `examples/python_json_rpc_client` directory.
+
 # Unit testing
 
 ## Backend

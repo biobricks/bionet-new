@@ -51,7 +51,9 @@ function streamToArray(s, cb) {
 }
 
 function mundanifyResult(res, cb) {
-  if(res instanceof stream.Readable) {
+
+// TODO need better way of checking for stream
+  if(res.readable && res._readableState) {
     streamToArray(res, cb);
   }
   if(res instanceof Array) {

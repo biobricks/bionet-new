@@ -307,6 +307,27 @@ module.exports = {
         return emptyCellArray
     },
     
+    isInstanceContainerSelected() {
+        const currentItem = app.actions.inventory.getLastPathItem()
+        if (currentItem && currentItem.type) {
+            const currentSelectionType = currentItem.type.toLowerCase()
+            if (currentSelectionType.indexOf('box')>=0) return true;
+        }
+        return false
+    },
+    
+    getActiveTypes: function(type) {
+        const isBox = type.toLowerCase().indexOf('box') >= 0
+        if (!isBox) {
+            const types=[]
+            Array.prototype.push.apply(types, app.state.inventory.types.locations.filter( function(typeSpec) {
+                return typeSpec.name !=='lab'
+            }));
+            return types
+        }
+        return app.state.inventory.types.materials
+    },
+    
     getRootPathItem: function() {
         if (!app.state.inventory.path || !app.state.inventory.path.length>0) return null
         return app.state.inventory.path[0]

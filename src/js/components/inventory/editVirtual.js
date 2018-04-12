@@ -7,8 +7,8 @@ import ashnazg from 'ashnazg'
 
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
-    const ItemTypes = require('./itemTypes')(Component)
     const EditTable = require('./editTable')(Component)
+    const DropdownButton = require('./dropdownButton')(Component)
     
     return class EditVirtual extends Component {
         constructor(props) {
@@ -16,7 +16,8 @@ module.exports = function (Component) {
             this.componentWillReceiveProps(this.props)
             this.close = this.close.bind(this)
             this.focus = this.focus.bind(this)
-            this.setType = this.setType.bind(this)
+            this.setSelectedType = this.setSelectedType.bind(this)
+            this.setSelectedTerms = this.setSelectedTerms.bind(this)
             this.assignCells = this.assignCells.bind(this)
             if (app.state.inventory.listener) app.state.inventory.listener.assignPhysical = this.inventoryCellLocation.bind(this);
         }
@@ -162,10 +163,19 @@ module.exports = function (Component) {
           if (nameInput) nameInput.focus(true);
         }
         
+        setSelectedType(type) {
+            if (this.item) this.item.type = type
+        }
+        
+        setSelectedTerms(terms) {
+            if (this.item) this.item.terms = terms
+        }
+        
         render() {
             console.log('EditVirtual render state:',this.state, this.props)
             const item = this.item
             if (!item) return null
+            const thisModule=this
             const selectedItemId = (item) ? item.id : null
             //console.log('EditStorageContainer:',selectedItemId)
             const containerSize = 250
@@ -234,20 +244,27 @@ module.exports = function (Component) {
                 if (item.created) {
                     originator = (<div style="margin-bottom:10px;">Originator: {item.created.user}<br/></div>)
                 }
+                const terms = ['OpenMTA','UBMTA','Other']
+                const selectedTerm = 'OpenMTA'
+                                  
+                // <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
+                const typeSelectionList = types.map(type => type.title)
+
                 return (
                     <div>
                         <FormInputText fid='name' value={this.item.name} label="Name" />
                         {originator}
                         <label class="label">Type</label>
-                        <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
+                        <DropdownButton fid="type" selectedItem={this.item.type} selectionList={typeSelectionList} setSelectedItem={thisModule.setSelectedType}/>
                         <FormInputText fid='instances' value={this.item.name} label="Instances" />
+                        <label class="label">Terms</label>
+                        <DropdownButton fid="terms" selectedItem={selectedTerm} selectionList={terms} setSelectedItem={thisModule.setSelectedTerms}/>
                         <div style="margin-top:10px;margin-bottom:30px;">
                             {attributes}
                         </div>
                     </div>
                 )
             }.bind(this)
-            
             
             var virtualForm = null
             var tabularData = null

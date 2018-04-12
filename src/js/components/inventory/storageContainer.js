@@ -98,7 +98,7 @@ module.exports = function (Component) {
         }
 
         render() {
-            console.log('containerSubdivision render:',this.props)
+            //console.log('containerSubdivision render:',this.props)
             const tiles = this.initialize(this.props)
             if (!tiles) return
             

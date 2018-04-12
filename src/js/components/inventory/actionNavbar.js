@@ -26,23 +26,17 @@ module.exports = function (Component) {
             app.state.inventory.listener.virtualItem = this.editVirtualItemListener.bind(this)
         }
 
-        isInstanceContainerSelected() {
-          const currentItem = app.actions.inventory.getLastPathItem()
-          if (currentItem && currentItem.type) {
-            const currentSelectionType = currentItem.type.toLowerCase()
-            // TODO this is not a good way to tell the difference between types
-            if (currentSelectionType.indexOf('box')>=0) return true;
-          }
-          return false
-        }
-        
         componentWillReceiveProps(nextProps) {
             if (!nextProps || !nextProps.menu) return
             //console.log('ActionNavBar props:',nextProps.menu, this.state, nextProps)
-            var physicalMenu = this.isInstanceContainerSelected();
-
-            const menuDef = (physicalMenu) ? nextProps.menu.materials : nextProps.menu.locations 
-            this.createType = physicalMenu
+            
+            var menuDef=[]
+            const currentItem = app.actions.inventory.getLastPathItem()
+            if (currentItem) {
+                const currentSelectionType = currentItem.type.toLowerCase()
+                var menuDef = app.actions.inventory.getActiveTypes(currentSelectionType)
+            }
+            this.createType = app.actions.inventory.isInstanceContainerSelected()
             this.setState({menuDef:menuDef})
         }
         
@@ -233,7 +227,7 @@ module.exports = function (Component) {
                     return <a id={props.id} class={'dropdown-item ' + ((props.emphasis) ? 'bold' : '')} onClick={props.onClick}>{props.label}</a>
                 }
 
-              if(this.isInstanceContainerSelected()) {
+              if(app.actions.inventory.isInstanceContainerSelected()) {
                 menu.push(<DropdownMenuItem label="Existing" emphasis onClick={this.addExisting.bind(this)} />)
               }
                 for (var i=0; i<menuDef.length; i++) {

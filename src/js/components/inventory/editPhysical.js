@@ -8,6 +8,7 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
+    const DropdownButton = require('./dropdownButton')(Component)
     
     return class EditPhysical extends Component {
         constructor(props) {
@@ -25,7 +26,12 @@ module.exports = function (Component) {
             
             var item={}
             if (nextProps.item) {
-                item = nextProps.item
+                const dbData = JSON.parse(JSON.stringify(nextProps.item))
+                // remove extraneous attributes
+                delete dbData.loc
+                delete dbData.children
+                delete dbData.subdivisions
+                item = dbData
             } else {
                 item.id = null
                 item.parent_id = null
@@ -92,8 +98,8 @@ module.exports = function (Component) {
             e.preventDefault();
             this.close()
             
-            // edit existing item
-            var dbData = this.state.item
+            // deep-copy current item
+            const dbData = this.state.item
             
             const selection = app.state.inventory.selection
             if (selection && !dbData.id) {
@@ -102,8 +108,6 @@ module.exports = function (Component) {
             dbData.parent_x = selection.x
             dbData.parent_y = selection.y
 
-            // merge form data
-            delete dbData.loc
             console.log('edit physical, submit:',dbData, selection)
             //return
             app.actions.prompt.reset()
@@ -255,14 +259,11 @@ module.exports = function (Component) {
             var isBox = false
             if (parent_item) {
                 const currentSelectionType = parent_item.type.toLowerCase()
+                var types = app.actions.inventory.getActiveTypes(currentSelectionType)
+                //console.log('edit physical, types:',types, currentSelectionType)
                 isBox = currentSelectionType.indexOf('box') >= 0
-                if (app.state.inventory.types && parent_item) {
-                    types = (isBox) ? app.state.inventory.types.materials : app.state.inventory.types.locations
-                }
-            } else {
-                types = app.state.inventory.types.locations
             }
-                    
+            const typeSelectionList = types.map(type => type.title)
 
             if (tabular) {
                 var document = null
@@ -274,6 +275,9 @@ module.exports = function (Component) {
                 //console.log('tabular:',this.props.classProps)
                 const navArrowStyle = "font-size:20px;line-height:35px;color:#808080;display:flex;justify-content:center;margin-right:0px;"
                 const itemName = item.name
+                /*
+                            <ItemTypes type={item.type} types={typeSelectionList} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />
+                */
                 return (
                     <form onsubmit={this.submit.bind(this)} style="padding:0;">
                         <div className="tabular-row tile is-parent is-11"  style={focusStyle+'padding:0;margin:0;box-sizing:border-box;'} onclick={this.onClickRow.bind(this)}>
@@ -281,7 +285,7 @@ module.exports = function (Component) {
                                 <a onclick={this.navigateItem.bind(this)} class={"mdi mdi-arrow-right"} style={navArrowStyle}></a>
                             </div>
                             <FormInputText fid={itemName+'_name'} value={item.name} label="Name" classProps={this.props.classProps[1].class}/>
-                            <ItemTypes type={item.type} types={types} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />
+                            <DropdownButton fid={itemName+"_types"} selectedItem={item.type} selectionList={typeSelectionList} setSelectedItem={this.setType}/>
                             <FormInputText fid={itemName+'_loc'} value={label} label="Loc"  classProps={this.props.classProps[3].class}/>
                             {document}
                             {attributes}
@@ -302,13 +306,10 @@ module.exports = function (Component) {
                 }
                     
                 const locationType = app.actions.inventory.getLocationType(item.type)
-                
                 var xUnits = (item.xUnits) ? item.xUnits : (locationType) ? locationType.xUnits : 1
                 var yUnits = (item.yUnits) ? item.yUnits : (locationType) ? locationType.yUnits : 1
+                                //<ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
                 
-                //const xUnits = item.xUnits || (locationType) ? locationType.xUnits : 1
-                //const yUnits = item.yUnits || (locationType) ? locationType.yUnits : 1
-
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="columns">
@@ -316,7 +317,7 @@ module.exports = function (Component) {
                                 <FormInputText fid='name' value={item.name} label="Name" />
                                 {originator}
                                 <label class="label">Type</label>
-                                <ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
+                                <DropdownButton fid={item.name+"_types"} selectedItem={item.type} selectionList={typeSelectionList} setSelectedItem={this.setType}/>
                                 <div style="margin-top:10px;margin-bottom:30px;">
                                     <FormInputText fid="xUnits" label="Cols" value={xUnits}/>
                                     <FormInputText fid="yUnits" label="Rows" value={yUnits}/>

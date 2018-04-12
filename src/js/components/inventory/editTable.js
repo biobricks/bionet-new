@@ -32,7 +32,7 @@ module.exports = function (Component) {
             //const attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
             var attributes = this.props.attributes
             if (!attributes) attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
-            console.log('attributes:\n',JSON.stringify(attributes,2,null))
+            //console.log('attributes:\n',JSON.stringify(attributes,2,null))
             for (var i=0; i<attributes.length; i++) {
                 var fieldId = attributes[i].name.toLowerCase()
                 var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);

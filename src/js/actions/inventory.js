@@ -135,7 +135,7 @@ module.exports = {
     },
     
     getInventoryPath: function(id, cb) {
-        console.log('getInventoryPathRPC action id:',id)
+        //console.log('getInventoryPathRPC action id:',id)
         
         //console.trace()
         // TODO You are not allowed to manipulate state directly.
@@ -148,12 +148,12 @@ module.exports = {
         const locationPath = {}
         
         const debugcb=function(msg,data) {
-            console.log('getInventoryPath,'+msg,data)
+            //console.log('getInventoryPath,'+msg,data)
         }
         var containerSize = this.getContainerSize()
         
         app.remote.getLocationPathChildren(id, function (err, locationPathAr) {
-            console.log('getInventoryPath, cb',locationPathAr)
+            //console.log('getInventoryPath, cb',locationPathAr)
             if (err) {
                 console.log('getInventoryPath error:', err.message)
                 if (cb) cb(err, null)
@@ -177,7 +177,7 @@ module.exports = {
                 var yunits = (location.yUnits) ? location.yUnits : (locationType) ? locationType.yUnits : 1
                 location.xUnits = xunits
                 location.yUnits = yunits
-                console.log('getInventoryPath:',location,xu, yu,    xunits,yunits)
+                //console.log('getInventoryPath:',location,xu, yu,    xunits,yunits)
                 var px=null
                 var py=null
                 var nextLocation = (i<locationPathAr.length-1) ? locationPathAr[i+1] : {}

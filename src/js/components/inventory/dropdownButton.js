@@ -45,7 +45,6 @@ module.exports = function (Component) {
 
         render() {
             const selectionList = this.props.selectionList
-            //console.log('dropdownButton render:',this.props,this.state)
             if (!selectionList || !selectionList.length) return
             const thisComponent = this
             const DropdownItem = function(props) {

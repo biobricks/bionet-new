@@ -38,7 +38,7 @@ module.exports = function (Component) {
         }
 
         subdivideContainer(pwidth, pheight, pxunits, pyunits, containerLabel, childType, selectedItemId, px, py, mode) {
-            console.log('subdivideContainer', this.props)
+            //console.log('subdivideContainer', this.props)
             const subdivisions = this.props.item.subdivisions
             this.subdivisions = subdivisions
             if (!subdivisions || !subdivisions.length) return null

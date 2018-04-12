@@ -122,7 +122,7 @@ module.exports = function (Component) {
                     <div>You must be logged in to view this page.</div>
                 )
             }
-            console.log('inventory main render:', this.props, this.state)
+            //console.log('inventory main render:', this.props, this.state)
             return (
                 <div id="inventory_view" class="tile is-ancestor">
                     <ActionNavbar state="inventoryNav" inventoryPath={this.state.inventoryPath} menu={this.state.types}/>

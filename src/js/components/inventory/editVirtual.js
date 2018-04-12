@@ -223,13 +223,25 @@ module.exports = function (Component) {
             
             const attributeDefs = this.state.attributes
             const attributes=[]
+            const terms = app.actions.inventory.getTerms()
             if (attributeDefs) {
                 for (var i=0; i<attributeDefs.length; i++) {
                     var field = attributeDefs[i]
                     var fieldId = field.name.toLowerCase()
                     var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
                     var value = (item && item[fieldId]) ? item[fieldId] : ''
-                    attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
+                    if (fieldId==='terms') {
+                        if (!value || value.length===0) value='OpenMTA'
+                        attributes.push(
+                            <div>
+                                <label class="label">{label}</label>
+                                <DropdownButton fid={fieldId} selectedItem={value} selectionList={terms} setSelectedItem={thisModule.setSelectedTerms}/>
+                            </div>
+                        )
+                    }
+                    else {
+                        attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
+                    }
                 }
             }
                                     
@@ -244,8 +256,6 @@ module.exports = function (Component) {
                 if (item.created) {
                     originator = (<div style="margin-bottom:10px;">Originator: {item.created.user}<br/></div>)
                 }
-                const terms = ['OpenMTA','UBMTA','Other']
-                const selectedTerm = 'OpenMTA'
                                   
                 // <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
                 const typeSelectionList = types.map(type => type.title)
@@ -257,8 +267,6 @@ module.exports = function (Component) {
                         <label class="label">Type</label>
                         <DropdownButton fid="type" selectedItem={this.item.type} selectionList={typeSelectionList} setSelectedItem={thisModule.setSelectedType}/>
                         <FormInputText fid='instances' value={this.item.name} label="Instances" />
-                        <label class="label">Terms</label>
-                        <DropdownButton fid="terms" selectedItem={selectedTerm} selectionList={terms} setSelectedItem={thisModule.setSelectedTerms}/>
                         <div style="margin-top:10px;margin-bottom:30px;">
                             {attributes}
                         </div>

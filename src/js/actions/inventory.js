@@ -328,6 +328,10 @@ module.exports = {
         return app.state.inventory.types.materials
     },
     
+    getTerms: function() {
+        return app.settings.terms
+    },
+    
     getRootPathItem: function() {
         if (!app.state.inventory.path || !app.state.inventory.path.length>0) return null
         return app.state.inventory.path[0]

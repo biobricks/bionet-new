@@ -8,7 +8,7 @@ module.exports = {
 
   // name of lab to create on first run
   lab: "EndyLab",
-
+  terms: ['OpenMTA','UBMTA','Other'],
   dataTypes: 
     [{
       name: "lab",

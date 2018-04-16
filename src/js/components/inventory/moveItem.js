@@ -8,9 +8,13 @@ module.exports = function (Component) {
     return class MoveItem extends Component {
         constructor(props) {
             super(props)
+            this.drop = this.drop.bind(this)
+            this.dragOver = this.dragOver.bind(this)
+            this.dragStart = this.dragStart.bind(this)
             this.moveButtonClick = this.moveButtonClick.bind(this)
             this.state={
-                moveActive:false
+                moveActive:false,
+                moveList:[]
             }
         }
         
@@ -39,20 +43,45 @@ module.exports = function (Component) {
             }
         }
         
+        drop(e) {
+            e.preventDefault();
+            var data = e.dataTransfer.getData("text");
+            console.log('moveItem drop:',data)
+            var moveList = this.state.moveList
+            moveList.push(data)
+            this.setState({
+                moveList:moveList
+            })
+            //e.target.appendChild(document.getElementById(data));            
+        }
+        
+        dragStart(e) {
+          e.dataTransfer.setData("text/plain", JSON.stringify(this.state.moveList))
+        }
+        
+        dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move"
+        }
+        
         close() {
             app.actions.inventory.setMoveItem(null)
         }
         
         render() {
+            /*
+                    <button className="button is-small is-light" aria-haspopup="true" aria-controls="dropdown-menu-move" style="color:#000000;" onclick={this.moveButtonClick}>Move:</button>
+                    <span style="color:#ffffff;margin-left:5px; margin-right:20px;font-weight:800;">{item.name}</span>
+            */
+            const totalItems = (this.state.moveList) ? this.state.moveList.length : 0
+            const itemText = (totalItems===1) ? 'item' : 'items'
             if (!this.props.item) return null
             const item = this.props.item
             var storageContainer = null
             const isActive = (this.state.moveActive) ? 'is-active' : ''
-            
             return (
-                <a id={item.id} className="navbar-item is-dark" style="background-color:#404040;">
-                    <button className="button is-small is-light" aria-haspopup="true" aria-controls="dropdown-menu-move" style="color:#000000;" onclick={this.moveButtonClick}>Move:</button>
-                    <span style="color:#ffffff;margin-left:5px; margin-right:20px;font-weight:800;">{item.name}</span>
+                <a id={item.id} className="navbar-item is-dark" style="background-color:#404040;" ondrop={this.drop} ondragover={this.dragOver} draggable="true" ondragstart={this.dragStart}>
+                    <span style="color:#ffffff;margin-left:5px; margin-right:20px;font-weight:800;">{totalItems} {itemText} on bench</span>
                     <span className="button is-rounded" style="background-color:rgb(64,64,64);border:none;" onclick={this.close.bind(this)}><a className="mdi mdi-close-box mdi-24px mdi-light" style="color:#000000;font-weight:800;"></a></span>
                 </a>
             )

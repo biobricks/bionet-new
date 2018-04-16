@@ -65,12 +65,13 @@ module.exports = function (Component) {
                 rows.push(<div id="inventory_item" class="tile" style={rowStyle}>{cols}</div>)
             }
             const subdivisionStyle = "max-width:"+pwidth+"px;height:"+dy+"px;margin:0;padding:0px;"
-            return (<div class="tile is-vertical" style={subdivisionStyle}>{rows}</div>)
+            return (<div class="tile is-vertical" style={subdivisionStyle} ondrop={this.drop} ondragover={this.dragOver} >{rows}</div>)
         }
         
         getId() {
             return this.props.dbid
         }
+                
 
         editContainerListener(occupied) {
             if (!occupied) return

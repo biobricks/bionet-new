@@ -83,6 +83,28 @@ module.exports = {
         if (app.state.inventory.listener.physicalItem) app.state.inventory.listener.physicalItem(item)
     },
     
+    updateItem: function(id, cb) {
+        app.remote.get(id, function(err, item) {
+            if (err) {
+                app.actions.notify('Item '+id+' not found', 'error');
+                if (cb) cb(err)
+                return
+            }
+            if (cb) {
+                const updatedItem = cb(null,item)
+                app.remote.savePhysical(updatedItem, null, null, function (err, id) {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                    const currentItem = app.actions.inventory.getLastPathItem()
+                    app.actions.inventory.refreshInventoryPath(currentItem.id)
+                })
+            }
+        })
+        
+    },
+    
     editVirtualItem: function(id, cb) {
         //console.log('editVirtualItem action: ', id)
         if (!id) {
@@ -116,7 +138,7 @@ module.exports = {
     refreshInventoryPath: function(id, cb) {
         const url = "/inventory/"+id+"?r=true"
         //console.log('refreshInventoryPath:',url)
-        app.state.inventory.refresh=true
+        app.state.inventory.forceRefresh=true
         app.state.history.push(url)
     },
     

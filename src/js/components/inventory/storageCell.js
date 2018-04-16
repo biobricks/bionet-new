@@ -11,6 +11,9 @@ module.exports = function (Component) {
             this.onClickCell = this.onClickCell.bind(this)
             this.getCellCoordinates = this.getCellCoordinates.bind(this)
             this.onDoubleClickCell = this.onDoubleClickCell.bind(this)
+            this.dragStart = this.dragStart.bind(this)
+            this.drop = this.drop.bind(this)
+            this.dragOver = this.dragOver.bind(this)
             this.clickCount = 0
             this.state = {
                 active:props.active,
@@ -68,6 +71,37 @@ module.exports = function (Component) {
             })
         }
         
+        dragStart(e) {
+          if (!this.props.item) return
+          e.dataTransfer.setData("text/plain", this.props.item.id);
+          e.dataTransfer.dropEffect = "copy";
+        }
+        
+        drop(e) {
+            e.preventDefault();
+            var id = e.dataTransfer.getData("text");
+            console.log('cell drop:',id)
+            if (!id || id.length <= 0) return
+            const thisComponent = this
+            app.actions.inventory.updateItem(id, function(err,item) {
+                console.log('cell updateItem:',err,item, thisComponent.props)
+                if (err) {
+                    app.actions.error(err)
+                    return
+                }
+                item.parent_x = thisComponent.props.parent_x
+                item.parent_y = thisComponent.props.parent_y
+                //item.parent_id = thisComponent.props.parent_id
+                //thisComponent.occupied(true)
+                return item
+            })
+        }
+        
+        dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move"
+        }
+        
         render() {
                 const width = this.props.width
                 const fontSize = (this.props.width>15) ? 11 : 8
@@ -97,7 +131,7 @@ module.exports = function (Component) {
                     
                 return (
                     <div id={this.props.id} className="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} >
-                        <div className={className} style={"width:100%;"+textOverflow}>
+                        <div className={className} style={"width:100%;"+textOverflow} draggable="true" ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver}>
                             <CellLabel text={this.props.label} name={cellName}/>
                         </div>
                     </div>

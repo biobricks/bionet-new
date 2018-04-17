@@ -60,7 +60,7 @@ module.exports = {
             navigate:navigate
         }
         app.state.inventory.selection = inventorySelection
-        
+
         if (navigate) {
             const idn = (id) ? id : parentId
             if (idn) {
@@ -317,6 +317,78 @@ module.exports = {
             cellMap[cellId]=item
         }
         return cellMap
+    },
+    
+    getWorkbenchContainer: function(cb){
+        app.remote.getWorkbench(function(err, workbench) {
+            if (err) {
+                console.log('error retrieiving workbench container:',err)
+                if (cb) cb(err)
+                return
+            }
+            if (!app.state.inventory.workbench) app.state.inventory.workbench={}
+            app.state.inventory.workbench.container = workbench
+            if (cb) cb(null, workbench)
+        })
+    },
+
+    getWorkbenchTree: function(cb){
+        app.remote.workbenchTree(function(err,tree) {
+            if (err) {
+                console.log('error retrieiving workbench tree:',err)
+                if (cb) cb(err)
+                return
+            }
+            if (!app.state.inventory.workbench) app.state.inventory.workbench={}
+            app.state.inventory.workbench.tree = tree
+            if (cb) cb(null, tree)
+        })
+    },
+    
+    saveToWorkbench: function(id, cb) {
+        if (!id) return
+        app.remote.get(id, function(err, m) {
+            if (err) {
+                console.log('saveToWorkbench: id not found', err)
+                if (cb) cb(err)
+                return
+            }
+            console.log('saving to workbench:',m)
+            app.remote.saveInWorkbench(m,null,null,function(err,id2) {
+                if (err) {
+                    console.log('error saving to workbench:',err)
+                    if (cb) cb(err)
+                    return
+                }
+                if (cb) cb(null, id2)
+            })
+        })
+    },
+    
+    moveWorkbenchToContainer: function(containerId, x, y, cb) {
+        this.getWorkbenchTree(function(err,tree) {
+            if (err) {
+                console.log('error moving workbench tree:',err)
+                if (cb) cb(err)
+                return
+            }
+            console.log('moveWorkbenchToContainer:',containerId)
+            var remainingItems = tree.length-1
+            // todo fetch empty cells for container
+            for (var i=0; i<tree.length; i++) {
+                var item = tree[i].value
+                if (item) {
+                    item.parent_id = containerId
+                    // todo: set parent_x, parent_y to empty cells
+                    console.log('moveWorkbenchToContainer, item:',item)
+                    app.remote.savePhysical(item, null, null, function (err, id) {
+                        if (remainingItems-- <= 0) {
+                            if (cb) cb(null)
+                        }
+                    })
+                }
+            }
+        }.bind(this))
     },
     
     getEmptyCellArray: function(subdivisions) {

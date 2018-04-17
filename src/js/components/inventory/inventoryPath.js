@@ -162,7 +162,7 @@ module.exports = function (Component) {
                     </div>
                     <div class="tile">
                         <div class="navbar-end">
-                            <MoveItem item={this.state.moveItem}/>
+                            <MoveItem state="workbench" item={this.state.moveItem}/>
                             <a class="navbar-item mdi mdi-printer"  style={iconStyle} onclick={this.print.bind(this)}></a>
                         </div>
                     </div>

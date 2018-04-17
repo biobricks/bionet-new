@@ -213,7 +213,7 @@ module.exports = function (Component) {
         
         moveItem() {
             const item = app.actions.inventory.getSelectedItem()
-            console.log('moveItem:',item)
+            console.log('moveItemButton:',item)
             app.actions.inventory.setMoveItem(item)
         }
 

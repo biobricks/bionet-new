@@ -104,6 +104,7 @@ module.exports = function (Component) {
             this.initialized=true
             app.actions.inventory.getInventoryTypes()
             app.actions.inventory.getFavorites()
+            app.actions.inventory.getWorkbenchContainer()
             const id = (this.props.match) ? this.props.match.params.id : null
             console.log('logged in user')
             this.getInventoryPath(id)

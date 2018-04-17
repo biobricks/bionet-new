@@ -14,7 +14,7 @@ module.exports = function (Component) {
             this.moveButtonClick = this.moveButtonClick.bind(this)
             this.state={
                 moveActive:false,
-                moveList:[]
+                workbench:[]
             }
         }
         
@@ -43,20 +43,35 @@ module.exports = function (Component) {
             }
         }
         
+        getWorkbench() {
+            app.actions.inventory.getWorkbenchTree( function(err,tree) {
+                console.log('getWorkbench:',tree)
+                this.setState({workbench:tree})
+                const currentItem = app.actions.inventory.getLastPathItem()
+                app.actions.inventory.refreshInventoryPath(currentItem.id)
+            }.bind(this))
+        }
+        
         drop(e) {
             e.preventDefault();
             var data = e.dataTransfer.getData("text");
             console.log('moveItem drop:',data)
-            var moveList = this.state.moveList
-            moveList.push(data)
+            if (data) {
+                app.actions.inventory.saveToWorkbench(data,function(err,m) {
+                    console.log('workbench component, item added to workbench:',m)
+                    this.getWorkbench()
+                }.bind(this))
+            }
+            var workbench = this.state.workbench
+            workbench.push(data)
             this.setState({
-                moveList:moveList
+                workbench:workbench
             })
             //e.target.appendChild(document.getElementById(data));            
         }
         
         dragStart(e) {
-          e.dataTransfer.setData("text/plain", JSON.stringify(this.state.moveList))
+          e.dataTransfer.setData("text/plain", JSON.stringify(this.state.workbench))
         }
         
         dragOver(e) {
@@ -68,12 +83,16 @@ module.exports = function (Component) {
             app.actions.inventory.setMoveItem(null)
         }
         
+        componentWillMount() {
+            this.getWorkbench()
+        }
+        
         render() {
             /*
                     <button className="button is-small is-light" aria-haspopup="true" aria-controls="dropdown-menu-move" style="color:#000000;" onclick={this.moveButtonClick}>Move:</button>
                     <span style="color:#ffffff;margin-left:5px; margin-right:20px;font-weight:800;">{item.name}</span>
             */
-            const totalItems = (this.state.moveList) ? this.state.moveList.length : 0
+            const totalItems = (this.state.workbench) ? this.state.workbench.length : 0
             const itemText = (totalItems===1) ? 'item' : 'items'
             if (!this.props.item) return null
             const item = this.props.item

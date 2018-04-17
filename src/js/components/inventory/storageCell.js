@@ -84,34 +84,9 @@ module.exports = function (Component) {
             console.log('cell drop:',data)
             if (!data || data.length <= 0) return
             
-            const isId = data.indexOf('p-')===0
-            if (isId) {
-                const thisComponent = this
-                const id = data
-                app.actions.inventory.updateItem(id, function(err,item) {
-                    console.log('cell updateItem:',err,item, thisComponent.props)
-                    if (err) {
-                        app.actions.error(err)
-                        return
-                    }
-                    item.parent_x = thisComponent.props.parent_x
-                    item.parent_y = thisComponent.props.parent_y
-                    return item
-                })
-            } else {
-            //} else if (Array.isArray(data)) {
-                data = JSON.parse(data)
-                app.actions.inventory.moveWorkbenchToContainer(this.props.parent_id, this.props.parent_x, this.props.parent_y, function(err) {
-                    // todo: refresh workbench
-                    const currentItem = app.actions.inventory.getLastPathItem()
-                    app.actions.inventory.refreshInventoryPath(currentItem.id)
-                    app.changeState({
-                        workbench: {
-                            workbench: []
-                        }
-                    })
-                })
-            }
+            app.actions.inventory.moveItemLocation(data,this.props.parent_id, this.props.parent_x,this.props.parent_y,function(err,item) {
+            })
+            
         }
         
         dragOver(e) {

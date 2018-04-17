@@ -365,6 +365,36 @@ module.exports = {
         })
     },
     
+    moveItemLocation: function(data,parentId, x,y, cb) {
+        const isId = data.indexOf('p-')===0
+        if (isId) {
+            const id = data
+            app.actions.inventory.updateItem(id, function(err,item) {
+                console.log('moveItemLocation:',err,item)
+                if (err) {
+                    app.actions.error(err)
+                    if (cb) cb(err)
+                    return
+                }
+                item.parent_x = x
+                item.parent_y = y
+                if (cb) cb(null,item)
+                return item
+            })
+        } else {
+            data = JSON.parse(data)
+            app.actions.inventory.moveWorkbenchToContainer(parentId, x, y, function(err) {
+                const currentItem = app.actions.inventory.getLastPathItem()
+                app.actions.inventory.refreshInventoryPath(currentItem.id)
+                app.changeState({
+                    workbench: {
+                        workbench: []
+                    }
+                })
+            })
+        }
+    },
+    
     moveWorkbenchToContainer: function(containerId, x, y, cb) {
         this.getWorkbenchTree(function(err,tree) {
             if (err) {

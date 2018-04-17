@@ -18,6 +18,9 @@ module.exports = function (Component) {
             this.close = this.close.bind(this)
             this.setType = this.setType.bind(this)
             this.inventoryCellLocation=this.inventoryCellLocation.bind(this)
+            this.dragStart = this.dragStart.bind(this)
+            this.drop = this.drop.bind(this)
+            this.dragOver = this.dragOver.bind(this)
         }
         
         componentWillReceiveProps(nextProps) {
@@ -182,6 +185,31 @@ module.exports = function (Component) {
             }
         }
         
+        dragStart(e) {
+          if (!this.props.item) return
+          const item = this.props.item
+          e.dataTransfer.setData("text/plain", this.props.item.id);
+          e.dataTransfer.dropEffect = "copy";
+        }
+        
+        drop(e) {
+            
+            e.preventDefault()
+            var data = e.dataTransfer.getData("text")
+            console.log('cell drop:',data)
+            if (!data || data.length <= 0) return
+            
+            const item = this.props.item
+            app.actions.inventory.moveItemLocation(data,item.parent_id, item.parent_x,item.parent_y,function(err,itemupdated) {
+            })
+            
+        }
+        
+        dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move"
+        }
+        
         componentDidMount() {
             if (!window.editPhysical) window.editPhysical=1
             else window.editPhysical++
@@ -280,7 +308,7 @@ module.exports = function (Component) {
                 */
                 return (
                     <form onsubmit={this.submit.bind(this)} style="padding:0;">
-                        <div className="tabular-row tile is-parent is-11"  style={focusStyle+'padding:0;margin:0;box-sizing:border-box;'} onclick={this.onClickRow.bind(this)}>
+                        <div className="tabular-row tile is-parent is-11"  style={focusStyle+'padding:0;margin:0;box-sizing:border-box;'} onclick={this.onClickRow.bind(this)} ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver} draggable="true">
                             <div className={"tile is-child "+this.props.classProps[0].class} style="justify-content:center;line-height:30px;">
                                 <a onclick={this.navigateItem.bind(this)} class={"mdi mdi-arrow-right"} style={navArrowStyle}></a>
                             </div>

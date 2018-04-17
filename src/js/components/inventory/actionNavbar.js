@@ -255,6 +255,7 @@ module.exports = function (Component) {
 
             /*
             const editPhysical = (app.state.inventory.physicalItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />) : null
+                    <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
             */
                                                                      
             const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
@@ -290,7 +291,6 @@ module.exports = function (Component) {
                         </div>
                     </div>
                     <ActionMenuButton icon="pencil" onClick={this.editItem.bind(this)} />
-                    <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
                     <ActionMenuButton icon="open-in-app" onClick={this.upload.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                 </div>

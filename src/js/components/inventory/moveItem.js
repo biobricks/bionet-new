@@ -13,7 +13,7 @@ module.exports = function (Component) {
             this.dragStart = this.dragStart.bind(this)
             this.moveButtonClick = this.moveButtonClick.bind(this)
             this.state={
-                moveActive:false,
+                moveActive:true,
                 workbench:[]
             }
         }
@@ -91,17 +91,17 @@ module.exports = function (Component) {
             /*
                     <button className="button is-small is-light" aria-haspopup="true" aria-controls="dropdown-menu-move" style="color:#000000;" onclick={this.moveButtonClick}>Move:</button>
                     <span style="color:#ffffff;margin-left:5px; margin-right:20px;font-weight:800;">{item.name}</span>
+                    <span className="button is-rounded" style="background-color:rgb(64,64,64);border:none;" onclick={this.close.bind(this)}><a className="mdi mdi-close-box mdi-24px mdi-light" style="color:#000000;font-weight:800;"></a></span>
             */
             const totalItems = (this.state.workbench) ? this.state.workbench.length : 0
             const itemText = (totalItems===1) ? 'item' : 'items'
-            if (!this.props.item) return null
-            const item = this.props.item
+            //if (!this.props.item) return null
+            //const item = this.props.item
             var storageContainer = null
             const isActive = (this.state.moveActive) ? 'is-active' : ''
             return (
-                <a id={item.id} className="navbar-item is-dark" style="background-color:#404040;" ondrop={this.drop} ondragover={this.dragOver} draggable="true" ondragstart={this.dragStart}>
+                <a className="navbar-item is-dark" style="background-color:#404040;" ondrop={this.drop} ondragover={this.dragOver} draggable="true" ondragstart={this.dragStart}>
                     <span style="color:#ffffff;margin-left:5px; margin-right:20px;font-weight:800;">{totalItems} {itemText} on bench</span>
-                    <span className="button is-rounded" style="background-color:rgb(64,64,64);border:none;" onclick={this.close.bind(this)}><a className="mdi mdi-close-box mdi-24px mdi-light" style="color:#000000;font-weight:800;"></a></span>
                 </a>
             )
         }

@@ -147,8 +147,8 @@ module.exports = function (Component) {
                 else if (this.state.occupied) className = 'is-occupied-cell '
                     
                 return (
-                    <div id={this.props.id} className="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} >
-                        <div className={className} style={"width:100%;"+textOverflow} draggable="true" ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver}>
+                    <div id={this.props.id} className="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver}>
+                        <div className={className} style={"width:100%;"+textOverflow} draggable="true" >
                             <CellLabel text={this.props.label} name={cellName}/>
                         </div>
                     </div>

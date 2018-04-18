@@ -398,6 +398,7 @@ module.exports = {
                     if (cb) cb(err)
                     return
                 }
+                item.parent_id = parentId
                 item.parent_x = x
                 item.parent_y = y
                 if (cb) cb(null,item)

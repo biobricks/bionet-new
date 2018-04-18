@@ -326,8 +326,29 @@ module.exports = {
                 if (cb) cb(err)
                 return
             }
-            if (!app.state.inventory.workbench) app.state.inventory.workbench={}
-            app.state.inventory.workbench.container = workbench
+            app.remote.getPath(workbench.id,function(err,path){
+                if (err) {
+                    console.log('error retrieiving workbench path:',err)
+                    if (cb) cb(err)
+                    return
+                }
+                console.log('getWorkbenchContainer:workbench',workbench,path)
+                app.remote.getImmediateChildren(path,workbench.id,function(err,id, children){
+                    if (err) {
+                        console.log('error retrieiving workbench container:',err)
+                        if (cb) cb(err)
+                        return
+                    }
+                    const children2 = children.map(function(child){
+                        return {
+                            value:child,
+                            id:child.id
+                        }
+                    })
+                    console.log('getWorkbenchContainer:children',children2)
+                    if (cb) cb(null, children2)
+                })
+            })
             if (cb) cb(null, workbench)
         })
     },
@@ -339,8 +360,7 @@ module.exports = {
                 if (cb) cb(err)
                 return
             }
-            if (!app.state.inventory.workbench) app.state.inventory.workbench={}
-            app.state.inventory.workbench.tree = tree
+            console.log('getWorkbenchTree:',tree)
             if (cb) cb(null, tree)
         })
     },
@@ -354,12 +374,14 @@ module.exports = {
                 return
             }
             console.log('saving to workbench:',m)
+            const parentId = m.parent_id
             app.remote.saveInWorkbench(m,null,null,function(err,id2) {
                 if (err) {
                     console.log('error saving to workbench:',err)
                     if (cb) cb(err)
                     return
                 }
+                app.actions.inventory.refreshInventoryPath(parentId)
                 if (cb) cb(null, id2)
             })
         })
@@ -384,8 +406,7 @@ module.exports = {
         } else {
             data = JSON.parse(data)
             app.actions.inventory.moveWorkbenchToContainer(parentId, x, y, function(err) {
-                const currentItem = app.actions.inventory.getLastPathItem()
-                app.actions.inventory.refreshInventoryPath(currentItem.id)
+                app.actions.inventory.refreshInventoryPath(parentId)
                 app.changeState({
                     workbench: {
                         workbench: []
@@ -396,7 +417,7 @@ module.exports = {
     },
     
     moveWorkbenchToContainer: function(containerId, x, y, cb) {
-        this.getWorkbenchTree(function(err,tree) {
+        this.getWorkbenchContainer(function(err,tree) {
             if (err) {
                 console.log('error moving workbench tree:',err)
                 if (cb) cb(err)

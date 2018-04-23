@@ -127,10 +127,18 @@ module.exports = {
     },
     
     getLocationType: function( type ) {
-        if (!app.state.inventory.types.locations) return
-        const types = app.state.inventory.types.locations
+        if (!app.state.inventory.types.all) return
+        const types = app.state.inventory.types.all
         for (var i=0; i<types.length; i++) {
             if ( types[i].name === type ) return types[i]
+        }
+        return null
+    },
+    getLocationTypeFromTitle: function( type ) {
+        if (!app.state.inventory.types.all) return
+        const types = app.state.inventory.types.all
+        for (var i=0; i<types.length; i++) {
+            if ( types[i].title === type ) return types[i]
         }
         return null
     },
@@ -193,12 +201,8 @@ module.exports = {
                 var location = locationPathAr[i]
                 var locationId = location.id
                 var locationType = this.getLocationType(location.type)
-                var xu = location.xUnits
-                var yu = location.yUnits
-                var xunits = (location.xUnits) ? location.xUnits : (locationType) ? locationType.xUnits : 1
-                var yunits = (location.yUnits) ? location.yUnits : (locationType) ? locationType.yUnits : 1
-                location.xUnits = xunits
-                location.yUnits = yunits
+                var xunits = location.xUnits
+                var yunits = location.yUnits
                 //console.log('getInventoryPath:',location,xu, yu,    xunits,yunits)
                 var px=null
                 var py=null
@@ -207,8 +211,6 @@ module.exports = {
                     px = (nextLocation.parent_x) ? nextLocation.parent_x : 1
                     py = (nextLocation.parent_y) ? nextLocation.parent_y : findInChildren(nextLocation.id,location.children)+1
                 }
-                //var xunits = (!locationType.xUnits || locationType.xUnits===0) ? 1: locationType.xUnits
-                //var yunits = (!locationType.yUnits || locationType.yUnits===0) ? 1: locationType.yUnits
                 const subdivisions = this.generateSubdivisions(location.id, containerSize, containerSize, xunits, yunits, px, py)
                 var cellMap = this.generateCellMap(location.children, location.type, xunits, yunits)
                 this.mapOccupiedCellstoSubdivisions(subdivisions, cellMap, px, py)
@@ -490,7 +492,7 @@ module.exports = {
         const locations = []
 
         // add generalized container type
-        locations.push({
+        const containerType = {
           name: "container",
           title:"Container",
           xUnits:1,
@@ -498,7 +500,10 @@ module.exports = {
           fields: {
             Description: 'text'
           }
-        })
+        }
+        //locations.push(containerType)
+        const allTypes=[]
+        //allTypes.push(containerType)
             
         for (var i = 0; i < dataTypes.length; i++) {
             const type = dataTypes[i]
@@ -509,10 +514,12 @@ module.exports = {
                 type.url = '/create-physical/' + encodeURI(type.name)
                 locations.push(type)
             }
+            allTypes.push(type)
         }
         const typeSpec = {
             materials: materials,
-            locations: locations
+            locations: locations,
+            all:allTypes
         }
         app.state.inventory.types = typeSpec
         return typeSpec

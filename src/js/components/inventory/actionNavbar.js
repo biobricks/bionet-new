@@ -34,7 +34,8 @@ module.exports = function (Component) {
             const currentItem = app.actions.inventory.getLastPathItem()
             if (currentItem) {
                 const currentSelectionType = currentItem.type.toLowerCase()
-                var menuDef = app.actions.inventory.getActiveTypes(currentSelectionType)
+                //menuDef = app.actions.inventory.getActiveTypes(currentSelectionType)
+                menuDef = app.state.inventory.types.all
             }
             this.createType = app.actions.inventory.isInstanceContainerSelected()
             this.setState({menuDef:menuDef})
@@ -71,12 +72,15 @@ module.exports = function (Component) {
         }
         
         generateNewItem(parent_id,x,y,type) {
+            const locationType = app.actions.inventory.getLocationType(type)
             return {
                 type: type,
                 name: '',
                 parent_id: parent_id,
                 parent_x: x,
-                parent_y: y
+                parent_y: y,
+                xUnits:locationType.xUnits,
+                yUnits:locationType.yUnits
             }
         }
             

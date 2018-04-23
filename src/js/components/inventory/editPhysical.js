@@ -47,14 +47,17 @@ module.exports = function (Component) {
             
             const titlePrefix = (this.id) ? 'Edit '+item.name : 'Create '+item.type
             const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
+            const xUnits = (item.xUnits) ? item.xUnits : 1
+            const yUnits = (item.yUnits) ? item.yUnits : 1
             
             this.setState({
                 item:item,
                 attributes:attributes,
                 title:titlePrefix,
-                active:active
+                active:active,
+                xUnits:xUnits,
+                yUnits:yUnits
             })
-            
         }
         
         inventoryCellLocation(loc) {
@@ -94,7 +97,19 @@ module.exports = function (Component) {
         setType(type) {
             const item = this.state.item
             item.type=type
-            this.setState({item:item})
+            const locationType = app.actions.inventory.getLocationTypeFromTitle(type)
+            //var xUnits = 1
+            //var yUnits = 1
+            //var xUnits = (item.xUnits) ? item.xUnits : (locationType) ? locationType.xUnits : 1
+            //var yUnits = (item.yUnits) ? item.yUnits : (locationType) ? locationType.yUnits : 1
+            var xUnits = (locationType) ? locationType.xUnits : 1
+            var yUnits = (locationType) ? locationType.yUnits : 1
+            this.setState({
+                item:item,
+                xUnits:xUnits,
+                yUnits:yUnits
+          })
+            if (item.type!=='physical') console.log('editPhysical setType:',this.state, locationType, type, app.state.inventory.types.all)
         }
         
         submit(e) {
@@ -332,10 +347,8 @@ module.exports = function (Component) {
                 if (parent_item) {
                     storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={item.parent_x} py={item.parent_y} mode="edit"/>)
                 }
+                console.log('editPhysical render:',this.state)
                     
-                const locationType = app.actions.inventory.getLocationType(item.type)
-                var xUnits = (item.xUnits) ? item.xUnits : (locationType) ? locationType.xUnits : 1
-                var yUnits = (item.yUnits) ? item.yUnits : (locationType) ? locationType.yUnits : 1
                                 //<ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
                 
                 return (
@@ -347,8 +360,8 @@ module.exports = function (Component) {
                                 <label class="label">Type</label>
                                 <DropdownButton fid={item.name+"_types"} selectedItem={item.type} selectionList={typeSelectionList} setSelectedItem={this.setType}/>
                                 <div style="margin-top:10px;margin-bottom:30px;">
-                                    <FormInputText fid="xUnits" label="Cols" value={xUnits}/>
-                                    <FormInputText fid="yUnits" label="Rows" value={yUnits}/>
+                                    <FormInputText fid="xUnits" label="Cols" value={this.state.xUnits}/>
+                                    <FormInputText fid="yUnits" label="Rows" value={this.state.yUnits}/>
                                     {attributes}
                                 </div>
                                 {editTable}

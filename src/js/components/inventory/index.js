@@ -30,7 +30,7 @@ module.exports = function (Component) {
         componentWillMount() {
             this.setState({
                 types:app.actions.inventory.getInventoryTypes()
-            })    
+            })
         }
         
         getInventoryPath(id) {

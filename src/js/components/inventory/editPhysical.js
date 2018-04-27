@@ -320,6 +320,7 @@ module.exports = function (Component) {
                 const itemName = item.name
                 /*
                             <ItemTypes type={item.type} types={typeSelectionList} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />
+                            <DropdownButton fid={itemName+"_types"} selectedItem={item.type} selectionList={typeSelectionList} setSelectedItem={this.setType}/>
                 */
                 return (
                     <form onsubmit={this.submit.bind(this)} style="padding:0;">
@@ -328,8 +329,7 @@ module.exports = function (Component) {
                                 <a onclick={this.navigateItem.bind(this)} class={"mdi mdi-arrow-right"} style={navArrowStyle}></a>
                             </div>
                             <FormInputText fid={itemName+'_name'} value={item.name} label="Name" classProps={this.props.classProps[1].class}/>
-                            <DropdownButton fid={itemName+"_types"} selectedItem={item.type} selectionList={typeSelectionList} setSelectedItem={this.setType}/>
-                            <FormInputText fid={itemName+'_loc'} value={label} label="Loc"  classProps={this.props.classProps[3].class}/>
+                            <FormInputText fid={itemName+'_loc'} value={label} label="Loc"  classProps={this.props.classProps[2].class}/>
                             {document}
                             {attributes}
                         </div>

@@ -4,6 +4,7 @@ import {
 from 'preact'
 import linkState from 'linkstate';
 import ashnazg from 'ashnazg'
+import SimpleMDE from 'simplemde'
 
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
@@ -160,7 +161,29 @@ module.exports = function (Component) {
         
         componentDidMount() {
           const nameInput = document.getElementById('name');
-          if (nameInput) nameInput.focus(true);
+          if(!this.simplemde) {
+                var opts = { 
+                  element: document.getElementById('editor'),
+                  autoDownloadFontAwesome: false,
+                  autosave: {
+                    enabled: true,
+                    uniqueId: 'virtual_editor_'+this.state.id,
+                    delay: 10000
+                  },
+                  spellChecker: false,
+                  hideIcons: ['image'],
+                  indentWithTabs: false
+                };
+                this.simplemde = new SimpleMDE(opts);
+                //this.checkRestored();
+                //this.simplemde.codemirror.on('change', this.changeContent.bind(this));
+          }
+        }
+        changeContent() {
+          this.setState({
+            changed: true,
+            content: this.simplemde.value()
+          });
         }
         
         setSelectedType(type) {
@@ -221,6 +244,17 @@ module.exports = function (Component) {
                 )
             }.bind(this)
             
+            const FormInputTextArea = function(props) {
+                return (
+                    <div class="field">
+                        <label class="label">{props.label}</label>
+                        <div class="control">
+                            <textarea id="editor" class="input editor-container" onInput={linkFormData(this,props.fid)} value={props.value}></textarea>
+                        </div>
+                    </div>
+                )
+            }.bind(this)
+            
             const attributeDefs = this.state.attributes
             const attributes=[]
             const terms = app.actions.inventory.getTerms()
@@ -238,8 +272,9 @@ module.exports = function (Component) {
                                 <DropdownButton fid={fieldId} selectedItem={value} selectionList={terms} setSelectedItem={thisModule.setSelectedTerms}/>
                             </div>
                         )
-                    }
-                    else {
+                    } else if (fieldId==='description') {
+                        attributes.push( <FormInputTextArea fid={fieldId} label={label} value={value} /> )
+                    } else {
                         attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
                     }
                 }

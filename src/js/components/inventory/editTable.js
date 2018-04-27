@@ -23,11 +23,11 @@ module.exports = function (Component) {
             const headerTitle=[]
             headerTitle.push({name:'Nav',class:'is-1'})
             headerTitle.push({name:'Name',class:'is-4'})
-            headerTitle.push({name:'Type',class:'is-3'})
-            headerTitle.push({name:'Well',class:'is-1'})
+            //headerTitle.push({name:'Type',class:'is-3'})
+            headerTitle.push({name:'Loc',class:'is-1'})
             const type = items[0].type
             if (type==='physical') {
-                headerTitle.push({name:'Virtual',class:'is-1'})
+                headerTitle.push({name:'Docs',class:'is-1'})
             }
             //const attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
             var attributes = this.props.attributes

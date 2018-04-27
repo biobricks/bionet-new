@@ -34,7 +34,8 @@ module.exports = function (Component) {
             const currentItem = app.actions.inventory.getLastPathItem()
             if (currentItem) {
                 const currentSelectionType = currentItem.type.toLowerCase()
-                var menuDef = app.actions.inventory.getActiveTypes(currentSelectionType)
+                //menuDef = app.actions.inventory.getActiveTypes(currentSelectionType)
+                menuDef = app.state.inventory.types.all
             }
             this.createType = app.actions.inventory.isInstanceContainerSelected()
             this.setState({menuDef:menuDef})
@@ -71,12 +72,15 @@ module.exports = function (Component) {
         }
         
         generateNewItem(parent_id,x,y,type) {
+            const locationType = app.actions.inventory.getLocationType(type)
             return {
                 type: type,
                 name: '',
                 parent_id: parent_id,
                 parent_x: x,
-                parent_y: y
+                parent_y: y,
+                xUnits:locationType.xUnits,
+                yUnits:locationType.yUnits
             }
         }
             
@@ -213,7 +217,7 @@ module.exports = function (Component) {
         
         moveItem() {
             const item = app.actions.inventory.getSelectedItem()
-            console.log('moveItem:',item)
+            console.log('moveItemButton:',item)
             app.actions.inventory.setMoveItem(item)
         }
 
@@ -255,6 +259,7 @@ module.exports = function (Component) {
 
             /*
             const editPhysical = (app.state.inventory.physicalItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />) : null
+                    <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
             */
                                                                      
             const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
@@ -290,7 +295,6 @@ module.exports = function (Component) {
                         </div>
                     </div>
                     <ActionMenuButton icon="pencil" onClick={this.editItem.bind(this)} />
-                    <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
                     <ActionMenuButton icon="open-in-app" onClick={this.upload.bind(this)} />
                     <ActionMenuButton icon="delete" onClick={this.deleteItem.bind(this)} />
                 </div>

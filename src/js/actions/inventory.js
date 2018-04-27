@@ -60,7 +60,7 @@ module.exports = {
             navigate:navigate
         }
         app.state.inventory.selection = inventorySelection
-        
+
         if (navigate) {
             const idn = (id) ? id : parentId
             if (idn) {
@@ -81,6 +81,28 @@ module.exports = {
         //console.log('editItem action: ', item, app.state.inventory )
         app.state.inventory.physicalItem = item
         if (app.state.inventory.listener.physicalItem) app.state.inventory.listener.physicalItem(item)
+    },
+    
+    updateItem: function(id, cb) {
+        app.remote.get(id, function(err, item) {
+            if (err) {
+                app.actions.notify('Item '+id+' not found', 'error');
+                if (cb) cb(err)
+                return
+            }
+            if (cb) {
+                const updatedItem = cb(null,item)
+                app.remote.savePhysical(updatedItem, null, null, function (err, id) {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                    const currentItem = app.actions.inventory.getLastPathItem()
+                    app.actions.inventory.refreshInventoryPath(currentItem.id)
+                })
+            }
+        })
+        
     },
     
     editVirtualItem: function(id, cb) {
@@ -105,10 +127,18 @@ module.exports = {
     },
     
     getLocationType: function( type ) {
-        if (!app.state.inventory.types.locations) return
-        const types = app.state.inventory.types.locations
+        if (!app.state.inventory.types.all) return
+        const types = app.state.inventory.types.all
         for (var i=0; i<types.length; i++) {
             if ( types[i].name === type ) return types[i]
+        }
+        return null
+    },
+    getLocationTypeFromTitle: function( type ) {
+        if (!app.state.inventory.types.all) return
+        const types = app.state.inventory.types.all
+        for (var i=0; i<types.length; i++) {
+            if ( types[i].title === type ) return types[i]
         }
         return null
     },
@@ -116,7 +146,7 @@ module.exports = {
     refreshInventoryPath: function(id, cb) {
         const url = "/inventory/"+id+"?r=true"
         //console.log('refreshInventoryPath:',url)
-        app.state.inventory.refresh=true
+        app.state.inventory.forceRefresh=true
         app.state.history.push(url)
     },
     
@@ -171,12 +201,8 @@ module.exports = {
                 var location = locationPathAr[i]
                 var locationId = location.id
                 var locationType = this.getLocationType(location.type)
-                var xu = location.xUnits
-                var yu = location.yUnits
-                var xunits = (location.xUnits) ? location.xUnits : (locationType) ? locationType.xUnits : 1
-                var yunits = (location.yUnits) ? location.yUnits : (locationType) ? locationType.yUnits : 1
-                location.xUnits = xunits
-                location.yUnits = yunits
+                var xunits = location.xUnits
+                var yunits = location.yUnits
                 //console.log('getInventoryPath:',location,xu, yu,    xunits,yunits)
                 var px=null
                 var py=null
@@ -185,8 +211,6 @@ module.exports = {
                     px = (nextLocation.parent_x) ? nextLocation.parent_x : 1
                     py = (nextLocation.parent_y) ? nextLocation.parent_y : findInChildren(nextLocation.id,location.children)+1
                 }
-                //var xunits = (!locationType.xUnits || locationType.xUnits===0) ? 1: locationType.xUnits
-                //var yunits = (!locationType.yUnits || locationType.yUnits===0) ? 1: locationType.yUnits
                 const subdivisions = this.generateSubdivisions(location.id, containerSize, containerSize, xunits, yunits, px, py)
                 var cellMap = this.generateCellMap(location.children, location.type, xunits, yunits)
                 this.mapOccupiedCellstoSubdivisions(subdivisions, cellMap, px, py)
@@ -297,6 +321,130 @@ module.exports = {
         return cellMap
     },
     
+    getWorkbenchContainer: function(cb){
+        app.remote.getWorkbench(function(err, workbench) {
+            if (err) {
+                console.log('error retrieiving workbench container:',err)
+                if (cb) cb(err)
+                return
+            }
+            app.remote.getPath(workbench.id,function(err,path){
+                if (err) {
+                    console.log('error retrieiving workbench path:',err)
+                    if (cb) cb(err)
+                    return
+                }
+                console.log('getWorkbenchContainer:workbench',workbench,path)
+                app.remote.getImmediateChildren(path,workbench.id,function(err,id, children){
+                    if (err) {
+                        console.log('error retrieiving workbench container:',err)
+                        if (cb) cb(err)
+                        return
+                    }
+                    const children2 = children.map(function(child){
+                        return {
+                            value:child,
+                            id:child.id
+                        }
+                    })
+                    console.log('getWorkbenchContainer:children',children2)
+                    if (cb) cb(null, children2)
+                })
+            })
+            if (cb) cb(null, workbench)
+        })
+    },
+
+    getWorkbenchTree: function(cb){
+        app.remote.workbenchTree(function(err,tree) {
+            if (err) {
+                console.log('error retrieiving workbench tree:',err)
+                if (cb) cb(err)
+                return
+            }
+            console.log('getWorkbenchTree:',tree)
+            if (cb) cb(null, tree)
+        })
+    },
+    
+    saveToWorkbench: function(id, cb) {
+        if (!id) return
+        app.remote.get(id, function(err, m) {
+            if (err) {
+                console.log('saveToWorkbench: id not found', err)
+                if (cb) cb(err)
+                return
+            }
+            console.log('saving to workbench:',m)
+            const parentId = m.parent_id
+            app.remote.saveInWorkbench(m,null,null,function(err,id2) {
+                if (err) {
+                    console.log('error saving to workbench:',err)
+                    if (cb) cb(err)
+                    return
+                }
+                app.actions.inventory.refreshInventoryPath(parentId)
+                if (cb) cb(null, id2)
+            })
+        })
+    },
+    
+    moveItemLocation: function(data,parentId, x,y, cb) {
+        const isId = data.indexOf('p-')===0
+        if (isId) {
+            const id = data
+            app.actions.inventory.updateItem(id, function(err,item) {
+                console.log('moveItemLocation:',err,item)
+                if (err) {
+                    app.actions.error(err)
+                    if (cb) cb(err)
+                    return
+                }
+                item.parent_id = parentId
+                item.parent_x = x
+                item.parent_y = y
+                if (cb) cb(null,item)
+                return item
+            })
+        } else {
+            data = JSON.parse(data)
+            app.actions.inventory.moveWorkbenchToContainer(parentId, x, y, function(err) {
+                app.actions.inventory.refreshInventoryPath(parentId)
+                app.changeState({
+                    workbench: {
+                        workbench: []
+                    }
+                })
+            })
+        }
+    },
+    
+    moveWorkbenchToContainer: function(containerId, x, y, cb) {
+        this.getWorkbenchContainer(function(err,tree) {
+            if (err) {
+                console.log('error moving workbench tree:',err)
+                if (cb) cb(err)
+                return
+            }
+            console.log('moveWorkbenchToContainer:',containerId)
+            var remainingItems = tree.length-1
+            // todo fetch empty cells for container
+            for (var i=0; i<tree.length; i++) {
+                var item = tree[i].value
+                if (item) {
+                    item.parent_id = containerId
+                    // todo: set parent_x, parent_y to empty cells
+                    console.log('moveWorkbenchToContainer, item:',item)
+                    app.remote.savePhysical(item, null, null, function (err, id) {
+                        if (remainingItems-- <= 0) {
+                            if (cb) cb(null)
+                        }
+                    })
+                }
+            }
+        }.bind(this))
+    },
+    
     getEmptyCellArray: function(subdivisions) {
         const emptyCellArray=[]
         for (var i=0; i<subdivisions.length; i++) {
@@ -344,7 +492,7 @@ module.exports = {
         const locations = []
 
         // add generalized container type
-        locations.push({
+        const containerType = {
           name: "container",
           title:"Container",
           xUnits:1,
@@ -352,7 +500,10 @@ module.exports = {
           fields: {
             Description: 'text'
           }
-        })
+        }
+        //locations.push(containerType)
+        const allTypes=[]
+        //allTypes.push(containerType)
             
         for (var i = 0; i < dataTypes.length; i++) {
             const type = dataTypes[i]
@@ -363,10 +514,12 @@ module.exports = {
                 type.url = '/create-physical/' + encodeURI(type.name)
                 locations.push(type)
             }
+            allTypes.push(type)
         }
         const typeSpec = {
             materials: materials,
-            locations: locations
+            locations: locations,
+            all:allTypes
         }
         app.state.inventory.types = typeSpec
         return typeSpec

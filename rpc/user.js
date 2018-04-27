@@ -459,10 +459,34 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       }
       getParentLocation(id);
     },
+      
+    getPath: function(curUser, id, cb) {
+        index.inventoryTree.path(id, null, function(err, path) {
+            if (cb) cb(err,path)
+        })
+    },
+      
+    getImmediateChildren: function(curUser, path, key, cb) {
+        //console.log('getImmediateChildren, path:%s, key:%s, cb:',path, key, cb)
+        const children=[]
+        const s = index.inventoryTree.stream(path, {depth:1})
+        s.on('data', function(child) {
+            children.push(child.value)
+        })
+        s.on('error', function(err) {
+            if (cb) cb(err)
+        })
+        s.on('end', function() {
+            if (cb) cb(null, key, children)
+        });
+    },
+      
     getLocationPathChildren: function (curUser, id, cb, cb2) {
         if (id[0] !== 'p') {
             cb(new Error("getLocationPathChildren only works for physicals"));
         }
+        const thisModule = this
+        /*
         const getChildren=function(parentItem, cb) {
             const children=[]
             const s = index.inventoryTree.stream(parentItem.path, {depth:1})
@@ -476,6 +500,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
                 if (cb) cb(null, parentItem.key, children)
             });
         }
+        */
         
         index.inventoryTree.path(id, function(err,parentPath) {
             if (err) {
@@ -500,7 +525,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
                 const pathArray = []
                 for (var i=0; i<pathItems.length; i++) {
                     pathArray.push(pathItems[i].value)
-                    getChildren(pathItems[i], function(err,id,children) {
+                    thisModule.getImmediateChildren(pathItems[i].path, pathItems[i].key, function(err,id,children) {
                         if (cb2) cb2('getLocationPathChildren getChildren:',id,children,(children)?children.length:0)
                         if (err) {
                             console.log('getLocationPathChildren, getChildren err:',err)

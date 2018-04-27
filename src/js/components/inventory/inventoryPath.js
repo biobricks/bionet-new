@@ -8,7 +8,7 @@ module.exports = function (Component) {
     const PrintLabel = require('../print')(Component)
     const ScanLabel = require('../scan')(Component)
     const EditTable = require('./editTable')(Component)
-    const MoveItem = require('./moveItem')(Component)
+    const Workbench = require('./workbench')(Component)
     
     return class InventoryPath extends Component {
         constructor(props) {
@@ -18,7 +18,6 @@ module.exports = function (Component) {
                 inventoryPathRendered:null,
                 inventoryItem:{},
                 containerSize:150,
-                moveItem:app.state.inventory.moveItem,
                 attributes:{}
                 
             }
@@ -29,7 +28,6 @@ module.exports = function (Component) {
           //      It must be done using .setState or .changeState
           //      You are also not allowed to put functions into the state.
             app.state.selectCellListener = this.selectCellListener.bind(this)
-            app.state.inventory.listener.moveItem = this.updateMoveItem.bind(this)
         }
         
         componentWillReceiveProps(props) {
@@ -133,11 +131,6 @@ module.exports = function (Component) {
             })
         }
         
-        updateMoveItem(item) {
-            //console.log('updateMoveItem:',item)
-            this.setState({moveItem:item})
-        }
-        
         navigateParent(e) {
             const path = this.props.inventoryPath
             const selectedItem = path[path.length-1]
@@ -162,7 +155,7 @@ module.exports = function (Component) {
                     </div>
                     <div class="tile">
                         <div class="navbar-end">
-                            <MoveItem item={this.state.moveItem}/>
+                            <Workbench state="workbench"/>
                             <a class="navbar-item mdi mdi-printer"  style={iconStyle} onclick={this.print.bind(this)}></a>
                         </div>
                     </div>

@@ -18,6 +18,9 @@ module.exports = function (Component) {
             this.close = this.close.bind(this)
             this.setType = this.setType.bind(this)
             this.inventoryCellLocation=this.inventoryCellLocation.bind(this)
+            this.dragStart = this.dragStart.bind(this)
+            this.drop = this.drop.bind(this)
+            this.dragOver = this.dragOver.bind(this)
         }
         
         componentWillReceiveProps(nextProps) {
@@ -44,14 +47,17 @@ module.exports = function (Component) {
             
             const titlePrefix = (this.id) ? 'Edit '+item.name : 'Create '+item.type
             const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
+            const xUnits = (item.xUnits) ? item.xUnits : 1
+            const yUnits = (item.yUnits) ? item.yUnits : 1
             
             this.setState({
                 item:item,
                 attributes:attributes,
                 title:titlePrefix,
-                active:active
+                active:active,
+                xUnits:xUnits,
+                yUnits:yUnits
             })
-            
         }
         
         inventoryCellLocation(loc) {
@@ -91,7 +97,19 @@ module.exports = function (Component) {
         setType(type) {
             const item = this.state.item
             item.type=type
-            this.setState({item:item})
+            const locationType = app.actions.inventory.getLocationTypeFromTitle(type)
+            //var xUnits = 1
+            //var yUnits = 1
+            //var xUnits = (item.xUnits) ? item.xUnits : (locationType) ? locationType.xUnits : 1
+            //var yUnits = (item.yUnits) ? item.yUnits : (locationType) ? locationType.yUnits : 1
+            var xUnits = (locationType) ? locationType.xUnits : 1
+            var yUnits = (locationType) ? locationType.yUnits : 1
+            this.setState({
+                item:item,
+                xUnits:xUnits,
+                yUnits:yUnits
+          })
+            if (item.type!=='physical') console.log('editPhysical setType:',this.state, locationType, type, app.state.inventory.types.all)
         }
         
         submit(e) {
@@ -180,6 +198,31 @@ module.exports = function (Component) {
                 const label = (item.parent_x && item.parent_y) ? item.parent_x+','+item.parent_y : ''
                 return label
             }
+        }
+        
+        dragStart(e) {
+          if (!this.props.item) return
+          const item = this.props.item
+          e.dataTransfer.setData("text/plain", this.props.item.id);
+          e.dataTransfer.dropEffect = "copy";
+        }
+        
+        drop(e) {
+            
+            e.preventDefault()
+            var data = e.dataTransfer.getData("text")
+            console.log('cell drop:',data)
+            if (!data || data.length <= 0) return
+            
+            const item = this.props.item
+            app.actions.inventory.moveItemLocation(data,item.parent_id, item.parent_x,item.parent_y,function(err,itemupdated) {
+            })
+            
+        }
+        
+        dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move"
         }
         
         componentDidMount() {
@@ -280,7 +323,7 @@ module.exports = function (Component) {
                 */
                 return (
                     <form onsubmit={this.submit.bind(this)} style="padding:0;">
-                        <div className="tabular-row tile is-parent is-11"  style={focusStyle+'padding:0;margin:0;box-sizing:border-box;'} onclick={this.onClickRow.bind(this)}>
+                        <div className="tabular-row tile is-parent is-11"  style={focusStyle+'padding:0;margin:0;box-sizing:border-box;'} onclick={this.onClickRow.bind(this)} ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver} draggable="true">
                             <div className={"tile is-child "+this.props.classProps[0].class} style="justify-content:center;line-height:30px;">
                                 <a onclick={this.navigateItem.bind(this)} class={"mdi mdi-arrow-right"} style={navArrowStyle}></a>
                             </div>
@@ -304,10 +347,8 @@ module.exports = function (Component) {
                 if (parent_item) {
                     storageContainer = (<StorageContainer dbid={parent_item.id} height={containerSize} width={containerSize} title={parent_item.name} childType={parent_item.child} xunits={parent_item.xUnits} yunits={parent_item.yUnits} item={parent_item} items={parent_item.children} selectedItem={selectedItemId}  px={item.parent_x} py={item.parent_y} mode="edit"/>)
                 }
+                console.log('editPhysical render:',this.state)
                     
-                const locationType = app.actions.inventory.getLocationType(item.type)
-                var xUnits = (item.xUnits) ? item.xUnits : (locationType) ? locationType.xUnits : 1
-                var yUnits = (item.yUnits) ? item.yUnits : (locationType) ? locationType.yUnits : 1
                                 //<ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
                 
                 return (
@@ -319,8 +360,8 @@ module.exports = function (Component) {
                                 <label class="label">Type</label>
                                 <DropdownButton fid={item.name+"_types"} selectedItem={item.type} selectionList={typeSelectionList} setSelectedItem={this.setType}/>
                                 <div style="margin-top:10px;margin-bottom:30px;">
-                                    <FormInputText fid="xUnits" label="Cols" value={xUnits}/>
-                                    <FormInputText fid="yUnits" label="Rows" value={yUnits}/>
+                                    <FormInputText fid="xUnits" label="Cols" value={this.state.xUnits}/>
+                                    <FormInputText fid="yUnits" label="Rows" value={this.state.yUnits}/>
                                     {attributes}
                                 </div>
                                 {editTable}

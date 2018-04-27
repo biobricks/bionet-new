@@ -563,6 +563,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       var found = false;
       var out = s.pipe(through.obj(function(data, enc, next) {
         if(!data || !data.value || !data.value[field]) return next()
+        // TODO let people use foo.bar.baz paths as field
         if(data.value[field] == value) {
           found = true;
           cb(null, data.value);

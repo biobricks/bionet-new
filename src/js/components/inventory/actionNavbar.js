@@ -99,7 +99,17 @@ module.exports = function (Component) {
             const parent = app.actions.inventory.getLastPathItem()
             if (!parent) return null
             const type = e.target.id
-            if (this.createType) {
+            var createType = false
+            if (this.state.menuDef) {
+                for (var i=0; i<this.state.menuDef.length; i++) {
+                    if (this.state.menuDef[i].name===type) {
+                        createType = this.state.menuDef[i].virtual
+                        break
+                    }
+                }
+            }
+            console.log('additemclick: ',type,createType)
+            if (createType) {
                 const virtual = {
                     type:type,
                     name:''
@@ -112,6 +122,7 @@ module.exports = function (Component) {
                 })
             }
             else {
+                console.log('add container:',type)
                 const item = this.generateNewItem(parent.id, parent.parent_x, parent.parent_y, type)
                 app.actions.inventory.editItem(item)
             }

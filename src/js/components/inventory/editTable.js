@@ -1,5 +1,7 @@
 import { h } from 'preact'
 import ashnazg from 'ashnazg'
+import strftime from 'strftime'
+import {Link} from 'react-router-dom';
 
 module.exports = function (Component) {
     
@@ -10,6 +12,22 @@ module.exports = function (Component) {
             super(props);
             this.rowRef={}
             this.deselectRows.bind(this)
+            this.componentWillReceiveProps(props)
+        }
+        
+        componentWillReceiveProps(nextProps) {
+            //console.log('editTable, componentWillReceiveProps:',nextProps)
+            if (nextProps.item && nextProps.item.virtual_id) {
+                app.actions.inventory.getItem(nextProps.item.virtual_id,this.updateVirtualData.bind(this))
+            } else {
+                this.setState({virtual:null})
+            }
+        }
+        
+        updateVirtualData(err,virtual) {
+            //console.log('editTable, updateVirtualData:',virtual)
+            if (err) console.log('updateVirtualData:',err)
+            else this.setState({virtual:virtual})
         }
         
         componentWillMount() {
@@ -54,11 +72,78 @@ module.exports = function (Component) {
             const selectedItem = this.props.item
             const items = this.props.items
             const headerTitle = this.headerTitle
-            //console.log('updateTabularData:',items, selectedItem)
+            //console.log('editTable, updateTabularData:',this.state)
             this.rowRef={}
             const thisModule = this
-            
-            if (!selectedItem || !items || items.length<1) {
+            if (this.state.virtual) {
+                const formatTime = function(unixEpochTime) {
+                  return strftime('%b %o %Y', new Date(unixEpochTime * 1000));
+                }
+                var timestamps = [(
+                    <div>
+                    First created: <span>{formatTime(this.state.virtual.created.time)}</span> by <span>{this.state.virtual.created.user}</span>
+                    </div>
+                )];
+
+                if(this.state.virtual.updated.time > this.state.virtual.created.time) {
+                  timestamps.push((
+                      <div>
+                      Last updated: <span>{formatTime(this.state.virtual.updated.time)}</span> by <span>{this.state.virtual.updated.user}</span>
+                      </div>
+                  ));
+                };
+
+                var sequence = '';
+                if(this.state.virtual.Sequence) {
+                    sequence = (
+                      <textarea rows="10" cols="50" disabled>{this.state.virtual.Sequence.toUpperCase()}</textarea>
+                    );
+                }
+                var modifyLinks = '';
+                if(app.state.global.user) {
+                  modifyLinks = (
+                      <span><Link to={'/virtual/edit/' + this.state.virtual.id}>edit</Link></span>
+                  );
+                }
+                var content = '';
+
+                if(this.state.virtual.content) {
+                  content = (
+                    <div class="content">
+                      <hr/>
+                      <div class="markdown-help" dangerouslySetInnerHTML={{
+                        __html: marked(this.state.virtual.content)
+                      }} />
+                      <hr/>
+                    </div>
+                  );
+                }
+                return (
+                  <div>
+                    <div>
+                      <h3>{this.state.virtual.name}</h3>
+                    </div>
+                    <div>
+                      <span style="font-weight:bold">Description:</span> {this.state.virtual.description}
+                    </div>
+                    {content}
+                    <div>
+                      <span style="font-weight:bold">Provenance:</span> {this.state.virtual.provenance || "Unknown"}
+                    </div>
+                    <div>
+                      <span style="font-weight:bold">Genotype:</span> {this.state.virtual.genotype || "None"}
+                    </div>
+                    <div>
+                      <span style="font-weight:bold">Sequence:</span> {this.state.virtual.sequence || "None"}
+                    </div>
+                    <div>
+                      <span style="font-weight:bold">Terms and condition:</span> {this.state.virtual.terms || "Limbo"}
+                    </div>
+                    <div>{timestamps}</div>
+                    <div>{sequence}</div>
+                  </div>
+                )
+            } else if (!selectedItem || !items || items.length<1) {
                 return (<div className="empty-table" style="padding-left: calc(0.625em - 1px)">{selectedItem.name} is empty.</div>)
             }
             const tabularData=[]

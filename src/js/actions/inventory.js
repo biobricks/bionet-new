@@ -77,6 +77,12 @@ module.exports = {
         if (app.state.inventory.listener.assignPhysical) app.state.inventory.listener.assignPhysical(inventorySelection)
     },
     
+    getItem: function(id, cb) {
+        app.remote.get(id, function(err, item) {
+            if (cb) cb(err,item)
+        })
+    },
+                       
     editItem: function(item) {
         //console.log('editItem action: ', item, app.state.inventory )
         app.state.inventory.physicalItem = item

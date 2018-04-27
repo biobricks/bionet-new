@@ -58,6 +58,16 @@ module.exports = function (Component) {
                 xUnits:xUnits,
                 yUnits:yUnits
             })
+            /*
+            if (item.virtual_id) {
+                app.actions.inventory.getItem(item.virtual_id,this.updateVirtualData)
+            }
+            */
+        }
+        
+        updateVirtualData(err,virtual) {
+            if (err) console.log('updateVirtualData:',err)
+            else this.setState({virtual:virtual})
         }
         
         inventoryCellLocation(loc) {

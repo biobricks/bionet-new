@@ -88,6 +88,11 @@ module.exports = function(Component) {
         this.modalCallback(null, this.state, imageData);
       });
     }
+      
+    close(e) {
+        if (this.props.onClose) this.props.onClose(false)
+        app.actions.prompt.reset()
+    }
 
     // get a unique human-readable ID for the label if it doesn't have one
     finalizeLabel(cb) {
@@ -186,6 +191,13 @@ module.exports = function(Component) {
                         <FormInputText fid='temperature' value={this.state.temperature} label="Storage Temperature" />
                         <FormInputText fid='bsl' value={this.state.bsl} label="Biosafety Level" />
                         <input type="submit" style="visibility:hidden;height:0" />
+                        <div class="field">
+                            <div class="control">
+                                <input type="submit" class="button is-link" value="Print" />
+                                <span style="margin-right:20px;">&nbsp;</span>
+                                <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="tile is-vertical">

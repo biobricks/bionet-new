@@ -112,7 +112,14 @@ module.exports = function (Component) {
             if (!item) return
             const id = item.id
             const name = item.name
-            const promptComponent = (<PrintLabel/>)
+            const callback = function (unk, state, imageLabel) {
+                console.log('print callback')
+                app.actions.inventory.saveToInventory(item, imageLabel, true, function(err) {
+                    console.log('print callback, err:',err)
+                })
+                //saveToInventory: function (physical, label, doPrint, cb) {
+            }
+            const promptComponent = (<PrintLabel callback={callback} />)
             app.actions.prompt.display('Print label for '+name+'?', promptComponent, function(accept) {
                 //console.log('print item:',accept)
                 if (accept) {

@@ -20,7 +20,7 @@ module.exports = function(Component) {
       super(props);
       
       this.modalCallback = props.callback;
-
+      this.submitForm = this.submitForm.bind(this)
 
       this.setState(props.opts || {});
       this.setState({humanID: 42});
@@ -81,12 +81,13 @@ module.exports = function(Component) {
       e.preventDefault()
 
       if(!this.modalCallback) return;
-      finalizeLabel(function(err, humanID) {
+      console.log('print label submit')
+      this.finalizeLabel(function(err, humanID) {
         if (err) return;
 
         var imageData = this.labelMaker.getDataURL();
         this.modalCallback(null, this.state, imageData);
-      });
+      }.bind(this));
     }
       
     close(e) {

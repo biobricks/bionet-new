@@ -87,6 +87,7 @@ module.exports = function(Component) {
 
         var imageData = this.labelMaker.getDataURL();
         this.modalCallback(null, this.state, imageData);
+        app.actions.prompt.reset()
       }.bind(this));
     }
       

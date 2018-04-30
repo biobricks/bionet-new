@@ -9,6 +9,7 @@ module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const ItemTypes = require('./itemTypes')(Component)
     const DropdownButton = require('./dropdownButton')(Component)
+    const VirtualData = require('./virtualData')(Component)
     
     return class EditPhysical extends Component {
         constructor(props) {
@@ -49,6 +50,8 @@ module.exports = function (Component) {
             const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
             const xUnits = (item.xUnits) ? item.xUnits : 1
             const yUnits = (item.yUnits) ? item.yUnits : 1
+
+            if (item.virtual_id) app.actions.inventory.getItem(item.virtual_id,this.updateVirtualData.bind(this))
             
             this.setState({
                 item:item,
@@ -355,7 +358,18 @@ module.exports = function (Component) {
                 console.log('editPhysical render:',this.state)
                     
                                 //<ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
-                
+                var subdivisionFields = null
+                var virtualData = null
+                if (item.type === 'physical') {
+                    virtualData = <VirtualData virtual={this.state.virtual} />
+                } else {
+                    subdivisionFields = (
+                    <div>
+                        <FormInputText fid="xUnits" label="Cols" value={this.state.xUnits}/>
+                        <FormInputText fid="yUnits" label="Rows" value={this.state.yUnits}/>
+                    </div>
+                    )
+                }
                 return (
                     <form onsubmit={this.submit.bind(this)}>
                         <div class="columns">
@@ -365,8 +379,8 @@ module.exports = function (Component) {
                                 <label class="label">Type</label>
                                 <DropdownButton fid={item.name+"_types"} selectedItem={item.type} selectionList={typeSelectionList} setSelectedItem={this.setType}/>
                                 <div style="margin-top:10px;margin-bottom:30px;">
-                                    <FormInputText fid="xUnits" label="Cols" value={this.state.xUnits}/>
-                                    <FormInputText fid="yUnits" label="Rows" value={this.state.yUnits}/>
+                                    {virtualData}
+                                    {subdivisionFields}
                                     {attributes}
                                 </div>
                                 {editTable}

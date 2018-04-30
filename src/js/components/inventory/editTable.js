@@ -1,11 +1,10 @@
 import { h } from 'preact'
 import ashnazg from 'ashnazg'
-import strftime from 'strftime'
-import {Link} from 'react-router-dom';
 
 module.exports = function (Component) {
     
     const EditPhysical = require('./editPhysical')(Component)
+    const VirtualData = require('./virtualData')(Component)
     
     return class EditTable extends Component {
         constructor(props) {
@@ -79,32 +78,6 @@ module.exports = function (Component) {
                 const formatTime = function(unixEpochTime) {
                   return strftime('%b %o %Y', new Date(unixEpochTime * 1000));
                 }
-                var timestamps = [(
-                    <div>
-                    First created: <span>{formatTime(this.state.virtual.created.time)}</span> by <span>{this.state.virtual.created.user}</span>
-                    </div>
-                )];
-
-                if(this.state.virtual.updated.time > this.state.virtual.created.time) {
-                  timestamps.push((
-                      <div>
-                      Last updated: <span>{formatTime(this.state.virtual.updated.time)}</span> by <span>{this.state.virtual.updated.user}</span>
-                      </div>
-                  ));
-                };
-
-                var sequence = '';
-                if(this.state.virtual.Sequence) {
-                    sequence = (
-                      <textarea rows="10" cols="50" disabled>{this.state.virtual.Sequence.toUpperCase()}</textarea>
-                    );
-                }
-                var modifyLinks = '';
-                if(app.state.global.user) {
-                  modifyLinks = (
-                      <span><Link to={'/virtual/edit/' + this.state.virtual.id}>edit</Link></span>
-                  );
-                }
                 var content = '';
 
                 if(this.state.virtual.content) {
@@ -118,7 +91,9 @@ module.exports = function (Component) {
                     </div>
                   );
                 }
-                return (
+                return (<VirtualData virtual={this.state.virtual} />)
+                    /*
+                    (
                   <div>
                     <div>
                       <h3>{this.state.virtual.name}</h3>
@@ -143,6 +118,7 @@ module.exports = function (Component) {
                     <div>{sequence}</div>
                   </div>
                 )
+                */
             } else if (!selectedItem || !items || items.length<1) {
                 return (<div className="empty-table" style="padding-left: calc(0.625em - 1px)">{selectedItem.name} is empty.</div>)
             }

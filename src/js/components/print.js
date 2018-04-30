@@ -24,7 +24,6 @@ module.exports = function(Component) {
 
       this.setState(props.opts || {});
       this.setState({humanID: 42});
-
       this.keepScanning = true;
       this.enableDM = false;
 
@@ -52,6 +51,12 @@ module.exports = function(Component) {
         }.bind(this)
       }, 3000);
       fontLoader.loadFonts();
+    }
+      
+    componentWillReceiveProps(nextProps) {
+      console.log('print componentWillReceiveProps:', nextProps)
+      const title = (nextProps.item) ? nextProps.item.name : ''
+      this.setState({title: title});
     }
 
     updateLabel(cb) {
@@ -87,7 +92,7 @@ module.exports = function(Component) {
 
         var imageData = this.labelMaker.getDataURL();
         this.modalCallback(null, this.state, imageData);
-        app.actions.notify("Printing label for "+this.state.humanID, 'notice', 0);
+        app.actions.notify("Printing label for "+this.props.item.name, 'notice', 0);
         app.actions.prompt.reset()
       }.bind(this));
     }

@@ -242,9 +242,9 @@ module.exports = function (Component) {
                     return <a id={props.id} class={'dropdown-item ' + ((props.emphasis) ? 'bold' : '')} onClick={props.onClick}>{props.label}</a>
                 }
 
-              if(app.actions.inventory.isInstanceContainerSelected()) {
-                menu.push(<DropdownMenuItem label="Existing" emphasis onClick={this.addExisting.bind(this)} />)
-              }
+              //if(app.actions.inventory.isInstanceContainerSelected()) {
+                menu.push(<DropdownMenuItem label="Existing Biomaterial" emphasis onClick={this.addExisting.bind(this)} />)
+              //}
                 for (var i=0; i<menuDef.length; i++) {
                     var item = menuDef[i]
                     menu.push(<DropdownMenuItem id={item.name} label={item.title} onClick={this.addItemClick.bind(this)} />)

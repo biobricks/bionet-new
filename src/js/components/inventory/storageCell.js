@@ -57,6 +57,12 @@ module.exports = function (Component) {
             return this.props.label
         }
         
+        selected(selected) {
+            this.setState({
+                selected:selected
+            })
+        }
+        
         focus(active, occupied) {
             //if (active) console.log('setting focus for cell: ', this.props.label)
             this.setState({
@@ -118,9 +124,10 @@ module.exports = function (Component) {
                 //if (this.state.active ) console.log('rendering cell:',this.props.label, this.state.active, this.state.occupied, this.props.state)
 
                 var className = 'is-empty-cell '
-                if (this.state.active) className = 'is-active-cell '
+                if (this.state.selected) className = 'is-selected-cell '
+                else if (this.state.active) className = 'is-active-cell '
                 else if (this.state.occupied) className = 'is-occupied-cell '
-                    
+                
                 return (
                     <div id={this.props.id} className="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver}>
                         <div className={className} style={"width:100%;"+textOverflow} draggable="true" >

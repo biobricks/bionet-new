@@ -58,11 +58,6 @@ module.exports = function (Component) {
                 xUnits:xUnits,
                 yUnits:yUnits
             })
-            /*
-            if (item.virtual_id) {
-                app.actions.inventory.getItem(item.virtual_id,this.updateVirtualData)
-            }
-            */
         }
         
         updateVirtualData(err,virtual) {
@@ -303,7 +298,7 @@ module.exports = function (Component) {
                     var fieldId = field.name.toLowerCase()
                     var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
                     var value = (item && item[fieldId]) ? item[fieldId] : ''
-                    var classProps = (this.props.classProps && this.props.classProps[i+3]) ? this.props.classProps[i+3].class : 'cnf'
+                    var classProps = (this.props.classProps && this.props.classProps[i+2]) ? this.props.classProps[i+2].class : 'cnf'
                     attributes.push( <FormInputText fid={fieldId} label={label} value={value}  class={classProps}/> )
                 }
             }
@@ -320,7 +315,7 @@ module.exports = function (Component) {
 
             if (tabular) {
                 var document = null
-                if (isBox) {
+                if (item.virtual_id) {
                     document = (<ActionButton dbid={selectedItemId} onclick={this.showVirtual.bind(this)} icon="file-document" />)
                 }
                 const focusStyle = (this.state.isFocused) ? 'border: 1px solid black;' : ''

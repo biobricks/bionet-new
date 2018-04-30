@@ -273,14 +273,15 @@ module.exports = function (Component) {
                             </div>
                         )
                     } else if (fieldId==='description') {
-                        attributes.push( <FormInputTextArea fid={fieldId} label={label} value={value} /> )
+                        attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
+                        //attributes.push( <FormInputTextArea fid={fieldId} label={label} value={value} /> )
                     } else {
                         attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
                     }
                 }
             }
                                     
-            var types=[]
+            var types=[]    
             if (app.state.inventory.types && parent_item) {
                 const currentSelectionType = parent_item.type.toLowerCase()
                 types = (currentSelectionType.indexOf('box') >= 0) ? app.state.inventory.types.materials : app.state.inventory.types.locations

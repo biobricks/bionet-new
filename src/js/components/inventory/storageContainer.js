@@ -93,7 +93,14 @@ module.exports = function (Component) {
                 //console.log('selectCell:',ref.props.label, cellCoordinates)
                 if (ref) {
                     const focus = cellCoordinates === ref.props.label
-                    ref.focus(focus)
+                    if (focus) {
+                        //if (cellLocation.parentId===this.dbid) ref.selected(true)
+                        //else ref.selected(false)
+                        ref.focus(true)
+                    } else {
+                        //ref.selected(false)
+                        ref.focus(false)
+                    }
                 }
             }
         }

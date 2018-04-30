@@ -46,7 +46,6 @@ module.exports = function (Component) {
             if (type==='physical') {
                 headerTitle.push({name:'Docs',class:'is-1'})
             }
-            //const attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
             var attributes = this.props.attributes
             if (!attributes) attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
             //
@@ -92,33 +91,6 @@ module.exports = function (Component) {
                   );
                 }
                 return (<VirtualData virtual={this.state.virtual} />)
-                    /*
-                    (
-                  <div>
-                    <div>
-                      <h3>{this.state.virtual.name}</h3>
-                    </div>
-                    <div>
-                      <span style="font-weight:bold">Description:</span> {this.state.virtual.description}
-                    </div>
-                    {content}
-                    <div>
-                      <span style="font-weight:bold">Provenance:</span> {this.state.virtual.provenance || "Unknown"}
-                    </div>
-                    <div>
-                      <span style="font-weight:bold">Genotype:</span> {this.state.virtual.genotype || "None"}
-                    </div>
-                    <div>
-                      <span style="font-weight:bold">Sequence:</span> {this.state.virtual.sequence || "None"}
-                    </div>
-                    <div>
-                      <span style="font-weight:bold">Terms and condition:</span> {this.state.virtual.terms || "Limbo"}
-                    </div>
-                    <div>{timestamps}</div>
-                    <div>{sequence}</div>
-                  </div>
-                )
-                */
             } else if (!selectedItem || !items || items.length<1) {
                 return (<div className="empty-table" style="padding-left: calc(0.625em - 1px)">{selectedItem.name} is empty.</div>)
             }
@@ -158,12 +130,10 @@ module.exports = function (Component) {
             //console.log(this.state.inventoryPath)
             const tabularHeader = this.tabularHeader()
             const tabularData = this.updateTabularData()
-            //const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;box-sizing:initial;"
-            const tableStyle=""
             
             return (
                 <div id="inventory_table" class="tile is-parent" style="margin:0;padding:0;box-sizing:initial">
-                    <div id="i1" class="" style={tableStyle}>
+                    <div id="i1">
                         {tabularHeader}
                         {tabularData}
                     </div>

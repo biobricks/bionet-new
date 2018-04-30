@@ -25,10 +25,11 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            //if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
+            if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
             
             var item={}
+            var parentItem=null
             if (nextProps.item) {
                 const dbData = JSON.parse(JSON.stringify(nextProps.item))
                 // remove extraneous attributes
@@ -36,22 +37,33 @@ module.exports = function (Component) {
                 delete dbData.children
                 delete dbData.subdivisions
                 item = dbData
+                parentItem = app.actions.inventory.getItemFromInventoryPath(item.parent_id)
             } else {
                 item.id = null
-                item.parent_id = null
+                parentItem = app.actions.inventory.getLastPathItem()
+                item.parent_id = parentItem.id
             }
             
             this.item = item
-            //if (item) console.log('editphysical props:',JSON.stringify(item,null,2))
             this.id = item.id
-            this.parent_item = (item.parent_id) ? app.actions.inventory.getItemFromInventoryPath(item.parent_id) : null
+            this.parent_item = parentItem
             
             const titlePrefix = (this.id) ? 'Edit '+item.name : 'Create '+item.type
             const attributes = (item.type) ? app.actions.inventory.getAttributesForType(item.type) : []
             const xUnits = (item.xUnits) ? item.xUnits : 1
             const yUnits = (item.yUnits) ? item.yUnits : 1
 
-            if (item.virtual_id) app.actions.inventory.getItem(item.virtual_id,this.updateVirtualData.bind(this))
+            if (item.virtual_id &&!nextProps.tabular) app.actions.inventory.getItem(item.virtual_id,this.updateVirtualData.bind(this))
+            
+            // assign next available cell when creating new physical
+            if (parentItem && !item.id && !nextProps.tabular) {
+                const emptyCellArray = app.actions.inventory.getEmptyCellArray(parentItem.subdivisions)
+                if (emptyCellArray && emptyCellArray.length>0) {
+                    const emptyCell = emptyCellArray[0]
+                    item.parent_x = emptyCell.parent_x
+                    item.parent_y = emptyCell.parent_y
+                }
+            }
             
             this.setState({
                 item:item,
@@ -61,6 +73,7 @@ module.exports = function (Component) {
                 xUnits:xUnits,
                 yUnits:yUnits
             })
+            
         }
         
         updateVirtualData(err,virtual) {

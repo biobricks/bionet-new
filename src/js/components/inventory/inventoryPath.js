@@ -32,13 +32,10 @@ module.exports = function (Component) {
         
         componentWillReceiveProps(props) {
             if (!props.inventoryPath) return
-            //if (props.id !== this.state.id) {
-//                console.log('inventory path props:',props)
-
-          this.setState({
-            id: props.id,
-            inventoryPath: props.inventoryPath
-          });
+            this.setState({
+                id: props.id,
+                inventoryPath: props.inventoryPath
+            });
         }
         
         selectCellListener(cellLocation) {
@@ -77,7 +74,6 @@ module.exports = function (Component) {
                 var item = newPath[i]
                 var nextItem = (i<newPath.length-1) ? newPath[i+1] : {}
                 var yUnits = item.yUnits
-                //var yUnits = (item.type==='lab') ? item.children.length : item.yUnits
                 var ref = (container) => { if (container) thisModule.containerRef[container.props.dbid] = container; }
                 var px=null
                 var py=null
@@ -90,18 +86,6 @@ module.exports = function (Component) {
                     <StorageContainer dbid={item.id} type={item.type} ref={ref} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} selectedItem={nextItem.id} px={px} py={py}/>
                 )
             }
-            //this.focusCells(newPath)
-
-            // FIXED You should not be putting HTML into the state.
-            //      All HTML should be rendered from the state 
-            //      in the render() function
-
-/*          
-            this.setState({
-                id:id,
-                inventoryPathRendered:inventoryPath
-            })
-*/
             return inventoryPath;
         }
         
@@ -117,7 +101,6 @@ module.exports = function (Component) {
                 app.actions.inventory.saveToInventory(item, imageLabel, true, function(err) {
                     console.log('print callback, err:',err)
                 })
-                //saveToInventory: function (physical, label, doPrint, cb) {
             }
             const promptComponent = (<PrintLabel callback={callback} item={item}/>)
             app.actions.prompt.display('Print label for '+name+'?', promptComponent, function(accept) {

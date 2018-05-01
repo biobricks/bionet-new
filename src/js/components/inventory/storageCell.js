@@ -64,7 +64,6 @@ module.exports = function (Component) {
         }
         
         focus(active, occupied) {
-            //if (active) console.log('setting focus for cell: ', this.props.label)
             this.setState({
                 active:active
             })
@@ -121,8 +120,6 @@ module.exports = function (Component) {
                     return null
                 }.bind(this)
                     
-                //if (this.state.active ) console.log('rendering cell:',this.props.label, this.state.active, this.state.occupied, this.props.state)
-
                 var className = 'is-empty-cell '
                 if (this.state.selected) className = 'is-selected-cell '
                 else if (this.state.active) className = 'is-active-cell '

@@ -40,7 +40,6 @@ module.exports = function (Component) {
             const headerTitle=[]
             headerTitle.push({name:'Nav',class:'is-1'})
             headerTitle.push({name:'Name',class:'is-4'})
-            //headerTitle.push({name:'Type',class:'is-3'})
             headerTitle.push({name:'Loc',class:'is-1'})
             const type = items[0].type
             if (type==='physical') {
@@ -48,7 +47,7 @@ module.exports = function (Component) {
             }
             var attributes = this.props.attributes
             if (!attributes) attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
-            //
+
             for (var i=0; i<attributes.length; i++) {
                 var fieldId = attributes[i].name.toLowerCase()
                 var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);

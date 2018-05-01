@@ -10,7 +10,6 @@ module.exports = function (Component) {
 
         constructor(props) {
             super(props);
-            //console.log('StorageContainer props:', JSON.stringify(props))
             this.cellRef = {}
         }
         
@@ -32,7 +31,6 @@ module.exports = function (Component) {
         
         componentDidMount() {
             if (this.props.mode==='edit') {
-                //console.log('storage container componentDidMount:',this.props)
                 app.actions.inventory.selectCell(null, this.props.dbid, this.props.px, this.props.py, false)
             }
         }

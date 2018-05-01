@@ -102,27 +102,12 @@ module.exports = function (Component) {
             const dbData = this.state.item
             dbData[id]=value
             this.setState({item:dbData})
-            
-            ///todo: saving rowdata causes inventory tree to be corrupted
-            /*
-            if (dbData.id) {
-                app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
-                    if (err) {
-                        app.actions.notify("Error saving "+dbData.name, 'error');
-                    }
-                })
-            }
-            */
         }
         
         setType(type) {
             const item = this.state.item
             item.type=type
             const locationType = app.actions.inventory.getLocationTypeFromTitle(type)
-            //var xUnits = 1
-            //var yUnits = 1
-            //var xUnits = (item.xUnits) ? item.xUnits : (locationType) ? locationType.xUnits : 1
-            //var yUnits = (item.yUnits) ? item.yUnits : (locationType) ? locationType.yUnits : 1
             var xUnits = (locationType) ? locationType.xUnits : 1
             var yUnits = (locationType) ? locationType.yUnits : 1
             this.setState({
@@ -147,8 +132,7 @@ module.exports = function (Component) {
             dbData.parent_x = selection.x
             dbData.parent_y = selection.y
 
-            console.log('edit physical, submit:',dbData, selection)
-            //return
+            //console.log('edit physical, submit:',dbData, selection)
             app.actions.prompt.reset()
             app.actions.inventory.saveToInventory(dbData, null, null, function(err, id) {
                 if (err) {
@@ -205,12 +189,10 @@ module.exports = function (Component) {
         }
         
         showVirtual(e) {
-            console.log('edit virtual, props:',this.props)
+            //console.log('edit virtual, props:',this.props)
             e.preventDefault();
             if (!this.props.item || !this.props.item.virtual_id) return
-
-          app.actions.route('/virtual/show/'+this.props.item.virtual_id);
-//            app.actions.inventory.editVirtualItem(this.props.item.virtual_id)
+            app.actions.route('/virtual/show/'+this.props.item.virtual_id);
         }
         
         getLabel() {
@@ -249,11 +231,6 @@ module.exports = function (Component) {
         componentDidMount() {
             if (!window.editPhysical) window.editPhysical=1
             else window.editPhysical++
-            /*
-            // todo: the focus method does not work in some browser configurations
-          const nameInput = document.getElementById('name');
-          if (nameInput && nameInput.focus) nameInput.focus(true);
-          */
         }
         
         render() {
@@ -339,10 +316,6 @@ module.exports = function (Component) {
                 //console.log('tabular:',this.props.classProps)
                 const navArrowStyle = "font-size:20px;line-height:35px;color:#808080;display:flex;justify-content:center;margin-right:0px;"
                 const itemName = item.name
-                /*
-                            <ItemTypes type={item.type} types={typeSelectionList} setType={this.setType} classProps={this.props.classProps[2].class} onblur={this.onblur.bind(this)} />
-                            <DropdownButton fid={itemName+"_types"} selectedItem={item.type} selectionList={typeSelectionList} setSelectedItem={this.setType}/>
-                */
                 return (
                     <form onsubmit={this.submit.bind(this)} style="padding:0;">
                         <div className="tabular-row tile is-parent is-11"  style={focusStyle+'padding:0;margin:0;box-sizing:border-box;'} onclick={this.onClickRow.bind(this)} ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver} draggable="true">
@@ -357,7 +330,6 @@ module.exports = function (Component) {
                     </form>
                 )
             } else {
-                //const editTable=(item.type.indexOf('box') >= 0) ? <EditTable item={item} items={item.children}/> : null
                 const containerSize = 250
                 const editTable = null
                 var storageContainer = null
@@ -370,7 +342,6 @@ module.exports = function (Component) {
                 }
                 console.log('editPhysical render:',this.state)
                     
-                                //<ItemTypes fid="type" type={item.type} types={types} setType={this.setType}/>
                 var subdivisionFields = null
                 var virtualData = null
                 if (item.type === 'physical') {

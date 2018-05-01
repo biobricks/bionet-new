@@ -26,7 +26,6 @@ module.exports = function (Component) {
         componentWillReceiveProps(nextProps) {
             console.log('editVirtual, props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
-            //const active='is-active'
             if (!nextProps.item) {
                 this.setState({
                     active:active
@@ -150,7 +149,6 @@ module.exports = function (Component) {
         }
         
         focus(active, navigate) {
-            //if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
             if (active) app.actions.inventory.selectCell(this.props.id, this.props.parent.id, this.props.parent.parent_x, this.props.parent.parent_y, false )
         }
@@ -175,8 +173,6 @@ module.exports = function (Component) {
                   indentWithTabs: false
                 };
                 this.simplemde = new SimpleMDE(opts);
-                //this.checkRestored();
-                //this.simplemde.codemirror.on('change', this.changeContent.bind(this));
           }
         }
         changeContent() {
@@ -274,7 +270,6 @@ module.exports = function (Component) {
                         )
                     } else if (fieldId==='description') {
                         attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
-                        //attributes.push( <FormInputTextArea fid={fieldId} label={label} value={value} /> )
                     } else {
                         attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
                     }
@@ -293,7 +288,6 @@ module.exports = function (Component) {
                     originator = (<div style="margin-bottom:10px;">Originator: {item.created.user}<br/></div>)
                 }
                                   
-                // <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
                 const typeSelectionList = types.map(type => type.title)
 
                 return (

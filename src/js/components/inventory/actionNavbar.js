@@ -171,9 +171,6 @@ module.exports = function (Component) {
         }
         
         deleteItem() {
-            //app.actions.notify("Error deleting item", 'error');
-            //return
-            
             const item = app.actions.inventory.getLastPathItem()
             if (!item) return
             const id = item.id
@@ -242,9 +239,7 @@ module.exports = function (Component) {
                     return <a id={props.id} class={'dropdown-item ' + ((props.emphasis) ? 'bold' : '')} onClick={props.onClick}>{props.label}</a>
                 }
 
-              //if(app.actions.inventory.isInstanceContainerSelected()) {
                 menu.push(<DropdownMenuItem label="Existing Biomaterial" emphasis onClick={this.addExisting.bind(this)} />)
-              //}
                 for (var i=0; i<menuDef.length; i++) {
                     var item = menuDef[i]
                     menu.push(<DropdownMenuItem id={item.name} label={item.title} onClick={this.addItemClick.bind(this)} />)
@@ -268,11 +263,6 @@ module.exports = function (Component) {
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
             //console.log('actionNavbar render: app.state.inventory.physicalItem', app.state.inventory.physicalItem)
 
-            /*
-            const editPhysical = (app.state.inventory.physicalItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />) : null
-                    <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
-            */
-                                                                     
             const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>

@@ -29,21 +29,45 @@ const status = [
   'received',
   'optimizing',
   'synthesizing',
-  'sequencing',
   'cloning',
-  'shipping',
-  'failed'
+  'sequencing',
+  'shipping'
 ];
 
 const statusDesc = [
   "The DNA synthesis request has been received by the FreeGenes project",
   "The submitted DNA sequence is being optimized for synthesis and cloning",
   "The DNA is currently being synthesized",
-  "The synthesized DNA is currently being sequenced",
   "The synthesized and sequence-verified DNA is being cloned into a plasmid",
+  "The synthesized DNA is currently being sequenced",
   "The synthesized DNA is currently being shipped",
   "The DNA synthesis or cloning failed after multiple attempts. Contact the FreeGenes project for more info."
 ];
+
+
+function getStatusIndex(val) {
+  var i;
+  if(typeof val === 'object') {
+
+    for(i=0; i < status.length; i++) {
+      if(status[i] === val.status) {
+        return {
+          status: i,
+          error: val.error
+        }
+      }
+    }
+    return 0;
+  }
+
+
+  for(i=0; i < status.length; i++) {
+    if(status[i] === val) return {
+      status: i
+    }
+  }
+  return 0;
+}
 
 module.exports = function(Component) {
 
@@ -52,13 +76,23 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
 
+      var s = getStatusIndex(props.status);
+
       this.state = {
-        status: 3
+        status: s.status,
+        error: s.error
       };
     }
 
     componentWillReceiveProps(nextProps) {
 
+      var s = getStatusIndex(nextProps.status);
+
+      this.setState({
+        status: s.status,
+        error: s.error
+      });     
+ 
     }
 
     componentDidMount() {
@@ -71,6 +105,7 @@ module.exports = function(Component) {
       return txt.slice[0, 1].toUpperCase() + txt.slice(1);
     }
 */
+
     getClass(iconNumber) {
       var state = "icon ";
 
@@ -79,7 +114,11 @@ module.exports = function(Component) {
       if(this.state.status > iconNumber) {
         state += " doing";
       } else if(this.state.status == iconNumber) {
-        state += " done";
+        if(this.state.error) {
+          state += " error";
+        } else {
+          state += " done";
+        }
       }
       if(iconNumber >= status.length - 1) {
         state += " last";
@@ -95,7 +134,8 @@ module.exports = function(Component) {
     }
 
     getStatusDesc() {
-      
+      if(this.state.error) return this.state.error;
+      return statusDesc[this.state.status];
     }
 
 	  render() {
@@ -113,20 +153,20 @@ module.exports = function(Component) {
           </div>
           <div>
             <div class={this.getClass(3)}></div>
-            <div class={this.getLabelClass(3)}>Sequencing</div>
+            <div class={this.getLabelClass(3)}>Cloning</div>
           </div>
           <div>
             <div class={this.getClass(4)}></div>
-            <div class={this.getLabelClass(4)}>Cloning</div>
+            <div class={this.getLabelClass(4)}>Sequencing</div>
           </div>
           <div>
             <div class={this.getClass(5)}></div>
-            <div class={this.getLabelClass(5)}>Shipping</div>
+            <div class={this.getLabelClass(5)}>Ready</div>
           </div>
 
           <div>
           
-            <p>This biomaterial was submitted to the FreeGenes project for synthesis. {statusDesc[this.state.status]}.</p>
+            <p>This biomaterial was submitted to the FreeGenes project for synthesis. {this.getStatusDesc()}.</p>
           </div>
         </div>
       )

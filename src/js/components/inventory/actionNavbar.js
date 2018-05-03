@@ -72,6 +72,7 @@ module.exports = function (Component) {
         }
         
         generateNewItem(parent_id,x,y,type) {
+            console.log('actionNavbar.generateNewItem:',arguments)
             const locationType = app.actions.inventory.getLocationType(type)
             var xUnits = 1
             var yUnits = 1
@@ -184,9 +185,10 @@ module.exports = function (Component) {
         }
         
         editItem() {
+            console.log('actionNavbar.editItem:',app.state.inventory.selection)
             var item = null
             if (!app.state.inventory.selection || !app.state.inventory.selection.id) {
-                item = this.generateNewItem(app.state.inventory.selection.parentId,app.state.inventory.selection.x, app.state.inventory.selection.y,'')
+                item = this.generateNewItem(app.state.inventory.selection.parentId,app.state.inventory.selection.x, app.state.inventory.selection.y,'container')
             } else {
                 item = app.actions.inventory.getSelectedItem()
             }

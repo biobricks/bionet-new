@@ -28,7 +28,7 @@ module.exports = function (Component) {
             if (!nextProps.tabular) console.log('EditPhysical props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
             
-            var item={}
+            var item=nextProps.item
             var parentItem=null
             if (nextProps.item) {
                 const dbData = JSON.parse(JSON.stringify(nextProps.item))

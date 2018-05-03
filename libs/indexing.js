@@ -46,15 +46,18 @@ module.exports = function(settings, db) {
       seqFormatted: false,
       changeProp: 'updated.time',
       listen: true, // listen for changes on level db and auto update BLAST db
-      debug: true
+      debug: 0
     });
 
     blastIndex.on('error', function(err) {
       console.error("blast-level error:", err);
     });
 
-    // TODO disable this (this causes a rebuild on each startup)
-    blastIndex.rebuild();
+    // TODO do we really want to rebuild the entire blast db on startup?
+    blastIndex.rebuild(function(err, count) {
+      if(err) return console.log("Error during blast index rebuild:", err);
+      console.log("Finished rebuilding blast database with", count, "entries");
+    });
   }
 
   function rebuild() {

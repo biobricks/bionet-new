@@ -55,13 +55,21 @@ module.exports = function (Component) {
 
             if (item.virtual_id &&!nextProps.tabular) app.actions.inventory.getItem(item.virtual_id,this.updateVirtualData.bind(this))
             
-            // assign next available cell when creating new physical
             if (parentItem && !item.id && !nextProps.tabular) {
-                const emptyCellArray = app.actions.inventory.getEmptyCellArray(parentItem.subdivisions)
-                if (emptyCellArray && emptyCellArray.length>0) {
-                    const emptyCell = emptyCellArray[0]
-                    item.parent_x = emptyCell.parent_x
-                    item.parent_y = emptyCell.parent_y
+                if (app.state.inventory.selection && app.state.inventory.selection.parentId) {
+                    // use current inventory selection for parent container, x, y
+                    const currentSelection = app.state.inventory.selection
+                    item.parent_id = currentSelection.parentId
+                    item.parent_x = currentSelection.x
+                    item.parent_y = currentSelection.y
+                } else {
+                    // assign next available cell when creating new physical
+                    const emptyCellArray = app.actions.inventory.getEmptyCellArray(parentItem.subdivisions)
+                    if (emptyCellArray && emptyCellArray.length>0) {
+                        const emptyCell = emptyCellArray[0]
+                        item.parent_x = emptyCell.parent_x
+                        item.parent_y = emptyCell.parent_y
+                    }
                 }
             }
             

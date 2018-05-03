@@ -97,19 +97,22 @@ module.exports = function (Component) {
             //console.log('add menu item:',e.target.id, this.editPhysical)
             this.closeAddItemMenu()
             
-            // todo: if current inventory selection (highlighted in blue) use parentid, x, y of current selection
-            // otherwise use last path item as parent
             const parent = app.actions.inventory.getLastPathItem()
+            // add item to current inventory path location by default
             var parentId = parent.id
             var x = parent.parent_x
             var y = parent.parent_y
-            if (app.state.inventory.selection) {
+            if (app.state.inventory.selection && app.state.inventory.selection.parentId) {
+                // use current selection's container and x,y for location to add new item
                 const currentSelection = app.state.inventory.selection
                 parentId = currentSelection.parentId
                 x = currentSelection.x
                 y = currentSelection.y
             }
-            if (!parentId) return null
+            if (!parentId) {
+                console.log('addItemClick, no parent specified, exiting')
+                return null
+            }
             
             const type = e.target.id
             var createType = false

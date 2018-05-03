@@ -229,7 +229,7 @@ module.exports = {
             const length = locationPathAr.length
             const item = (length>0) ? locationPathAr[length-1] : null
             app.state.inventory.path = locationPathAr
-            if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
+            //if (item) this.selectCell(item.id, item.parent_id, item.parent_x, item.parent_y, false)
             //console.log('getInventoryPath action:')
             if (cb) cb(null, locationPathAr)
         }.bind(this),debugcb.bind(this))

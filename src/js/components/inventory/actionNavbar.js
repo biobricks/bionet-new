@@ -73,14 +73,20 @@ module.exports = function (Component) {
         
         generateNewItem(parent_id,x,y,type) {
             const locationType = app.actions.inventory.getLocationType(type)
+            var xUnits = 1
+            var yUnits = 1
+            if (locationType) {
+                xUnits = locationType.xUnits
+                yUnits = locationType.yUnits
+            }
             return {
                 type: type,
                 name: '',
                 parent_id: parent_id,
                 parent_x: x,
                 parent_y: y,
-                xUnits:locationType.xUnits,
-                yUnits:locationType.yUnits
+                xUnits:xUnits,
+                yUnits:yUnits
             }
         }
             
@@ -171,7 +177,8 @@ module.exports = function (Component) {
                     return
                 }
                 if (rootId) {
-                    app.actions.inventory.selectInventoryId(rootId)
+                    // navigate to root item via selectCell
+                    app.actions.inventory.selectCell(rootId,null,1,1,true)
                 }
             })
         }

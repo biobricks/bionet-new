@@ -2,6 +2,7 @@
 var fs = require('fs');
 var path = require('path');
 var level = require('level'); // leveldb database
+var transaction = require('level-transactions');
 var sublevel = require('subleveldown'); // leveldb multiplexing
 var through = require('through2');
 var IDGenerator = require('../libs/id_generator.js'); // atomically unique IDs
@@ -164,10 +165,15 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
   // physical instance is created of that virtual.
   // This function increments and returns the incremented value.
   function incPhysicalCount(virtual_id, inc, cb) {
-    physicalCountDB.get(virtual_id, function(err, data) {
+    var tx = transaction(physicalCountDB);
+
+    tx.get(virtual_id, function(err, data) {
       var count;
       if(err && !err.notFound) {
-        return cb(err);
+        tx.commit(function() {
+          cb(err);
+        });
+        return;
       } else if(err && err.notFound) {
         count = 0;
       } else {
@@ -176,10 +182,19 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
 
       count += inc;
 
-      physicalCountDB.put(virtual_id, {count: count}, function(err) {
-        if(err) return cb(err);
+      tx.put(virtual_id, {count: count}, function(err) {
+        if(err) {
+          tx.rollback(function() {
+            cb(err);
+          });
+          return
+        }
 
-        cb(null, count);
+        tx.commit(function(err) {
+          if(err) return cb(err);
+
+          cb(null, count);
+        });
       });
     });
   }
@@ -273,7 +288,8 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
       }
       
       // TODO we shouldn't have to do this
-      // check for name uniqueness
+      // check for name uniqueness, since adding the auto-increment
+      // Should be safe to remove
       getBy('name', m.name, function(err, value) {
         if(err) return cb(err);
         if(value) {

@@ -46,6 +46,7 @@ module.exports = function(settings, db) {
       seqFormatted: false,
       changeProp: 'updated.time',
       listen: true, // listen for changes on level db and auto update BLAST db
+      rebuild: true, // TODO do we really want to rebuild on each server restart?
       debug: true
     });
 
@@ -53,8 +54,6 @@ module.exports = function(settings, db) {
       console.error("blast-level error:", err);
     });
 
-    // TODO disable this (this causes a rebuild on each startup)
-    blastIndex.rebuild();
   }
 
   function rebuild() {

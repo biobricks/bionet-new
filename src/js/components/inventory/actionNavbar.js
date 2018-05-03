@@ -96,8 +96,21 @@ module.exports = function (Component) {
         addItemClick(e) {
             //console.log('add menu item:',e.target.id, this.editPhysical)
             this.closeAddItemMenu()
+            
+            // todo: if current inventory selection (highlighted in blue) use parentid, x, y of current selection
+            // otherwise use last path item as parent
             const parent = app.actions.inventory.getLastPathItem()
-            if (!parent) return null
+            var parentId = parent.id
+            var x = parent.parent_x
+            var y = parent.parent_y
+            if (app.state.inventory.selection) {
+                const currentSelection = app.state.inventory.selection
+                parentId = currentSelection.parentId
+                x = currentSelection.x
+                y = currentSelection.y
+            }
+            if (!parentId) return null
+            
             const type = e.target.id
             var createType = false
             if (this.state.menuDef) {
@@ -123,7 +136,7 @@ module.exports = function (Component) {
             }
             else {
                 console.log('add container:',type)
-                const item = this.generateNewItem(parent.id, parent.parent_x, parent.parent_y, type)
+                const item = this.generateNewItem(parentId, x, y, type)
                 app.actions.inventory.editItem(item)
             }
         }

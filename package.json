@@ -21,7 +21,7 @@
     "accountdown-basic": "^1.1.0",
     "async": "^2.5.0",
     "backoff": "^2.5.0",
-    "blast-level": "0.0.10",
+    "blast-level": "0.0.11",
     "discovery-channel": "^5.4.6",
     "ecstatic": "^2.2.1",
     "email-validator": "^1.1.1",

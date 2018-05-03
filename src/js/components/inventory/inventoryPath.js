@@ -84,24 +84,28 @@ module.exports = function (Component) {
         }
         
         print() {
-            const path = this.props.inventoryPath
-            if (!path || path.length<1) return null
-            const item = path[path.length-1]
-            if (!item) return
-            const id = item.id
-            const name = item.name
-            const callback = function (unk, state, imageLabel) {
-                console.log('print callback')
-                app.actions.inventory.saveToInventory(item, imageLabel, true, function(err) {
-                    console.log('print callback, err:',err)
-                })
-            }
-            const promptComponent = (<PrintLabel callback={callback} item={item}/>)
-            app.actions.prompt.display('Print label for '+name+'?', promptComponent, function(accept) {
-                //console.log('print item:',accept)
-                if (accept) {
-                }
+          const path = this.props.inventoryPath
+          if (!path || path.length<1) return null
+          const item = path[path.length-1]
+          if (!item) return
+          const id = item.id
+          const name = item.name
+          const callback = function(err, labelImageData, labelData) {
+            console.log('print callback')
+            item.label = labelData;
+            app.actions.inventory.saveToInventory(item, labelImageData, true, function(err) {
+              if(err) return app.actions.notify(err, "error");
+              app.actions.notify("Label is printing!");
             })
+          }
+
+          const promptComponent = (<PrintLabel callback={callback} item={item}/>)
+
+          app.actions.prompt.display('Print label for '+name+'?', promptComponent, function(accept) {
+            //console.log('print item:',accept)
+            if (accept) {
+            }
+          })
         }
         
         addFavorite() {

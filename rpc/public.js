@@ -215,6 +215,39 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
 
     }),
 
+    // TODO use indexes for this!
+    getByHumanID: function(curUser, humanID, cb) {
+
+      var s = db.bio.createReadStream({valueEncoding: 'json'});
+      var found = false;
+      var out = s.pipe(through.obj(function(data, enc, next) {
+        if(!data || !data.value || !data.value.label) return next()
+
+        console.log("HUMAN ID:", humanID);
+        if(data.value.label.humanID == humanID) {
+          found = true;
+          cb(null, data.value);
+        } else {
+          next();
+        }
+      }));
+      
+      s.on('end', function() {
+        if(!found) {
+          found = true;
+          cb(null, null);
+        }
+      });
+
+      s.on('error', function(err) {
+        if(!found) {
+          found = true;
+          cb(err);
+        }
+      });
+    },
+    
+
     verifyUser: function(curUser, code, cb) {
       accounts.verify(users, code, cb);
     }, 

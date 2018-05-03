@@ -288,6 +288,34 @@ module.exports = function(Component) {
         );
       }
 
+      var hint = '';
+      if(this.state.query && this.state.query.text && this.state.query.text.length < 20) {
+        hint = (
+            <div class="hint">
+            
+              <div class="hint-label hint-warning-title">Hint:</div>
+              <div class="hint-text hint-warning">
+                <p>Your sequence is only <span>{this.state.query.text.length}</span> nucleotides long. BLAST+ doesn't work very well for short sequences.</p>
+                <p class="other">Try increasing the length of your search string to e.g. 30 nucleotides.</p>
+              </div>
+            <div class="float-clear"></div> 
+          </div>
+        );
+      }
+
+      var oldHint = (
+          <div class="hint">
+          
+            <div class="hint-label">Hint:</div>
+            <div class="hint-text">
+              <p>You can search using either human language or a nucleotide sequence.</p>
+              <p class="other">For advanced search tips have a look at <Link to="/help/search">search syntax help</Link>.</p>
+            </div>
+            <div class="float-clear"></div> 
+          </div>
+      );
+
+
       return (
         <div>
 
@@ -334,15 +362,7 @@ module.exports = function(Component) {
                 </label>
               </div>
             </div>
-            <div class="hint">
-              
-              <div class="hint-label">Hint:</div>
-              <div class="hint-text">
-                <p>You can search using either human language or a nucleotide sequence.</p>
-                <p class="other">For advanced search tips have a look at <Link to="/help/search">search syntax help</Link>.</p>
-              </div>
-              <div class="float-clear"></div> 
-            </div>
+            {hint}
           </form>
 
           {results}

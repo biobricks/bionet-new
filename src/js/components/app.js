@@ -29,6 +29,7 @@ module.exports = function(Component) {
   var Print = require('./print.js')(Component);
   var Footer = require('./footer.js')(Component);
   var Attributions = require('./attributions.js')(Component);
+  var BarcodeRedirect = require('./barcode_redirect.js')(Component);
 
   return class App extends Component {
 
@@ -88,6 +89,7 @@ module.exports = function(Component) {
                   <Route path="/inventory" key="without-id" component={Inventory}/>
               </Switch>
 
+              <Route path="/o/:humanID" component={BarcodeRedirect}/>
 
               <Route path="/attributions" component={Attributions} />              
             </div>

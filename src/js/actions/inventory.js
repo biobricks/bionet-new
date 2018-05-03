@@ -151,10 +151,10 @@ module.exports = {
     },
     
     refreshInventoryPath: function(id, cb) {
-        const url = "/inventory/"+id+"?r=true"
-        //console.log('refreshInventoryPath:',url)
+        const url = "/inventory/"+id
         app.state.inventory.forceRefresh=true
         app.state.history.push(url)
+        app.actions.inventory.selectCell(id,null,1,1,true)
     },
     
     selectInventoryId: function(id, cb) {

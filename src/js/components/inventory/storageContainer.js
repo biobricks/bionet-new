@@ -78,7 +78,6 @@ module.exports = function (Component) {
             return this.props.dbid
         }
                 
-
         editContainerListener(occupied) {
             if (!occupied) return
             //console.log('editContainerListener ',occupied)
@@ -106,16 +105,21 @@ module.exports = function (Component) {
             //console.log('containerSubdivision render:',this.props)
             const tiles = this.initialize(this.props)
             if (!tiles) return
+
+            const id = (this.props.item) ? this.props.item.id : null
+            const navTitle = function() {
+                app.actions.inventory.refreshInventoryPath(id)
+            }
             
-            const titleLabelStyle = "height:20px;width:"+this.props.width+"px;font-size:12px;line-height:20px;font-weight:800;overflow:hidden;white-space:nowrap"
+            const titleLabelStyle = "height:20px;width:"+this.props.width+"px;font-size:12px;line-height:20px;font-weight:800;overflow:hidden;white-space:nowrap;color:#0080ff;"
             const TitleLabel = function(props) {
-                return (<div style={titleLabelStyle}>{props.text}</div>)
+                return (<a onclick={navTitle} style={titleLabelStyle}>{props.text}</a>)
             }
             const pathChild = "height:"+this.props.containerSize+"px;margin:0px;padding:0;width:"+(this.props.containerSize+20)+"px;"
             return (
                 <div id={this.props.dbid} key={this.props.dbid} class="tile is-2" style={pathChild}>
                     <div id="inventory_tiles2" class="tile is-vertical" style={"padding:0;margin:0;max-width:"+this.props.width+"px;"}>
-                        <TitleLabel text={this.props.title}/>
+                        <TitleLabel text={this.props.title} id={id}/>
                         {tiles}
                     </div>
                 </div>

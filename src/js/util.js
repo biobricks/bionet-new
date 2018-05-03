@@ -1,5 +1,26 @@
 import ashnazg from 'ashnazg'
 
+// parses a version like 1.12.3 into a number like 10000012000003
+function parseVersion(str) {
+  if(!str) throw new Error("Failed to parse version string: " + str);
+
+  var fields = str.split('.');
+  if(fields.length != 3) {
+    throw new Error("Failed to parse version string: " + str);
+  }
+
+  var n;
+  fields = fields.map(function(s) {
+    n = parseInt(s);
+    if(n > 999999) {
+      throw new Error("Failed to parse version string: " + str);
+    }
+    return n;
+  });
+
+  return fields[0] * 1000000000000 + fields[1] * 1000000 + fields[2];
+}
+
 module.exports = {
   user: {
     isInGroup: function(user, group) {
@@ -75,32 +96,65 @@ module.exports = {
     
   */
   getFreegenesStatus(v) {
-    if(!v.status) return null;
-    var s = v;
+    var s = v.freegenes;
+    if(!s.status) return null;
 
-    if(s.abandoned) {
-      return 'failed';
+    if(parseVersion(s.version) >= parseVersion('2.0.0')) {
+
+      var state = s.status.current_status;
+
+      if(state === 'submitted') {
+        return 'optimizing';
+      }
+      if(state === 'ordered') {
+        return 'synthesizing';
+      }
+      if(state === 'synthesis_abandoned') {
+        return {status: 'synthesizing', error: "After multiple attempts the sequence could still not be synthesized."};
+      }
+
+      if(state === 'received' || state === 'building' || state === 'cloning_failure') {
+        return 'cloning';
+      }
+
+      if(state === 'sequencing' || state === 'sequence_failure') {
+        return 'sequencing';
+      }
+
+      if(state === 'cloning_abandoned') {
+        return {status: 'cloning', error: "After multiple attempts the sequence could not be cloned."};
+      }
+
+      if(state === 'sequence_confirmed') {
+        return 'shipping';
+      }
+
+    } else {
+
+
+      if(s.abandoned) {
+        return 'failed';
+      }
+      
+      if(s.build_complete && s.build_complete.match(/good[-_]sequence/i)) {
+        return 'shipping';
+      } 
+
+      if(s.building) {
+        return 'cloning';
+      }
+
+      if(s.build_ready) {
+        return 'sequencing';
+      }
+
+      if(s.ordered) {
+        return 'synthesizing';
+      }
+
+      // TODO we don't have a way to differentiate 'optimizing' with 'received'
+
+      return 'optimizing';
     }
-    
-    if(s.build_complete && s.build_complete.match(/good[-_]sequence/i)) {
-      return 'shipping';
-    } 
-
-    if(s.building) {
-      return 'cloning';
-    }
-
-    if(s.build_ready) {
-      return 'sequencing';
-    }
-
-    if(s.ordered) {
-      return 'synthesizing';
-    }
-
-    // TODO we don't have a way to differentiate 'optimizing' with 'received'
-
-    return 'optimizing';
-    
   }
 }

@@ -84,6 +84,7 @@ cd ..
 ```
 cd bionet-new/
 mkdir -p static/build
+mkdir -p user_static/labels
 cp settings.js.example settings.js 
 cp settings.client.js.example settings.client.js 
 ```

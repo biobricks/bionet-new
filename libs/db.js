@@ -23,8 +23,11 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
   var bioDB = sublevel(db, 'b', {separator: sep});
   var virtualDB = sublevel(bioDB, 'v-', {separator: sep, valueEncoding: 'json'});
   var physicalDB = sublevel(bioDB, 'p-', {separator: sep, valueEncoding: 'json'});
+
+  // TODO we're not really using the cart at the moment
   var cartDB = sublevel(bioDB, 'c-', {separator: sep, valueEncoding: 'json'});
 
+  var physicalCountDB = sublevel(bioDB, 'i-', {separator: sep, valueEncoding: 'json'});
   var deletedDB = sublevel(bioDB, 'd-', {separator: sep, valueEncoding: 'json'});
 
   // Take a key from one sublevel db and add or remove prefixes
@@ -157,6 +160,30 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
     };
   }
 
+  // The physicalCount is a per-virtual number that increments every time a new
+  // physical instance is created of that virtual.
+  // This function increments and returns the incremented value.
+  function incPhysicalCount(virtual_id, inc, cb) {
+    physicalCountDB.get(virtual_id, function(err, data) {
+      var count;
+      if(err && !err.notFound) {
+        return cb(err);
+      } else if(err && err.notFound) {
+        count = 0;
+      } else {
+        count = data.count;
+      }
+
+      count += inc;
+
+      physicalCountDB.put(virtual_id, {count: count}, function(err) {
+        if(err) return cb(err);
+
+        cb(null, count);
+      });
+    });
+  }
+
   function saveMaterialInDB(m, userData, dbType, cb) {
     if(!m.name || !m.name.trim()) return cb("Name must be specified");
 
@@ -183,7 +210,7 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
       db.put(m.id, m, {valueEncoding: 'json'}, function(err) {
         if(err) return cb(err);
 
-        cb(null, m.id);
+        cb(null, m.id, m);
 
       });
     })
@@ -227,16 +254,32 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
 
 
   function savePhysical(curUser, m, imageData, doPrint, cb, isUnique) {
-    console.log("savePhysical", m, imageData, doPrint);
-    if(!m.id && !isUnique) { // if no id then this is a new physical
 
+    if(!m.id && !isUnique) { // if no id then this is a new physical
+      
+      if(m.virtual_id) {
+        virtualDB.get(m.virtual_id, function(err, virtual) {
+          if(err) return cb(err);
+
+          incPhysicalCount(m.virtual_id, 1, function(err, count) {
+            if(err) return cb(err);
+            
+            m.name = virtual.name + '_' + count;
+            
+            savePhysical(curUser, m, imageData, doPrint, cb, true);
+          })
+        })
+        return
+      }
+      
+      // TODO we shouldn't have to do this
       // check for name uniqueness
       getBy('name', m.name, function(err, value) {
         if(err) return cb(err);
         if(value) {
           return cb(new Error("Another physical is already named: " + m.name));
         }
-
+        
         savePhysical(curUser, m, imageData, doPrint, cb, true);
       });
       return;
@@ -267,12 +310,6 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
 
       return;
     }
-      
-    /* skipping test for container altogether
-    if(!m.parent_id&&m.type!=='lab') {
-      return cb(new Error("No container specified"));
-    }
-    */
 
     var mtch;
     if(imageData && (mtch = imageData.match(/^data:image\/png;base64,(.*)/))) {

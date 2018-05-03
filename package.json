@@ -38,7 +38,7 @@
     "qrcode-generator": "^1.3.1",
     "retricon-without-canvas": "^1.0.0",
     "routes": "^2.1.0",
-    "rpc-multiauth": "0.0.2",
+    "rpc-multiauth": "0.0.3",
     "rpc-multistream": "^0.9.7",
     "ssh2": "^0.5.5",
     "subleveldown": "^2.1.0",
@@ -99,6 +99,7 @@
     "simplemde": "^1.11.2",
     "sinon": "^4.4.8",
     "strftime": "^0.10.0",
+    "tape": "^4.9.0",
     "watchify": "^3.11.0",
     "zxcvbn": "^4.4.2"
   },

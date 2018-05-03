@@ -2,7 +2,7 @@
   Establish RPC connection to server and optionally log in.
 */
 
-var auth = require('rpc-multiauth');
+var auth = require('rpc-multiauth').client;
 var path = require('path');
 var fs = require('fs');
 var websocket = require('websocket-stream');

@@ -145,8 +145,8 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       })
       s.pipe(d);
 
-      d.on('end', cb);
-      d.on('error', cb);
+      s.on('end', cb);
+      s.on('error', cb);
     },
     
     undelete: function(curUser, key, cb) {

@@ -61,8 +61,3 @@ test('undelete', function (t) {
     });
   });
 });
-
-
-/*
-
-*/

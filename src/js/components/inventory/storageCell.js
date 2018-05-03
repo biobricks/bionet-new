@@ -26,13 +26,18 @@ module.exports = function (Component) {
             
             if (nextProps.active !== this.state.active) {
                 this.setState({
-                    active:nextProps.active
+                    active:nextProps.active,
                 })
             }
             
             if (nextProps.occupied !== this.state.occupied) {
                 this.setState({
                     occupied:nextProps.occupied
+                })
+            }
+            if (nextProps.focused !== this.state.focused) {
+                this.setState({
+                    focused:nextProps.focused
                 })
             }
         }
@@ -57,13 +62,14 @@ module.exports = function (Component) {
             return this.props.label
         }
         
-        selected(selected) {
+        focus(state) {
+            //console.log('storageCell, focus:',state)
             this.setState({
-                selected:selected
+                focused:state
             })
         }
         
-        focus(active, occupied) {
+        active(active, occupied) {
             this.setState({
                 active:active
             })
@@ -119,11 +125,12 @@ module.exports = function (Component) {
                     else if (width>20) return (<span style={cellLabelStyle}>{props.text}</span>)
                     return null
                 }.bind(this)
-                    
                 var className = 'is-empty-cell '
-                if (this.state.selected) className = 'is-selected-cell '
+                if (this.state.focused) className = 'is-selected-cell '
                 else if (this.state.active) className = 'is-active-cell '
                 else if (this.state.occupied) className = 'is-occupied-cell '
+                
+                //if (this.state.focused) console.log('storageCell render, focused:', this.props.cell_id, className)
                 
                 return (
                     <div id={this.props.id} className="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver}>

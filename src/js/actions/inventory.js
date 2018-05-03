@@ -50,7 +50,7 @@ module.exports = {
     },
     
     selectCell: function(id, parentId, x, y, navigate) {
-        //console.log('selectCell action:',id,parentId,x,y,navigate)
+        console.log('selectCell action:',id,parentId,x,y,navigate)
         //console.trace()
         const inventorySelection = {
             id: id,
@@ -75,6 +75,7 @@ module.exports = {
         if (app.state.selectCellListener) app.state.selectCellListener(inventorySelection)
         if (app.state.inventory.listener.editCell) app.state.inventory.listener.editCell(inventorySelection)
         if (app.state.inventory.listener.assignPhysical) app.state.inventory.listener.assignPhysical(inventorySelection)
+        if (app.state.inventory.listener.selectCell) app.state.inventory.listener.selectCell(inventorySelection)
     },
     
     getItem: function(id, cb) {
@@ -263,7 +264,11 @@ module.exports = {
         if (yunits>1) return y
         return ''
     },
-
+    
+    cellId: function(label, parentId) {
+        return "cell_"+label+"_parent_"+parentId
+    },
+    
     generateSubdivisions: function(parent_id, pwidth, pheight, pxunits, pyunits,  px1, py1) {
         //console.log('subdivideContainer', pxunits, pyunits, pwidth, selectedItemId, px, py)
 
@@ -283,7 +288,7 @@ module.exports = {
                 var x = col+1
 
                 var label = app.actions.inventory.generateLabel(x, y, xunits, yunits)
-                const cellId = "cell_"+label+"_parent_"+parent_id
+                var cellId = this.cellId(label, parent_id)
                 var storageCell = {
                     cellId:cellId,
                     label:label,
@@ -296,7 +301,7 @@ module.exports = {
                 cols.push(storageCell)
             }
             return cols
-        }
+        }.bind(this)
 
         const rows=[]
         for (var y=0; y<yunits; y++) {
@@ -533,14 +538,7 @@ module.exports = {
     
     getRootItem: function(cb) {
         var rootItem
-        /*
-        app.remote.getInventoryRoot(function(err,path,key) {
-            console.log('getRootItem:',key,err,path)
-            cb(err,key)
-        })
-        */
         app.remote.inventoryTree(function (err, children) {
-            //console.log('getRootItem:',children)
             if (err) {
                 console.log("getRootItem error:", err);
                 if (cb) cb(err)

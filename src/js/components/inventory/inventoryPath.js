@@ -39,17 +39,11 @@ module.exports = function (Component) {
         }
         
         selectCellListener(cellLocation) {
-            //console.log('selectCellListener, inventoryPath',cellLocation, this.props)
             for (var containerId in this.containerRef) {
                 var container = this.containerRef[containerId]
-                if (containerId === cellLocation.parentId) {
-                    //console.log('selectCellListener, container:',containerId,container.props.item.name)
-                    container.selectCellListener(cellLocation)
-                    break
-                }
+                container.selectCellListener(cellLocation)
             }
             if (app.state.inventory.listener.editContainerListener) {
-                //console.log('invoking editContainerListener')
                 app.state.inventory.listener.editContainerListener(cellLocation, true)
             }
         }

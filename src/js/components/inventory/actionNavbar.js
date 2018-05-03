@@ -72,15 +72,22 @@ module.exports = function (Component) {
         }
         
         generateNewItem(parent_id,x,y,type) {
+            console.log('actionNavbar.generateNewItem:',arguments)
             const locationType = app.actions.inventory.getLocationType(type)
+            var xUnits = 1
+            var yUnits = 1
+            if (locationType) {
+                xUnits = locationType.xUnits
+                yUnits = locationType.yUnits
+            }
             return {
                 type: type,
                 name: '',
                 parent_id: parent_id,
                 parent_x: x,
                 parent_y: y,
-                xUnits:locationType.xUnits,
-                yUnits:locationType.yUnits
+                xUnits:xUnits,
+                yUnits:yUnits
             }
         }
             
@@ -96,10 +103,36 @@ module.exports = function (Component) {
         addItemClick(e) {
             //console.log('add menu item:',e.target.id, this.editPhysical)
             this.closeAddItemMenu()
+            
             const parent = app.actions.inventory.getLastPathItem()
-            if (!parent) return null
+            // add item to current inventory path location by default
+            var parentId = parent.id
+            var x = parent.parent_x
+            var y = parent.parent_y
+            if (app.state.inventory.selection && app.state.inventory.selection.parentId) {
+                // use current selection's container and x,y for location to add new item
+                const currentSelection = app.state.inventory.selection
+                parentId = currentSelection.parentId
+                x = currentSelection.x
+                y = currentSelection.y
+            }
+            if (!parentId) {
+                console.log('addItemClick, no parent specified, exiting')
+                return null
+            }
+            
             const type = e.target.id
-            if (this.createType) {
+            var createType = false
+            if (this.state.menuDef) {
+                for (var i=0; i<this.state.menuDef.length; i++) {
+                    if (this.state.menuDef[i].name===type) {
+                        createType = this.state.menuDef[i].virtual
+                        break
+                    }
+                }
+            }
+            console.log('additemclick: ',type,createType)
+            if (createType) {
                 const virtual = {
                     type:type,
                     name:''
@@ -112,7 +145,8 @@ module.exports = function (Component) {
                 })
             }
             else {
-                const item = this.generateNewItem(parent.id, parent.parent_x, parent.parent_y, type)
+                console.log('add container:',type)
+                const item = this.generateNewItem(parentId, x, y, type)
                 app.actions.inventory.editItem(item)
             }
         }
@@ -144,15 +178,17 @@ module.exports = function (Component) {
                     return
                 }
                 if (rootId) {
-                    app.actions.inventory.selectInventoryId(rootId)
+                    // navigate to root item via selectCell
+                    app.actions.inventory.selectCell(rootId,null,1,1,true)
                 }
             })
         }
         
         editItem() {
+            console.log('actionNavbar.editItem:',app.state.inventory.selection)
             var item = null
             if (!app.state.inventory.selection || !app.state.inventory.selection.id) {
-                item = this.generateNewItem(app.state.inventory.selection.parentId,app.state.inventory.selection.x, app.state.inventory.selection.y,'')
+                item = this.generateNewItem(app.state.inventory.selection.parentId,app.state.inventory.selection.x, app.state.inventory.selection.y,'container')
             } else {
                 item = app.actions.inventory.getSelectedItem()
             }
@@ -160,9 +196,6 @@ module.exports = function (Component) {
         }
         
         deleteItem() {
-            //app.actions.notify("Error deleting item", 'error');
-            //return
-            
             const item = app.actions.inventory.getLastPathItem()
             if (!item) return
             const id = item.id
@@ -231,9 +264,7 @@ module.exports = function (Component) {
                     return <a id={props.id} class={'dropdown-item ' + ((props.emphasis) ? 'bold' : '')} onClick={props.onClick}>{props.label}</a>
                 }
 
-              if(app.actions.inventory.isInstanceContainerSelected()) {
-                menu.push(<DropdownMenuItem label="Existing" emphasis onClick={this.addExisting.bind(this)} />)
-              }
+                menu.push(<DropdownMenuItem label="Existing Biomaterial" emphasis onClick={this.addExisting.bind(this)} />)
                 for (var i=0; i<menuDef.length; i++) {
                     var item = menuDef[i]
                     menu.push(<DropdownMenuItem id={item.name} label={item.title} onClick={this.addItemClick.bind(this)} />)
@@ -257,11 +288,6 @@ module.exports = function (Component) {
             const actionsContainerStyle = "height:"+actionsContainerHeight+"px;max-height:"+actionsContainerHeight+"px;"
             //console.log('actionNavbar render: app.state.inventory.physicalItem', app.state.inventory.physicalItem)
 
-            /*
-            const editPhysical = (app.state.inventory.physicalItem) ? (<EditPhysical state="EditPhysical" active="true" item={app.state.inventory.physicalItem} />) : null
-                    <ActionMenuButton icon="cursor-move" onClick={this.moveItem.bind(this)} />
-            */
-                                                                     
             const closeClickBackground = "position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);"
             return (
                 <div id="inventory_actions" class="tile is-1 is-vertical" style={actionsContainerStyle}>

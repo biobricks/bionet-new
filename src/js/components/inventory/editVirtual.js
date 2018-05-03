@@ -4,6 +4,7 @@ import {
 from 'preact'
 import linkState from 'linkstate';
 import ashnazg from 'ashnazg'
+import SimpleMDE from 'simplemde'
 
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
@@ -25,7 +26,6 @@ module.exports = function (Component) {
         componentWillReceiveProps(nextProps) {
             console.log('editVirtual, props:',nextProps)
             const active = (nextProps.active) ? 'is-active' : ''
-            //const active='is-active'
             if (!nextProps.item) {
                 this.setState({
                     active:active
@@ -149,7 +149,6 @@ module.exports = function (Component) {
         }
         
         focus(active, navigate) {
-            //if (active) console.log('focus selectedRow:',this.props.item)
             this.setState({isFocused:active})
             if (active) app.actions.inventory.selectCell(this.props.id, this.props.parent.id, this.props.parent.parent_x, this.props.parent.parent_y, false )
         }
@@ -160,7 +159,27 @@ module.exports = function (Component) {
         
         componentDidMount() {
           const nameInput = document.getElementById('name');
-          if (nameInput) nameInput.focus(true);
+          if(!this.simplemde) {
+                var opts = { 
+                  element: document.getElementById('editor'),
+                  autoDownloadFontAwesome: false,
+                  autosave: {
+                    enabled: true,
+                    uniqueId: 'virtual_editor_'+this.state.id,
+                    delay: 10000
+                  },
+                  spellChecker: false,
+                  hideIcons: ['image'],
+                  indentWithTabs: false
+                };
+                this.simplemde = new SimpleMDE(opts);
+          }
+        }
+        changeContent() {
+          this.setState({
+            changed: true,
+            content: this.simplemde.value()
+          });
         }
         
         setSelectedType(type) {
@@ -221,6 +240,17 @@ module.exports = function (Component) {
                 )
             }.bind(this)
             
+            const FormInputTextArea = function(props) {
+                return (
+                    <div class="field">
+                        <label class="label">{props.label}</label>
+                        <div class="control">
+                            <textarea id="editor" class="input editor-container" onInput={linkFormData(this,props.fid)} value={props.value}></textarea>
+                        </div>
+                    </div>
+                )
+            }.bind(this)
+            
             const attributeDefs = this.state.attributes
             const attributes=[]
             const terms = app.actions.inventory.getTerms()
@@ -238,14 +268,15 @@ module.exports = function (Component) {
                                 <DropdownButton fid={fieldId} selectedItem={value} selectionList={terms} setSelectedItem={thisModule.setSelectedTerms}/>
                             </div>
                         )
-                    }
-                    else {
+                    } else if (fieldId==='description') {
+                        attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
+                    } else {
                         attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
                     }
                 }
             }
                                     
-            var types=[]
+            var types=[]    
             if (app.state.inventory.types && parent_item) {
                 const currentSelectionType = parent_item.type.toLowerCase()
                 types = (currentSelectionType.indexOf('box') >= 0) ? app.state.inventory.types.materials : app.state.inventory.types.locations
@@ -257,7 +288,6 @@ module.exports = function (Component) {
                     originator = (<div style="margin-bottom:10px;">Originator: {item.created.user}<br/></div>)
                 }
                                   
-                // <ItemTypes fid="type" type={this.item.type} types={types} setType={this.setType}/>
                 const typeSelectionList = types.map(type => type.title)
 
                 return (

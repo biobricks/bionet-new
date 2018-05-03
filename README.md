@@ -141,18 +141,17 @@ Also available are these `npm run` commands:
 
 Currently there are a few commands. The plan is to eventually make all of their functionality accessible from the central `bionet` command.
 
-## ./bin/bionet
+## ./bin/server.js
 
 ```
-Usage: ./bin/bionet <sub_command> [sub_command arguments]
+Usage: ./bin/server.js
 ```
 
-Sub-commands:
+Arguments:
 
-* server: start the bionet server
-* status: connect to the running bionet server and report the status
-* create <json>: create a virtual and one physical instance from JSON
-* search [-g] <query>: search the bionet, use -g for global
+* --debug: Enable debug output
+* --port <port_number>: Specify port number
+* --settings <filepath.js>: Specify settings.js file
 
 ## ./bin/db.js
 

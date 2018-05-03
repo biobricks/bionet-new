@@ -20,11 +20,10 @@ module.exports = function(Component) {
       super(props);
       
       this.modalCallback = props.callback;
-
+      this.submitForm = this.submitForm.bind(this)
 
       this.setState(props.opts || {});
       this.setState({humanID: 42});
-
       this.keepScanning = true;
       this.enableDM = false;
 
@@ -52,6 +51,12 @@ module.exports = function(Component) {
         }.bind(this)
       }, 3000);
       fontLoader.loadFonts();
+    }
+      
+    componentWillReceiveProps(nextProps) {
+      console.log('print componentWillReceiveProps:', nextProps)
+      const title = (nextProps.item) ? nextProps.item.name : ''
+      this.setState({title: title});
     }
 
     updateLabel(cb) {
@@ -81,12 +86,20 @@ module.exports = function(Component) {
       e.preventDefault()
 
       if(!this.modalCallback) return;
-      finalizeLabel(function(err, humanID) {
+      console.log('print label submit')
+      this.finalizeLabel(function(err, humanID) {
         if (err) return;
 
         var imageData = this.labelMaker.getDataURL();
         this.modalCallback(null, this.state, imageData);
-      });
+        app.actions.notify("Printing label for "+this.props.item.name, 'notice', 0);
+        app.actions.prompt.reset()
+      }.bind(this));
+    }
+      
+    close(e) {
+        if (this.props.onClose) this.props.onClose(false)
+        app.actions.prompt.reset()
     }
 
     // get a unique human-readable ID for the label if it doesn't have one
@@ -186,6 +199,13 @@ module.exports = function(Component) {
                         <FormInputText fid='temperature' value={this.state.temperature} label="Storage Temperature" />
                         <FormInputText fid='bsl' value={this.state.bsl} label="Biosafety Level" />
                         <input type="submit" style="visibility:hidden;height:0" />
+                        <div class="field">
+                            <div class="control">
+                                <input type="submit" class="button is-link" value="Print" />
+                                <span style="margin-right:20px;">&nbsp;</span>
+                                <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="tile is-vertical">

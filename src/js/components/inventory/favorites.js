@@ -9,7 +9,6 @@ module.exports = function (Component) {
         
         constructor(props) {
             super(props);
-            //this.state.favorites = app.state.favorites
         }
         
         render() {
@@ -29,9 +28,6 @@ module.exports = function (Component) {
                 if (!props || !props.favorite) return null
                 const fav = props.favorite
                 if (!fav.material || !fav.favorite) return null
-                        //<span class="panel-icon">
-                        //<i class="fas fa-book"></i>
-                        //</span>
                 return (
                     <a id={fav.material.id} className="panel-block is-active" onclick={selectFavorite}>{fav.material.name}</a>
                 )

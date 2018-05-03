@@ -10,8 +10,8 @@ module.exports = function (Component) {
 
         constructor(props) {
             super(props);
-            //console.log('StorageContainer props:', JSON.stringify(props))
             this.cellRef = {}
+            this.cellId = {}
         }
         
         initialize(nextProps) {
@@ -24,15 +24,14 @@ module.exports = function (Component) {
             this.type = nextProps.type
             const tiles = this.subdivideContainer(nextProps.width, nextProps.height, xunits, yunits, nextProps.label, nextProps.childType, nextProps.selectedItem, nextProps.px, nextProps.py, nextProps.mode)
             if (nextProps.mode==='edit') {
+                app.state.inventory.listener.selectCell = this.selectCellListener.bind(this)
                 app.state.inventory.listener.editContainerListener = this.editContainerListener.bind(this)
-                app.state.selectCellListener = this.selectCellListener.bind(this)
             }
             return tiles
         }
         
         componentDidMount() {
             if (this.props.mode==='edit') {
-                //console.log('storage container componentDidMount:',this.props)
                 app.actions.inventory.selectCell(null, this.props.dbid, this.props.px, this.props.py, false)
             }
         }
@@ -53,13 +52,20 @@ module.exports = function (Component) {
             const thisModule=this
             this.cellRef = {}
             
+            const cellLocation = app.state.inventory.selection
+            const cellCoordinates = app.actions.inventory.generateLabel(cellLocation.x, cellLocation.y, pxunits, pyunits)
+            const focusedCellId = app.actions.inventory.cellId(cellCoordinates, cellLocation.parentId)
+            
             for (var i = 0; i<subdivisions.length; i++) {
                 var row = subdivisions[i]
                 const cols=[]
                 for (var j=0; j<row.length; j++) {
                     var col = row[j]
-                    var ref = (item) => { if (item) thisModule.cellRef[item.props.label] = item; }
-                    var storageCell = <StorageCell state={col.id} label={col.label} ref={ref} name={col.name} width={col.width} height={dy} occupied={col.isOccupied} item={col.item} parent_id={col.parent_id} parent_x={col.parent_x} parent_y={col.parent_y} active={col.isActive} mode={mode}/>
+                    var focused = col.cellId === focusedCellId
+                    var ref = (cell) => {
+                        if (cell) thisModule.cellRef[cell.props.label] = cell;
+                    }
+                    var storageCell = <StorageCell state={col.id} label={col.label} ref={ref} name={col.name} width={col.width} height={dy} focused={focused} occupied={col.isOccupied} cell_id={col.cellId} item={col.item} parent_id={col.parent_id} parent_x={col.parent_x} parent_y={col.parent_y} active={col.isActive} mode={mode}/>
                     cols.push(storageCell)
                 }
                 rows.push(<div id="inventory_item" class="tile" style={rowStyle}>{cols}</div>)
@@ -72,7 +78,6 @@ module.exports = function (Component) {
             return this.props.dbid
         }
                 
-
         editContainerListener(occupied) {
             if (!occupied) return
             //console.log('editContainerListener ',occupied)
@@ -85,16 +90,14 @@ module.exports = function (Component) {
         }
 
         selectCellListener(cellLocation, edit) {
-            //console.log('selectCellListener, storageContainer:',edit, this.dbid, cellLocation, this.props)
             if (!cellLocation) return
             const cellCoordinates = app.actions.inventory.generateLabel(cellLocation.x, cellLocation.y, this.xunits, this.yunits)
+            const focusedCellId = app.actions.inventory.cellId(cellCoordinates, cellLocation.parentId)
+            //console.log('selectCellListener, storageContainer:',focusedCellId)
             for (var cellLabel in this.cellRef) {
                 var ref = this.cellRef[cellLabel]
-                //console.log('selectCell:',ref.props.label, cellCoordinates)
-                if (ref) {
-                    const focus = cellCoordinates === ref.props.label
-                    ref.focus(focus)
-                }
+                //console.log('selectCellListener, focusing:',ref.props.cell_id, focusedCellId)
+                if (ref) ref.focus(focusedCellId === ref.props.cell_id)
             }
         }
 
@@ -102,16 +105,21 @@ module.exports = function (Component) {
             //console.log('containerSubdivision render:',this.props)
             const tiles = this.initialize(this.props)
             if (!tiles) return
+
+            const id = (this.props.item) ? this.props.item.id : null
+            const navTitle = function() {
+                app.actions.inventory.refreshInventoryPath(id)
+            }
             
-            const titleLabelStyle = "height:20px;width:"+this.props.width+"px;font-size:12px;line-height:20px;font-weight:800;overflow:hidden;white-space:nowrap"
+            const titleLabelStyle = "height:20px;width:"+this.props.width+"px;font-size:12px;line-height:20px;font-weight:800;overflow:hidden;white-space:nowrap;color:#0080ff;"
             const TitleLabel = function(props) {
-                return (<div style={titleLabelStyle}>{props.text}</div>)
+                return (<a onclick={navTitle} style={titleLabelStyle}>{props.text}</a>)
             }
             const pathChild = "height:"+this.props.containerSize+"px;margin:0px;padding:0;width:"+(this.props.containerSize+20)+"px;"
             return (
                 <div id={this.props.dbid} key={this.props.dbid} class="tile is-2" style={pathChild}>
                     <div id="inventory_tiles2" class="tile is-vertical" style={"padding:0;margin:0;max-width:"+this.props.width+"px;"}>
-                        <TitleLabel text={this.props.title}/>
+                        <TitleLabel text={this.props.title} id={id}/>
                         {tiles}
                     </div>
                 </div>

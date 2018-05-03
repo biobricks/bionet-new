@@ -26,13 +26,18 @@ module.exports = function (Component) {
             
             if (nextProps.active !== this.state.active) {
                 this.setState({
-                    active:nextProps.active
+                    active:nextProps.active,
                 })
             }
             
             if (nextProps.occupied !== this.state.occupied) {
                 this.setState({
                     occupied:nextProps.occupied
+                })
+            }
+            if (nextProps.focused !== this.state.focused) {
+                this.setState({
+                    focused:nextProps.focused
                 })
             }
         }
@@ -57,8 +62,14 @@ module.exports = function (Component) {
             return this.props.label
         }
         
-        focus(active, occupied) {
-            //if (active) console.log('setting focus for cell: ', this.props.label)
+        focus(state) {
+            //console.log('storageCell, focus:',state)
+            this.setState({
+                focused:state
+            })
+        }
+        
+        active(active, occupied) {
             this.setState({
                 active:active
             })
@@ -114,13 +125,13 @@ module.exports = function (Component) {
                     else if (width>20) return (<span style={cellLabelStyle}>{props.text}</span>)
                     return null
                 }.bind(this)
-                    
-                //if (this.state.active ) console.log('rendering cell:',this.props.label, this.state.active, this.state.occupied, this.props.state)
-
                 var className = 'is-empty-cell '
-                if (this.state.active) className = 'is-active-cell '
+                if (this.state.focused) className = 'is-selected-cell '
+                else if (this.state.active) className = 'is-active-cell '
                 else if (this.state.occupied) className = 'is-occupied-cell '
-                    
+                
+                //if (this.state.focused) console.log('storageCell render, focused:', this.props.cell_id, className)
+                
                 return (
                     <div id={this.props.id} className="tile tooltip" data-tooltip={this.props.name} style={colStyle} ondblclick={this.onDoubleClickCell} onclick={this.onClickCell} ondragstart={this.dragStart} ondrop={this.drop} ondragover={this.dragOver}>
                         <div className={className} style={"width:100%;"+textOverflow} draggable="true" >

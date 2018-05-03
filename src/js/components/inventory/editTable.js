@@ -4,12 +4,29 @@ import ashnazg from 'ashnazg'
 module.exports = function (Component) {
     
     const EditPhysical = require('./editPhysical')(Component)
+    const VirtualData = require('./virtualData')(Component)
     
     return class EditTable extends Component {
         constructor(props) {
             super(props);
             this.rowRef={}
             this.deselectRows.bind(this)
+            this.componentWillReceiveProps(props)
+        }
+        
+        componentWillReceiveProps(nextProps) {
+            //console.log('editTable, componentWillReceiveProps:',nextProps)
+            if (nextProps.item && nextProps.item.virtual_id) {
+                app.actions.inventory.getItem(nextProps.item.virtual_id,this.updateVirtualData.bind(this))
+            } else {
+                this.setState({virtual:null})
+            }
+        }
+        
+        updateVirtualData(err,virtual) {
+            //console.log('editTable, updateVirtualData:',virtual)
+            if (err) console.log('updateVirtualData:',err)
+            else this.setState({virtual:virtual})
         }
         
         componentWillMount() {
@@ -23,16 +40,14 @@ module.exports = function (Component) {
             const headerTitle=[]
             headerTitle.push({name:'Nav',class:'is-1'})
             headerTitle.push({name:'Name',class:'is-4'})
-            headerTitle.push({name:'Type',class:'is-3'})
-            headerTitle.push({name:'Well',class:'is-1'})
+            headerTitle.push({name:'Loc',class:'is-1'})
             const type = items[0].type
             if (type==='physical') {
-                headerTitle.push({name:'Virtual',class:'is-1'})
+                headerTitle.push({name:'Docs',class:'is-1'})
             }
-            //const attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
             var attributes = this.props.attributes
             if (!attributes) attributes = (type) ? app.actions.inventory.getAttributesForType(type) : []
-            //
+
             for (var i=0; i<attributes.length; i++) {
                 var fieldId = attributes[i].name.toLowerCase()
                 var label = fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
@@ -54,11 +69,28 @@ module.exports = function (Component) {
             const selectedItem = this.props.item
             const items = this.props.items
             const headerTitle = this.headerTitle
-            //console.log('updateTabularData:',items, selectedItem)
+            //console.log('editTable, updateTabularData:',this.state)
             this.rowRef={}
             const thisModule = this
-            
-            if (!selectedItem || !items || items.length<1) {
+            if (this.state.virtual) {
+                const formatTime = function(unixEpochTime) {
+                  return strftime('%b %o %Y', new Date(unixEpochTime * 1000));
+                }
+                var content = '';
+
+                if(this.state.virtual.content) {
+                  content = (
+                    <div class="content">
+                      <hr/>
+                      <div class="markdown-help" dangerouslySetInnerHTML={{
+                        __html: marked(this.state.virtual.content)
+                      }} />
+                      <hr/>
+                    </div>
+                  );
+                }
+                return (<VirtualData virtual={this.state.virtual} />)
+            } else if (!selectedItem || !items || items.length<1) {
                 return (<div className="empty-table" style="padding-left: calc(0.625em - 1px)">{selectedItem.name} is empty.</div>)
             }
             const tabularData=[]
@@ -97,12 +129,10 @@ module.exports = function (Component) {
             //console.log(this.state.inventoryPath)
             const tabularHeader = this.tabularHeader()
             const tabularData = this.updateTabularData()
-            //const tableStyle = "margin:0;padding:0;max-height:"+this.props.height+"px;overflow-y:auto;box-sizing:initial;"
-            const tableStyle=""
             
             return (
                 <div id="inventory_table" class="tile is-parent" style="margin:0;padding:0;box-sizing:initial">
-                    <div id="i1" class="" style={tableStyle}>
+                    <div id="i1">
                         {tabularHeader}
                         {tabularData}
                     </div>

@@ -4,12 +4,13 @@ import {
 from 'preact'
 import linkState from 'linkstate';
 import ashnazg from 'ashnazg'
-import SimpleMDE from 'simplemde'
+//import SimpleMDE from 'simplemde'
 
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
     const EditTable = require('./editTable')(Component)
     const DropdownButton = require('./dropdownButton')(Component)
+    const Markdown = require('../markdown')(Component)
     
     return class EditVirtual extends Component {
         constructor(props) {
@@ -159,6 +160,7 @@ module.exports = function (Component) {
         
         componentDidMount() {
           const nameInput = document.getElementById('name');
+            /*
           if(!this.simplemde) {
                 var opts = { 
                   element: document.getElementById('editor'),
@@ -174,13 +176,17 @@ module.exports = function (Component) {
                 };
                 this.simplemde = new SimpleMDE(opts);
           }
+          */
         }
+        
+        /*
         changeContent() {
           this.setState({
             changed: true,
             content: this.simplemde.value()
           });
         }
+        */
         
         setSelectedType(type) {
             if (this.item) this.item.type = type
@@ -241,11 +247,12 @@ module.exports = function (Component) {
             }.bind(this)
             
             const FormInputTextArea = function(props) {
+                // <textarea id="editor" class="input editor-container" onInput={linkFormData(this,props.fid)} value={props.value}></textarea>
                 return (
                     <div class="field">
                         <label class="label">{props.label}</label>
                         <div class="control">
-                            <textarea id="editor" class="input editor-container" onInput={linkFormData(this,props.fid)} value={props.value}></textarea>
+                            <Markdown id={props.fid} rows="5" content={props.value} />
                         </div>
                     </div>
                 )
@@ -268,8 +275,8 @@ module.exports = function (Component) {
                                 <DropdownButton fid={fieldId} selectedItem={value} selectionList={terms} setSelectedItem={thisModule.setSelectedTerms}/>
                             </div>
                         )
-                    } else if (fieldId==='description') {
-                        attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
+                    } else if (fieldId==='description' || fieldId==='content') {
+                        attributes.push( <FormInputTextArea fid={fieldId} label={label} value={value} /> )
                     } else {
                         attributes.push( <FormInputText fid={fieldId} label={label} value={value} /> )
                     }
@@ -322,7 +329,8 @@ module.exports = function (Component) {
                         <input type="button" class="button is-link" value="Save" onclick={this.saveVirtual.bind(this)} />
                     </span>
                 )
-                :(
+                :
+                (
                     <span style="margin-right:20px;">
                         <input type="button" class="button is-link" value="Assign Locations" onclick={this.createPhysicals.bind(this)} />
                     </span>

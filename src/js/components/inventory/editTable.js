@@ -15,16 +15,16 @@ module.exports = function (Component) {
         }
         
         componentWillReceiveProps(nextProps) {
-            //console.log('editTable, componentWillReceiveProps:',nextProps)
+            console.log('editTable, componentWillReceiveProps:',nextProps)
+            this.setState({virtual:null})
             if (nextProps.item && nextProps.item.virtual_id) {
+                console.log('editTable, componentWillReceiveProps, retrieving virtual:',nextProps.item.virtual_id)
                 app.actions.inventory.getItem(nextProps.item.virtual_id,this.updateVirtualData.bind(this))
-            } else {
-                this.setState({virtual:null})
             }
         }
         
         updateVirtualData(err,virtual) {
-            //console.log('editTable, updateVirtualData:',virtual)
+            console.log('editTable, updateVirtualData:',virtual)
             if (err) console.log('updateVirtualData:',err)
             else this.setState({virtual:virtual})
         }
@@ -126,7 +126,7 @@ module.exports = function (Component) {
         }
 
         render() {
-            //console.log(this.state.inventoryPath)
+            console.log('editTable render:',this.state,this.props)
             const tabularHeader = this.tabularHeader()
             const tabularData = this.updateTabularData()
             

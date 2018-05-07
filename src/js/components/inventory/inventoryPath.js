@@ -148,21 +148,21 @@ module.exports = function (Component) {
         }
         
         render() {
-
             const path = this.updateInventoryPath(this.state.inventoryPath, this.state.id);
-//            console.log('render path:', path, this.state.inventoryPath)
+            //console.log('render path:', path, this.state.inventoryPath)
             if (!path) return
+            
+            const currentItem = app.actions.inventory.getLastPathItem()
+            if (!currentItem) return
+            
             if (typeof this.state.inventoryPath === 'object' && this.state.inventoryPath.constructor.name === 'Error') {
                 return (
                     <h6 style="margin-top:15px;">{this.state.inventoryPath.message}</h6>
                 )
             }
-            const ipath = this.state.inventoryPath
-            if (!ipath) return
             
-            const currentItem = ipath[path.length-1]
             var childItems = (currentItem) ? currentItem.children : null
-//            console.log('inventory path render:',path,currentItem)
+            //console.log('inventory path render:',path,currentItem)
             const attributes = app.actions.inventory.getAttributesForType(currentItem.type)
             
             const selectedItemHeader = this.selectedItemHeader()
@@ -192,7 +192,7 @@ module.exports = function (Component) {
                             {path}
                         </div>
                         <br/>
-                        <EditTable item={currentItem} items={childItems} height={tableHeight} attributes={attributes}/>
+                        <EditTable state="edittable" item={currentItem} items={childItems} height={tableHeight} attributes={attributes}/>
                     </div>
                 </div>
             )

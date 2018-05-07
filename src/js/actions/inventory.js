@@ -77,19 +77,19 @@ module.exports = {
         if (app.state.inventory.listener.assignPhysical) app.state.inventory.listener.assignPhysical(inventorySelection)
         if (app.state.inventory.listener.selectCell) app.state.inventory.listener.selectCell(inventorySelection)
     },
-    
+
     getItem: function(id, cb) {
         app.remote.get(id, function(err, item) {
             if (cb) cb(err,item)
         })
     },
-                       
+
     editItem: function(item) {
         //console.log('editItem action: ', item, app.state.inventory )
         app.state.inventory.physicalItem = item
         if (app.state.inventory.listener.physicalItem) app.state.inventory.listener.physicalItem(item)
     },
-    
+
     updateItem: function(id, cb) {
         app.remote.get(id, function(err, item) {
             if (err) {
@@ -111,7 +111,7 @@ module.exports = {
         })
         
     },
-    
+
     editVirtualItem: function(id, cb) {
         //console.log('editVirtualItem action: ', id)
         if (!id) {
@@ -132,7 +132,7 @@ module.exports = {
             return null
         })
     },
-    
+
     getLocationType: function( type ) {
         if (!app.state.inventory.types.all) return
         const types = app.state.inventory.types.all
@@ -141,6 +141,7 @@ module.exports = {
         }
         return null
     },
+
     getLocationTypeFromTitle: function( type ) {
         if (!app.state.inventory.types.all) return
         const types = app.state.inventory.types.all
@@ -149,20 +150,18 @@ module.exports = {
         }
         return null
     },
-    
+
     refreshInventoryPath: function(id, cb) {
-        const url = "/inventory/"+id
         app.state.inventory.forceRefresh=true
-        app.state.history.push(url)
         app.actions.inventory.selectCell(id,null,1,1,true)
     },
-    
+
     selectInventoryId: function(id, cb) {
         const url = "/inventory/"+id
         //console.log('getInventoryPath:',url)
         app.state.history.push(url)
     },
-    
+
     getContainerSize: function() {
         var containerSize = window.innerWidth/8
         containerSize = (containerSize > 150) ? 150: containerSize
@@ -170,7 +169,7 @@ module.exports = {
         app.state.inventory.containerSize = containerSize
         return containerSize
     },
-    
+
     getInventoryPath: function(id, cb) {
         //console.log('getInventoryPathRPC action id:',id)
         

@@ -9,5 +9,6 @@ module.exports = {
   p2p: require('./p2p'),
   search: require('./search'),
   prompt: require('./prompt'),
+  material: require('./material'),
   virtual: require('./virtual')
 }

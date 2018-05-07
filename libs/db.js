@@ -283,7 +283,6 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
       fs.writeFile(imagePath, imageBuffer, function(err) {
         if(err) return cb(err);
 
-        m.labelImagePath = imagePath; 
         delete m.hidden; // don't allow users to create hidden physicals
         if(m.name && m.name[0] === '_') return cb(new Error("Name cannot begin with an underscore")); // if name begins with an underscore than these are hidden from the normal tree index output
 

@@ -549,37 +549,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
             });
         })
       },
-
-    // TODO use indexes for this!
-    getByHumanID: function(curUser, humanID, cb) {
-
-      var s = db.bio.createReadStream({valueEncoding: 'json'});
-      var found = false;
-      var out = s.pipe(through.obj(function(data, enc, next) {
-        if(!data || !data.value || !data.value.label) return next()
-
-        if(data.value.label.humanID == humanID) {
-          found = true;
-          cb(null, data.value);
-        } else {
-          next();
-        }
-      }));
-      
-      s.on('end', function() {
-        if(!found) {
-          found = true;
-          cb(null, null);
-        }
-      });
-
-      s.on('error', function(err) {
-        if(!found) {
-          found = true;
-          cb(err);
-        }
-      });
-    },
     
     // TODO use indexes for this
     getVirtualBy: function(curUser, field, value, cb) {
@@ -588,6 +557,7 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       var found = false;
       var out = s.pipe(through.obj(function(data, enc, next) {
         if(!data || !data.value || !data.value[field]) return next()
+        // TODO let people use foo.bar.baz paths as field
         if(data.value[field] == value) {
           found = true;
           cb(null, data.value);

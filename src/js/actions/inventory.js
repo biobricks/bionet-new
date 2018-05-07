@@ -557,13 +557,12 @@ module.exports = {
 
     },
     
-    saveToInventory: function (physical, label, doPrint, cb) {
-        app.remote.savePhysical(physical, label, doPrint, function (err, id) {
-            if (err) {
-                console.log(err)
-            }
-            if (cb) cb(err, id, physical.parent_x, physical.parent_y)
-        })
+    saveToInventory: function(physical, labelImageData, doPrint, cb) {
+      app.remote.savePhysical(physical, labelImageData, doPrint, function (err, id) {
+        if(err) return cb(err);
+
+        if(cb) cb(err, id, physical.parent_x, physical.parent_y)
+      })
     },
     
     getAttributesForType: function(type) {

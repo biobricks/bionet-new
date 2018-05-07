@@ -2,6 +2,7 @@
 import {h} from 'preact';
 import linkState from 'linkstate';
 import util from '../util.js';
+import xtend from 'xtend';
 
 // TODO maybe switch from FontLoader to the new CSS font loader api?
 // though probably the browser suport is worse
@@ -22,8 +23,17 @@ module.exports = function(Component) {
       this.modalCallback = props.callback;
       this.submitForm = this.submitForm.bind(this)
 
-      this.setState(props.opts || {});
-      this.setState({humanID: 42});
+      this.state = xtend({
+        humanID: undefined,
+        title: undefined,
+        text: undefined,
+        bsl: 1,
+        temperature: undefined
+      }, props.item.label || {
+        title: props.item.name,
+        text: props.item.description
+      })
+
       this.keepScanning = true;
       this.enableDM = false;
 
@@ -54,9 +64,14 @@ module.exports = function(Component) {
     }
       
     componentWillReceiveProps(nextProps) {
-      console.log('print componentWillReceiveProps:', nextProps)
-      const title = (nextProps.item) ? nextProps.item.name : ''
-      this.setState({title: title});
+
+      if(nextProps.item) {
+        this.setState(nextProps.item.label || {
+          title: nextProps.item.name,
+          text: nextProps.item.description
+        });
+      }
+
     }
 
     updateLabel(cb) {
@@ -88,11 +103,9 @@ module.exports = function(Component) {
       if(!this.modalCallback) return;
       console.log('print label submit')
       this.finalizeLabel(function(err, humanID) {
-        if (err) return;
-
+        if(err) return modalCallback(err);
         var imageData = this.labelMaker.getDataURL();
-        this.modalCallback(null, this.state, imageData);
-        app.actions.notify("Printing label for "+this.props.item.name, 'notice', 0);
+        this.modalCallback(null, imageData, this.state);
         app.actions.prompt.reset()
       }.bind(this));
     }
@@ -106,7 +119,6 @@ module.exports = function(Component) {
     finalizeLabel(cb) {
 
       var humanID = this.state.humanID;
-
       if(humanID === '?') humanID = '';
 
       if(humanID) {
@@ -116,9 +128,6 @@ module.exports = function(Component) {
         return;
       }
 
-      // TODO this should be set on the server at creation
-      // but that means the server would have to create the label
-      // grrr...
       app.remote.getID(function(err, humanID) {
         if (err) {
           app.actions.notify("Error creating physical: " + err, 'error');
@@ -127,6 +136,7 @@ module.exports = function(Component) {
         this.changeState({
           humanID: humanID
         });
+        cb(null, humanID);
       }.bind(this))
     }
 
@@ -143,21 +153,7 @@ module.exports = function(Component) {
     }
 
 	  render() {
-            /*
-          <form id="createLabelForm" name="createLabelForm" class="col s12" onsubmit={this.submitForm.bind(this)}>
-            <input type="hidden" value={this.state.humanID || '?'} /><br/>
-            Title: <input type="text" name="title" value={this.state.title} oninput={linkState(this, 'title')} /><br/>
-            Additional text: <textarea name="text" value={this.state.text} oninput={linkState(this, 'text')}></textarea><br/>
-            Storage temperature: <input type="text" name="temperature" value={this.state.temperature} oninput={linkState(this, 'temperature')} /><br/>
-            Biosafety Level: <input type="text" name="bsl" value={this.state.bsl} oninput={linkState(this, 'bsl')} /><br/>
 
-            <div class="top-right-submit">
-                <a onclick={this.submitForm.bind(this)} class="waves-effect waves-light btn darken-1">done</a>
-            </div>
-
-            <input type="submit" style="visibility:hidden;height:0" />
-          </form>
-          */
         const linkFormData = function(component, fid, valuePath) {
           return event => {
             var update = {};
@@ -201,7 +197,7 @@ module.exports = function(Component) {
                         <input type="submit" style="visibility:hidden;height:0" />
                         <div class="field">
                             <div class="control">
-                                <input type="submit" class="button is-link" value="Print" />
+                                <input type="submit" class="button is-link" value="Save & print" />
                                 <span style="margin-right:20px;">&nbsp;</span>
                                 <input type="button" class="button is-link" value="Cancel" onclick={this.close.bind(this)} />
                             </div>

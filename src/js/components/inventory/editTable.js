@@ -1,5 +1,6 @@
 import { h } from 'preact'
 import ashnazg from 'ashnazg'
+import marked from 'marked';
 
 module.exports = function (Component) {
     

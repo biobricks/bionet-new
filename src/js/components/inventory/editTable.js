@@ -78,6 +78,7 @@ module.exports = function (Component) {
                 }
                 var content = '';
 
+                /*
                 if(this.state.virtual.content) {
                   content = (
                     <div class="content">
@@ -89,6 +90,7 @@ module.exports = function (Component) {
                     </div>
                   );
                 }
+              */
                 return (<VirtualData virtual={this.state.virtual} />)
             } else if (!selectedItem || !items || items.length<1) {
                 return (<div className="empty-table" style="padding-left: calc(0.625em - 1px)">{selectedItem.name} is empty.</div>)

@@ -20,11 +20,16 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
   var miscDB = sublevel(db, 'm', {separator: sep});
   var idGenerator = new IDGenerator(miscDB);
 
+  // requests for physical samples
+  var requestDB = sublevel(db, 'r-', {separator: sep, valueEncoding: 'json'});
+
+  // outgoing emails
+  var emailDB = sublevel(db, 'e-', {separator: sep, valueEncoding: 'json'});
+
   var bioDB = sublevel(db, 'b', {separator: sep});
   var virtualDB = sublevel(bioDB, 'v-', {separator: sep, valueEncoding: 'json'});
   var physicalDB = sublevel(bioDB, 'p-', {separator: sep, valueEncoding: 'json'});
   var cartDB = sublevel(bioDB, 'c-', {separator: sep, valueEncoding: 'json'});
-
   var deletedDB = sublevel(bioDB, 'd-', {separator: sep, valueEncoding: 'json'});
 
   // Take a key from one sublevel db and add or remove prefixes
@@ -388,6 +393,35 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
 
   };
 
+  function queueEmail(o, cb) {
+
+    var key = new Date().getTime() + '-' + uuid();
+    emailDB.put(key, o, function(err) {
+      if(err) return cb(err);
+
+      cb(null, key);
+    });
+  }
+
+  function deleteEmail(key, cb) {
+    emailDB.del(time, cb);
+  }
+
+  function sendEmail(key, mailers, cb) {
+    emailDB.get(key, function(err, o) {
+      if(err) return cb(err);
+
+      if(!o.mailer || !mailers[o.mailer]) {
+        return cb(new Error("Unknown mailer: " + o.mailer));
+      }
+
+      mailers[o.mailer].send(o, function(err) {
+        if(err) return cb(err);
+
+        emailDB.del(key, cb);
+      });
+    });
+  }
 
   function init(cb) {
     createInitialLab(cb);
@@ -397,18 +431,23 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
     db: db,
     user: userDB,
     index: indexDB,
+    request: requestDB,
+    email: emailDB,
     bio: bioDB,
     virtual: virtualDB,
     physical: physicalDB,
     deleted: deletedDB,
+    userCart: userCartDB,
 
     // functions
+    queueEmail: queueEmail,
+    deleteEmail: deleteEmail,
+    sendEmail: sendEmail,
     idGenerator: idGenerator,
     saveMaterial: saveMaterialInDB,
     savePhysical: savePhysical,
     instancesOfVirtual: instancesOfVirtual,
     doesVirtualHaveInstance: doesVirtualHaveInstance,
-    userCart: userCartDB,
     unixEpochTime: unixEpochTime,
     ensureUserData: ensureUserData,
     getBy: getBy,

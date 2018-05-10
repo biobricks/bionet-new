@@ -59,6 +59,12 @@ var index = require('../libs/indexing.js')(settings, db);
 
 var mailer = new Mailer(settings.mailer, settings.baseUrl);
 
+if(settings.freegenes_mailer) {
+  var freegenesMailer = new Mailer(settings.freegenes_mailer, settings.baseUrl);
+} else {
+  var freegenesMailer = null;
+}
+
 
 // server up static files like css and images that are the same for all users
 var ecstatic = require('ecstatic')({

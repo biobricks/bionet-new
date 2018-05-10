@@ -1,0 +1,11 @@
+
+Hello <% name %>.
+
+FreeGenes has finished synthesizing your request <% material_name %>.
+
+To receive your biomaterial, please fill out the form at:
+
+  <% request_url %>
+
+-- 
+The FreeGenes Project

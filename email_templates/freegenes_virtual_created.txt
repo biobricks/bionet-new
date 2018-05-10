@@ -1,0 +1,13 @@
+
+Hello <% name %>.
+
+Your FreeGenes synthesis request for <% material_name %> has been accepted.
+
+You can check the progress of your request here:
+
+  <% virtual_url %>
+
+Assuming we are able to fulfil your request, you will receive an email when your request is ready to ship.
+
+-- 
+The FreeGenes Project

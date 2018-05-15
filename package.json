@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "build-js": "bin/build.js",
+    "build-lazy": "bin/build_lazy.sh",
     "watch-js": "bin/build.js -d",
     "hot-js": "bin/build.js -d --hot",
     "build-css": "gulp build:css",
@@ -22,6 +23,7 @@
     "async": "^2.5.0",
     "backoff": "^2.5.0",
     "blast-level": "0.0.11",
+    "d3": "^5.4.0",
     "discovery-channel": "^5.4.6",
     "ecstatic": "^2.2.1",
     "email-validator": "^1.1.1",
@@ -72,6 +74,7 @@
     "enzyme": "^3.3.0",
     "expect": "^22.4.3",
     "getusermedia": "^2.0.1",
+    "glob": "^7.1.2",
     "graphic-smith-waterman": "^1.0.1",
     "gulp": "^3.9.1",
     "gulp-cssimport": "^6.0.0",

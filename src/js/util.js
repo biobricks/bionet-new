@@ -1,3 +1,4 @@
+import path from 'path'
 import ashnazg from 'ashnazg'
 
 // parses a version like 1.12.3 into a number like 10000012000003
@@ -21,7 +22,56 @@ function parseVersion(str) {
   return fields[0] * 1000000000000 + fields[1] * 1000000 + fields[2];
 }
 
+
+
 module.exports = {
+
+  requireAsync: function(filename, cb) {
+    if(!filename) throw new Error("No filename specified");
+    if(!filename.match(/\.js$/i)) {
+      filename += '.js';
+    }
+
+    var filePath = '/static/build/lazy_modules/'+filename;
+    var moduleName = path.basename(filename, '.js');
+
+    var el = document.createElement('SCRIPT');
+
+    el.async = true;
+    el.src = filePath;
+    
+    // don't re-add script tag if it has already been added
+    var els = document.getElementsByTagName('SCRIPT');
+    var i;
+    for(i=0; i < els.length; i++) {
+
+      if(els[i].src === el.src) {
+        cb(null, require(moduleName));
+        return;
+      }
+    }    
+
+    el.addEventListener('load', function(e) {
+      try {
+        var module = require(moduleName)
+        cb(null, module);
+      } catch(e) {
+        cb(null, e); 
+      }
+    });
+
+    el.addEventListener('error', function(err) {
+      cb(err);
+    });
+
+    el.addEventListener('abort', function() {
+      cb(new Error("Loading JS file '" + filename + "' was aborted"));
+    });
+
+    document.body.appendChild(el);
+  },
+
+
   user: {
     isInGroup: function(user, group) {
       if(!group) {

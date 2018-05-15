@@ -12,9 +12,9 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
       this.state = {
-        topic: this.props.match.params.topic,
+        topic: this.props.match.params.topic
       };
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
       if(nextProps.match.params.topic) {

@@ -8,6 +8,14 @@ var watchify = require('watchify');
 var hmr = require('browserify-hmr');
 var minimist = require('minimist');
 var beep = require('beepbeep');
+var glob = require('glob');
+
+// TODO
+// Use factor-bundle to avoid having the same code in multiple bundles.
+// See: https://github.com/browserify/browserify/issues/1607
+// It would be nice but it seems like it's not possible to require
+// the resulting split bundles from each-other
+//var factorBundle = require('factor-bundle');
 
 function getTime() {
   var d = new Date;
@@ -68,6 +76,34 @@ function build(opts) {
     cache: {},
     packageCache: {}
   })
+
+
+  // tell browserify that modules for lazy loading are external
+  try {
+    var lazies = glob.sync(path.join(__dirname, '..', 'src', 'js', 'lazy_modules', '*.js'))
+
+    var i;
+    for(i=0; i < lazies.length; i++) {
+      b.external(path.basename(lazies[i], '.js'));
+    }
+    
+  } catch(err) {
+    console.error(err);
+  }
+
+/*
+  var b = browserify({
+    entries: [opts.source || path.join(__dirname, '..', 'src', 'js', 'index.js'), path.join(__dirname, '..', 'src', 'js', 'lazy_modules', 'foo.js')],
+    cache: {},
+    packageCache: {}
+  })
+
+  b.plugin(factorBundle, {
+    outputs: [path.join(__dirname, '..', 'static', 'build', 'bundle.js'), path.join(__dirname, '..', 'static', 'build', 'lazy_modules', 'foo.js')]  
+  });
+
+//  b.external('foo');
+*/
 
   if(opts.dev) {
     console.log("Watching for changes...".yellow);

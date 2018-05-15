@@ -31,6 +31,9 @@ module.exports = function(Component) {
   var Attributions = require('./attributions.js')(Component);
   var BarcodeRedirect = require('./barcode_redirect.js')(Component);
 
+  // just an example of dynamically loading js
+  var DynamicLoading = require('./dynamic_loading.js')(Component);
+
   return class App extends Component {
 
     constructor(props) {
@@ -83,6 +86,11 @@ module.exports = function(Component) {
               <Route path="/print" component={Print} />
 
               <Route path="/help/:topic" component={Help} />
+
+              <Switch>
+                <Route path="/dynamic-loading/:foo" component={DynamicLoading} />
+                <Route path="/dynamic-loading" component={DynamicLoading} />
+              </Switch>
               
               <Switch>
                   <Route path="/inventory/:id" key="with-id" component={Inventory}/>

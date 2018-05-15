@@ -364,10 +364,6 @@ module.exports = function(Component) {
             </div>
             {hint}
           </form>
-
-          <Link to='/dynamic-loading'>Change sub-route</Link>
-          <Link to='/dynamic-loading/cookiecat'>Change sub-route cookie</Link>
-
           {results}
         </div>
       )

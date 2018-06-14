@@ -4,7 +4,7 @@ import {
 from 'preact'
 import linkState from 'linkstate';
 import ashnazg from 'ashnazg'
-//import SimpleMDE from 'simplemde'
+import marked from 'marked';
 
 module.exports = function (Component) {
     const StorageContainer = require('./storageContainer')(Component)
@@ -158,36 +158,6 @@ module.exports = function (Component) {
             this.setState({assignCells:true})
         }
         
-        componentDidMount() {
-          const nameInput = document.getElementById('name');
-            /*
-          if(!this.simplemde) {
-                var opts = { 
-                  element: document.getElementById('editor'),
-                  autoDownloadFontAwesome: false,
-                  autosave: {
-                    enabled: true,
-                    uniqueId: 'virtual_editor_'+this.state.id,
-                    delay: 10000
-                  },
-                  spellChecker: false,
-                  hideIcons: ['image'],
-                  indentWithTabs: false
-                };
-                this.simplemde = new SimpleMDE(opts);
-          }
-          */
-        }
-        
-        /*
-        changeContent() {
-          this.setState({
-            changed: true,
-            content: this.simplemde.value()
-          });
-        }
-        */
-        
         setSelectedType(type) {
             if (this.item) this.item.type = type
         }
@@ -247,12 +217,11 @@ module.exports = function (Component) {
             }.bind(this)
             
             const FormInputTextArea = function(props) {
-                // <textarea id="editor" class="input editor-container" onInput={linkFormData(this,props.fid)} value={props.value}></textarea>
                 return (
                     <div class="field">
                         <label class="label">{props.label}</label>
                         <div class="control">
-                            <Markdown id={props.fid} rows="5" content={props.value} />
+                            <Markdown id={props.fid} content={props.value} />
                         </div>
                     </div>
                 )

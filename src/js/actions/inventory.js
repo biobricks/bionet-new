@@ -233,7 +233,162 @@ module.exports = {
             if (cb) cb(null, locationPathAr)
         }.bind(this),debugcb.bind(this))
     },
-    
+    mapPathToGrid: function(path) {
+        const pathId={}
+        path.map(container => {
+            pathId[container.id]=container.name
+        })
+        const locationPath = path.map(container => {
+            console.log('mapPathToGrid, container:',container)
+            var rows=1
+            var cols=1
+            var itemCols=1
+            var itemRows=1
+            if (container.layoutWidthUnits) {
+                cols = container.layoutWidthUnits
+                rows = container.layoutHeightUnits
+                gridScale=1
+            }
+            else {
+                itemCols=gridScale
+                itemRows=gridScale
+                cols=(container.xUnits) ? Number(container.xUnits*gridScale) : null
+                rows=(container.yUnits) ? Number(container.yUnits*gridScale) : null
+                if (!cols || cols===gridScale) {
+                    itemCols=rows
+                    cols=rows
+                }
+                if (!rows || rows===gridScale) {
+                    itemRows=cols
+                    rows=cols
+                }
+            }
+            var size= {
+                cols:cols,
+                rows:rows
+            }
+            
+            const gridCell = 40
+            const maxWidth = 200
+            const zoom = maxWidth / (size.cols * gridCell)
+            
+            var key=0
+            const items = container.children.map( item => {
+                key++
+                const name=(itemCols>1) ? item.name : item.parent_x+','+item.parent_y
+                const width=(item.width) ? item.width*gridCell : itemCols * gridCell
+                const height=(item.height) ? item.height*gridCell : itemRows * gridCell
+                return({
+                    id:item.id,
+                    key:key,
+                    sort:key,
+                    selected:pathId[item.id],
+                    name:name,
+                    col:item.parent_x-1,
+                    row:item.parent_y-1,
+                    width:width,
+                    height:height,
+                    color:'rgba(0,255,255,0.4)',
+                    fontSize:'0.3',
+                })
+            })
+            
+            console.log('mapping container:',size,items)
+            return (
+                {
+                    name:container.name,
+                    id:container.id,
+                    items:items,
+                    zoom:zoom,
+                    layoutWidth:size.cols*gridCell,
+                    layoutHeight:size.rows*gridCell,
+                    gridWidth:gridCell,
+                    gridHeight:gridCell
+                }
+            );
+        });
+        return locationPath
+    },
+    initContainerProps: function(container, pathId, maxWidth, _gridScale) {
+        var gridScale = (_gridScale) ? _gridScale : 1
+        console.log('locationPath, name:',container.name,container.xUnits,container.yUnits)
+        var rows=1
+        var cols=1
+        var itemCols=1
+        var itemRows=1
+        if (container.layoutWidthUnits) {
+            cols = container.layoutWidthUnits
+            rows = container.layoutHeightUnits
+            gridScale=1
+        }
+        else {
+            cols=(container.xUnits) ? Number(container.xUnits*gridScale) : null
+            rows=(container.yUnits) ? Number(container.yUnits*gridScale) : null
+            if (!cols || cols===gridScale) {
+                itemCols=rows
+                cols=rows
+            }
+            if (!rows || rows===gridScale) {
+                itemRows=cols
+                rows=cols
+            }
+        }
+
+        var size= {
+            cols:cols,
+            rows:rows
+        }
+
+        const gridCell = 40
+        const zoom = maxWidth / (size.cols * gridCell)
+        const units=(container.units) ? container.units : 'm'
+        const majorGridLine=(container.majorGridLine) ? container.majorGridLine : gridScale
+
+        var key=0
+        var items=null
+        if (container.children) {
+            items = container.children.map( item => {
+                key++
+                //const name=(itemCols>gridScale) ? item.name : item.parent_x+','+item.parent_y
+                //const fontSize=(itemCols===gridScale) ? 0.2*gridScale : 0.3*gridScale
+                const fontSize = 0.3*gridScale
+                const name=item.name
+                const width=(item.width) ? item.width*gridScale : itemCols * gridCell
+                const height=(item.height) ? item.height*gridScale : itemRows * gridCell
+                return({
+                    id:item.id,
+                    key:key,
+                    sort:key,
+                    selected:pathId[item.id],
+                    name:name,
+                    col:(item.parent_x-1)*gridScale,
+                    row:(item.parent_y-1)*gridScale,
+                    width:width,
+                    height:height,
+                    color:'rgba(0,255,255,0.4)',
+                    fontSize:fontSize,
+                })
+            })
+        }
+
+        console.log('mapping container:',size,items)
+        return (
+            {
+                name:container.name,
+                id:container.id,
+                items:items,
+                zoom:zoom,
+                layoutWidthUnits:size.cols,
+                layoutHeightUnits:size.rows,
+                layoutWidth:size.cols*gridCell,
+                layoutHeight:size.rows*gridCell,
+                units:units,
+                majorGridLine:majorGridLine,
+                gridWidth:gridCell,
+                gridHeight:gridCell
+            }
+        )
+    },
     mapOccupiedCellstoSubdivisions: function(subdivisions, cellMap, px, py) {
 
         for (var i = 0; i<subdivisions.length; i++) {

@@ -1,0 +1,81 @@
+$selectedColor: #ff0000;
+$deSelectedColor: #000000;
+.selectedDisplayObject {
+    border: 3px solid $selectedColor;
+}
+.deselectedDisplayObject {
+    border: 1px solid $deSelectedColor;
+}
+.displayObject {
+    background-size: 100% 100%;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding:0px;
+    box-sizing: border-box;
+    text-align: center;
+    background-size:100% 100%;
+}
+span.itemTextStyle {
+  display: inline-block;
+  text-align: center;
+}
+.gridItem{
+  background-size: 100%;
+  background-color:#000;
+  cursor: move;
+}
+//  top:12px;
+
+.gridItem .name{
+  display:block;
+  width:100%;
+  font-size:12px;
+  position:absolute;
+  color:#000;
+  text-transform: capitalize;
+}
+
+        //linear-gradient(rgba(255,0,0,0.5), rgba(255,0,0,0.5))
+        //backgroundColor: this.props.item.color,
+        //'+this.props.item.color+','+this.props.item.color+'
+        //'linear-gradient('+this.props.item.color+','+this.props.item.color+')
+        /*
+        const itemStyle = {
+            background:'linear-gradient('+this.props.item.color+','+this.props.item.color+'),url(data:image/png;base64,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)',
+            lineHeight:(this.props.item.height*this.props.zoom)+'px',
+            backgroundSize:'100% 100%',
+            fontSize:(12*this.props.zoom)+'px'
+        };
+        */
+
+            /*
+            <ResizableBox
+                width={this.props.item.width*this.props.zoom}
+                height={this.props.item.height*this.props.zoom}
+                draggableOpts={{grid: [this.props.gridWidth, this.props.gridHeight]}}
+                minConstraints={[this.props.gridWidth, this.props.gridHeight]}
+                onResizeStop={this.props.onResizeStop}
+                >
+                <div style={itemStyle} className="gridItem" ref={node => this.props.setDragNode(node)}>
+                    <span className="name" style={itemTextStyle}>{this.props.item.name || this.props.item.key}</span>
+                </div>
+            </ResizableBox>
+            */
+            /*
+                <div style={itemStyle} className={"gridItem "+"displayObject "+selectedClass} ref={node => this.props.setDragNode(node)}>
+                    <span className="name" style={itemTextStyle}>{this.props.item.name || this.props.item.key}</span>
+                </div>
+                
+                
+            <Resizable
+                size={{width:this.props.item.width*this.props.zoom,height:this.props.item.height*this.props.zoom}}
+                minWidth={this.props.gridWidth}
+                minHeight={this.props.gridHeight}
+                grid={[this.props.gridWidth, this.props.gridHeight]}
+                onResizeStop={this.props.onResizeStop}
+            >
+            </Resizable>
+                
+            */
+

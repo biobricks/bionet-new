@@ -129,7 +129,8 @@ function build(opts) {
     ],
     plugins: [
       ['transform-react-jsx', {pragma: 'h'}],
-      'transform-object-rest-spread'
+      'transform-object-rest-spread',
+      'transform-class-properties'
     ]
   });
 
@@ -142,6 +143,7 @@ function build(opts) {
     aliases: alias,
     global: true
   });
+  b.transform('sassify');
 
   onBuildStart();
 }

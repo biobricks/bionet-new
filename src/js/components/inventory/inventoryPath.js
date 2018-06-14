@@ -1,5 +1,7 @@
 import { h } from 'preact'
 import ashnazg from 'ashnazg'
+import LocationPath from './LocationPath'
+import EditContainer from './EditContainer'
 
 module.exports = function (Component) {
     
@@ -18,7 +20,8 @@ module.exports = function (Component) {
                 inventoryPathRendered:null,
                 inventoryItem:{},
                 containerSize:150,
-                attributes:{}
+                attributes:{},
+                navMode:'navigate'
                 
             }
             this.containerRef = {}
@@ -54,7 +57,7 @@ module.exports = function (Component) {
             
             var containerSize = app.actions.inventory.getContainerSize()
             const thisModule = this
-            const inventoryPath = []
+            var inventoryPath = []
             
             const findInChildren = function(id, children) {
                 //console.log('findInChildren:',id,children)
@@ -64,6 +67,7 @@ module.exports = function (Component) {
             }
             
             this.containerRef={}
+            /*
             for (var i=0; i<newPath.length; i++) {
                 var item = newPath[i]
                 var nextItem = (i<newPath.length-1) ? newPath[i+1] : {}
@@ -79,6 +83,25 @@ module.exports = function (Component) {
                 inventoryPath.push(
                     <StorageContainer dbid={item.id} type={item.type} ref={ref} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} selectedItem={nextItem.id} px={px} py={py}/>
                 )
+            }
+            */
+            if (this.state.navMode==='navigate') {
+                inventoryPath = <LocationPath path={newPath}/>
+            } else {
+                const pathId={}
+                newPath.map(container => {
+                    pathId[container.id]=container.name
+                })
+                //const locationPath=app.actions.inventory.mapPathToGrid(newPath)
+                var location=null
+                for (var i=0; i<newPath.length; i++) {
+                    location=newPath[i]
+                    if (location.id===id) {
+                        break
+                    }
+                }
+                const container = app.actions.inventory.initContainerProps(location,pathId,400,1)
+                inventoryPath = <EditContainer container={container} items={container.items}/>
             }
             return inventoryPath;
         }
@@ -134,6 +157,9 @@ module.exports = function (Component) {
             const iconStyle = "font-size:20px;"
             const navArrowStyle = "font-size:20px;color:#808080;justify-content:center;margin-right:20px;cursor:pointer;"
             const navArrow = (path.length>1) ? (<span onclick={this.navigateParent.bind(this)} class={"mdi mdi-arrow-left"} style={navArrowStyle}/>) : null
+            const setNavMode = function(e) {
+                this.setState({navMode:e.target.value})
+            }
             return (
                 <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
                     <div class="tile is-7">
@@ -143,6 +169,16 @@ module.exports = function (Component) {
                     </div>
                     <div class="tile">
                         <div class="navbar-end">
+                            <div class="navbar-item">
+                                <input type="radio" id="navigate" name="navigate" value="navigate" onChange={setNavMode.bind(this)} checked={this.state.navMode==='navigate'}/>
+                                <label style={{marginLeft:'5px'}} for="navigate">Navigate</label>
+                            </div>
+
+                            <div class="navbar-item">
+                                <input type="radio" id="edit" name="edit" value="edit" onChange={setNavMode.bind(this)} checked={this.state.navMode==='edit'}/>
+                                <label style={{marginLeft:'5px'}} for="edit">Edit</label>
+                            </div>
+            
                             <Workbench state="workbench"/>
                             <a class="navbar-item mdi mdi-printer"  style={iconStyle} onclick={this.print.bind(this)}></a>
                         </div>

@@ -408,6 +408,10 @@ export default class EditContainer extends Component {
             height:'500px',
             overflow:'auto'
         }
+        /*
+                <div style={{marginTop:'20px'}}/>
+                <button id="clearItems" style={{position:'relative',left:35}}>Clear</button>
+        */
         //                <hr style={{margin:'10px 0px 10px 0px',width:'1200px'}}/>
 
         //console.log('rendering Grid Container:',this.props)
@@ -448,8 +452,6 @@ export default class EditContainer extends Component {
                             layoutHeight={this.state.layoutHeight}
                     />
                 </div>
-                <div style={{marginTop:'20px'}}/>
-                <button id="clearItems" style={{position:'relative',left:35}}>Clear</button>
             </div>
         )
     }

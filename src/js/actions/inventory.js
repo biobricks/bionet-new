@@ -278,6 +278,8 @@ module.exports = {
                 const name=(itemCols>1) ? item.name : item.parent_x+','+item.parent_y
                 const width=(item.width) ? item.width*gridCell : itemCols * gridCell
                 const height=(item.height) ? item.height*gridCell : itemRows * gridCell
+                const fontSize=(item.fontSize) ? item.fontSize.toString() : '0.3'
+                const color=(item.color) ? item.color : 'rgba(0,255,255,0.4)'
                 return({
                     id:item.id,
                     key:key,
@@ -288,8 +290,8 @@ module.exports = {
                     row:item.parent_y-1,
                     width:width,
                     height:height,
-                    color:'rgba(0,255,255,0.4)',
-                    fontSize:'0.3',
+                    color:color,
+                    fontSize:fontSize,
                 })
             })
             
@@ -351,7 +353,8 @@ module.exports = {
                 key++
                 //const name=(itemCols>gridScale) ? item.name : item.parent_x+','+item.parent_y
                 //const fontSize=(itemCols===gridScale) ? 0.2*gridScale : 0.3*gridScale
-                const fontSize = 0.3*gridScale
+                const fontSize=(item.fontSize) ? item.fontSize.toString() : '0.3'
+                const color=(item.color) ? item.color : 'rgba(0,255,255,0.4)'
                 const name=item.name
                 const width=(item.width) ? item.width*gridScale : itemCols * gridCell
                 const height=(item.height) ? item.height*gridScale : itemRows * gridCell
@@ -365,7 +368,7 @@ module.exports = {
                     row:(item.parent_y-1)*gridScale,
                     width:width,
                     height:height,
-                    color:'rgba(0,255,255,0.4)',
+                    color:color,
                     fontSize:fontSize,
                 })
             })

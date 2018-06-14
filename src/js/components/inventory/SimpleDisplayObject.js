@@ -31,7 +31,7 @@ export default class SimpleContainer extends React.Component {
         
         //console.log('rendering Sample Display',this.props.item.height, itemHeight)
         return (
-            <div style={itemStyle} className={"gridItem displayObject "+selectedClass} ref={node => this.props.setDragNode(node)}>
+            <div style={itemStyle} className={"gridItem tooltip displayObject "+selectedClass} data-tooltip={this.props.item.name} ref={node => this.props.setDragNode(node)}>
                 <span className="itemTextStyle" style={itemTextStyle}>{this.props.item.name || this.props.item.key}</span>
             </div>
         )

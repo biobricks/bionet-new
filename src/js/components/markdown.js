@@ -18,9 +18,6 @@ module.exports = function (Component) {
                 }
                 this.changeContent()
             }
-            this.setState({
-                rows:this.props.rows || 3
-            })
         }
         
         changeContent() {
@@ -67,7 +64,7 @@ module.exports = function (Component) {
         render() {
             return (
                 <div class="editor-container">
-                    <textarea id={this.props.id} class="input description" rows={this.state.rows} onChange={this.resizeTextarea.bind(this)} value={this.state.content}></textarea>
+                    <textarea id={this.props.id} class="input description" onChange={this.resizeTextarea.bind(this)} value={this.state.content}></textarea>
                 </div>
             )
         }

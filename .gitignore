@@ -1,0 +1,7 @@
+node_modules/
+db/
+labdevice/
+settings.client.js
+settings.js
+static/build/
+static/images/lab_icon.png

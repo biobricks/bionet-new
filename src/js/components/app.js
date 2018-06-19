@@ -1,6 +1,6 @@
-
-import {h} from 'preact';
+import { h } from 'preact';
 import {Switch, BrowserRouter as Router, Route, Link} from 'react-router-dom';
+
 
 module.exports = function(Component) {
 
@@ -45,70 +45,72 @@ module.exports = function(Component) {
 	  render() {
 
       return (
-        <Router>
-          <StateWrapper state="global">
-            <TopMenu/>
-            <div class="content-area">
-              <Route exact path="/" component={Search} />
-              
-              <Route exact path="/test" component={TestComponent} />
-              
-              <Route exact path="/signup" render={() => (
-                <Signup />
-              )}/>
+        <div class="App">
+          <Router>
+            <StateWrapper state="global">
+              <TopMenu/>
+              <div class="content-area">
+                <Route exact path="/" component={Search} />
+                
+                <Route exact path="/test" component={TestComponent} />
+                
+                <Route exact path="/signup" render={() => (
+                  <Signup />
+                )}/>
 
-              <Route path="/virtual/show/:id" component={Virtual} />
-              <Route path="/virtual/edit/:id" component={EditVirtual} />
+                <Route path="/virtual/show/:id" component={Virtual} />
+                <Route path="/virtual/edit/:id" component={EditVirtual} />
 
-              <Route path="/request/:id" component={RequestMaterial} />
-              <Route path="/request-sent" component={RequestSent} />
+                <Route path="/request/:id" component={RequestMaterial} />
+                <Route path="/request-sent" component={RequestSent} />
 
-              <Switch>
-                <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />
-                <Route path="/search" component={Search} />
-              </Switch>
+                <Switch>
+                  <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />
+                  <Route path="/search" component={Search} />
+                </Switch>
 
-              <Route exact path="/login" render={() => (
-                <Login />
-              )}/>
-              <Route exact path="/logout" render={() => (
-                <Logout />
-              )}/>
+                <Route exact path="/login" render={() => (
+                  <Login />
+                )}/>
+                <Route exact path="/logout" render={() => (
+                  <Logout />
+                )}/>
 
-              <Route path="/password-reset" component={PasswordReset} />
+                <Route path="/password-reset" component={PasswordReset} />
 
-              <Route path="/settings" component={Settings} />
+                <Route path="/settings" component={Settings} />
 
-              <Switch>
-                <Route path="/admin/edit-user/:username" component={AdminEditUser} />
-                <Route path="/admin/delete-user/:username" component={AdminDelUser} />
-                <Route path="/admin/create-user" component={AdminCreateUser} />
-                <Route path="/admin" component={Admin} />
-              </Switch>
+                <Switch>
+                  <Route path="/admin/edit-user/:username" component={AdminEditUser} />
+                  <Route path="/admin/delete-user/:username" component={AdminDelUser} />
+                  <Route path="/admin/create-user" component={AdminCreateUser} />
+                  <Route path="/admin" component={Admin} />
+                </Switch>
 
-              <Route path="/scan" component={Scan} />
-              <Route path="/print" component={Print} />
+                <Route path="/scan" component={Scan} />
+                <Route path="/print" component={Print} />
 
-              <Route path="/help/:topic" component={Help} />
+                <Route path="/help/:topic" component={Help} />
 
-              <Switch>
-                <Route path="/dynamic-loading/:foo" component={DynamicLoading} />
-                <Route path="/dynamic-loading" component={DynamicLoading} />
-              </Switch>
-              
-              <Switch>
-                  <Route path="/inventory/:id" key="with-id" component={Inventory}/>
-                  <Route path="/inventory" key="without-id" component={Inventory}/>
-              </Switch>
+                <Switch>
+                  <Route path="/dynamic-loading/:foo" component={DynamicLoading} />
+                  <Route path="/dynamic-loading" component={DynamicLoading} />
+                </Switch>
+                
+                <Switch>
+                    <Route path="/inventory/:id" key="with-id" component={Inventory}/>
+                    <Route path="/inventory" key="without-id" component={Inventory}/>
+                </Switch>
 
-              <Route path="/o/:humanID" component={BarcodeRedirect}/>
+                <Route path="/o/:humanID" component={BarcodeRedirect}/>
 
-              <Route path="/attributions" component={Attributions} />              
-            </div>
-            <PersistentNotify state="pnotify" />
-            <Footer />
-          </StateWrapper>
-        </Router>
+                <Route path="/attributions" component={Attributions} />              
+              </div>
+              <PersistentNotify state="pnotify" />
+              <Footer />
+            </StateWrapper>
+          </Router>
+        </div>
       );
     }
   };

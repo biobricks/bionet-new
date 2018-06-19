@@ -21,20 +21,16 @@ $mdi-font-path: "../fonts/materialdesignicons";
 @import "print.scss";
 @import "simplemde.scss";
 @import "inventory.scss";
+
+@import "app.scss";
 @import "top_menu.scss";
+
 
 body {
     font-family: sans-serif;
 }
 
 /* app-global stuff BEGIN */
-
-.content-area {
-    margin-top: 40px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-}
 
 
 .post-hero-area {

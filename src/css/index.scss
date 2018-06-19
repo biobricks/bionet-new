@@ -25,7 +25,9 @@ $mdi-font-path: "../fonts/materialdesignicons";
 @import "app.scss";
 @import "top_menu.scss";
 @import "footer.scss";
-
+@import "data_panel.scss";
+@import "map_panel.scss";
+@import "test.scss";
 
 body {
     font-family: sans-serif;

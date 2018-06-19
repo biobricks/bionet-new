@@ -30,7 +30,10 @@ module.exports = function(Component) {
   var Footer = require('./footer.js')(Component);
   var Attributions = require('./attributions.js')(Component);
   var BarcodeRedirect = require('./barcode_redirect.js')(Component);
-  var TestComponent = require('./test.js')(Component);
+  
+  const TestComponent = require('./test.js')(Component);
+  const DataPanel = require('./data_panel.js')(Component);
+  const MapPanel = require('./map_panel.js')(Component);
 
   // just an example of dynamically loading js
   var DynamicLoading = require('./dynamic_loading.js')(Component);
@@ -52,8 +55,12 @@ module.exports = function(Component) {
               <div class="content-area">
                 <Route exact path="/" component={Search} />
                 
-                <Route exact path="/test" component={TestComponent} />
-                
+                <Route exact path="/ui/test" component={TestComponent} />
+                <Route exact path="/ui/top-menu" component={TopMenu} />
+                <Route exact path="/ui/footer" component={Footer} />
+                <Route exact path="/ui/data-panel" component={DataPanel} />
+                <Route exact path="/ui/map-panel" component={MapPanel} />
+
                 <Route exact path="/signup" render={() => (
                   <Signup />
                 )}/>

@@ -1,6 +1,7 @@
 import {h} from 'preact';
 import {Link} from 'react-router-dom';
 import util from '../util.js';
+import './top_menu.css';
 
 module.exports = function(Component) {
     
@@ -62,13 +63,18 @@ module.exports = function(Component) {
            <div className="navbar-brand">
               <Link class="navbar-item" to='/'>
                 <img 
+                  id="bionet-icon"
                   src="/static/images/bionet_logo.png" 
                   alt="bionet.io" 
                   height="48" 
                 />
               </Link>
               <Link class="navbar-item" to="/">
-                <img class="lab-icon" src="/static/images/lab_icon.png" />
+                <img 
+                  id="lab-icon" 
+                  src="/static/images/lab_icon.png"
+                  alt="Lab Icon" 
+                />
                 {app.settings.lab}
               </Link>
 

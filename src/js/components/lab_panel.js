@@ -7,7 +7,7 @@ module.exports = function(Component) {
 	  render() {
       return (
         <div class="LabPanel panel has-background-white">
-          <div className="panel-heading">
+          <div class="panel-heading">
             <div class="is-block">
               <div class="columns is-gapless">
                 <div class="column has-text-centered-mobile">
@@ -29,11 +29,15 @@ module.exports = function(Component) {
             </div>
           </div>
 
-          <div className="panel-block">
-            Breadcrumbs
+          <div class="panel-block">
+            <Link to="/ui/lab-inventory">
+              Lab Inventory
+            </Link>
           </div>
-          <div className="panel-block">
-            Status
+          <div class="panel-block">
+            <div class="lab-editor">
+            
+            </div>
           </div>
         </div>
       )

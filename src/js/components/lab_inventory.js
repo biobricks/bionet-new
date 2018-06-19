@@ -6,7 +6,7 @@ module.exports = function(Component) {
   const DataPanel = require('./data_panel.js')(Component);
   const MapPanel = require('./map_panel.js')(Component);
 
-  return class Test extends Component {
+  return class LabInventory extends Component {
 	  render() {
       return (
         <div class="LabInventory">

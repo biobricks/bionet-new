@@ -1,5 +1,5 @@
-import {h} from 'preact';
-import {Link} from 'react-router-dom';
+import { h } from 'preact';
+import { Link } from 'react-router-dom';
 
 module.exports = function(Component) {
 
@@ -30,7 +30,9 @@ module.exports = function(Component) {
           </div>
 
           <div className="panel-block">
-            Breadcrumbs
+            <Link to="/ui/lab">
+              LabName
+            </Link>
           </div>
           <div className="panel-block">
             Status

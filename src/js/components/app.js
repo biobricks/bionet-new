@@ -32,6 +32,7 @@ module.exports = function(Component) {
   var BarcodeRedirect = require('./barcode_redirect.js')(Component);
   
   const TestComponent = require('./test.js')(Component);
+  const LabPanel = require('./lab_panel.js')(Component);
   const DataPanel = require('./data_panel.js')(Component);
   const MapPanel = require('./map_panel.js')(Component);
 
@@ -58,6 +59,7 @@ module.exports = function(Component) {
                 <Route exact path="/ui/test" component={TestComponent} />
                 <Route exact path="/ui/top-menu" component={TopMenu} />
                 <Route exact path="/ui/footer" component={Footer} />
+                <Route exact path="/ui/lab-panel" component={LabPanel} />
                 <Route exact path="/ui/data-panel" component={DataPanel} />
                 <Route exact path="/ui/map-panel" component={MapPanel} />
 

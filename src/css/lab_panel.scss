@@ -1,0 +1,37 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+.LabPanel {
+  .panel-heading {
+    font-size: 1.4em;
+    padding: 0.3em 0.75em;
+    background-color: #b3d7d8;
+  }
+  .toolbox {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    @media (min-width: $breakpoint-tablet) {
+      float: right;
+      margin: 0;
+    }
+    .field {
+      margin-top: 6px;
+      @media (min-width: $breakpoint-tablet) {
+        margin-top: 0;
+      }
+      .button {
+        padding-bottom: 1px; /* default calc(0.375em - 1px) */
+        padding-left: calc(0.625em - 1px);
+        padding-right: calc(0.625em - 1px);
+        padding-top: calc(0.375em - 1px);        
+        .mdi {
+          font-size: 1rem;
+        }
+      }    
+    }
+  }
+  p.control {
+    padding: 0;
+  }
+}

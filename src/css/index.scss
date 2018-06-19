@@ -24,6 +24,7 @@ $mdi-font-path: "../fonts/materialdesignicons";
 
 @import "app.scss";
 @import "top_menu.scss";
+@import "footer.scss";
 
 
 body {
@@ -190,11 +191,7 @@ p {
   padding: 1rem 0;
 }
 
-.footer {
-  font-size: 0.8rem;
-  color: #AAAAAA;
-  text-align: center;
-}
+
                            
 /* app global stuff END */
 

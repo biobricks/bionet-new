@@ -1,7 +1,6 @@
 import {h} from 'preact';
 import {Link} from 'react-router-dom';
 import util from '../util.js';
-import './top_menu.css';
 
 module.exports = function(Component) {
     

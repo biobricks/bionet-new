@@ -10,11 +10,9 @@ module.exports = function(Component) {
           <div className="panel-heading">
             <div class="is-block">
               <div class="columns is-gapless">
-                <div class="column has-text-centered-mobile">
+                <div class="column">
                   Data Panel
-                </div>
-                <div class="column is-clearfix">
-                  <div class="toolbox">
+                  <div class="toolbox is-pulled-right">
                     <div class="buttons has-addons">
                       <span class="button is-small is-success">
                         <i class="mdi mdi-plus"></i>

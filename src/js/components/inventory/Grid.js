@@ -203,14 +203,16 @@ export default class Grid extends Component {
             const gridMinorYAxis=gridHeight
             
             //console.log('grid size:',gridMajorXAxis,gridMinorXAxis)
-            
             //const backgroundColor = '#269'
             //const gridColorMajorAxis = 'rgba(255,255,255,.25)'
             //const gridColorMinorAxis = 'rgba(255,255,255,.125)'
             const backgroundColor = '#fff'
             const gridColorMajorAxis = 'rgba(0,0,255,.25)'
-            const gridColorMinorAxis = 'rgba(255,0,255,.125)'
+            const gridColorMinorAxis = 'rgba(0,0,255,.125)'
             const backgroundImage="linear-gradient("+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient("+gridColorMinorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMinorAxis+" 1px, transparent 1px)"
+            
+            //const backgroundImage="linear-gradient(transparent "+gridMajorXAxis-1+"px, "+gridColorMajorAxis+" " +gridMajorXAxis+"px)"
+            //const backgroundImage="repeating-linear-gradient(transparent "+gridMajorXAxis-1+"px, "+gridColorMajorAxis+" " +gridMajorXAxis+"px),repeating-linear-gradient(90deg, "+gridColorMajorAxis+" 1px, transparent 1px),repeating-linear-gradient("+gridColorMinorAxis+" 1px, transparent 1px),repeating-linear-gradient(90deg, "+gridColorMinorAxis+" 1px, transparent 1px)"
             
             const backgroundSize=gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px"
 
@@ -218,11 +220,11 @@ export default class Grid extends Component {
                 position: 'relative',
                 display: 'block',
                 backgroundColor:backgroundColor,
+                backgroundImage: backgroundImage,
                 width: this.props.zoom*this.props.layoutWidth,
                 height: this.props.zoom*this.props.layoutHeight,
-                backgroundSize: backgroundSize,
-                backgroundImage: backgroundImage
-            };
+                backgroundSize: backgroundSize
+            }
             return (
                 <div
                     style={gridStyle}

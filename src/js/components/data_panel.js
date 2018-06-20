@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 module.exports = function(Component) {
 
+  const ContainerProfile = require('./container_profile.js')(Component);
+
   return class DataPanel extends Component {
 	  render() {
       let isViewMode = !this.props.editMode && !this.props.newMode;
@@ -12,7 +14,8 @@ module.exports = function(Component) {
       let hasParentRecord = parentRecord && Object.keys(parentRecord).length > 0;
       let parentRecordIsLab = hasParentRecord && parentRecord.name === this.props.lab.name;
       let record = this.props.selectedRecord;
-      let isContainer = Object.keys(record).indexOf('children') > -1;       
+      let isContainer = Object.keys(record).indexOf('children') > -1;
+      console.log(`Is Container : ${isContainer}`)       
       return (
         <div class="DataPanel panel has-background-white">
           <div class="panel-heading">
@@ -124,10 +127,15 @@ module.exports = function(Component) {
             ) : null }  
           </div>
           <div class="panel-block">
-            {(isViewMode) ? (
+            {(isViewMode && isContainer) ? (
+              <ContainerProfile 
+                {...this.props}
+              />
+            ) : null }
+            {(isViewMode && !isContainer) ? (
               <div>
                 View Mode:<br/>
-                Profile
+                Physical Profile
               </div>
             ) : null }
             {(isNewMode) ? (

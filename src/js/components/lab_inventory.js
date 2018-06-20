@@ -18,10 +18,11 @@ module.exports = function(Component) {
         parentRecord: {}
       };
       this.getLabData = this.getLabData.bind(this);
-      this.toggleEditMode = this.toggleEditMode.bind(this);
       this.toggleNewMode = this.toggleNewMode.bind(this);
-      this.onSaveEditClick = this.onSaveEditClick.bind(this);
+      this.toggleEditMode = this.toggleEditMode.bind(this);
       this.onSaveNewClick = this.onSaveNewClick.bind(this);
+      this.onSaveEditClick = this.onSaveEditClick.bind(this);
+      this.onDeleteClick = this.onDeleteClick.bind(this);
     }
 
     toggleEditMode() {
@@ -47,6 +48,11 @@ module.exports = function(Component) {
       this.toggleNewMode();
     }
 
+    onDeleteClick() {
+      alert('To-Do: Here is where the Container/Physical needs to be deleted.');
+      this.toggleEditMode();      
+    }
+
     getLabData() {
       const lab = fakeLabData;
       this.setState({
@@ -69,6 +75,7 @@ module.exports = function(Component) {
                 {...this.state}
                 onSaveNewClick={this.onSaveNewClick}
                 onSaveEditClick={this.onSaveEditClick}
+                onDeleteClick={this.onDeleteClick}
                 toggleEditMode={this.toggleEditMode}
                 toggleNewMode={this.toggleNewMode}
               />

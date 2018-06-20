@@ -25,7 +25,7 @@ module.exports = function(Component) {
                   ) : null }
 
                   {(isNewMode) ? (
-                    <span>New Physical/s Inside {this.props.selectedRecord.name}</span>
+                    <span>New Physical In {this.props.selectedRecord.name}</span>
                   ) : null }
 
                   {(isEditMode) ? (
@@ -84,6 +84,12 @@ module.exports = function(Component) {
                           onClick={this.props.onSaveEditClick}
                         >
                           <i class="mdi mdi-content-save"></i>
+                        </span>
+                        <span 
+                          class="button is-small is-danger"
+                          onClick={this.props.onDeleteClick}
+                        >
+                          <i class="mdi mdi-delete-variant"></i>
                         </span>
                       </div>
                     </div>                    

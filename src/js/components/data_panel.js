@@ -58,7 +58,7 @@ module.exports = function(Component) {
                           class="button is-small"
                           onClick={this.props.toggleNewMode}
                         >
-                          <i class="mdi mdi-cancel"></i>
+                          <i class="mdi mdi-arrow-left-bold"></i>
                         </span>
                         <span 
                           class="button is-small is-success"
@@ -77,7 +77,7 @@ module.exports = function(Component) {
                           class="button is-small"
                           onClick={this.props.toggleEditMode}
                         >
-                          <i class="mdi mdi-cancel"></i>
+                          <i class="mdi mdi-arrow-left-bold"></i>
                         </span>
                         <span 
                           class="button is-small is-success"

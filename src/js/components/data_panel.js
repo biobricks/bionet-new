@@ -5,9 +5,14 @@ module.exports = function(Component) {
 
   return class DataPanel extends Component {
 	  render() {
+      let isViewMode = !this.props.editMode && !this.props.newMode;
+      let isEditMode = this.props.editMode;
+      let isNewMode = this.props.newMode;
       let parentRecord = this.props.parentRecord;
       let hasParentRecord = parentRecord && Object.keys(parentRecord).length > 0;
-      let parentRecordIsLab = hasParentRecord && parentRecord.name === this.props.lab.name; 
+      let parentRecordIsLab = hasParentRecord && parentRecord.name === this.props.lab.name;
+      let record = this.props.selectedRecord;
+      let isContainer = Object.keys(record).indexOf('children') > -1;       
       return (
         <div class="DataPanel panel has-background-white">
           <div class="panel-heading">
@@ -15,18 +20,64 @@ module.exports = function(Component) {
               <div class="columns is-gapless">
                 <div class="column">
                   {this.props.selectedRecord.name}
-                  {(hasParentRecord) ? (
+                  
+                  {(isViewMode) ? (
                     <div class="toolbox is-pulled-right">
                       <div class="buttons has-addons">
-                        <span class="button is-small is-success">
+                        <span 
+                          class="button is-small is-success"
+                          onClick={this.props.toggleNewMode}
+                        >
                           <i class="mdi mdi-plus"></i>
                         </span>
-                        <span class="button is-small is-link">
+                        <span 
+                          class="button is-small is-link"
+                          onClick={this.props.toggleEditMode}
+                        >
                           <i class="mdi mdi-pencil"></i>
                         </span>
                       </div>
                     </div>
-                  ) : null }  
+                  ) : null }
+
+                  {(isNewMode) ? (
+                    <div class="toolbox is-pulled-right">
+                      <div class="buttons has-addons">
+                        <span 
+                          class="button is-small"
+                          onClick={this.props.toggleNewMode}
+                        >
+                          <i class="mdi mdi-cancel"></i>
+                        </span>
+                        <span 
+                          class="button is-small is-success"
+                          onClick={this.props.onSaveNewClick}
+                        >
+                          <i class="mdi mdi-content-save"></i>
+                        </span>
+                      </div>
+                    </div>                    
+                  ): null }
+
+                  {(isEditMode) ? (
+                    <div class="toolbox is-pulled-right">
+                      <div class="buttons has-addons">
+                        <span 
+                          class="button is-small"
+                          onClick={this.props.toggleEditMode}
+                        >
+                          <i class="mdi mdi-cancel"></i>
+                        </span>
+                        <span 
+                          class="button is-small is-success"
+                          onClick={this.props.onSaveEditClick}
+                        >
+                          <i class="mdi mdi-content-save"></i>
+                        </span>
+                      </div>
+                    </div>                    
+                  ): null }
+
                 </div>
               </div>    
             </div>
@@ -56,7 +107,25 @@ module.exports = function(Component) {
             ) : null }  
           </div>
           <div class="panel-block">
-            Status
+            {(isViewMode) ? (
+              <div>
+                View Mode:<br/>
+                Profile
+              </div>
+            ) : null }
+            {(isNewMode) ? (
+              <div>
+                New Mode:<br/>
+                New Container/Physical Form
+              </div>
+            ) : null }
+            {(isEditMode) ? (
+              <div>
+                Edit Mode:<br/>
+                Edit-In-Place Form
+              </div>
+            ) : null }
+              
           </div>
         </div>
       )

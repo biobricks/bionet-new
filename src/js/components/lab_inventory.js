@@ -13,12 +13,15 @@ module.exports = function(Component) {
       this.state = {
         lab: {},
         editMode: false,
+        newMode: false,
         selectedRecord: {},
         parentRecord: {}
       };
       this.getLabData = this.getLabData.bind(this);
       this.toggleEditMode = this.toggleEditMode.bind(this);
-      this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
+      this.toggleNewMode = this.toggleNewMode.bind(this);
+      this.onSaveEditClick = this.onSaveEditClick.bind(this);
+      this.onSaveNewClick = this.onSaveNewClick.bind(this);
     }
 
     toggleEditMode() {
@@ -27,9 +30,21 @@ module.exports = function(Component) {
       });
     }
 
-    onSaveButtonClick() {
-      alert('ToDo Here: Save Lab Changes From State');
+    toggleNewMode() {
+      this.setState({
+        editMode: false,
+        newMode: !this.state.newMode
+      });
+    }
+
+    onSaveEditClick() {
+      alert('To-Do: Here is where the Container/Physical changes needs to be saved.');
       this.toggleEditMode();
+    }
+
+    onSaveNewClick() {
+      alert('To-Do: Here is where the new Container/Physical needs to be saved.');
+      this.toggleNewMode();
     }
 
     getLabData() {
@@ -52,8 +67,10 @@ module.exports = function(Component) {
             <div class="column is-7-desktop">
               <DataPanel 
                 {...this.state}
-                onSaveButtonClick={this.onSaveButtonClick}
+                onSaveNewClick={this.onSaveNewClick}
+                onSaveEditClick={this.onSaveEditClick}
                 toggleEditMode={this.toggleEditMode}
+                toggleNewMode={this.toggleNewMode}
               />
             </div>
             <div class="column is-5-desktop">

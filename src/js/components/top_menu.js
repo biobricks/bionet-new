@@ -1,19 +1,12 @@
-
 import {h} from 'preact';
 import {Link} from 'react-router-dom';
 import util from '../util.js';
 
 module.exports = function(Component) {
     
-  var ModalPrompt = require('./modal_prompt.js')(Component);
+  const ModalPrompt = require('./modal_prompt.js')(Component);
 
   return class TopMenu extends Component {
-
-    constructor(props) {
-      super(props);
-
-    }
-
 
 	  render() {
 
@@ -31,7 +24,7 @@ module.exports = function(Component) {
         if(util.user.isInGroup('admin')) {
           optionalNavItems.push((
             <Link to='/admin' class="navbar-item">
-              <span class="icon" style="color: #333;">
+              <span class="icon">
                 <i class="fa fa-lg fa-wrench" aria-hidden="true"></i>
             </span>
           </Link>
@@ -40,7 +33,7 @@ module.exports = function(Component) {
 
         optionalNavItems.push((
           <Link to='/settings' class="navbar-item">
-            <span class="icon" style="color: #333;">
+            <span class="icon">
               <i class="fa fa-lg fa-cog" aria-hidden="true"></i>
             </span>
           </Link>
@@ -50,7 +43,7 @@ module.exports = function(Component) {
         if(userData.groups && userData.groups.indexOf('admin')) {
           optionalNavItems.push((
             <Link to='/admin' class="navbar-item">
-              <span class="icon" style="color: #333;">
+              <span class="icon">
                 <i class="fa fa-lg fa-lock" aria-hidden="true"></i>
               </span>
             </Link>
@@ -64,28 +57,33 @@ module.exports = function(Component) {
         );
       }
 
-
-      
       return (
-        <nav class="navbar is-transparent">
-          <div class="navbar-brand">
-            <Link class="navbar-item" to='/'>
-              <img src="/static/images/bionet_logo.png" alt="bionet.io"  height="48" />
-            </Link>
+        <nav class="Navbar navbar is-dark">
+           <div className="navbar-brand">
+              <Link class="navbar-item" to='/'>
+                <img 
+                  id="bionet-icon"
+                  src="/static/images/bionet_logo.png" 
+                  alt="bionet.io" 
+                  height="48" 
+                />
+              </Link>
+              <Link class="navbar-item" to="/">
+                <img 
+                  id="lab-icon" 
+                  src="/static/images/lab_icon.png"
+                  alt="Lab Icon" 
+                />
+                {app.settings.lab}
+              </Link>
 
-            <Link class="navbar-item" to="/">
-             <img class="lab-icon" src="/static/images/lab_icon.png" />
-             {app.settings.lab}
-            </Link>
-
-            <div class="navbar-burger burger" data-target="navMenuTransparentExample">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-
-          <div id="navMenuTransparentExample" class="navbar-menu">
+              <div class="navbar-burger burger" data-target="navMenuTransparentExample">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>              
+           </div>
+           <div id="navMenuTransparentExample" class="navbar-menu">
             <div class="navbar-start">
               <Link class="navbar-item " to="/search">
                 Search
@@ -105,10 +103,8 @@ module.exports = function(Component) {
               </div>
             </div>
           </div>
-            <ModalPrompt state="prompt"/>
-          </nav>
-        
-
+          <ModalPrompt state="prompt"/>           
+        </nav>
       )
     }
   }

@@ -1,0 +1,12 @@
+.Footer {
+  /* 
+    You lose approx. 40 on colors at the bottom of the screen due to the angle.
+    To match the Navbar this color is approx 40 less than:
+    background-color: rgb(57,57,57);
+  */  
+  background-color: rgb(17,17,17); 
+  /*
+    Match the .App .content-area padding
+  */
+  padding: 20px 40px;
+}

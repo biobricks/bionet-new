@@ -22,18 +22,19 @@ $mdi-font-path: "../fonts/materialdesignicons";
 @import "simplemde.scss";
 @import "inventory.scss";
 
+@import "app.scss";
+@import "top_menu.scss";
+@import "footer.scss";
+@import "lab_panel.scss";
+@import "data_panel.scss";
+@import "map_panel.scss";
+@import "test.scss";
+
 body {
     font-family: sans-serif;
 }
 
 /* app-global stuff BEGIN */
-
-.content-area {
-    margin-top: 40px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-}
 
 
 .post-hero-area {
@@ -193,11 +194,7 @@ p {
   padding: 1rem 0;
 }
 
-.footer {
-  font-size: 0.8rem;
-  color: #AAAAAA;
-  text-align: center;
-}
+
                            
 /* app global stuff END */
 

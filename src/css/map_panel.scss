@@ -30,7 +30,13 @@ $breakpoint-desktop: 1024px;
       }    
     }
   }
-  p.control {
-    padding: 0;
+  .map-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 350px;
+    padding: 12px;
+    background-color: #ccc;
+    border: 1px solid #aaa;
   }
 }

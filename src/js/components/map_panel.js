@@ -5,17 +5,20 @@ module.exports = function(Component) {
 
   return class MapPanel extends Component {
 	  render() {
+      let record = this.props.selectedRecord;
+      let isContainer = Object.keys(record).indexOf('children') > -1;
       return (
         <div class="MapPanel panel has-background-white">
           <div className="panel-heading">
-            Map Panel
+            {(isContainer) ? (
+              <span>{this.props.selectedRecord.name}</span>
+            ) : (
+              <span>{this.props.parentRecord.name}</span>
+            )}
           </div>
           <div className="panel-block">
-            Map Area
-          </div>          
-          <div className="panel-block">
-            Status
-          </div>          
+            <div class="map-container"></div>
+          </div>         
         </div>
       )
     }

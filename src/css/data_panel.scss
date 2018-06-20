@@ -30,7 +30,21 @@ $breakpoint-desktop: 1024px;
       }    
     }
   }
-  p.control {
-    padding: 0;
+  .breadcrumb {
+    a {
+     padding: 0;
+     padding-right: 4px; 
+    }
+    .elipses {
+      // padding: 0 6px;
+    }   
   }
+  .has-succeeds-separator li + li::before {
+    content: ' >>  ';
+    white-space: pre;
+  }
+  .has-succeeds-separator li + li::after {
+    content: '  ';
+    white-space: pre;
+  }   
 }

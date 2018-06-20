@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { fakeLabData } from '../fake_lab';
+import fakeLabData from '../fake_lab';
 
 module.exports = function(Component) {
 
@@ -12,7 +12,9 @@ module.exports = function(Component) {
       super(props);
       this.state = {
         lab: {},
-        editMode: false
+        editMode: false,
+        selectedRecord: {},
+        parentRecord: {}
       };
       this.getLabData = this.getLabData.bind(this);
       this.toggleEditMode = this.toggleEditMode.bind(this);
@@ -33,7 +35,9 @@ module.exports = function(Component) {
     getLabData() {
       const lab = fakeLabData;
       this.setState({
-        lab: lab
+        lab: lab,
+        parentRecord: lab,
+        selectedRecord: lab.children[0]
       });
     }
 
@@ -48,6 +52,8 @@ module.exports = function(Component) {
             <div class="column is-7-desktop">
               <DataPanel 
                 {...this.state}
+                onSaveButtonClick={this.onSaveButtonClick}
+                toggleEditMode={this.toggleEditMode}
               />
             </div>
             <div class="column is-5-desktop">

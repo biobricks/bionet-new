@@ -23,7 +23,7 @@ export default class EditContainer extends Component {
     static propTypes = {
         items: PropTypes.arrayOf(PropTypes.object),
         container:PropTypes.object,
-        keyProp:PropTypes.string
+        keyProp:PropTypes.str
     }
 
     constructor(props, context) {

@@ -24,7 +24,7 @@ module.exports = function(Component) {
     }
 
     onSaveButtonClick() {
-      alert('ToDo Here: Save Changes From Lab Editor');
+      alert('Since the Lab Editor is edit-in-place, this button can toggle this.state.editMode back to false and have the map from the editor act as navigation rather than Lab Editor.');
       this.toggleEditMode();
     }
 
@@ -87,12 +87,6 @@ module.exports = function(Component) {
               </div>    
             </div>
           </div>
-
-          <div class="panel-block">
-            <Link to="/ui/lab-inventory">
-              Lab Inventory
-            </Link>
-          </div>
           <div class="panel-block">
             <div class="lab-editor">
               {(isEditMode) ? (
@@ -105,7 +99,10 @@ module.exports = function(Component) {
                   View/Navigation Mode:<br/>
                   This section is for the Lab Map Navigator.<br/>
                   Rather than editing the Lab Map, it is used for navigating<br/>
-                  into it's child containers.
+                  into it's child containers.<br/>
+                  <Link to="/ui/lab-inventory">
+                    Enter Demo Freezer
+                  </Link>
                 </p>
               )} 
             </div>

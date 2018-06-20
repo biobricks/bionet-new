@@ -30,13 +30,13 @@ export default class EditContainer extends Component {
 
         super(props, context);
         
-        this.gridWidth = 40
-        this.gridHeight = 40
+        this.gridWidth = 32
+        this.gridHeight = 32
         this.selectedItem = null
         
         this.state = {
-            gridWidth:40,
-            gridHeight:40,
+            gridWidth:32,
+            gridHeight:32,
             layoutTop:0,
             layoutLeft:0,
             layoutRight:0,
@@ -131,7 +131,7 @@ export default class EditContainer extends Component {
             if (isOutsideGrid) {
                 // gridtodo: delete physical api call
                 console.log('onDragEnd, deleting')
-                source.filtered = true
+                this.deleteItem(source)
             } else {
                 app.actions.inventory.updateItem(source.id,function(err,item){
                     if (!err) {
@@ -150,7 +150,32 @@ export default class EditContainer extends Component {
                 items:items
             })
         }
-        this.selectItem(source)
+        if (!isOutsideGrid) this.selectItem(source)
+    }
+    
+    deleteItem(item) {
+        if (!item) return
+        const id = item.id
+        if (!id) return
+        const name = item.name
+        const parentId = item.parent_id
+        console.log('deleting item 1:', id, name, parentId, item)
+        app.actions.prompt.display('Do you wish to delete '+name+'?', null, function(accept) {
+            if (accept) {
+                app.actions.inventory.delPhysical(id, function(err,id2) {
+                    if (err) {
+                        app.actions.notify(err.message, 'error');
+                        return
+                    }
+                    app.actions.notify(name+" deleted", 'notice', 2000);
+                })
+                item.filtered = true
+                const items = (this.state.items) ? this.state.items.slice() : []
+                this.setState({
+                    items:items
+                })
+            }
+        }.bind(this))
     }
 
     onResizeStop(source, width, height) {
@@ -404,8 +429,8 @@ export default class EditContainer extends Component {
     render() {
         const containerStyle = {
             border:'1px solid black',
-            width:'1200px',
-            height:'500px',
+            width:'1024px',
+            height:'512px',
             overflow:'auto'
         }
         /*

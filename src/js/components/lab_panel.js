@@ -9,8 +9,8 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
       this.state = {
+        editMode: false,
         lab: {},
-        editMode: false
       };
       this.getLabData = this.getLabData.bind(this);
       this.toggleEditMode = this.toggleEditMode.bind(this);
@@ -24,7 +24,7 @@ module.exports = function(Component) {
     }
 
     onSaveButtonClick() {
-      alert('ToDo Here: Save Lab Changes From State');
+      alert('ToDo Here: Save Changes From Lab Editor');
       this.toggleEditMode();
     }
 
@@ -95,7 +95,19 @@ module.exports = function(Component) {
           </div>
           <div class="panel-block">
             <div class="lab-editor">
-            
+              {(isEditMode) ? (
+                <p class="is-size-4">
+                  Edit Mode:<br/>
+                  This section is for the Lab Map Editor.
+                </p>
+              ) : (
+                <p class="is-size-4">
+                  View/Navigation Mode:<br/>
+                  This section is for the Lab Map Navigator.<br/>
+                  Rather than editing the Lab Map, it is used for navigating<br/>
+                  into it's child containers.
+                </p>
+              )} 
             </div>
           </div>
         </div>

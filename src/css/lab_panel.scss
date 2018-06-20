@@ -37,5 +37,9 @@ $breakpoint-desktop: 1024px;
       min-height: 60vh;
       background-color: #ccc;
       border: 1px solid #aaa;
+      p {
+        padding: 0;
+        margin: 12px;
+      }
     }
 }

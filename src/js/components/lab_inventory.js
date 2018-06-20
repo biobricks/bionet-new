@@ -46,10 +46,14 @@ module.exports = function(Component) {
         <div class="LabInventory">
           <div class="columns is-desktop">
             <div class="column is-7-desktop">
-              <DataPanel />
+              <DataPanel 
+                {...this.state}
+              />
             </div>
             <div class="column is-5-desktop">
-              <MapPanel />
+              <MapPanel 
+                {...this.state}
+              />
             </div>
           </div>
         </div>

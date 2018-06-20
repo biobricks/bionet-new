@@ -19,8 +19,19 @@ module.exports = function(Component) {
             <div class="is-block">
               <div class="columns is-gapless">
                 <div class="column">
-                  {this.props.selectedRecord.name}
                   
+                  {(isViewMode) ? (
+                    <span>{this.props.selectedRecord.name}</span>
+                  ) : null }
+
+                  {(isNewMode) ? (
+                    <span>New Physical/s Inside {this.props.selectedRecord.name}</span>
+                  ) : null }
+
+                  {(isEditMode) ? (
+                    <span>Edit {this.props.selectedRecord.name}</span>
+                  ) : null }
+
                   {(isViewMode) ? (
                     <div class="toolbox is-pulled-right">
                       <div class="buttons has-addons">

@@ -30,8 +30,8 @@ export default class EditContainer extends Component {
 
         super(props, context);
         
-        this.gridWidth = 32
-        this.gridHeight = 32
+        this.gridWidth = 40
+        this.gridHeight = 40
         this.selectedItem = null
         
         this.zoomLevel = []
@@ -42,8 +42,8 @@ export default class EditContainer extends Component {
         //const zoomIndex = Math.trunc(this.zoomLevel.length/4)
         
         this.state = {
-            gridWidth:32,
-            gridHeight:32,
+            gridWidth:40,
+            gridHeight:40,
             layoutTop:0,
             layoutLeft:0,
             layoutRight:0,

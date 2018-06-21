@@ -268,7 +268,7 @@ module.exports = {
                 rows:rows
             }
             
-            const gridCell = 32
+            const gridCell = 40
             const maxWidth = 200
             const zoom = maxWidth / (size.cols * gridCell)
             
@@ -341,7 +341,7 @@ module.exports = {
             rows:rows
         }
 
-        const gridCell = 32
+        const gridCell = 40
         const zoom = maxWidth / (size.cols * gridCell)
         const units=(container.units) ? container.units : 'm'
         const majorGridLine=(container.majorGridLine) ? container.majorGridLine : gridScale

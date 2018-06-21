@@ -25,16 +25,16 @@ export default class LocationPath extends Component {
 
         super(props, context);
         
-        this.gridWidth = 40
-        this.gridHeight = 40
+        this.gridWidth = 32
+        this.gridHeight = 32
         this.selectedItem = null
         const layoutWidthUnits=35
         const layoutHeightUnits=15
         this.state = {
             zoom:1.0,
             units:'m',
-            gridWidth:40,
-            gridHeight:40,
+            gridWidth:32,
+            gridHeight:32,
             majorGridLine:5,
             layoutName:'Lab',
             layoutWidthUnits:layoutWidthUnits,

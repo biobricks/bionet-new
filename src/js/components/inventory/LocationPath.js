@@ -124,9 +124,9 @@ export default class LocationPath extends Component {
             height:this.props.height+'px',
             overflow:'auto'
         }
+        //        <a onClick={navigate} style={{textAlign:'left',marginRight:'15px',textDecoration:'none'}}>{item.name}</a>
         const locationPath = (
             <div className="tile is-vertical" style={containerStyle}>
-                <a onClick={navigate} style={{textAlign:'left',marginRight:'15px',textDecoration:'none'}}>{item.name}</a>
                 <Grid items={item.items}
                         onMove={this.onMove.bind(this)}
                         zoom={this.props.zoom}

@@ -363,7 +363,19 @@ module.exports = function (Component) {
                         />)
 
             } else {
-                dataItems=(<EditTable state="edittable" item={currentItem} items={childItems} height={tableHeight} attributes={attributes}/>)
+                dataItems=(
+                    <div className="pure-form">
+                        <div style={{marginTop:'20px'}}/>
+                        <label>Name:</label>{currentItem.name}<br/>
+                        <label>Description:</label>{currentItem.description}<br/>
+                        <label>Width:</label>{currentItem.layoutWidthUnits}<br/>
+                        <label>Height:</label>{currentItem.layoutHeightUnits}<br/>
+                        <label>Units:</label>{currentItem.units}
+                        <label>Grid Line:</label>{currentItem.majorGridLine}<br/>
+                        <div style={{marginTop:'20px'}}/>
+                        <EditTable state="edittable" item={currentItem} items={childItems} height={tableHeight} attributes={attributes}/>
+                    </div>
+                )
             }
             return (
                 <div class="LabInventory">

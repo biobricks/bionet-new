@@ -10,7 +10,7 @@ const lab = {
       "name": "-80 Freezer 1",
       "description": "Ipsum quia veniam deleniti laborum accusantium nam quam soluta dolores.",
       "rows": 6,
-      "columns": 5,
+      "columns": 1,
       "parent": "S1C6xyDbQ",
       "row": 3,
       "column": 1,

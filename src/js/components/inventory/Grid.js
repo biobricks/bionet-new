@@ -70,8 +70,8 @@ export default class Grid extends Component {
                 this.props.onDragMove,
                 this.props.keyProp);
             this.state = {
-                layoutWidth: 0,
-                layoutHeight: 481
+                layoutWidth: this.props.layoutWidth,
+                layoutHeight: this.props.layoutHeight
             };
         }
 
@@ -150,7 +150,7 @@ export default class Grid extends Component {
             let filteredIndex = 0;
             let sortedIndex = {};
 
-            var rect = this.container && this.container.getBoundingClientRect();
+            var rect = (this.container) ? this.container.getBoundingClientRect() : {}
             //console.log('grid render, rect:', rect)
 
             const gridWidth = (this.props.gridWidth * this.props.zoom);
@@ -217,12 +217,12 @@ export default class Grid extends Component {
             const backgroundSize=gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px"
 
             const gridStyle = {
+                width: this.props.zoom*this.props.layoutWidth,
+                height: this.props.zoom*this.props.layoutHeight,
                 position: 'relative',
                 display: 'block',
                 backgroundColor:backgroundColor,
                 backgroundImage: backgroundImage,
-                width: this.props.zoom*this.props.layoutWidth,
-                height: this.props.zoom*this.props.layoutHeight,
                 backgroundSize: backgroundSize
             }
             return (

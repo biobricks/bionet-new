@@ -313,7 +313,7 @@ module.exports = {
     },
     initContainerProps: function(container, pathId, maxWidth, _gridScale) {
         var gridScale = (_gridScale) ? _gridScale : 1
-        console.log('locationPath, name:',container.name,container.xUnits,container.yUnits)
+        console.log('locationPath:',container,container.xUnits,container.yUnits)
         var rows=1
         var cols=1
         var itemCols=1
@@ -324,8 +324,8 @@ module.exports = {
             gridScale=1
         }
         else {
-            cols=(container.xUnits) ? Number(container.xUnits*gridScale) : null
-            rows=(container.yUnits) ? Number(container.yUnits*gridScale) : null
+            cols=(container.xUnits) ? Number(container.xUnits*gridScale) : 1
+            rows=(container.yUnits) ? Number(container.yUnits*gridScale) : 1
             if (!cols || cols===gridScale) {
                 itemCols=rows
                 cols=rows

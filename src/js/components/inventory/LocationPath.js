@@ -56,16 +56,14 @@ export default class LocationPath extends Component {
     
     componentWillReceiveProps(props) {
         
-        const pathId={}
-        props.path.map(container => {
-            pathId[container.id]=container.name
-        })
+        /*
         const locationPath = props.path.map(container => {
             const gridScale = (container.type==='lab') ? 5 : 1
-            return app.actions.inventory.initContainerProps(container,pathId,200,gridScale)
+            return app.actions.inventory.initContainerProps(container,pathId,props.width,gridScale)
         });
-        
-        this.setState({locationPath:locationPath})
+        */
+        console.log('LocationPath:',props.path)
+        this.setState({locationPath:props.path})
     }
 
     onSelectItem(key) {
@@ -113,11 +111,45 @@ export default class LocationPath extends Component {
     }
 
     render() {
+        /*
         const breadcrumbs = this.props.path.map(container => {
             return(
                 <span style={{}}><a href={'/id/'+container.id} style={{marginRight:'15px',textDecoration:'none'}}>{container.name}</a></span>
             )
         })
+        */
+        const item = this.state.locationPath[this.state.locationPath.length-1]
+        //const item = this.state.locationPath[0]
+        if (!item) return
+        const navigate = function(e) {
+            app.actions.inventory.refreshInventoryPath(item.id)
+        }
+        const containerStyle = {
+            padding:0,
+            margin:0,
+            width:this.props.width+'px',
+            height:this.props.height+'px',
+            overflow:'auto'
+        }
+        const locationPath = (
+            <div className="tile is-vertical" style={containerStyle}>
+                <a onClick={navigate} style={{textAlign:'left',marginRight:'15px',textDecoration:'none'}}>{item.name}</a>
+                <Grid items={item.items}
+                        onMove={this.onMove.bind(this)}
+                        zoom={this.props.zoom}
+                        dragEnabled={true}
+                        responsive={true}
+                        majorGridLine={item.majorGridLine}
+                        verticalMargin={-1}
+                        onDragEnd={this.onSelectItem.bind(this)}
+                        gridWidth={item.gridWidth}
+                        gridHeight={item.gridHeight}
+                        layoutWidth={item.gridWidth*item.layoutWidthUnits}
+                        layoutHeight={item.gridHeight*item.layoutHeightUnits}
+                />
+            </div>
+        )
+        /*
         const locationPath = this.state.locationPath.map(item => {
             const navigate = function(e) {
                 app.actions.inventory.refreshInventoryPath(item.id)
@@ -135,12 +167,13 @@ export default class LocationPath extends Component {
                             onDragEnd={this.onSelectItem.bind(this)}
                             gridWidth={item.gridWidth}
                             gridHeight={item.gridHeight}
-                            layoutWidth={item.layoutWidth}
-                            layoutHeight={item.layoutHeight}
+                            layoutWidth={this.props.width}
+                            layoutHeight={this.props.height}
                     />
                 </div>
             );
         });
+        */
     /*
                 <div style={{textAlign:'left'}}>
                     {breadcrumbs}

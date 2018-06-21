@@ -128,14 +128,11 @@ module.exports = function(Component) {
           </div>
           <div class="panel-block">
             {(isViewMode && isContainer) ? (
-              <ContainerProfile 
-                {...this.props}
-              />
+              <div>{this.props.children}</div>
             ) : null }
             {(isViewMode && !isContainer) ? (
               <div>
-                View Mode:<br/>
-                Physical Profile
+                {this.props.children}
               </div>
             ) : null }
             {(isNewMode) ? (
@@ -146,8 +143,7 @@ module.exports = function(Component) {
             ) : null }
             {(isEditMode) ? (
               <div>
-                Edit Mode:<br/>
-                Edit-In-Place Form
+                {this.props.children}
               </div>
             ) : null }
               

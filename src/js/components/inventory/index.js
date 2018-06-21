@@ -124,11 +124,14 @@ module.exports = function (Component) {
                 )
             }
             //console.log('inventory main render:', this.props, this.state)
-            return (
+            /*
                 <div id="inventory_view" class="tile" style={{marginLeft:'10px',marginTop:'10px'}}>
                     <ActionNavbar state="inventoryNav" inventoryPath={this.state.inventoryPath} menu={this.state.types}/>
                     <InventoryPath state="inventoryPath" id={this.state.id} inventoryPath={this.state.inventoryPath}/>
                 </div>
+            */
+            return (
+                <InventoryPath state="inventoryPath" id={this.state.id} inventoryPath={this.state.inventoryPath}/>
             )
         }
     }

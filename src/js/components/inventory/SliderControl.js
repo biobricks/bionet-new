@@ -30,8 +30,8 @@ export default class SliderControl extends Component {
     constructor(props, context) {
         super(props, context)
         this.state = {
-            value:1.0,
-            index:3
+            value:props.values[props.index],
+            index:props.index
         }
     }
     updateValue(index) {

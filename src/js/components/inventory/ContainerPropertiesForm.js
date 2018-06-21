@@ -7,6 +7,7 @@ import React, {
 from 'react';
 import SliderControl from './SliderControl'
 import PropTypes from 'prop-types'
+import ContainerPropertiesCSS from './ContainerPropertiesForm.scss'
 
 export default class ContainerPropertiesForm extends Component {
     static propTypes = {
@@ -70,9 +71,9 @@ export default class ContainerPropertiesForm extends Component {
     render() {
         return(
             <form className="pure-form" style={{textAlign:'left'}}>
-                <label>Name</label><input onChange={this.onName.bind(this)} type='text' value={this.state.name} style={{width:160}}/>
-                <label>Width</label><input onChange={this.onWidth.bind(this)} type='text' value={this.state.width} style={{width:80}}/>
-                <label>Height</label><input onChange={this.onHeight.bind(this)} type='text' value={this.state.height} style={{width:80}}/>
+                <label>Name</label><input onChange={this.onName.bind(this)} type='text' value={this.state.name} style={{width:160}}/><br/>
+                <label>Width</label><input onChange={this.onWidth.bind(this)} type='text' value={this.state.width} style={{width:80}}/><br/>
+                <label>Height</label><input onChange={this.onHeight.bind(this)} type='text' value={this.state.height} style={{width:80}}/><br/>
                 <label>Units</label>
                 <select value={this.state.units} onChange={this.onUnits.bind(this)} style={{paddingTop:'4px'}}>
                     <option value="m">m</option>
@@ -80,10 +81,8 @@ export default class ContainerPropertiesForm extends Component {
                     <option value="mm">mm</option>
                     <option value="ft">ft</option>
                     <option value="in">in</option>
-                </select>
-                <label>Grid Line</label><input onChange={this.onMajorGridLine.bind(this)} type='text' value={this.state.majorGridLine} style={{width:80}}/>
-                <label>Zoom</label>
-                <SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/>
+                </select><br/>
+                <label>Grid Line</label><input onChange={this.onMajorGridLine.bind(this)} type='text' value={this.state.majorGridLine} style={{width:80}}/><br/>
             </form>
         )
     }

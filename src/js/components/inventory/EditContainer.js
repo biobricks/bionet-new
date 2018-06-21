@@ -8,6 +8,7 @@ import EditContainerCss from './EditContainer.scss';
 import Grid from './Grid';
 import ContainerPropertiesForm from './ContainerPropertiesForm'
 import ItemPropertiesForm from './ItemPropertiesForm'
+import SliderControl from './SliderControl'
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 // import Perf from 'react-addons-perf';
@@ -22,8 +23,7 @@ export default class EditContainer extends Component {
 
     static propTypes = {
         items: PropTypes.arrayOf(PropTypes.object),
-        container:PropTypes.object,
-        keyProp:PropTypes.str
+        container:PropTypes.object
     }
 
     constructor(props, context) {
@@ -33,6 +33,13 @@ export default class EditContainer extends Component {
         this.gridWidth = 32
         this.gridHeight = 32
         this.selectedItem = null
+        
+        this.zoomLevel = []
+        for (var zl = 0.25; zl <= 2.0; zl += 0.25) {
+            this.zoomLevel.push(zl)
+        }
+        const zoomIndex = (this.props.zoomIndex) ? this.props.zoomIndex : 1
+        //const zoomIndex = Math.trunc(this.zoomLevel.length/4)
         
         this.state = {
             gridWidth:32,
@@ -46,7 +53,8 @@ export default class EditContainer extends Component {
             defaultHeight : 1,
             defaultColor : 'aqua',
             defaultFontSize:'0.3',
-            zoom:1.0
+            zoomIndex:zoomIndex,
+            zoom:this.zoomLevel[zoomIndex]
         };
         this.componentWillReceiveProps(props)
     }
@@ -425,12 +433,16 @@ export default class EditContainer extends Component {
             })
         }
     }
+    onZoom(zoom) {
+        this.setState({zoom:zoom})
+    }
     
     render() {
         const containerStyle = {
-            border:'1px solid black',
-            width:'1024px',
-            height:'512px',
+            padding:0,
+            margin:0,
+            width:this.props.width+'px',
+            height:this.props.height+'px',
             overflow:'auto'
         }
         /*
@@ -440,8 +452,7 @@ export default class EditContainer extends Component {
         //                <hr style={{margin:'10px 0px 10px 0px',width:'1200px'}}/>
 
         //console.log('rendering Grid Container:',this.props)
-        return (
-            <div>
+        /*
                 <ContainerPropertiesForm
                     name={this.state.layoutName}
                     width={this.state.layoutWidthUnits}
@@ -450,7 +461,21 @@ export default class EditContainer extends Component {
                     units={this.state.units}
                     onChange={this.onUpdateContainerProperties.bind(this)}
                 />
+                <ItemPropertiesForm
+                    name={this.state.defaultName}
+                    width={this.state.defaultWidth}
+                    height={this.state.defaultHeight}
+                    color={this.state.defaultColor}
+                    fontSize={this.state.defaultFontSize}
+                    onChange={this.onUpdateItemProperties.bind(this)}
+                />
                 <div style={{marginTop:'20px'}}/>
+                <div style={{marginTop:'20px'}}/>
+        */
+        return (
+            <div>
+                <label>Zoom</label>
+                <SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/>
                 <ItemPropertiesForm
                     name={this.state.defaultName}
                     width={this.state.defaultWidth}

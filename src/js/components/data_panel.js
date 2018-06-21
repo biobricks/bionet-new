@@ -143,15 +143,9 @@ module.exports = function(Component) {
               </div>
             ) : null }
             {(isEditMode) ? (
-<<<<<<< HEAD
               <div>
                 {this.props.children}
               </div>
-=======
-              <ContainerEditForm 
-                {...this.props}
-              />
->>>>>>> e2fe10c9dac8f1887050b6f57ca1631a98746e77
             ) : null }
               
           </div>

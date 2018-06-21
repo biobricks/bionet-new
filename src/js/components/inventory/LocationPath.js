@@ -55,13 +55,6 @@ export default class LocationPath extends Component {
     }
     
     componentWillReceiveProps(props) {
-        
-        /*
-        const locationPath = props.path.map(container => {
-            const gridScale = (container.type==='lab') ? 5 : 1
-            return app.actions.inventory.initContainerProps(container,pathId,props.width,gridScale)
-        });
-        */
         console.log('LocationPath:',props.path)
         this.setState({locationPath:props.path})
     }

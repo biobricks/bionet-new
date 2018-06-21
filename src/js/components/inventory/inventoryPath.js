@@ -102,9 +102,9 @@ module.exports = function (Component) {
                 })
                 const locationPath = newPath.map(container => {
                     if (id===container.id) {
-                        const gridScale = (container.type==='lab') ? 1 : 1
-                        zoom = (container.type==='lab') ? 0.5 : 1.5
-                        return app.actions.inventory.initContainerProps(container,pathId,width,gridScale)
+                        //zoom = (container.type==='lab') ? 0.5 : 1.5
+                        zoom = (container.type==='lab') ? 0.5 : 1.0
+                        return app.actions.inventory.initContainerProps(container,pathId,width,1)
                     }
                 })
                 inventoryPath = <LocationPath path={locationPath} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoom={zoom}/>
@@ -119,7 +119,7 @@ module.exports = function (Component) {
                 for (var i=0; i<newPath.length; i++) {
                     location=newPath[i]
                     if (location.id===id) {
-                        zoomIndex = (location.type==='lab') ? 1 : 5
+                        zoomIndex = (location.type==='lab') ? 1 : 1
                         break
                     }
                 }

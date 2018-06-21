@@ -368,13 +368,17 @@ module.exports = function (Component) {
                         app.actions.inventory.refreshInventoryPath(container.id)
                     }
                     return(
-                        <span onClick={navigate} style={{color:'blue',marginRight:'15px',textDecoration:'none'}}>{container.name}&nbsp;&gt;</span>
+                        <li onClick={navigate}>{container.name}</li>
                     )
                 })
                 dataItems=(
                     <div className="pure-form">
                         <div style={{marginTop:'20px'}}/>
-                        {breadcrumbs}
+                        <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+                            <ul>
+                                {breadcrumbs}
+                            </ul>
+                        </nav>
                         <div style={{marginTop:'20px'}}/>
                         <label>Name:</label>{currentItem.name}<br/>
                         <label>Description:</label>{currentItem.description}<br/>

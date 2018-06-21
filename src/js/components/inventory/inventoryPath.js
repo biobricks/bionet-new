@@ -103,7 +103,7 @@ module.exports = function (Component) {
                 const locationPath = newPath.map(container => {
                     if (id===container.id) {
                         //zoom = (container.type==='lab') ? 0.5 : 1.5
-                        zoom = (container.type==='lab') ? 0.5 : 1.0
+                        zoom = (container.type==='lab') ? 0.5 : 0.5
                         return app.actions.inventory.initContainerProps(container,pathId,width,1)
                     }
                 })

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 module.exports = function(Component) {
 
   const ContainerProfile = require('./container_profile.js')(Component);
+  const ContainerEditForm = require('./container_edit_form.js')(Component);
 
   return class DataPanel extends Component {
 	  render() {
@@ -126,7 +127,7 @@ module.exports = function(Component) {
               </nav>
             ) : null }  
           </div>
-          <div class="panel-block">
+          <div>
             {(isViewMode && isContainer) ? (
               <ContainerProfile 
                 {...this.props}
@@ -145,10 +146,9 @@ module.exports = function(Component) {
               </div>
             ) : null }
             {(isEditMode) ? (
-              <div>
-                Edit Mode:<br/>
-                Edit-In-Place Form
-              </div>
+              <ContainerEditForm 
+                {...this.props}
+              />
             ) : null }
               
           </div>

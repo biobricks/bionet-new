@@ -363,8 +363,18 @@ module.exports = function (Component) {
                         />)
 
             } else {
+                const breadcrumbs = this.state.inventoryPath.map(container => {
+                    const navigate = function(e) {
+                        app.actions.inventory.refreshInventoryPath(container.id)
+                    }
+                    return(
+                        <span onClick={navigate} style={{color:'blue',marginRight:'15px',textDecoration:'none'}}>{container.name}&nbsp;&gt;</span>
+                    )
+                })
                 dataItems=(
                     <div className="pure-form">
+                        <div style={{marginTop:'20px'}}/>
+                        {breadcrumbs}
                         <div style={{marginTop:'20px'}}/>
                         <label>Name:</label>{currentItem.name}<br/>
                         <label>Description:</label>{currentItem.description}<br/>

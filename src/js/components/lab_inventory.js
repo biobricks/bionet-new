@@ -18,11 +18,20 @@ module.exports = function(Component) {
         parentRecord: {}
       };
       this.getLabData = this.getLabData.bind(this);
+      this.selectRecord = this.selectRecord.bind(this);
       this.toggleNewMode = this.toggleNewMode.bind(this);
       this.toggleEditMode = this.toggleEditMode.bind(this);
       this.onSaveNewClick = this.onSaveNewClick.bind(this);
       this.onSaveEditClick = this.onSaveEditClick.bind(this);
       this.onDeleteClick = this.onDeleteClick.bind(this);
+    }
+
+    selectRecord(e) {
+      //e.preventDefault();
+      let recordId = e.target.getAttribute('id');
+      let record = getRecordById(recordId, fakeLabData);
+      console.log('Result:');
+      console.log(record);
     }
 
     toggleEditMode() {
@@ -73,6 +82,7 @@ module.exports = function(Component) {
             <div class="column is-7-desktop">
               <DataPanel 
                 {...this.state}
+                selectRecord={this.selectRecord}
                 onSaveNewClick={this.onSaveNewClick}
                 onSaveEditClick={this.onSaveEditClick}
                 onDeleteClick={this.onDeleteClick}
@@ -90,5 +100,23 @@ module.exports = function(Component) {
       )
     }
 
+  }
+}
+
+
+let result;
+function getRecordById(id, data){
+  result = null;
+  if(typeof data === 'object'){
+    console.log(id);
+    console.log(data.id);
+    console.log(id === data.id);
+    if(id === data.id){ result = data; }
+    if(result){ return result; }
+    // for(let i = 0; i < data.children.length; i++){
+    //   let child = data.children[i];
+    //   console.log(child);
+    //   getRecordById(id, child);
+    // }
   }
 }

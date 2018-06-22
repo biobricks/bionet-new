@@ -9,7 +9,11 @@ module.exports = function(Component) {
       let parentRecord = this.props.parentRecord;
       let children = this.props.selectedRecord.children.map((child, index) => {
         return (
-          <a class="panel-block">
+          <a 
+            class="panel-block"
+            id={child.id}
+            onClick={this.props.selectRecord}
+          >
             <span class="panel-icon">
               <i class="mdi mdi-grid"></i>
             </span>

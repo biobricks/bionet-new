@@ -15,8 +15,7 @@ module.exports = function(Component) {
       let hasParentRecord = parentRecord && Object.keys(parentRecord).length > 0;
       let parentRecordIsLab = hasParentRecord && parentRecord.name === this.props.lab.name;
       let record = this.props.selectedRecord;
-      let isContainer = Object.keys(record).indexOf('children') > -1;
-      console.log(`Is Container : ${isContainer}`)       
+      let isContainer = Object.keys(record).indexOf('children') > -1;      
       return (
         <div class="DataPanel panel has-background-white">
           <div class="panel-heading">
@@ -129,7 +128,10 @@ module.exports = function(Component) {
           </div>
           <div>
             {(isViewMode && isContainer) ? (
-              <div>{this.props.children}</div>
+              <ContainerProfile 
+                {...this.props}
+                selectRecord={this.props.selectRecord}
+              />
             ) : null }
             {(isViewMode && !isContainer) ? (
               <div>
@@ -144,7 +146,9 @@ module.exports = function(Component) {
             ) : null }
             {(isEditMode) ? (
               <div>
-                {this.props.children}
+              <ContainerEditForm 
+                {...this.props}
+              />
               </div>
             ) : null }
               

@@ -5,6 +5,7 @@ module.exports = function(Component) {
 
   const ContainerProfile = require('./container_profile.js')(Component);
   const ContainerEditForm = require('./container_edit_form.js')(Component);
+  const PhysicalProfile = require('./physical_profile.js')(Component);
 
   return class DataPanel extends Component {
 	  render() {
@@ -132,14 +133,15 @@ module.exports = function(Component) {
           <div>
             {(isViewMode && isContainer) ? (
               <ContainerProfile 
-                 {...this.props}
+                {...this.props}
                 selectRecord={this.props.selectRecord}
               />
             ) : null }
             {(isViewMode && !isContainer) ? (
-              <div> 
-                {this.props.children}
-              </div>
+              <PhysicalProfile 
+                {...this.props}
+                selectRecord={this.props.selectRecord}
+              />
             ) : null }
             {(isNewMode) ? (
               <div>

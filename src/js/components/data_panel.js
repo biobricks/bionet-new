@@ -8,7 +8,24 @@ module.exports = function(Component) {
   const PhysicalProfile = require('./physical_profile.js')(Component);
 
   return class DataPanel extends Component {
-	  render() {
+    
+    constructor(props) {
+      super(props);
+      this.state = {
+        formType: ''
+      };
+      this.setFormType = this.setFormType.bind(this);
+    }
+    
+    setFormType(e) {
+      let formType = e.target.value;
+      console.log(`Form type switched to ${formType}`);
+      this.setState({
+        formType
+      });
+    }
+
+    render() {
       let isViewMode = !this.props.editMode && !this.props.newMode;
       let isEditMode = this.props.editMode;
       let isNewMode = this.props.newMode;
@@ -30,7 +47,7 @@ module.exports = function(Component) {
                   ) : null }
 
                   {(isNewMode) ? (
-                    <span>New Physical In {this.props.selectedRecord.name}</span>
+                    <span>New {this.state.formType || "Item"} In {this.props.selectedRecord.name}</span>
                   ) : null }
 
                   {(isEditMode) ? (
@@ -146,8 +163,30 @@ module.exports = function(Component) {
             ) : null }
             {(isNewMode) ? (
               <div>
-                New Mode:<br/>
-                New Container/Physical Form
+                <div class="panel-block">
+                  <div class="columns">
+                    <div class="column is-12">
+                      <div class="columns is-mobile">
+                        <div class="column is-narrow">
+                          <label class="label">New</label>
+                        </div>
+                        <div class="column">   
+                          <div class="select">
+                            <select 
+                              class="is-small"
+                              onChange={this.setFormType}
+                              value={this.state.formType}
+                            >
+                              <option value="">Select One</option>
+                              <option value="Container">Container</option>
+                              <option value="Physical">Physical</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : null }
             {(isEditMode) ? (

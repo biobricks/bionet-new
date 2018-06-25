@@ -22,13 +22,13 @@ module.exports = function(Component) {
               <div class="column is-12">
                 <div class="columns is-mobile">
                   <div class="column is-narrow">
-                    <label class="label">Location</label>
+                    <label class="label">Name</label>
                   </div>
                   <div class="column">   
                     <input 
                       class="input is-small"
                       type="text" 
-                      value={parentRecord.name}
+                      value={selectedRecord.name}
                     />
                   </div>
                 </div>
@@ -44,6 +44,20 @@ module.exports = function(Component) {
                       value={selectedRecord.description}
                       rows="2"
                     >{selectedRecord.description}</textarea>
+                  </div>
+                </div>
+              </div>              
+              <div class="column is-12">
+                <div class="columns is-mobile">
+                  <div class="column is-narrow">
+                    <label class="label">Location</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input is-small"
+                      type="text" 
+                      value={parentRecord.name}
+                    />
                   </div>
                 </div>
               </div>

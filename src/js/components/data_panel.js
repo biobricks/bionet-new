@@ -58,7 +58,7 @@ module.exports = function(Component) {
                     <div class="toolbox is-pulled-right">
                       <div class="buttons has-addons">
                         <span 
-                          class="button is-small"
+                           class="button is-small"
                           onClick={this.props.toggleNewMode}
                         >
                           <i class="mdi mdi-arrow-left-bold"></i>
@@ -113,15 +113,18 @@ module.exports = function(Component) {
                     </Link>
                   </li>
                   {(!parentRecordIsLab) ? (
-                    <div>
-                      <li class="elipses">...</li>                 
+                
                       <li>
-                        <a>{this.props.parentRecord.name}</a>
+                        <a
+                          id={this.props.parentRecord.id}
+                          onClick={this.props.selectRecord}
+                        >
+                          {this.props.parentRecord.name}
+                        </a>
                       </li>
-                    </div>                  
-                  ) : (
-                    <li class="is-active">{this.props.selectedRecord.name}</li>
-                  )}
+               
+                  ) : null }
+                  <li class="is-active">{this.props.selectedRecord.name}</li>
                 </ul>
               </nav>
             ) : null }  
@@ -129,12 +132,12 @@ module.exports = function(Component) {
           <div>
             {(isViewMode && isContainer) ? (
               <ContainerProfile 
-                {...this.props}
+                 {...this.props}
                 selectRecord={this.props.selectRecord}
               />
             ) : null }
             {(isViewMode && !isContainer) ? (
-              <div>
+              <div> 
                 {this.props.children}
               </div>
             ) : null }

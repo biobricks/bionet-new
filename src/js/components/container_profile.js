@@ -26,12 +26,12 @@ module.exports = function(Component) {
           <div class="panel-block">
             <div class="columns is-multiline is-gapless">
               <div class="column is-12">
-                <div class="columns is-mobile">
+                <div class="columns is-gapless">
                   <div class="column is-narrow">
-                    <label class="label">Location</label>
+                    <label class="label">Name</label>
                   </div>
                   <div class="column">   
-                    {parentRecord.name}
+                    {selectedRecord.name}
                   </div>
                 </div>
               </div>
@@ -45,6 +45,16 @@ module.exports = function(Component) {
                   </div>
                 </div>
               </div>
+              <div class="column is-12">
+                <div class="columns is-mobile">
+                  <div class="column is-narrow">
+                    <label class="label">Location</label>
+                  </div>
+                  <div class="column">   
+                    {parentRecord.name} - Row {selectedRecord.row}, Col {selectedRecord.column}
+                  </div>
+                </div>
+              </div>              
             </div>    
           </div>
           <div class="panel-block">                      

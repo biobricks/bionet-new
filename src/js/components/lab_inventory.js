@@ -17,8 +17,10 @@ module.exports = function(Component) {
         selectedRecord: {},
         parentRecord: {}
       };
+      this.searchResult = null;
       this.getLabData = this.getLabData.bind(this);
       this.selectRecord = this.selectRecord.bind(this);
+      this.getRecordById = this.getRecordById.bind(this);
       this.toggleNewMode = this.toggleNewMode.bind(this);
       this.toggleEditMode = this.toggleEditMode.bind(this);
       this.onSaveNewClick = this.onSaveNewClick.bind(this);
@@ -27,11 +29,43 @@ module.exports = function(Component) {
     }
 
     selectRecord(e) {
-      //e.preventDefault();
       let recordId = e.target.getAttribute('id');
-      let record = getRecordById(recordId, fakeLabData);
+      console.info(`User clicked on record ${recordId}. Searching...`);
+      
+      // selectedRecord
+      this.searchResult = null;
+      this.getRecordById(recordId, fakeLabData);
+      let selectedRecord = this.searchResult || {};
+      
+      // parentRecord
+      this.searchResult = null;
+      this.getRecordById(selectedRecord.parent, fakeLabData);
+      let parentRecord = this.searchResult || {};
+
       console.log('Result:');
-      console.log(record);
+      console.log(selectedRecord);
+      console.log(parentRecord);
+
+      this.setState({
+        selectedRecord,
+        parentRecord
+      });
+    }
+
+    getRecordById(id, data) {
+      if(typeof data === 'object'){
+        if(id === data.id){ this.searchResult = data; }
+        if(this.searchResult){ 
+          return this.searchResult;
+        } else {  
+          if(data.children && data.children.length > 0){
+            for(let i = 0; i < data.children.length; i++){
+              let child = data.children[i];
+              this.getRecordById(id, child);
+            }
+          }
+        }
+      }      
     }
 
     toggleEditMode() {
@@ -100,23 +134,5 @@ module.exports = function(Component) {
       )
     }
 
-  }
-}
-
-
-let result;
-function getRecordById(id, data){
-  result = null;
-  if(typeof data === 'object'){
-    console.log(id);
-    console.log(data.id);
-    console.log(id === data.id);
-    if(id === data.id){ result = data; }
-    if(result){ return result; }
-    // for(let i = 0; i < data.children.length; i++){
-    //   let child = data.children[i];
-    //   console.log(child);
-    //   getRecordById(id, child);
-    // }
   }
 }

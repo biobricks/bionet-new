@@ -15,8 +15,9 @@ module.exports = function(Component) {
       let parentRecord = this.props.parentRecord;
       let hasParentRecord = parentRecord && Object.keys(parentRecord).length > 0;
       let parentRecordIsLab = hasParentRecord && parentRecord.name === this.props.lab.name;
-      let record = this.props.selectedRecord;
-      let isContainer = Object.keys(record).indexOf('children') > -1;      
+      let selectedRecord = this.props.selectedRecord;
+      let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;      
+      let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
       return (
         <div class="DataPanel panel has-background-white">
           <div class="panel-heading">
@@ -25,7 +26,7 @@ module.exports = function(Component) {
                 <div class="column">
                   
                   {(isViewMode) ? (
-                    <span>{this.props.selectedRecord.name}</span>
+                    <span>{headingIcon} {this.props.selectedRecord.name}</span>
                   ) : null }
 
                   {(isNewMode) ? (

@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 module.exports = function(Component) {
 
-  return class ContainerEditForm extends Component {
+  return class PhysicalNewForm extends Component {
 
     render() {
       let selectedRecord = this.props.selectedRecord;
@@ -15,7 +15,7 @@ module.exports = function(Component) {
         )
       });
       return (
-        <div class="ContainerEditForm">
+        <div class="PhysicalNewForm">
           <div class="panel-block">
 
             <div class="columns is-multiline is-gapless">
@@ -28,7 +28,7 @@ module.exports = function(Component) {
                     <input 
                       class="input is-small"
                       type="text" 
-                      value={selectedRecord.name}
+                      placeholder="Physical Name"
                     />
                   </div>
                 </div>
@@ -40,20 +40,13 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <textarea 
-                      class="textarea is-small" 
-                      value={selectedRecord.description}
+                      class="textarea is-small"
                       rows="2"
-                    >{selectedRecord.description}</textarea>
+                      placeholder="A short description of the Physical."
+                    ></textarea>
                   </div>
                 </div>
               </div>              
-              <div class="column is-12">
-                <div class="columns is-mobile">
-                  <div class="column is-narrow">
-                    <label class="label">Location</label>
-                  </div>
-                </div>
-              </div>
               <div class="column is-12">
                 <div class="columns is-gapless">
                   <div class="column is-narrow">
@@ -63,7 +56,7 @@ module.exports = function(Component) {
                     <input 
                       class="input is-small"
                       type="number" 
-                      value={selectedRecord.row}
+                      min="1"
                     />
                   </div>
                 </div>
@@ -77,7 +70,7 @@ module.exports = function(Component) {
                     <input 
                       class="input is-small"
                       type="number" 
-                      value={selectedRecord.column}
+                      min="1"
                     />
                   </div>
                 </div>

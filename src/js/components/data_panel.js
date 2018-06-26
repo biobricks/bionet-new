@@ -4,11 +4,31 @@ import { Link } from 'react-router-dom';
 module.exports = function(Component) {
 
   const ContainerProfile = require('./container_profile.js')(Component);
+  const ContainerNewForm = require('./container_new_form.js')(Component);
   const ContainerEditForm = require('./container_edit_form.js')(Component);
   const PhysicalProfile = require('./physical_profile.js')(Component);
+  const PhysicalNewForm = require('./physical_new_form.js')(Component);
+  const PhysicalEditForm = require('./physical_edit_form.js')(Component);
 
   return class DataPanel extends Component {
-	  render() {
+    
+    constructor(props) {
+      super(props);
+      this.state = {
+        formType: ''
+      };
+      this.setFormType = this.setFormType.bind(this);
+    }
+    
+    setFormType(e) {
+      let formType = e.target.value;
+      console.log(`Form type switched to ${formType}`);
+      this.setState({
+        formType
+      });
+    }
+
+    render() {
       let isViewMode = !this.props.editMode && !this.props.newMode;
       let isEditMode = this.props.editMode;
       let isNewMode = this.props.newMode;
@@ -20,7 +40,7 @@ module.exports = function(Component) {
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
       return (
         <div class="DataPanel panel has-background-white">
-          <div class="panel-heading">
+          <div class="panel-heading is-capitalized">
             <div class="is-block">
               <div class="columns is-gapless">
                 <div class="column">
@@ -29,8 +49,12 @@ module.exports = function(Component) {
                     <span>{headingIcon} {this.props.selectedRecord.name}</span>
                   ) : null }
 
-                  {(isNewMode) ? (
-                    <span>New Physical In {this.props.selectedRecord.name}</span>
+                  {(isNewMode && isContainer) ? (
+                    <span>New {this.state.formType || "Item"} In {this.props.selectedRecord.name}</span>
+                  ) : null }
+
+                  {(isNewMode && !isContainer) ? (
+                    <span>New Instances Of {this.props.selectedRecord.name}</span>
                   ) : null }
 
                   {(isEditMode) ? (
@@ -107,7 +131,7 @@ module.exports = function(Component) {
 
           <div class="panel-block">
             {(hasParentRecord) ? (
-              <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+              <nav class="breadcrumb is-capitalized" aria-label="breadcrumbs">
                 <ul>
                   <li>
                     <Link to="/ui/lab">
@@ -144,17 +168,58 @@ module.exports = function(Component) {
                 selectRecord={this.props.selectRecord}
               />
             ) : null }
-            {(isNewMode) ? (
+            {(isNewMode && isContainer) ? (
               <div>
-                New Mode:<br/>
-                New Container/Physical Form
+                <div class="panel-block">
+                  <div class="columns">
+                    <div class="column is-12">
+                      <div class="columns is-mobile">
+                        <div class="column is-narrow">
+                          <label class="label">New</label>
+                        </div>
+                        <div class="column">   
+                          <div class="select">
+                            <select 
+                              class="is-small"
+                              onChange={this.setFormType}
+                              value={this.state.formType}
+                            >
+                              <option value="">Select One</option>
+                              <option value="Container">Container</option>
+                              <option value="Physical">Physical</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {(this.state.formType === 'Container') ? (
+                  <ContainerNewForm 
+                    {...this.props}
+                  />
+                ) : null }
+                {(this.state.formType === 'Physical') ? (
+                  <PhysicalNewForm 
+                  {...this.props}
+                />
+              ) : null }
               </div>
             ) : null }
+            {(isNewMode && !isContainer) ? (
+              <span>New Instance Form</span>
+            ) : null}
             {(isEditMode) ? (
               <div>
-              <ContainerEditForm 
-                {...this.props}
-              />
+                {(isContainer) ? (
+                  <ContainerEditForm 
+                    {...this.props}
+                  />
+                ) : (
+                  <PhysicalEditForm 
+                    {...this.props}
+                  />
+                )}  
               </div>
             ) : null }
               

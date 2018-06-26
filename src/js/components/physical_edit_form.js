@@ -2,20 +2,13 @@ import { h } from 'preact';
 
 module.exports = function(Component) {
 
-  return class ContainerEditForm extends Component {
+  return class PhysicalEditForm extends Component {
 
     render() {
       let selectedRecord = this.props.selectedRecord;
       let parentRecord = this.props.parentRecord;
-      let children = this.props.selectedRecord.children.map((child, index) => {
-        return (
-          <div class="container-child">
-            Row {child.row}, Col {child.column}: {child.name} 
-          </div>
-        )
-      });
       return (
-        <div class="ContainerEditForm">
+        <div class="PhysicalEditForm">
           <div class="panel-block">
 
             <div class="columns is-multiline is-gapless">

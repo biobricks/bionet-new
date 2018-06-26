@@ -52,13 +52,6 @@ module.exports = function(Component) {
                   <div class="column is-narrow">
                     <label class="label">Location</label>
                   </div>
-                  <div class="column">   
-                    <input 
-                      class="input is-small"
-                      type="text" 
-                      value={parentRecord.name}
-                    />
-                  </div>
                 </div>
               </div>
               <div class="column is-12">

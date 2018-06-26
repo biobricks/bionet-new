@@ -321,9 +321,12 @@ module.exports = function(Component) {
 
           <form onsubmit={this.search.bind(this)}>
             <div class="field has-addons">
-              <div class="control">
-                <input class="input" id="query" type="text" oninput={this.onQueryInput.bind(this)} placeholder="Search the bionet" value={this.state.query.text} />
-              </div>
+              <div class="control has-icons-left">
+                <input class="input" id="query" type="text" oninput={this.onQueryInput.bind(this)} placeholder="Bionet Search" value={this.state.query.text} />
+                <span className="icon is-medium is-left">
+                  <i className="mdi mdi-24px mdi-search-web" />
+                </span> 
+              </div>               
               <div class="control">
                 <a class="button is-info" onclick={this.search.bind(this)}>
                   Search

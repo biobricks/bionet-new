@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 module.exports = function(Component) {
 
   const ContainerProfile = require('./container_profile.js')(Component);
+  const ContainerNewForm = require('./container_new_form.js')(Component);
   const ContainerEditForm = require('./container_edit_form.js')(Component);
   const PhysicalProfile = require('./physical_profile.js')(Component);
 
@@ -187,6 +188,14 @@ module.exports = function(Component) {
                     </div>
                   </div>
                 </div>
+                {(this.state.formType === 'Container') ? (
+                  <ContainerNewForm 
+                    {...this.props}
+                  />
+                ) : null }
+                {(this.state.formType === 'Physical') ? (
+                  <span>Physical New Form</span>
+              ) : null }
               </div>
             ) : null }
             {(isEditMode) ? (

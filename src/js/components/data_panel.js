@@ -153,7 +153,7 @@ module.exports = function(Component) {
                   <li class="is-active">{this.props.selectedRecord.name}</li>
                 </ul>
               </nav>
-            ) : null }  
+            ) : null }
           </div>
           <div>
             {(isViewMode && isContainer) ? (

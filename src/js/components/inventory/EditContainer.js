@@ -234,7 +234,7 @@ export default class EditContainer extends Component {
         item.height = this.state.defaultHeight * this.gridHeight
         item.color = this.state.defaultColor
         item.fontSize = this.state.defaultFontSize
-        
+
         const physical={
             name:item.name+'_'+items.length+1,
             parent_id:this.state.containerId,
@@ -244,6 +244,10 @@ export default class EditContainer extends Component {
             width:item.width,
             height:item.height,
             color:item.color,
+            layoutWidthUnits:this.state.layoutWidthUnits,
+            layoutHeightUnits:this.state.layoutHeightUnits,
+            units:this.state.units,
+            majorGridLine:this.state.majorGridLine,
             fontSize:item.fontSize
         }
         console.log('onNewItem, adding:', physical)

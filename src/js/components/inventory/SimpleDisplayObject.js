@@ -22,8 +22,8 @@ export default class SimpleContainer extends React.Component {
         };
 
         const fontSize = (this.props.item.fontSize) ? Number(this.props.item.fontSize)*this.props.gridHeight : 0.3*this.props.gridHeight
+            //lineHeight:itemHeight+'px',
         const itemTextStyle = {
-            lineHeight:itemHeight+'px',
             fontSize:fontSize+'px'
         }
         const label = (itemWidth<80) ? '' : this.props.item.name

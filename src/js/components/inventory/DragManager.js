@@ -63,20 +63,17 @@ export default class DragManager {
         this.dragMoveFn(e);
     }
 
-    endDrag() {
-
-        document.removeEventListener('mousemove', this.dragMove);
-        document.removeEventListener('mouseup', this.endDrag);
-
-        if (this.dragItem) this.dragEndFn(this.dragItem[this.keyProp], this.clientX, this.clientY, this.isDrag)
+    endDrag(item) {
+        const dragItem=(this.dragItem) ? this.dragItem : item
+        if (dragItem) this.dragEndFn(dragItem[this.keyProp], this.clientX, this.clientY, this.isDrag)
         this.dragItem = null;
         this.isDrag=false
         if (this.update && typeof this.update === 'function') {
             this.update(null, null);
         }
         this.update = null;
-
-        //this.dragEndFn();
+        document.removeEventListener('mousemove', this.dragMove);
+        document.removeEventListener('mouseup', this.endDrag);
     }
 
     startDrag(e, domNode, item, fnUpdate) {

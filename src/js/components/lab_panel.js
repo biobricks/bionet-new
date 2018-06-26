@@ -9,7 +9,7 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
       this.state = {
-        editMode: false,
+        editMode: true,
         lab: {},
       };
       this.getLabData = this.getLabData.bind(this);
@@ -18,9 +18,10 @@ module.exports = function(Component) {
     }
 
     toggleEditMode() {
-      this.setState({
-        editMode: !this.state.editMode
-      });
+        this.setState({
+            editMode: !this.state.editMode
+        });
+        if (this.props.toggleEditMode) this.props.toggleEditMode()
     }
 
     onSaveButtonClick() {
@@ -37,6 +38,16 @@ module.exports = function(Component) {
 
     componentDidMount() {
       this.getLabData();
+        if (this.props.onMount) {
+            const editContainer = document.getElementById('edit-container')
+            var containerWidth=600
+            var containerHeight=450
+            if (editContainer) {
+                containerWidth=editContainer.offsetWidth-24
+                containerHeight=editContainer.offsetHeight-16
+            }
+            this.props.onMount(containerWidth,containerHeight)
+        }
     }  
 
     render() {
@@ -88,21 +99,14 @@ module.exports = function(Component) {
             </div>
           </div>
           <div class="panel-block">
-            <div class="lab-editor">
+            <div id="edit-container" class="lab-editor">
               {(isEditMode) ? (
-                <p class="is-size-4">
-                  Edit Mode:<br/>
-                  This section is for the Lab Map Editor.
+                <p class="is-size-12">
+                    <div class="map-container">{this.props.children}</div>
                 </p>
               ) : (
-                <p class="is-size-4">
-                  View/Navigation Mode:<br/>
-                  This section is for the Lab Map Navigator.<br/>
-                  Rather than editing the Lab Map, it is used for navigating<br/>
-                  into it's child containers.<br/>
-                  <Link to="/ui/lab-inventory">
-                    Enter Demo Freezer
-                  </Link>
+                <p class="is-size-12">
+                    <div class="map-container">{this.props.children}</div>
                 </p>
               )} 
             </div>

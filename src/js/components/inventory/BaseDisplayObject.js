@@ -46,8 +46,10 @@ export default class BaseDisplayObject extends Component {
         }
 
         onDrag = (e) => {
-            if (this.props.dragManager) {
+            if (this.props.dragManager && this.props.dragEnabled) {
                 this.props.dragManager.startDrag(e, this.domNode, this.props.item, this.updateDrag.bind(this));
+            } else {
+                if (this.props.dragManager) this.props.dragManager.endDrag(this.props.item)
             }
         }
 
@@ -70,7 +72,7 @@ export default class BaseDisplayObject extends Component {
                 this.props.animation,
                 this.props.item[this.props.filterProp]);
             //If this is the object being dragged, return a different style
-            if (this.props.dragManager.dragItem &&
+            if (this.props.dragManager && this.props.dragManager.dragItem &&
                 this.props.dragManager.dragItem[this.props.keyProp] === this.props.item[this.props.keyProp]) {
                 const dragStyle = this.props.dragManager.getStyle(this.state.dragX, this.state.dragY);
                 return Object.assign(style, dragStyle);

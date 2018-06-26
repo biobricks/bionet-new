@@ -7,6 +7,7 @@ module.exports = function(Component) {
   const ContainerNewForm = require('./container_new_form.js')(Component);
   const ContainerEditForm = require('./container_edit_form.js')(Component);
   const PhysicalProfile = require('./physical_profile.js')(Component);
+  const PhysicalNewForm = require('./physical_new_form.js')(Component);
 
   return class DataPanel extends Component {
     
@@ -194,7 +195,9 @@ module.exports = function(Component) {
                   />
                 ) : null }
                 {(this.state.formType === 'Physical') ? (
-                  <span>Physical New Form</span>
+                  <PhysicalNewForm 
+                  {...this.props}
+                />
               ) : null }
               </div>
             ) : null }

@@ -40,14 +40,14 @@ $breakpoint-desktop: 1024px;
     }
     .elipses {
       padding: 0 6px;
-    }   
+    }
+    li + li::before {
+      content: ' >>  ';
+      white-space: pre;      
+    }
+    li + li::after {
+      content: '';
+      white-space: pre;      
+    }
   }
-  .has-succeeds-separator li + li::before {
-    content: ' >>  ';
-    white-space: pre;
-  }
-  .has-succeeds-separator li + li::after {
-    content: '  ';
-    white-space: pre;
-  }   
 }

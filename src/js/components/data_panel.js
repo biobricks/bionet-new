@@ -8,6 +8,7 @@ module.exports = function(Component) {
   const ContainerEditForm = require('./container_edit_form.js')(Component);
   const PhysicalProfile = require('./physical_profile.js')(Component);
   const PhysicalNewForm = require('./physical_new_form.js')(Component);
+  const PhysicalEditForm = require('./physical_edit_form.js')(Component);
 
   return class DataPanel extends Component {
     
@@ -39,7 +40,7 @@ module.exports = function(Component) {
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
       return (
         <div class="DataPanel panel has-background-white">
-          <div class="panel-heading">
+          <div class="panel-heading is-capitalized">
             <div class="is-block">
               <div class="columns is-gapless">
                 <div class="column">
@@ -48,8 +49,12 @@ module.exports = function(Component) {
                     <span>{headingIcon} {this.props.selectedRecord.name}</span>
                   ) : null }
 
-                  {(isNewMode) ? (
+                  {(isNewMode && isContainer) ? (
                     <span>New {this.state.formType || "Item"} In {this.props.selectedRecord.name}</span>
+                  ) : null }
+
+                  {(isNewMode && !isContainer) ? (
+                    <span>New Instances Of {this.props.selectedRecord.name}</span>
                   ) : null }
 
                   {(isEditMode) ? (
@@ -126,7 +131,7 @@ module.exports = function(Component) {
 
           <div class="panel-block">
             {(hasParentRecord) ? (
-              <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+              <nav class="breadcrumb is-capitalized" aria-label="breadcrumbs">
                 <ul>
                   <li>
                     <Link to="/ui/lab">
@@ -163,7 +168,7 @@ module.exports = function(Component) {
                 selectRecord={this.props.selectRecord}
               />
             ) : null }
-            {(isNewMode) ? (
+            {(isNewMode && isContainer) ? (
               <div>
                 <div class="panel-block">
                   <div class="columns">
@@ -201,11 +206,20 @@ module.exports = function(Component) {
               ) : null }
               </div>
             ) : null }
+            {(isNewMode && !isContainer) ? (
+              <span>New Instance Form</span>
+            ) : null}
             {(isEditMode) ? (
               <div>
-              <ContainerEditForm 
-                {...this.props}
-              />
+                {(isContainer) ? (
+                  <ContainerEditForm 
+                    {...this.props}
+                  />
+                ) : (
+                  <PhysicalEditForm 
+                    {...this.props}
+                  />
+                )}  
               </div>
             ) : null }
               

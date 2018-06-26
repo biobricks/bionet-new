@@ -6,15 +6,15 @@ module.exports = function(Component) {
   return class MapPanel extends Component {
     componentDidMount() {
         if (this.props.onMount) {
-            const mapContainer = document.getElementById('map-panel')
+            const mapContainer = document.getElementById('nav-panel')
             var containerWidth=450
             var containerHeight=600
             if (mapContainer) {
-            containerWidth=mapContainer.offsetWidth-40
-            containerHeight=mapContainer.offsetHeight-60
+                containerWidth=mapContainer.offsetWidth-24
+                containerHeight=mapContainer.offsetHeight-16
             }
             this.props.onMount(containerWidth,containerHeight)
-          }
+        }
       }
 	  render() {
       let record = this.props.selectedRecord;
@@ -29,7 +29,7 @@ module.exports = function(Component) {
             )}
           </div>
           <div className="panel-block">
-            <div class="map-container">{this.props.children}</div>
+            <div id="nav-panel" class="map-container">{this.props.children}</div>
           </div>         
         </div>
       )

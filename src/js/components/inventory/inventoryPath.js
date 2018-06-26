@@ -5,17 +5,18 @@ import EditContainer from './EditContainer'
 import ContainerPropertiesForm from './ContainerPropertiesForm'
 
 module.exports = function (Component) {
-    
+
     const StorageContainer = require('./storageContainer')(Component)
     const EditPhysical = require('./editPhysical')(Component)
     const PrintLabel = require('../print')(Component)
     const ScanLabel = require('../scan')(Component)
     const EditTable = require('./editTable')(Component)
     const Workbench = require('./workbench')(Component)
-    
+
     const DataPanel = require('../data_panel.js')(Component);
     const MapPanel = require('../map_panel.js')(Component);
-    
+    const LabPanel = require('../lab_panel.js')(Component);
+
     return class InventoryPath extends Component {
         constructor(props) {
             super(props);
@@ -32,13 +33,12 @@ module.exports = function (Component) {
             }
             this.containerRef = {}
 
-          
-          // TODO You are not allowed to directly modify the state.
+            // TODO You are not allowed to directly modify the state.
           //      It must be done using .setState or .changeState
           //      You are also not allowed to put functions into the state.
             app.state.selectCellListener = this.selectCellListener.bind(this)
         }
-        
+
         componentWillReceiveProps(props) {
             if (!props.inventoryPath) return
             const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
@@ -48,7 +48,7 @@ module.exports = function (Component) {
                 inventoryPath: props.inventoryPath
             });
         }
-        
+
         selectCellListener(cellLocation) {
             for (var containerId in this.containerRef) {
                 var container = this.containerRef[containerId]
@@ -97,14 +97,19 @@ module.exports = function (Component) {
                 const width=this.props.width
                 const pathId={}
                 var zoom=1.0
+                var containerWidth=200
+                var panelWidth=this.state.mapPanelWidth
                 newPath.map(container => {
                     pathId[container.id]=container.name
                 })
                 const locationPath = newPath.map(container => {
                     if (id===container.id) {
                         //zoom = (container.type==='lab') ? 0.5 : 1.5
-                        zoom = (container.type==='lab') ? 0.5 : 0.5
-                        return app.actions.inventory.initContainerProps(container,pathId,width,1)
+                        //zoom = (container.type==='lab') ? 0.5 : 0.5
+                        const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
+                        zoom = panelWidth/containerLayout.layoutWidth
+                        console.log('container zoom:',zoom,containerWidth,panelWidth,containerLayout)
+                        return containerLayout
                     }
                 })
                 inventoryPath = <LocationPath path={locationPath} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoom={zoom}/>
@@ -123,8 +128,8 @@ module.exports = function (Component) {
                         break
                     }
                 }
-                const container = app.actions.inventory.initContainerProps(location,pathId,this.state.mapPanelWidth,1)
-                inventoryPath = <EditContainer container={container} items={container.items} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoomIndex={zoomIndex}/>
+                const container = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
+                inventoryPath = <EditContainer container={container} items={container.items} width={this.state.editPanelWidth} height={this.state.editPanelHeight} zoomIndex={zoomIndex}/>
             }
             return inventoryPath;
         }
@@ -184,33 +189,6 @@ module.exports = function (Component) {
             const setNavMode = function(e) {
                 this.setState({navMode:e.target.value})
             }
-            /*
-            return (
-                <div class="navbar tile is-11" style="background-color:#f0f0f0;border: 1px solid black;margin-bottom:10px;">
-                    <div class="tile is-7">
-                        <div class="navbar-start">
-                            <h1 class="title is-5" style="padding:12px">{navArrow}{selectedItem.name}</h1>
-                        </div>
-                    </div>
-                    <div class="tile">
-                        <div class="navbar-end">
-                            <div class="navbar-item">
-                                <input type="radio" id="navigate" name="navigate" value="navigate" onChange={setNavMode.bind(this)} checked={this.state.navMode==='navigate'}/>
-                                <label style={{marginLeft:'5px'}} for="navigate">Navigate</label>
-                            </div>
-
-                            <div class="navbar-item">
-                                <input type="radio" id="edit" name="edit" value="edit" onChange={setNavMode.bind(this)} checked={this.state.navMode==='edit'}/>
-                                <label style={{marginLeft:'5px'}} for="edit">Edit</label>
-                            </div>
-            
-                            <Workbench state="workbench"/>
-                            <a class="navbar-item mdi mdi-printer"  style={iconStyle} onclick={this.print.bind(this)}></a>
-                        </div>
-                    </div>
-                </div>
-            )
-            */
         }
         
         toggleEditMode() {
@@ -304,7 +282,10 @@ module.exports = function (Component) {
                 })
             }
         }
-        onMapPanelMount(width,height) {
+        onEditPanelMount(width,height) {
+            this.setState({editPanelWidth:width,editPanelHeight:height})
+        }
+        onNavPanelMount(width,height) {
             this.setState({mapPanelWidth:width,mapPanelHeight:height})
         }
 
@@ -336,21 +317,7 @@ module.exports = function (Component) {
             const pathChild = "border: 1px solid grey; height:"+this.state.containerSize+"px;margin:0;padding:0;"
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
             const tableHeight =  window.innerHeight-this.state.containerSize-100
-            /*
-                      <DataPanel 
-                        {...this.state}
-                        onSaveNewClick={this.onSaveNewClick}
-                        onSaveEditClick={this.onSaveEditClick}
-                        onDeleteClick={this.onDeleteClick}
-                        toggleEditMode={this.toggleEditMode}
-                        toggleNewMode={this.toggleNewMode}
-                      />
-                                    <div id="inventory-header" class="tile is-parent is-5" style="margin:0;padding:0;">
-                                        {selectedItemHeader}
-                                    </div>
-                                    <br/>
-                                    <EditTable state="edittable" item={currentItem} items={childItems} height={tableHeight} attributes={attributes}/>
-            */
+
             var dataItems = {}
             if (this.state.editMode) {
                 dataItems=(<ContainerPropertiesForm
@@ -384,34 +351,60 @@ module.exports = function (Component) {
                         <label>Description:</label>{currentItem.description}<br/>
                         <label>Width:</label>{currentItem.layoutWidthUnits}<br/>
                         <label>Height:</label>{currentItem.layoutHeightUnits}<br/>
-                        <label>Units:</label>{currentItem.units}
+                        <label>Units:</label>{currentItem.units}<br/>
                         <label>Grid Line:</label>{currentItem.majorGridLine}<br/>
                         <div style={{marginTop:'20px'}}/>
                         <EditTable state="edittable" item={currentItem} items={childItems} height={tableHeight} attributes={attributes}/>
                     </div>
                 )
             }
-            return (
-                <div class="LabInventory">
-                  <div class="columns is-desktop">
-                    <div class="column is-7-desktop">
-                      <DataPanel 
+
+            var dataPanel=null
+            var navPanel=null
+            var editPanel=null
+            if (this.state.editMode) {
+                editPanel = (
+                    <div class="column is-12-desktop">
+                      <LabPanel
                         {...this.state}
                         selectedRecord={currentItem}
-                        parentRecord={{}}
                         toggleEditMode={this.toggleEditMode.bind(this)}
-                        onSaveEditClick={this.onSaveEditClick.bind(this)}
+                        parentRecord={{}}
+                        header={selectedItemHeader}
+                        onMount={this.onEditPanelMount.bind(this)}
                         >
-                        {dataItems}
-                    </DataPanel>
+                            <div id="inventory_tiles" class="tile is-12">
+                                <div class="tile is-vertical">
+                                    <div id="inventory_path" class="tile is-parent is-12" style={pathMaxHeight}>
+                                        {path}
+                                    </div>
+                                </div>
+                            </div>
+                      </LabPanel>
                     </div>
+                )
+            } else {
+                dataPanel = (
+                        <div class="column is-7-desktop">
+                          <DataPanel 
+                            {...this.state}
+                            selectedRecord={currentItem}
+                            parentRecord={{}}
+                            toggleEditMode={this.toggleEditMode.bind(this)}
+                            onSaveEditClick={this.onSaveEditClick.bind(this)}
+                            >
+                            {dataItems}
+                        </DataPanel>
+                    </div>
+                )
+                navPanel = (
                     <div class="column is-5-desktop">
                       <MapPanel
                         {...this.state}
                         selectedRecord={currentItem}
                         parentRecord={{}}
                         header={selectedItemHeader}
-                        onMount={this.onMapPanelMount.bind(this)}
+                        onMount={this.onNavPanelMount.bind(this)}
                         >
                             <div id="inventory_tiles" class="tile is-5">
                                 <div class="tile is-vertical">
@@ -422,6 +415,14 @@ module.exports = function (Component) {
                             </div>
                       </MapPanel>
                     </div>
+                )
+            }
+            return (
+                <div class="LabInventory">
+                  <div id="panel-container" class="columns is-desktop">
+                    {dataPanel}
+                    {navPanel}
+                    {editPanel}
                   </div>
                 </div>
                 

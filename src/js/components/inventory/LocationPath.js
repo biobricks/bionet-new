@@ -130,7 +130,7 @@ export default class LocationPath extends Component {
                 <Grid items={item.items}
                         onMove={this.onMove.bind(this)}
                         zoom={this.props.zoom}
-                        dragEnabled={true}
+                        dragEnabled={false}
                         responsive={true}
                         majorGridLine={item.majorGridLine}
                         verticalMargin={-1}

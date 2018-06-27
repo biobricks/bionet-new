@@ -34,7 +34,7 @@ module.exports = function (Component) {
         }
         
         getInventoryPath(id) {
-            console.log('getInventoryPath, id:',id)
+            console.log('inventory.actions.getInventoryPath main, id:',id)
           // TODO can we standardize on: `const self = this` ?
           //      module has no meaning in js or react anyway
             const thisModule=this
@@ -63,6 +63,7 @@ module.exports = function (Component) {
                         })
                         return
                     } else {
+                        console.log('inventory.actions.getInventoryPath root, id:',id)
                         app.actions.inventory.getInventoryPath(rootId, function(err, inventoryPath){
                             if (err) {
                                 app.actions.notify(err.message, 'error');
@@ -72,7 +73,7 @@ module.exports = function (Component) {
                                 })
                                 return
                             }
-                            console.log('getInventoryPath3, rootid:',rootId, thisModule.state, thisModule.props, inventoryPath)
+                            //console.log('getInventoryPath3, rootid:',rootId, thisModule.state, thisModule.props, inventoryPath)
                             thisModule.setState({
                                 id:rootId,
                                 inventoryPath:inventoryPath
@@ -87,7 +88,7 @@ module.exports = function (Component) {
             const idProp = (nextProps.match) ? nextProps.match.params.id : null
             const idState = nextState.id
             if (app.state.inventory.forceRefresh) {
-                console.log('inventory main, forcing refresh:',nextProps)
+                //console.log('inventory main, forcing refresh:',nextProps)
                 app.state.inventory.forceRefresh=false
                 return true
             }
@@ -106,7 +107,7 @@ module.exports = function (Component) {
             app.actions.inventory.getFavorites()
             app.actions.inventory.getWorkbenchContainer()
             const id = (this.props.match) ? this.props.match.params.id : null
-            console.log('logged in user')
+            //console.log('logged in user')
             this.getInventoryPath(id)
         }
         

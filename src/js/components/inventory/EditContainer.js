@@ -301,7 +301,6 @@ export default class EditContainer extends Component {
     }
     
     componentDidMount() {
-        console.log('grid componentDidMount')
         this.onResize();
     }
 

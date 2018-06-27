@@ -60,7 +60,6 @@ export default class Grid extends Component {
         }
 
         constructor(props, context) {
-            console.log('grid constructor')
             super(props, context);
             this.onResize = debounce(this.onResize, 150);
             this.dragManager = new DragManager(
@@ -107,7 +106,6 @@ export default class Grid extends Component {
         }
     
         onResize = ()=> {
-            console.log('grid onResize')
             if (window.requestAnimationFrame) {
                 window.requestAnimationFrame(this.getDOMWidth);
             } else {
@@ -129,7 +127,6 @@ export default class Grid extends Component {
         }
 
         componentDidMount() {
-            console.log('grid componentDidMount')
             //If responsive, listen for resize
             if (this.props.responsive) {
                 window.addEventListener('resize', this.onResize);

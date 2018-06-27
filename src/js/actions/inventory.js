@@ -50,7 +50,7 @@ module.exports = {
     },
     
     selectCell: function(id, parentId, x, y, navigate) {
-        console.log('selectCell action:',id,parentId,x,y,navigate)
+        //console.log('selectCell action:',id,parentId,x,y,navigate)
         //console.trace()
         const inventorySelection = {
             id: id,
@@ -295,7 +295,7 @@ module.exports = {
                 })
             })
             
-            console.log('mapping container:',size,items)
+            //console.log('mapping container:',size,items)
             return (
                 {
                     name:container.name,
@@ -313,7 +313,7 @@ module.exports = {
     },
     initContainerProps: function(container, pathId, maxWidth, _gridScale) {
         var gridScale = (_gridScale) ? _gridScale : 1
-        console.log('locationPath:',container,container.xUnits,container.yUnits)
+        //console.log('locationPath:',container,container.xUnits,container.yUnits)
         var rows=1
         var cols=1
         var itemCols=1
@@ -374,7 +374,7 @@ module.exports = {
             })
         }
 
-        console.log('mapping container:',size,items)
+        //console.log('mapping container:',size,items)
         return (
             {
                 name:container.name,
@@ -502,7 +502,7 @@ module.exports = {
                     if (cb) cb(err)
                     return
                 }
-                console.log('getWorkbenchContainer:workbench',workbench,path)
+                //console.log('getWorkbenchContainer:workbench',workbench,path)
                 app.remote.getImmediateChildren(path,workbench.id,function(err,id, children){
                     if (err) {
                         console.log('error retrieiving workbench container:',err)
@@ -515,7 +515,7 @@ module.exports = {
                             id:child.id
                         }
                     })
-                    console.log('getWorkbenchContainer:children',children2)
+                    //console.log('getWorkbenchContainer:children',children2)
                     if (cb) cb(null, children2)
                 })
             })
@@ -594,7 +594,7 @@ module.exports = {
                 if (cb) cb(err)
                 return
             }
-            console.log('moveWorkbenchToContainer:',containerId)
+            //console.log('moveWorkbenchToContainer:',containerId)
             var remainingItems = tree.length-1
             // todo fetch empty cells for container
             for (var i=0; i<tree.length; i++) {
@@ -602,7 +602,7 @@ module.exports = {
                 if (item) {
                     item.parent_id = containerId
                     // todo: set parent_x, parent_y to empty cells
-                    console.log('moveWorkbenchToContainer, item:',item)
+                    //console.log('moveWorkbenchToContainer, item:',item)
                     app.remote.savePhysical(item, null, null, function (err, id) {
                         if (remainingItems-- <= 0) {
                             if (cb) cb(null)

@@ -55,12 +55,12 @@ export default class LocationPath extends Component {
     }
     
     componentWillReceiveProps(props) {
-        console.log('LocationPath:',props.path)
+        //console.log('LocationPath:',props.path)
         this.setState({locationPath:props.path})
     }
 
     onSelectItem(key) {
-        console.log('selectItem:',key)
+        //console.log('selectItem:',key)
         app.actions.inventory.refreshInventoryPath(key)
         return
         const keyProp = this.props.keyProp
@@ -78,7 +78,7 @@ export default class LocationPath extends Component {
     }
     
     onResize = ()=> {
-        console.log('grid onResize')
+        //console.log('grid onResize')
         if (window.requestAnimationFrame) {
             window.requestAnimationFrame(this.getDOMWidth);
         } else {
@@ -88,7 +88,7 @@ export default class LocationPath extends Component {
     
     getDOMWidth = ()=> {
         var rect = this.container && this.container.getBoundingClientRect();
-        console.log('getDOMWidth',this.container,rect)
+        //console.log('getDOMWidth',this.container,rect)
         if (!rect) return
         this.setState({
             layoutTop:rect.top,
@@ -99,7 +99,6 @@ export default class LocationPath extends Component {
     }
     
     componentDidMount() {
-        console.log('grid componentDidMount')
         this.onResize();
     }
 

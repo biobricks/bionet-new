@@ -11,8 +11,7 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
       this.state = {
-        page: 0,
-        testing: true
+        page: 0
       };
     };
 
@@ -95,8 +94,7 @@ module.exports = function(Component) {
       ];
       var numPages = this.props.numpages || 1;
 
-      //if(!this.props.results.length) {
-      if(!this.state.testing){  
+      if(!this.props.results.length) { 
         results = (
           <p>No results found for query: '{this.props.query.text}'</p>
         );

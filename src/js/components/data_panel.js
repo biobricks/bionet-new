@@ -29,12 +29,44 @@ module.exports = function(Component) {
     }
 
     render() {
+        var breadcrumbs = null
+        if (this.props.breadcrumbs) {
+            breadcrumbs = this.props.breadcrumbs.map(crumb => {
+            const navigate = function(e) {
+                app.actions.inventory.refreshInventoryPath(crumb.id)
+            }
+            return(
+                <li onClick={navigate}>{crumb.name}</li>
+            )
+            })
+            console.log('data_panel breadcrumbs:',breadcrumbs)
+        }
+        /*
+                  <li>
+                    <Link to="/ui/lab">
+                      {this.props.lab.name}
+                    </Link>
+                  </li>
+                  {(!parentRecordIsLab) ? (
+                
+                      <li>
+                        <a
+                          id={this.props.parentRecord.id}
+                          onClick={this.props.selectRecord}
+                        >
+                          {this.props.parentRecord.name}
+                        </a>
+                      </li>
+               
+                  ) : null }
+                  <li class="is-active">{this.props.selectedRecord.name}</li>
+        */
       let isViewMode = !this.props.editMode && !this.props.newMode;
       let isEditMode = this.props.editMode;
       let isNewMode = this.props.newMode;
       let parentRecord = this.props.parentRecord;
       let hasParentRecord = parentRecord && Object.keys(parentRecord).length > 0;
-      let parentRecordIsLab = hasParentRecord && parentRecord.name === this.props.lab.name;
+      let parentRecordIsLab = hasParentRecord && parentRecord.type === 'lab';
       let selectedRecord = this.props.selectedRecord;
       let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;      
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
@@ -133,24 +165,7 @@ module.exports = function(Component) {
             {(hasParentRecord) ? (
               <nav class="breadcrumb is-capitalized" aria-label="breadcrumbs">
                 <ul>
-                  <li>
-                    <Link to="/ui/lab">
-                      {this.props.lab.name}
-                    </Link>
-                  </li>
-                  {(!parentRecordIsLab) ? (
-                
-                      <li>
-                        <a
-                          id={this.props.parentRecord.id}
-                          onClick={this.props.selectRecord}
-                        >
-                          {this.props.parentRecord.name}
-                        </a>
-                      </li>
-               
-                  ) : null }
-                  <li class="is-active">{this.props.selectedRecord.name}</li>
+                    {breadcrumbs}
                 </ul>
               </nav>
             ) : null }

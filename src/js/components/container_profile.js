@@ -56,7 +56,7 @@ module.exports = function(Component) {
                     <label class="label">Location</label>
                   </div>
                   <div class="column">   
-                    {parentRecord.name} - Row {selectedRecord.row}, Col {selectedRecord.column}
+                    {(parentRecord) ? parentRecord.name :''} - Row {selectedRecord.row}, Col {selectedRecord.column}
                   </div>
                 </div>
               </div>              

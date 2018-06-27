@@ -336,25 +336,25 @@ module.exports = function(Component) {
             <div class="control">
               <label class="radio">
                 <input type="radio" name="scope" value="local" onchange={this.changeScope.bind(this)} checked={this.state.query.scope === 'local'} />
-                Local search
+                &nbsp;Local search
               </label>
               <label class="radio">
                 <input type="radio" name="scope" value="global" onchange={this.changeScope.bind(this)} checked={this.state.query.scope === 'global'} />
-                Global search
+                &nbsp;Global search
               </label>
             </div>
             <div class="control">
               <label class="radio">
                 <input type="radio" name="type" value="human" onchange={this.changeQueryType.bind(this)} checked={this.state.query.type === 'human'} />
-                Human language
+                &nbsp;Human language
               </label>
               <label class="radio">
                 <input type="radio" name="type" value="blast" onchange={this.changeQueryType.bind(this)} checked={this.state.query.type === 'blast'} />
-                Nucletide sequence
+                &nbsp;Nucletide sequence
               </label>
               <label class="radio" disabled>
                 <input type="radio" name="type" value="blast_aa" onchange={this.changeQueryType.bind(this)} checked={this.state.query.type === 'blast_aa'} disabled />
-                Amino Acid Sequence
+                &nbsp;Amino Acid Sequence
               </label>
             </div>
             <div class="field">

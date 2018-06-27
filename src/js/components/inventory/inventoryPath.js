@@ -40,7 +40,7 @@ module.exports = function (Component) {
         }
 
         componentWillReceiveProps(props) {
-            if (!props.inventoryPath) return
+            if (!props.inventoryPath || props.id===this.state.id) return
             const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
             this.setState({
                 id: props.id,
@@ -60,7 +60,7 @@ module.exports = function (Component) {
         }
         
         updateInventoryPath(newPath, id) {
-            if (!newPath) return
+            if (!newPath || !Array.isArray(newPath)) return
             //console.log('update inventory path:',newPath)
             
             var containerSize = app.actions.inventory.getContainerSize()
@@ -108,7 +108,7 @@ module.exports = function (Component) {
                         //zoom = (container.type==='lab') ? 0.5 : 0.5
                         const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                         zoom = panelWidth/containerLayout.layoutWidth
-                        console.log('container zoom:',zoom,containerWidth,panelWidth,containerLayout)
+                        //console.log('container zoom:',zoom,containerWidth,panelWidth,containerLayout)
                         return containerLayout
                     }
                 })
@@ -142,7 +142,7 @@ module.exports = function (Component) {
           const id = item.id
           const name = item.name
           const callback = function(err, labelImageData, labelData) {
-            console.log('print callback')
+            //console.log('print callback')
             item.label = labelData;
             app.actions.inventory.saveToInventory(item, labelImageData, true, function(err) {
               if(err) return app.actions.notify(err, "error");
@@ -248,7 +248,7 @@ module.exports = function (Component) {
                 }.bind(this))
                 */
             }
-            console.log('onUpdateContainerProperties:',props)
+            //console.log('onUpdateContainerProperties:',props)
             if (props.name) {
                 this.setState({
                     layoutName: props.name
@@ -291,8 +291,8 @@ module.exports = function (Component) {
 
         render() {
             const path = this.updateInventoryPath(this.state.inventoryPath, this.state.id);
-            //console.log('render path:', path, this.state.inventoryPath)
             if (!path) return
+            console.log('inventoryPath render, id:',this.state.id, path, this.state.inventoryPath)
             
             //const currentItem = app.actions.inventory.getLastPathItem()
             const currentItem=this.state.editItem
@@ -330,22 +330,8 @@ module.exports = function (Component) {
                         />)
 
             } else {
-                const breadcrumbs = this.state.inventoryPath.map(container => {
-                    const navigate = function(e) {
-                        app.actions.inventory.refreshInventoryPath(container.id)
-                    }
-                    return(
-                        <li onClick={navigate}>{container.name}</li>
-                    )
-                })
                 dataItems=(
                     <div className="pure-form">
-                        <div style={{marginTop:'20px'}}/>
-                        <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
-                            <ul>
-                                {breadcrumbs}
-                            </ul>
-                        </nav>
                         <div style={{marginTop:'20px'}}/>
                         <label>Name:</label>{currentItem.name}<br/>
                         <label>Description:</label>{currentItem.description}<br/>
@@ -384,12 +370,20 @@ module.exports = function (Component) {
                     </div>
                 )
             } else {
+                const breadcrumbs = this.state.inventoryPath.map(container => {
+                    return {
+                        id:container.id,
+                        name:container.name
+                    }
+                })
+                const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
                 dataPanel = (
                         <div class="column is-7-desktop">
                           <DataPanel 
                             {...this.state}
                             selectedRecord={currentItem}
-                            parentRecord={{}}
+                            breadcrumbs={breadcrumbs}
+                            parentRecord={parentRecord}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             onSaveEditClick={this.onSaveEditClick.bind(this)}
                             >

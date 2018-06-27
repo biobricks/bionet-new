@@ -127,13 +127,10 @@ module.exports = function(Component) {
               class="search-result panel-block"
             >
               <div class="columns is-paddingless">
-                <div class="column is-3">
+                <div class="column is-12">
                   <span>
                     {icons}&nbsp;&nbsp;{result.value.name}
                   </span>
-                </div>
-                <div class="column is-4">  
-                  {result.value.description}
                 </div>
               </div>
             </Link>

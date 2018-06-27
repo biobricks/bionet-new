@@ -11,7 +11,8 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
       this.state = {
-        page: 0
+        page: 0,
+        testing: true
       };
     };
 
@@ -58,36 +59,86 @@ module.exports = function(Component) {
 	  render() {
 
       var results;
+      var testResults = [
+        {
+          value: {
+            id: '1',
+            type: 'lab',
+            name: 'foo',
+            description: 'foo bar baz qux 1'
+          }  
+        },
+        {
+          value: {
+            id: '2',
+            type: 'container',
+            name: 'bar',
+            description: 'foo bar baz qux 2'
+          }  
+        },
+        {
+          value: {
+            id: '3',
+            type: 'physical',
+            name: 'baz',
+            description: 'foo bar baz qux 3'
+          }  
+        },
+        {
+          value: {
+            id: '4',
+            type: 'virtual',
+            name: 'qux',
+            description: 'foo bar baz qux 4'
+          }  
+        },
+      ];
       var numPages = this.props.numpages || 1;
 
-      if(!this.props.results.length) {
+      //if(!this.props.results.length) {
+      if(!this.state.testing){  
         results = (
           <p>No results found for query: '{this.props.query.text}'</p>
         );
 
       } else {
-
+        
         results = this.props.results.map(function(result) {
+ 
           var icons = [];
-          if(result.value.hasInstance) {
-            icons.push((
-              <i class="fa fa-flask" aria-hidden="true"></i>
-            ));
-          }
 
+          switch(result.value.type){
+            case 'lab':
+              icons.push((<i class="mdi mdi-home" aria-hidden="true"></i>));
+              break;
+            case 'container':
+              icons.push((<i class="mdi mdi-grid" aria-hidden="true"></i>));
+              break;
+            case 'physical':
+              icons.push((<i class="mdi mdi-flask has-text-success" aria-hidden="true"></i>));
+              break;
+            case 'virtual':
+              icons.push((<i class="mdi mdi-flask" aria-hidden="true"></i>));
+              break;
+            default:
+              icons.push((<i class="mdi mdi-cloud-alert has-text-warning" aria-hidden="true"></i>));      
+          }
           return (
-            <div class="columns">
-              <div class="column left is-12">
-                <Link to={'/virtual/show/'+result.value.id}>
+            <Link 
+              to={'/inventory/'+result.value.id} 
+              class="search-result panel-block"
+            >
+              <div class="columns is-paddingless">
+                <div class="column is-3">
                   <span>
-                    {result.value.name}
+                    {icons}&nbsp;&nbsp;{result.value.name}
                   </span>
-                  <span class="icons">
-                    {icons}
-                  </span>
-                </Link>
+                </div>
+                <div class="column is-4">  
+                  {result.value.description}
+                </div>
               </div>
-            </div>
+            </Link>
           );
         });
 
@@ -146,7 +197,7 @@ module.exports = function(Component) {
       
       return (
         <div>
-          <div class="search-results">
+          <div class="search-results panel">
             {results}
           </div>
           <nav class="pagination is-centered" role="navigation" aria-label="pagination">

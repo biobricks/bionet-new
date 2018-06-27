@@ -1,26 +1,22 @@
-
 .search-results {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  margin-top: 12px;
 }
 
-.search-results .columns {
-  padding: 10px;
-}
-
-.search-results .column {
-  border-radius: 5px;
-}
-
-.search-results .icons {
-  float: right;
-}
-
-.search-results .left {
-  background-color: #cbdcda;
+.search-result {
+  .columns {
+    width: 100%;
+  }    
 }
 
 .pagination ul {
   list-style-position: none;
   list-style-type: none;
+}
+
+
+/* Desktop */
+@media (min-width: 1024px) { 
+	.search-results {
+		max-width: 50%;
+	}
 }

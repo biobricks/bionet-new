@@ -376,6 +376,9 @@ module.exports = function (Component) {
                         name:container.name
                     }
                 })
+                const selectRecord=function(e) {
+                    app.actions.inventory.refreshInventoryPath(e.target.id)
+                }
                 const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
                 dataPanel = (
                         <div class="column is-7-desktop">
@@ -384,6 +387,7 @@ module.exports = function (Component) {
                             selectedRecord={currentItem}
                             breadcrumbs={breadcrumbs}
                             parentRecord={parentRecord}
+                            selectRecord={selectRecord}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             onSaveEditClick={this.onSaveEditClick.bind(this)}
                             >

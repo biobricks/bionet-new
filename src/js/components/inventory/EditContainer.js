@@ -60,7 +60,13 @@ export default class EditContainer extends Component {
     
     componentWillReceiveProps(props) {
         const container=props.container
-        const zoomIndex = this.initZoomIndex(props.zoom, this.zoomLevel)
+        console.log('EditContainer props:',props, this.state)
+        var zoomIndex = this.state.zoomIndex
+        var zoom = this.state.zoom
+        if (props.width) {
+            zoomIndex = this.initZoomIndex(props.zoom, this.zoomLevel)
+            zoom = this.zoomLevel[zoomIndex]
+        }
         this.setState({
             items:props.items,
             containerId:container.id,
@@ -72,7 +78,7 @@ export default class EditContainer extends Component {
             layoutWidth: this.gridWidth*container.layoutWidthUnits,
             layoutHeight: this.gridHeight*container.layoutHeightUnits+1,
             zoomIndex:zoomIndex,
-            zoom:this.zoomLevel[zoomIndex]
+            zoom:zoom
         })
     }
 
@@ -341,28 +347,28 @@ export default class EditContainer extends Component {
     
     onUpdateContainerProperties(props) {
         // gridtodo: save physical api call
-        if (!props.zoom) {
-            app.actions.inventory.updateItem(this.state.containerId,function(err,item){
-                var updatedItem={}
-                if (props.width) {
-                    const update = {
-                        layoutWidthUnits:props.width,
-                        layoutWidth: this.gridWidth*props.width
-                    }
-                    updatedItem = Object.assign(item,update)
-                } else if (props.height) {
-                    const update = {
-                        layoutHeightUnits:props.height,
-                        layoutHeight: this.gridHeight*props.height
-                    }
-                    updatedItem = Object.assign(item,update)
-                } else {
-                    updatedItem = Object.assign(item,props)
+        
+        app.actions.inventory.updateItem(this.state.containerId,function(err,item){
+            var updatedItem={}
+            if (props.width) {
+                const update = {
+                    layoutWidthUnits:props.width,
+                    layoutWidth: this.gridWidth*props.width
                 }
-                console.log('updateSelection:',updatedItem)
-                return updatedItem
-            }.bind(this))
-        }
+                updatedItem = Object.assign(item,update)
+            } else if (props.height) {
+                const update = {
+                    layoutHeightUnits:props.height,
+                    layoutHeight: this.gridHeight*props.height
+                }
+                updatedItem = Object.assign(item,update)
+            } else {
+                updatedItem = Object.assign(item,props)
+            }
+            console.log('updateSelection:',updatedItem)
+            return updatedItem
+        }.bind(this))
+        
         console.log('onUpdateContainerProperties:',props)
         if (props.name) {
             this.setState({
@@ -389,11 +395,6 @@ export default class EditContainer extends Component {
         if (props.units) {
             this.setState({
                 units:props.units
-            })
-        }
-        if (props.zoom) {
-            this.setState({
-                zoom:props.zoom
             })
         }
     }
@@ -450,8 +451,11 @@ export default class EditContainer extends Component {
             })
         }
     }
-    onZoom(zoom) {
-        this.setState({zoom:zoom})
+    onZoom(zoom, index) {
+        this.setState({
+            zoomIndex:index,
+            zoom:zoom
+        })
     }
     
     render() {
@@ -492,6 +496,14 @@ export default class EditContainer extends Component {
         return (
             <div>
                 <label>Zoom</label>
+                <ContainerPropertiesForm
+                    name={this.state.layoutName}
+                    width={this.state.layoutWidthUnits}
+                    height={this.state.layoutHeightUnits}
+                    majorGridLine={this.state.majorGridLine}
+                    units={this.state.units}
+                    onChange={this.onUpdateContainerProperties.bind(this)}
+                />
                 <SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/>
                 <ItemPropertiesForm
                     name={this.state.defaultName}

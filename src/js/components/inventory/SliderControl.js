@@ -35,7 +35,7 @@ export default class SliderControl extends Component {
         }
     }
     componentWillReceiveProps(props) {
-        console.log('componentWillReceiveProps ', props.index, props.values)
+        //console.log('sliderControl componentWillReceiveProps ', props.index, props.values)
         this.setState({
             value:props.values[props.index],
             index:props.index
@@ -43,7 +43,7 @@ export default class SliderControl extends Component {
     }
     updateValue(index) {
         const value = this.props.values[index];
-        if (this.props.onChange) this.props.onChange(value)
+        if (this.props.onChange) this.props.onChange(value, index)
         console.log('updateValue ', index, value)
         this.setState({
             index:index,

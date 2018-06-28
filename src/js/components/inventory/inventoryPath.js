@@ -95,7 +95,8 @@ module.exports = function (Component) {
             */
             
             const initZoom=function(panelWidth,layoutWidth) {
-                return (layoutWidth) ? panelWidth/layoutWidth : 1
+                const zoom = panelWidth/layoutWidth
+                return isNaN(zoom) ? 1.0 : zoom
             }
             if (!this.state.editMode) {
                 const width=this.props.width
@@ -119,12 +120,10 @@ module.exports = function (Component) {
                 newPath.map(container => {
                     pathId[container.id]=container.name
                 })
-                //const locationPath=app.actions.inventory.mapPathToGrid(newPath)
                 var location=null
                 for (var i=0; i<newPath.length; i++) {
                     location=newPath[i]
                     if (location.id===id) {
-                        zoomIndex = (location.type==='lab') ? 1 : 1
                         break
                     }
                 }

@@ -38,8 +38,7 @@ export default class EditContainer extends Component {
         for (var zl = 0.25; zl <= 2.0; zl += 0.25) {
             this.zoomLevel.push(zl)
         }
-        const zoomIndex = (this.props.zoomIndex) ? this.props.zoomIndex : 1
-        //const zoomIndex = Math.trunc(this.zoomLevel.length/4)
+        const zoomIndex = this.initZoomIndex(props.zoom, this.zoomLevel)
         
         this.state = {
             gridWidth:40,
@@ -61,6 +60,7 @@ export default class EditContainer extends Component {
     
     componentWillReceiveProps(props) {
         const container=props.container
+        const zoomIndex = this.initZoomIndex(props.zoom, this.zoomLevel)
         this.setState({
             items:props.items,
             containerId:container.id,
@@ -70,8 +70,22 @@ export default class EditContainer extends Component {
             layoutWidthUnits:container.layoutWidthUnits,
             layoutHeightUnits:container.layoutHeightUnits,
             layoutWidth: this.gridWidth*container.layoutWidthUnits,
-            layoutHeight: this.gridHeight*container.layoutHeightUnits+1
+            layoutHeight: this.gridHeight*container.layoutHeightUnits+1,
+            zoomIndex:zoomIndex,
+            zoom:this.zoomLevel[zoomIndex]
         })
+    }
+
+    initZoomIndex(zoom, zoomLevel) {
+        var zoomIndex=1
+        if (zoom) {
+            for (zoomIndex=0; zoomIndex<zoomLevel.length; zoomIndex++) {
+                if (zoomLevel[zoomIndex]>zoom) {
+                    break;
+                }
+            }
+        }
+        return --zoomIndex
     }
 
     onFilter(event) {

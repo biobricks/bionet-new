@@ -93,22 +93,22 @@ module.exports = function (Component) {
                 )
             }
             */
+            
+            const initZoom=function(panelWidth,layoutWidth) {
+                return (layoutWidth) ? panelWidth/layoutWidth : 1
+            }
             if (!this.state.editMode) {
                 const width=this.props.width
                 const pathId={}
-                var zoom=1.0
-                var containerWidth=200
-                var panelWidth=this.state.mapPanelWidth
                 newPath.map(container => {
                     pathId[container.id]=container.name
                 })
+                var zoom=1.0
                 const locationPath = newPath.map(container => {
                     if (id===container.id) {
-                        //zoom = (container.type==='lab') ? 0.5 : 1.5
-                        //zoom = (container.type==='lab') ? 0.5 : 0.5
+                        var panelWidth=this.state.mapPanelWidth
                         const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
-                        zoom = panelWidth/containerLayout.layoutWidth
-                        //console.log('container zoom:',zoom,containerWidth,panelWidth,containerLayout)
+                        zoom = initZoom(this.state.mapPanelWidth,containerLayout.layoutWidth)
                         return containerLayout
                     }
                 })
@@ -128,8 +128,9 @@ module.exports = function (Component) {
                         break
                     }
                 }
-                const container = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
-                inventoryPath = <EditContainer container={container} items={container.items} width={this.state.editPanelWidth} height={this.state.editPanelHeight} zoomIndex={zoomIndex}/>
+                const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
+                const zoom = initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
+                inventoryPath = <EditContainer container={containerLayout} items={containerLayout.items} width={this.state.editPanelWidth} height={this.state.editPanelHeight} zoom={zoom}/>
             }
             return inventoryPath;
         }

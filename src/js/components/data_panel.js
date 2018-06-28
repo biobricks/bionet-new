@@ -68,7 +68,8 @@ module.exports = function(Component) {
       let hasParentRecord = parentRecord && Object.keys(parentRecord).length > 0;
       let parentRecordIsLab = hasParentRecord && parentRecord.type === 'lab';
       let selectedRecord = this.props.selectedRecord;
-      let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;      
+      //let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;      
+      let isContainer = this.props.selectedRecord.type !== 'physical'
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
       return (
         <div class="DataPanel panel has-background-white">

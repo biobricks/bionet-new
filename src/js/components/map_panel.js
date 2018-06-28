@@ -18,7 +18,8 @@ module.exports = function(Component) {
       }
 	  render() {
       let record = this.props.selectedRecord;
-      let isContainer = Object.keys(record).indexOf('children') > -1;
+      let isContainer = this.props.selectedRecord.type !== 'physical'
+      //let isContainer = Object.keys(record).indexOf('children') > -1;
       return (
         <div id="map-panel" class="MapPanel panel has-background-white">
           <div className="panel-heading">

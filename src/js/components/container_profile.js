@@ -7,25 +7,29 @@ module.exports = function(Component) {
     render() {
       let selectedRecord = this.props.selectedRecord;
       let parentRecord = this.props.parentRecord;
-      let children = this.props.selectedRecord.children.map((child, index) => {
-        let isContainer = Object.keys(child).indexOf('children') > -1;
-        return (
-          <a 
-            class="panel-block"
-            id={child.id}
-            onClick={this.props.selectRecord}
-          >
-            <span class="panel-icon">
-              {(isContainer) ? (
-                <i class="mdi mdi-grid"></i>
-              ) : (
-                <i class="mdi mdi-flask"></i>
-              )}  
-            </span>
-            {child.name} 
-          </a>
-        )
-      });
+      let children=null
+      if (this.props.selectedRecord.children) {
+            children = this.props.selectedRecord.children.map((child, index) => {
+            //let isContainer = Object.keys(child).indexOf('children') > -1;
+            let isContainer = child.type !== 'physical'
+            return (
+              <a 
+                class="panel-block"
+                id={child.id}
+                onClick={this.props.selectRecord}
+              >
+                <span class="panel-icon">
+                  {(isContainer) ? (
+                    <i class="mdi mdi-grid"></i>
+                  ) : (
+                    <i class="mdi mdi-flask"></i>
+                  )}  
+                </span>
+                {child.name} 
+              </a>
+            )
+          });
+        }
       return (
         <div class="ContainerProfile">
           <div class="panel-block">

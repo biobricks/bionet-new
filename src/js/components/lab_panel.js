@@ -35,7 +35,6 @@ module.exports = function(Component) {
         lab: lab
       });
     }
-
     componentDidMount() {
       this.getLabData();
         if (this.props.onMount) {
@@ -53,6 +52,7 @@ module.exports = function(Component) {
     render() {
       let lab = this.state.lab;
       let isEditMode = this.state.editMode;
+        const name=(this.props.selectedRecord) ? this.props.selectedRecord.name : ''
       return (
         <div class="LabPanel panel has-background-white">
           <div class="panel-heading">
@@ -61,7 +61,7 @@ module.exports = function(Component) {
                 <div class="column">
                   { (isEditMode) ? (
                     <div>
-                      Edit {lab.name}
+                      Edit {name}
                       <div class="toolbox is-pulled-right">
                         <div class="buttons has-addons">
                           <span 
@@ -81,7 +81,7 @@ module.exports = function(Component) {
                     </div>  
                   ) : (
                     <div>
-                      {lab.name}
+                      {name}
                       <div class="toolbox is-pulled-right">
                         <div class="buttons has-addons">
                           <span 

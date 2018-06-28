@@ -26,6 +26,7 @@ export default class SimpleContainer extends React.Component {
         fontSize = Math.max(6,fontSize)
         const itemTextStyle = {
             fontSize:fontSize+'px',
+            lineHeight:itemHeight+'px',
             width:itemWidth+'px'
         }
         const label = (itemWidth<40) ? '' : this.props.item.name

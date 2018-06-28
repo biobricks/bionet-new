@@ -495,7 +495,7 @@ export default class EditContainer extends Component {
         */
         return (
             <div>
-                <label>Zoom</label>
+                <span className="pure-form" style={{display:'block',float:'right'}}><label>Zoom</label><SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/></span>
                 <ContainerPropertiesForm
                     name={this.state.layoutName}
                     width={this.state.layoutWidthUnits}
@@ -504,7 +504,7 @@ export default class EditContainer extends Component {
                     units={this.state.units}
                     onChange={this.onUpdateContainerProperties.bind(this)}
                 />
-                <SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/>
+                <hr/>
                 <ItemPropertiesForm
                     name={this.state.defaultName}
                     width={this.state.defaultWidth}

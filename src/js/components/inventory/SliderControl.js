@@ -66,7 +66,7 @@ export default class SliderControl extends Component {
     }
     render() {
         return(
-            <span>
+            <span style={{display:'inline-block'}}>
                 <i className="fa fa-search-minus slider" onClick={this.onDecrementValue.bind(this)}></i>
                 <input name={this.props.name} id={this.props.name} className="slider" list="tickmarks" onChange={this.onValue.bind(this)} type="range" min="0" max={this.props.values.length-1} step="1" value={this.state.index}>
                 </input>

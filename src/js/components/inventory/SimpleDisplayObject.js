@@ -21,12 +21,14 @@ export default class SimpleContainer extends React.Component {
             background:'linear-gradient('+this.props.item.color+','+this.props.item.color+')'
         };
 
-        const fontSize = (this.props.item.fontSize) ? Number(this.props.item.fontSize)*this.props.gridHeight : 0.3*this.props.gridHeight
-            //lineHeight:itemHeight+'px',
+        var fontSize = (this.props.item.fontSize) ? Number(this.props.item.fontSize)*this.props.gridHeight : 0.3*this.props.gridHeight
+        fontSize = Math.min(18,fontSize)
+        fontSize = Math.max(6,fontSize)
         const itemTextStyle = {
-            fontSize:fontSize+'px'
+            fontSize:fontSize+'px',
+            width:itemWidth+'px'
         }
-        const label = (itemWidth<80) ? '' : this.props.item.name
+        const label = (itemWidth<40) ? '' : this.props.item.name
         const selectedClass = (this.props.item.selected) ? 'selectedDisplayObject' : 'deselectedDisplayObject'
         
         //console.log('rendering Sample Display',this.props.item.height, itemHeight)

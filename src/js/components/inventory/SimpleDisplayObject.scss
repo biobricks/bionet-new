@@ -19,6 +19,9 @@ $deSelectedColor: #000000;
 span.itemTextStyle {
   display: inline-block;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .gridItem{
   background-size: 100%;

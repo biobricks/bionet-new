@@ -22,7 +22,7 @@ module.exports = function(Component) {
                 <i class="mdi mdi-flask"></i>
               )}  
             </span>
-            {child.name}: Row {child.row}, Col {child.column} 
+            {child.name} 
           </a>
         )
       });
@@ -49,17 +49,7 @@ module.exports = function(Component) {
                     {selectedRecord.description}
                   </div>
                 </div>
-              </div>
-              <div class="column is-12">
-                <div class="columns is-mobile">
-                  <div class="column is-narrow">
-                    <label class="label">Location</label>
-                  </div>
-                  <div class="column">   
-                    {(parentRecord) ? parentRecord.name :''} - Row {selectedRecord.row}, Col {selectedRecord.column}
-                  </div>
-                </div>
-              </div>              
+              </div>           
             </div>    
           </div>
           <div class="panel-block">                      

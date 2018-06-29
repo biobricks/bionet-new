@@ -66,16 +66,6 @@ export default class Grid extends Component {
                 layoutWidth: this.props.layoutWidth,
                 layoutHeight: this.props.layoutHeight
             };
-            this.componentWillReceiveProps(props)
-        }
-
-        componentWillReceiveProps(props) {
-            this.dragManager = new DragManager(
-                props.onMove,
-                props.onDragStart,
-                props.onDragEnd,
-                props.onDragMove,
-                props.keyProp);
         }
 
 
@@ -158,6 +148,12 @@ export default class Grid extends Component {
             const gridHeight = (this.props.gridHeight * this.props.zoom);
             var gridItems = null
             if (this.props.items) {
+                const dragManager = new DragManager(
+                    this.props.onMove,
+                    this.props.onDragStart,
+                    this.props.onDragEnd,
+                    this.props.onDragMove,
+                    this.props.keyProp);
                 const itemsLength = this.props.items.length;
                 gridItems = this.props.items.map(item => {
                     const key = item[this.props.keyProp];
@@ -183,7 +179,7 @@ export default class Grid extends Component {
                             keyProp={this.props.keyProp}
                             filterProp={this.props.filterProp}
                             dragEnabled={this.props.dragEnabled}
-                            dragManager={this.dragManager}
+                            dragManager={dragManager}
                             onResizeStop={this.props.onResizeStop}
                           />
                         );

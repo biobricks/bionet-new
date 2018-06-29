@@ -104,19 +104,9 @@ export default class LocationPath extends Component {
     }
 
     render() {
-        /*
-        const breadcrumbs = this.props.path.map(container => {
-            return(
-                <span style={{}}><a href={'/id/'+container.id} style={{marginRight:'15px',textDecoration:'none'}}>{container.name}</a></span>
-            )
-        })
-        */
         const item = this.state.locationPath[this.state.locationPath.length-1]
         //const item = this.state.locationPath[0]
         if (!item) return
-        const navigate = function(e) {
-            app.actions.inventory.refreshInventoryPath(item.id)
-        }
         const containerStyle = {
             padding:0,
             margin:0,
@@ -124,10 +114,9 @@ export default class LocationPath extends Component {
             height:this.props.height+'px',
             overflow:'auto'
         }
-        //        <a onClick={navigate} style={{textAlign:'left',marginRight:'15px',textDecoration:'none'}}>{item.name}</a>
         const locationPath = (
             <div className="tile is-vertical" style={containerStyle}>
-                <Grid items={item.items}
+                <Grid state="navigateGrid" items={item.items}
                         onMove={this.onMove.bind(this)}
                         zoom={this.props.zoom}
                         dragEnabled={false}
@@ -142,36 +131,6 @@ export default class LocationPath extends Component {
                 />
             </div>
         )
-        /*
-        const locationPath = this.state.locationPath.map(item => {
-            const navigate = function(e) {
-                app.actions.inventory.refreshInventoryPath(item.id)
-            }
-            return (
-                <div className="tile is-vertical" style={{marginRight:'20px'}}>
-                    <a onClick={navigate} style={{textAlign:'left',marginRight:'15px',textDecoration:'none'}}>{item.name}</a>
-                    <Grid items={item.items}
-                            onMove={this.onMove.bind(this)}
-                            zoom={item.zoom}
-                            dragEnabled={true}
-                            responsive={true}
-                            majorGridLine={item.majorGridLine}
-                            verticalMargin={-1}
-                            onDragEnd={this.onSelectItem.bind(this)}
-                            gridWidth={item.gridWidth}
-                            gridHeight={item.gridHeight}
-                            layoutWidth={this.props.width}
-                            layoutHeight={this.props.height}
-                    />
-                </div>
-            );
-        });
-        */
-    /*
-                <div style={{textAlign:'left'}}>
-                    {breadcrumbs}
-                </div>
-    */
         return (
             <div ref={node => this.container = node}>
                 <div className="tile">

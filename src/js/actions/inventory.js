@@ -105,7 +105,7 @@ module.exports = {
                         return
                     }
                     const currentItem = app.actions.inventory.getLastPathItem()
-                    app.actions.inventory.refreshInventoryPath(currentItem.id)
+                    //app.actions.inventory.refreshInventoryPath(currentItem.id)
                 })
             }
         })

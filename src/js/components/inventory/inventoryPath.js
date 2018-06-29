@@ -31,12 +31,6 @@ module.exports = function (Component) {
                 editMode:false,
                 editItem:currentItem
             }
-            this.containerRef = {}
-
-            // TODO You are not allowed to directly modify the state.
-          //      It must be done using .setState or .changeState
-          //      You are also not allowed to put functions into the state.
-            app.state.selectCellListener = this.selectCellListener.bind(this)
         }
 
         componentWillReceiveProps(props) {
@@ -48,90 +42,10 @@ module.exports = function (Component) {
                 inventoryPath: props.inventoryPath
             });
         }
-
-        selectCellListener(cellLocation) {
-            for (var containerId in this.containerRef) {
-                var container = this.containerRef[containerId]
-                container.selectCellListener(cellLocation)
-            }
-            if (app.state.inventory.listener.editContainerListener) {
-                app.state.inventory.listener.editContainerListener(cellLocation, true)
-            }
-        }
         
-        updateInventoryPath(newPath, id) {
-            if (!newPath || !Array.isArray(newPath)) return
-            //console.log('update inventory path:',newPath)
-            
-            var containerSize = app.actions.inventory.getContainerSize()
-            const thisModule = this
-            var inventoryPath = []
-            
-            const findInChildren = function(id, children) {
-                //console.log('findInChildren:',id,children)
-                if (!children) return 0
-                for (var i=0; i<children.length; i++) if (id===children[i].id) return i
-                return 0
-            }
-            
-            this.containerRef={}
-            /*
-            for (var i=0; i<newPath.length; i++) {
-                var item = newPath[i]
-                var nextItem = (i<newPath.length-1) ? newPath[i+1] : {}
-                var yUnits = item.yUnits
-                var ref = (container) => { if (container) thisModule.containerRef[container.props.dbid] = container; }
-                var px=null
-                var py=null
-                if (nextItem.id) {
-                    px = (nextItem.parent_x) ? nextItem.parent_x : 1
-                    py = (nextItem.parent_y) ? nextItem.parent_y : findInChildren(nextItem.id,item.children)+1
-                }
-
-                inventoryPath.push(
-                    <StorageContainer dbid={item.id} type={item.type} ref={ref} height={containerSize} width={containerSize} title={item.name} childType={item.child} xunits={item.xUnits} yunits={yUnits} item={item} selectedItem={nextItem.id} px={px} py={py}/>
-                )
-            }
-            */
-            
-            const initZoom=function(panelWidth,layoutWidth) {
-                const zoom = panelWidth/layoutWidth
-                return isNaN(zoom) ? 1.0 : zoom
-            }
-            if (!this.state.editMode) {
-                const width=this.props.width
-                const pathId={}
-                newPath.map(container => {
-                    pathId[container.id]=container.name
-                })
-                var zoom=1.0
-                const locationPath = newPath.map(container => {
-                    if (id===container.id) {
-                        var panelWidth=this.state.mapPanelWidth
-                        const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
-                        zoom = initZoom(this.state.mapPanelWidth,containerLayout.layoutWidth)
-                        return containerLayout
-                    }
-                })
-                inventoryPath = <LocationPath path={locationPath} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoom={zoom}/>
-            } else {
-                const pathId={}
-                var zoomIndex=1
-                newPath.map(container => {
-                    pathId[container.id]=container.name
-                })
-                var location=null
-                for (var i=0; i<newPath.length; i++) {
-                    location=newPath[i]
-                    if (location.id===id) {
-                        break
-                    }
-                }
-                const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
-                const zoom = initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
-                inventoryPath = <EditContainer container={containerLayout} items={containerLayout.items} width={this.state.editPanelWidth} height={this.state.editPanelHeight} zoom={zoom}/>
-            }
-            return inventoryPath;
+        initZoom(panelWidth,layoutWidth) {
+            const zoom = panelWidth/layoutWidth
+            return isNaN(zoom) ? 1.0 : zoom
         }
         
         print() {
@@ -199,7 +113,9 @@ module.exports = function (Component) {
         }
 
         onSaveEditClick() {
-            /*
+        }
+
+        onUpdateContainerProperties(props) {
             app.actions.inventory.updateItem(this.state.containerId,function(err,item){
                 var updatedItem={}
                 if (props.width) {
@@ -220,34 +136,7 @@ module.exports = function (Component) {
                 console.log('updateSelection:',updatedItem)
                 return updatedItem
             }.bind(this))
-            */
-        }
-
-        onUpdateContainerProperties(props) {
-            if (!props.zoom) {
-                /*
-                app.actions.inventory.updateItem(this.state.containerId,function(err,item){
-                    var updatedItem={}
-                    if (props.width) {
-                        const update = {
-                            layoutWidthUnits:props.width,
-                            layoutWidth: this.gridWidth*props.width
-                        }
-                        updatedItem = Object.assign(item,update)
-                    } else if (props.height) {
-                        const update = {
-                            layoutHeightUnits:props.height,
-                            layoutHeight: this.gridHeight*props.height
-                        }
-                        updatedItem = Object.assign(item,update)
-                    } else {
-                        updatedItem = Object.assign(item,props)
-                    }
-                    console.log('updateSelection:',updatedItem)
-                    return updatedItem
-                }.bind(this))
-                */
-            }
+            
             //console.log('onUpdateContainerProperties:',props)
             if (props.name) {
                 this.setState({
@@ -290,9 +179,8 @@ module.exports = function (Component) {
         }
 
         render() {
-            const path = this.updateInventoryPath(this.state.inventoryPath, this.state.id);
-            if (!path) return
-            console.log('inventoryPath render, id:',this.state.id, path, this.state.inventoryPath)
+            if (!this.state.inventoryPath) return
+            console.log('inventoryPath render, id:',this.state.id, this.state.inventoryPath)
             
             //const currentItem = app.actions.inventory.getLastPathItem()
             const currentItem=this.state.editItem
@@ -305,9 +193,7 @@ module.exports = function (Component) {
             }
             
             var childItems = (currentItem) ? currentItem.children : null
-            //console.log('inventory path render:',path,currentItem)
             const attributes = app.actions.inventory.getAttributesForType(currentItem.type)
-            
             const selectedItemHeader = this.selectedItemHeader()
           
             const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
@@ -348,7 +234,25 @@ module.exports = function (Component) {
             var dataPanel=null
             var navPanel=null
             var editPanel=null
+            
             if (this.state.editMode) {
+                const pathId={}
+                var zoomIndex=1
+                const newPath=this.state.inventoryPath
+                const id=this.state.id
+                newPath.map(container => {
+                    pathId[container.id]=container.name
+                })
+                var location=null
+                for (var i=0; i<newPath.length; i++) {
+                    location=newPath[i]
+                    if (location.id===id) {
+                        break
+                    }
+                }
+                const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
+                const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
+                    
                 editPanel = (
                     <div class="column is-12-desktop">
                       <LabPanel
@@ -362,7 +266,7 @@ module.exports = function (Component) {
                             <div id="inventory_tiles" class="tile is-12">
                                 <div class="tile is-vertical">
                                     <div id="inventory_path" class="tile is-parent is-12" style={pathMaxHeight}>
-                                        {path}
+                                        <EditContainer container={containerLayout} items={containerLayout.items} width={this.state.editPanelWidth} height={this.state.editPanelHeight} zoom={zoom}/>
                                     </div>
                                 </div>
                             </div>
@@ -370,6 +274,25 @@ module.exports = function (Component) {
                     </div>
                 )
             } else {
+                
+                const width=this.props.width
+                const pathId={}
+                const newPath=this.state.inventoryPath
+                const id=this.state.id
+                newPath.map(container => {
+                    pathId[container.id]=container.name
+                })
+                var zoom=1.0
+                const initZoom=this.initZoom
+                const locationPath = newPath.map(container => {
+                    if (id===container.id) {
+                        var panelWidth=this.state.mapPanelWidth
+                        const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
+                        zoom = initZoom(this.state.mapPanelWidth,containerLayout.layoutWidth)
+                        return containerLayout
+                    }
+                })
+                    
                 const breadcrumbs = this.state.inventoryPath.map(container => {
                     return {
                         id:container.id,
@@ -407,7 +330,7 @@ module.exports = function (Component) {
                             <div id="inventory_tiles" class="tile is-5">
                                 <div class="tile is-vertical">
                                     <div id="inventory_path" class="tile is-parent is-5" style={pathMaxHeight}>
-                                        {path}
+                                        <LocationPath path={locationPath} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoom={zoom}/>
                                     </div>
                                 </div>
                             </div>

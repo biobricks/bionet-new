@@ -110,9 +110,7 @@ export default class EditContainer extends Component {
             return item;
         });
         console.log('onFilter:', search)
-        this.setState({
-            items:items
-        })
+        this.onUpdateItems(items)
     };
     
     selectItem(item) {
@@ -126,18 +124,14 @@ export default class EditContainer extends Component {
         });
         if (item) {
             this.setState({
-                items:items,
                 defaultName : item.name,
                 defaultWidth : item.width / this.gridWidth,
                 defaultHeight : item.height / this.gridHeight,
                 defaultColor : item.color,
                 defaultFontSize : (item.fontSize) ? item.fontSize : '0.3'
             })
-        } else {
-            this.setState({
-                items:items
-            })
         }
+        this.onUpdateItems(items)
     }
     
     onDragEnd(source, xp, yp, isDrag) {
@@ -178,9 +172,7 @@ export default class EditContainer extends Component {
                     if (item.id===source.id) return source
                     return item
                 });
-                this.setState({
-                    items:items
-                })
+                this.onUpdateItems(items)
             }
         }
         if (!isOutsideGrid) this.selectItem(source)
@@ -207,9 +199,7 @@ export default class EditContainer extends Component {
                     if (itemAr.id===item.id) return item
                     return itemAr
                 });
-                this.setState({
-                    items:items
-                })
+                this.onUpdateItems(items)
             }
         }.bind(this))
     }
@@ -230,8 +220,8 @@ export default class EditContainer extends Component {
         })
         */
         const items = (this.state.items) ? this.state.items.slice() : []
+        this.onUpdateItems(items)
         this.setState({
-            items:items,
             defaultWidth:cols,
             defaultHeight:rows
         })
@@ -286,11 +276,13 @@ export default class EditContainer extends Component {
             item.sort = item.key;
             const updatedItems = items.slice()
             updatedItems.push(item)
-            this.setState({
-                items:updatedItems
-            })
+            this.onUpdateItems(updatedItems)
             this.selectItem(item)
         }.bind(this))
+    }
+
+    onUpdateItems(items) {
+        this.setState({items:items})
     }
 
     onMove(event) {
@@ -337,7 +329,7 @@ export default class EditContainer extends Component {
         //console.log('onClick, e:',el)
         if (el.id==='clearItems') {
             console.log('clearing item list')
-            this.setState({items:[{id:0,key:0,filtered:true,width:0,height:0,name:''}]})
+            this.onUpdateItems({items:[{id:0,key:0,filtered:true,width:0,height:0,name:''}]})
             return
         }
         const isTouch = e.targetTouches && e.targetTouches.length === 1;
@@ -422,9 +414,7 @@ export default class EditContainer extends Component {
         const items = this.state.items.map(function (item) {
             return (item[keyProp] === key) ? selectedItem : item
         });
-        this.setState({
-            items:items
-        })
+        this.onUpdateItems(items)
     }
     onUpdateItemProperties(props) {
         console.log('onUpdateItemProperties:',props)
@@ -523,7 +513,7 @@ export default class EditContainer extends Component {
                 />
                 <div style={{marginTop:'20px'}}/>
                 <div style={containerStyle} ref={node => this.container = node}>
-                    <Grid items={this.state.items}
+                    <Grid  state="editGrid" items={this.state.items}
                             onMove={this.onMove.bind(this)}
                             zoom={this.state.zoom}
                             dragEnabled={true}

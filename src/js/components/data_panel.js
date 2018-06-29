@@ -65,8 +65,6 @@ module.exports = function(Component) {
       let isEditMode = this.props.editMode;
       let isNewMode = this.props.newMode;
       let parentRecord = this.props.parentRecord;
-      let hasParentRecord = parentRecord && Object.keys(parentRecord).length > 0;
-      let parentRecordIsLab = hasParentRecord && parentRecord.type === 'lab';
       let selectedRecord = this.props.selectedRecord;
       //let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;      
       let isContainer = this.props.selectedRecord.type !== 'physical'
@@ -163,13 +161,11 @@ module.exports = function(Component) {
           </div>
 
           <div class="panel-block">
-            {(hasParentRecord) ? (
               <nav class="breadcrumb is-capitalized" aria-label="breadcrumbs">
                 <ul>
                     {breadcrumbs}
                 </ul>
               </nav>
-            ) : null }
           </div>
           <div>
             {(isViewMode && isContainer) ? (

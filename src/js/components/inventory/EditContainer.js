@@ -53,7 +53,8 @@ export default class EditContainer extends Component {
             defaultColor : 'aqua',
             defaultFontSize:'0.3',
             zoomIndex:zoomIndex,
-            zoom:this.zoomLevel[zoomIndex]
+            zoom:this.zoomLevel[zoomIndex],
+            items:props.items
         };
         this.componentWillReceiveProps(props)
     }
@@ -62,13 +63,14 @@ export default class EditContainer extends Component {
         const container=props.container
         console.log('EditContainer props:',props, this.state)
         var zoomIndex = this.state.zoomIndex
+        //            items:props.items,
+
         var zoom = this.state.zoom
         if (props.width) {
             zoomIndex = this.initZoomIndex(props.zoom, this.zoomLevel)
             zoom = this.zoomLevel[zoomIndex]
         }
         this.setState({
-            items:props.items,
             containerId:container.id,
             units:container.units,
             majorGridLine:container.majorGridLine,
@@ -140,7 +142,7 @@ export default class EditContainer extends Component {
     
     onDragEnd(source, xp, yp, isDrag) {
         // todo change to keyprop
-        console.log('onDragEnd:',source)
+        console.log('Edit container onDragEnd:',source)
         source = _.find(this.state.items, {
             id: source
         });
@@ -172,11 +174,14 @@ export default class EditContainer extends Component {
                 source.row = row
                 source.col = col
                 console.log('onDragEnd, moving', source)
+                const items = this.state.items.map(function (item) {
+                    if (item.id===source.id) return source
+                    return item
+                });
+                this.setState({
+                    items:items
+                })
             }
-            const items = (this.state.items) ? this.state.items.slice() : []
-            this.setState({
-                items:items
-            })
         }
         if (!isOutsideGrid) this.selectItem(source)
     }
@@ -198,7 +203,10 @@ export default class EditContainer extends Component {
                     app.actions.notify(name+" deleted", 'notice', 2000);
                 })
                 item.filtered = true
-                const items = (this.state.items) ? this.state.items.slice() : []
+                const items = this.state.items.map(function (itemAr) {
+                    if (itemAr.id===item.id) return item
+                    return itemAr
+                });
                 this.setState({
                     items:items
                 })

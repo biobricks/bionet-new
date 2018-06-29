@@ -62,16 +62,20 @@ export default class Grid extends Component {
         constructor(props, context) {
             super(props, context);
             this.onResize = debounce(this.onResize, 150);
-            this.dragManager = new DragManager(
-                this.props.onMove,
-                this.props.onDragStart,
-                this.props.onDragEnd,
-                this.props.onDragMove,
-                this.props.keyProp);
             this.state = {
                 layoutWidth: this.props.layoutWidth,
                 layoutHeight: this.props.layoutHeight
             };
+            this.componentWillReceiveProps(props)
+        }
+
+        componentWillReceiveProps(props) {
+            this.dragManager = new DragManager(
+                props.onMove,
+                props.onDragStart,
+                props.onDragEnd,
+                props.onDragMove,
+                props.keyProp);
         }
 
 

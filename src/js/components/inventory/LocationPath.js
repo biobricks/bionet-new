@@ -49,20 +49,21 @@ export default class LocationPath extends Component {
             defaultWidth : 1,
             defaultHeight : 1,
             defaultColor : 'aqua',
-            defaultFontSize:'0.3'
+            defaultFontSize:'0.3',
+            locationPath:props.path
         };
-        const locationPath = this.componentWillReceiveProps(props)
     }
     
     componentWillReceiveProps(props) {
-        //console.log('LocationPath:',props.path)
+        console.log('LocationPath:',props.path)
         this.setState({locationPath:props.path})
     }
 
     onSelectItem(key) {
-        //console.log('selectItem:',key)
+        console.log('Location Path: selectItem:',key)
         app.actions.inventory.refreshInventoryPath(key)
         return
+        
         const keyProp = this.props.keyProp
         const items = this.state.locationPath[0].items.map(function (item) {
             item.selected = item[keyProp] === key

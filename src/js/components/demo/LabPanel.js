@@ -25,7 +25,7 @@ module.exports = function(Component) {
     }
 
     onSaveButtonClick() {
-      alert('Since the Lab Editor is edit-in-place, this button can toggle this.state.editMode back to false and have the map from the editor act as navigation rather than Lab Editor.');
+      alert('Lab Save');
       this.toggleEditMode();
     }
 
@@ -102,11 +102,11 @@ module.exports = function(Component) {
             <div id="edit-container" class="lab-editor">
               {(isEditMode) ? (
                 <p class="is-size-12">
-                    <div class="map-container">{this.props.children}</div>
+                    <div class="map-container">Lab Editor With Controls</div>
                 </p>
               ) : (
                 <p class="is-size-12">
-                    <div class="map-container">{this.props.children}</div>
+                    <div class="map-container">Lab Editor As Navigation</div>
                 </p>
               )} 
             </div>

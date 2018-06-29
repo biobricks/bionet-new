@@ -138,6 +138,11 @@ module.exports = function(Component) {
                       {this.props.lab.name}
                     </Link> 
                   </li>
+                  {(this.props.parentRecord.name !== "EndyLab" && this.props.parentRecord.name !== "-80 Freezer 1") ? (
+                    <li>
+                      ...
+                    </li>
+                  ) : null }                   
                   {(this.props.parentRecord.name !== "EndyLab") ? (
                     <li>
                       <a 
@@ -148,7 +153,7 @@ module.exports = function(Component) {
                         {this.props.parentRecord.name}
                       </a>
                     </li>
-                  ) : null }  
+                  ) : null } 
                   <li>
                       {this.props.selectedRecord.name}
                   </li>                 

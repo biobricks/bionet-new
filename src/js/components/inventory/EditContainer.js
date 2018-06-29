@@ -491,18 +491,24 @@ export default class EditContainer extends Component {
                 <div style={{marginTop:'20px'}}/>
                 <div style={{marginTop:'20px'}}/>
         */
+        var containerPropertiesForm=null
+        if (this.props.fullWidth) {
+            containerPropertiesForm = (
+                <div>
+                    <ContainerPropertiesForm
+                        name={this.state.layoutName}
+                        width={this.state.layoutWidthUnits}
+                        height={this.state.layoutHeightUnits}
+                        majorGridLine={this.state.majorGridLine}
+                        units={this.state.units}
+                        onChange={this.onUpdateContainerProperties.bind(this)}
+                    />
+                    <hr/>
+                </div>
+            )
+        }
         return (
             <div>
-                <span className="pure-form" style={{display:'block',float:'right'}}><label>Zoom</label><SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/></span>
-                <ContainerPropertiesForm
-                    name={this.state.layoutName}
-                    width={this.state.layoutWidthUnits}
-                    height={this.state.layoutHeightUnits}
-                    majorGridLine={this.state.majorGridLine}
-                    units={this.state.units}
-                    onChange={this.onUpdateContainerProperties.bind(this)}
-                />
-                <hr/>
                 <ItemPropertiesForm
                     name={this.state.defaultName}
                     width={this.state.defaultWidth}
@@ -512,6 +518,7 @@ export default class EditContainer extends Component {
                     onChange={this.onUpdateItemProperties.bind(this)}
                 />
                 <div style={{marginTop:'20px'}}/>
+                <span className="pure-form" style={{display:'block',float:'right'}}><label>Zoom</label><SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/></span>
                 <div style={containerStyle} ref={node => this.container = node}>
                     <Grid  state="editGrid" items={this.state.items}
                             onMove={this.onMove.bind(this)}

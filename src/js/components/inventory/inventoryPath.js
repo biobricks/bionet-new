@@ -234,6 +234,16 @@ module.exports = function (Component) {
             var dataPanel=null
             var navPanel=null
             var editPanel=null
+            const breadcrumbs = this.state.inventoryPath.map(container => {
+                return {
+                    id:container.id,
+                    name:container.name
+                }
+            })
+            const selectRecord=function(e) {
+                app.actions.inventory.refreshInventoryPath(e.target.id)
+            }
+            const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
             
             if (this.state.editMode) {
                 const pathId={}
@@ -250,11 +260,32 @@ module.exports = function (Component) {
                         break
                     }
                 }
+                if (!location) return
+                var editPanelClass='is-12-desktop'
+                var fullWidth=true
+                if (location.type!=='lab') {
+                    editPanelClass='is-5-desktop'
+                    dataPanel = (
+                            <div class="column is-7-desktop">
+                              <DataPanel 
+                                {...this.state}
+                                selectedRecord={currentItem}
+                                breadcrumbs={breadcrumbs}
+                                parentRecord={parentRecord}
+                                selectRecord={selectRecord}
+                                toggleEditMode={this.toggleEditMode.bind(this)}
+                                onSaveEditClick={this.onSaveEditClick.bind(this)}
+                                >
+                                {dataItems}
+                            </DataPanel>
+                        </div>
+                    )
+                }
                 const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
                 const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
                     
                 editPanel = (
-                    <div class="column is-12-desktop">
+                    <div class={'column '+editPanelClass}>
                       <LabPanel
                         {...this.state}
                         selectedRecord={currentItem}
@@ -266,7 +297,7 @@ module.exports = function (Component) {
                             <div id="inventory_tiles" class="tile is-12">
                                 <div class="tile is-vertical">
                                     <div id="inventory_path" class="tile is-parent is-12" style={pathMaxHeight}>
-                                        <EditContainer container={containerLayout} items={containerLayout.items} width={this.state.editPanelWidth} height={this.state.editPanelHeight} zoom={zoom}/>
+                                        <EditContainer container={containerLayout} items={containerLayout.items} width={this.state.editPanelWidth} height={this.state.editPanelHeight} zoom={zoom} fullWidth={fullWidth}/>
                                     </div>
                                 </div>
                             </div>
@@ -293,16 +324,6 @@ module.exports = function (Component) {
                     }
                 })
                     
-                const breadcrumbs = this.state.inventoryPath.map(container => {
-                    return {
-                        id:container.id,
-                        name:container.name
-                    }
-                })
-                const selectRecord=function(e) {
-                    app.actions.inventory.refreshInventoryPath(e.target.id)
-                }
-                const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
                 dataPanel = (
                         <div class="column is-7-desktop">
                           <DataPanel 

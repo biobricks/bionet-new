@@ -11,7 +11,7 @@ module.exports = function(Component) {
           <ul>
             <li>
               <Link to="/ui/lab">
-                {this.props.lab.name}
+                Lab
               </Link>
             </li>            
           </ul>  

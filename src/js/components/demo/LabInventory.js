@@ -29,6 +29,7 @@ module.exports = function(Component) {
     }
 
     selectRecord(e) {
+      e.preventDefault();
       let recordId = e.target.getAttribute('id');
       console.info(`User clicked on record ${recordId}. Searching...`);
       

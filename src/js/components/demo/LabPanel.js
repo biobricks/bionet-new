@@ -106,7 +106,12 @@ module.exports = function(Component) {
                 </p>
               ) : (
                 <p class="is-size-12">
-                    <div class="map-container">Lab Editor As Navigation</div>
+                    <div class="map-container">
+                      Lab Editor As Navigation<br/>
+                      <Link to="/ui/lab-inventory">
+                        Enter Demo Freezer
+                      </Link>
+                    </div>
                 </p>
               )} 
             </div>

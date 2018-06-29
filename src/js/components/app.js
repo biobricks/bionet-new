@@ -35,6 +35,9 @@ module.exports = function(Component) {
   const LabPanel = require('./lab_panel.js')(Component);
   const LabInventory = require('./lab_inventory.js')(Component);
 
+  // UI/UX Demo Components
+  const LabPanelDemo = require('./demo/LabPanel.js')(Component);
+
   // just an example of dynamically loading js
   var DynamicLoading = require('./dynamic_loading.js')(Component);
 
@@ -56,7 +59,7 @@ module.exports = function(Component) {
                 <Route exact path="/" component={Search} />
                 
                 <Route exact path="/ui/test" component={TestComponent} />
-                <Route exact path="/ui/lab" component={LabPanel} />
+                <Route exact path="/ui/lab" component={LabPanelDemo} />
                 <Route exact path="/ui/lab-inventory" component={LabInventory} />
 
                 <Route exact path="/signup" render={() => (

@@ -32,7 +32,7 @@ When set to false, the lab panel is in 'view mode'.
 When set to true, the lab panel is in 'edit mode'.
 
 ## LabInventory
-[/src/js/components/demo/LabInventory.js](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/LabInventory.js) - The two-panel inventory component that passes state and props to the DataPanel and MapPanel components, keeping them in sync.
+[/src/js/components/demo/LabInventory.js](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/LabInventory.js) - The two-panel inventory component that passes state and props to the [DataPanel](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/DataPanel.js) and MapPanel components, keeping them in sync.
 
 ### Props
 None*
@@ -114,21 +114,21 @@ This event method:
 A recursive loop to retrieve a single record object from the nested lab object.
 
 #### toggleNewMode()
-Passed as Prop to DataPanel
+Passed as Prop to [DataPanel](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/DataPanel.js)  
 A method to toggle the State newMode between true and false.
 
 #### toggleEditMode()
-Passed as Prop to DataPanel
+Passed as Prop to [DataPanel](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/DataPanel.js)  
 A method to toggle the State editMode between true and false.
 
 #### onSaveNewClick()
-Passed as Prop to DataPanel
+Passed as Prop to [DataPanel](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/DataPanel.js)  
 An event method that handles the save button click within 'new mode' in DataPanel.
 
 #### onSaveEditClick()
-Passed as Prop to DataPanel
+Passed as Prop to [DataPanel](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/DataPanel.js)  
 An event method that handles the save button click within 'edit mode' in DataPanel.
 
 #### onDeleteClick()
-Passed as Prop to DataPanel
+Passed as Prop to [DataPanel](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/DataPanel.js)  
 An event method that handles the delete button click within 'edit mode' in DataPanel.

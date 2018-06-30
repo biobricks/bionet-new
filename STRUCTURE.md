@@ -32,7 +32,7 @@ When set to false, the lab panel is in 'view mode'.
 When set to true, the lab panel is in 'edit mode'.
 
 ## LabInventory
-[/src/js/components/demo/LabInventory.js](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/LabInventory.js) - The two-panel inventory component that passes state and props to the DataPanel and MapPanel components.
+[/src/js/components/demo/LabInventory.js](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/LabInventory.js) - The two-panel inventory component that passes state and props to the DataPanel and MapPanel components, keeping them in sync.
 
 ### Props
 None*
@@ -97,4 +97,38 @@ Default: Container or Physical Object
 }
 ```
 
+### Methods
 
+#### getLabData()
+The method loaded on componentDidMount() to get mock lab data from [fake_lab](https://github.com/biobricks/bionet-new/blob/master/src/js/fake_lab.js).
+
+#### selectRecord(e)
+Passed as Prop to DataPanel
+This event method:  
+1. Gets the id from the clicked on element.  
+2. Triggers a getRecordById() on the clicked on record id
+3. Triggers a getRecordById() on the clicked on record parent id
+4. Sets the State for selectedRecord and parentRecord.
+
+#### getRecordById(id, data)
+A recursive loop to retrieve a single record object from the nested lab object.
+
+#### toggleNewMode()
+Passed as Prop to DataPanel
+A method to toggle the State newMode between true and false.
+
+#### toggleEditMode()
+Passed as Prop to DataPanel
+A method to toggle the State editMode between true and false.
+
+#### onSaveNewClick()
+Passed as Prop to DataPanel
+An event method that handles the save button click within 'new mode' in DataPanel.
+
+#### onSaveEditClick()
+Passed as Prop to DataPanel
+An event method that handles the save button click within 'edit mode' in DataPanel.
+
+#### onDeleteClick()
+Passed as Prop to DataPanel
+An event method that handles the delete button click within 'edit mode' in DataPanel.

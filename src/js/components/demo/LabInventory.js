@@ -43,9 +43,9 @@ module.exports = function(Component) {
       this.getRecordById(selectedRecord.parent, fakeLabData);
       let parentRecord = this.searchResult || {};
 
-      console.log('Result:');
-      console.log(selectedRecord);
-      console.log(parentRecord);
+      //console.log('Result:');
+      //console.log(selectedRecord);
+      //console.log(parentRecord);
 
       this.setState({
         selectedRecord,

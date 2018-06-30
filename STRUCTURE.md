@@ -30,3 +30,71 @@ Type: Boolean
 Default: false  
 When set to false, the lab panel is in 'view mode'.  
 When set to true, the lab panel is in 'edit mode'.
+
+## LabInventory
+[/src/js/components/demo/LabInventory.js](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/LabInventory.js) - The two-panel inventory component that passes state and props to the DataPanel and MapPanel components.
+
+### Props
+None*
+
+### State
+
+#### lab*
+```
+Type: Object  
+Default: {}  
+Attr: {  
+  id: String,  
+  name: String,  
+  description: String,
+  rows: Number,  
+  columns: Number,  
+  children: Array
+}  
+```
+*The demo version has the lab data as a State object loading from [fake_lab](https://github.com/biobricks/bionet-new/blob/master/src/js/fake_lab.js) on the componentDidMount method. This is should be replaced in the working model with Lab Data Props.
+
+#### editMode
+Type: Boolean  
+Default: false  
+When set to true, the data panel is in 'edit mode', showing an edit form for the selectedRecord object.
+
+#### newMode
+Type: Boolean  
+Default: false  
+When set to true, the data panel is in 'new mode', showing:  
+1. If the selectedRecord is a container, 'new mode' shows a form for a new physical to be placed within the container.
+2. If the selectedRecord is a physical, 'new mode' shows a form for creation of new instances of the selectedRecord.
+
+#### selectedRecord/parentRecord
+Type: Object  
+Default: Container or Physical Object
+
+##### Container
+```
+{
+ id: String,
+ name: String,
+ description: String,
+ rows: Number,
+ columns: Number,
+ parent: String // id of parent record
+ row: Number, // location in parent
+ column: Number, location in parent
+ children: Array // array of container and/or physical objects
+}
+```
+
+##### Physical
+```
+{
+ id: String,
+ name: String,
+ description: String,
+ parent: String // id of parent record
+ row: Number, // location in parent
+ column: Number, location in parent
+}
+```
+
+

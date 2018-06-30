@@ -36,7 +36,8 @@ None*
 Type: Object  
 Default: {}  
 Attr:  
-```
+
+```js
 {  
   id: String,  
   name: String,  
@@ -63,10 +64,11 @@ None*
 ### State
 
 #### lab*
-```
 Type: Object  
 Default: {}  
-Attr: {  
+Attr:  
+```js
+{  
   id: String,  
   name: String,  
   description: String,

@@ -33,10 +33,11 @@ None*
 ### State
 
 #### lab*
-```
 Type: Object  
 Default: {}  
-Attr: {  
+Attr:  
+```
+{  
   id: String,  
   name: String,  
   description: String,

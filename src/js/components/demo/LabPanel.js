@@ -18,10 +18,9 @@ module.exports = function(Component) {
     }
 
     toggleEditMode() {
-        this.setState({
-            editMode: !this.state.editMode
-        });
-        if (this.props.toggleEditMode) this.props.toggleEditMode()
+      this.setState({
+        editMode: !this.state.editMode
+      });
     }
 
     onSaveButtonClick() {
@@ -35,18 +34,9 @@ module.exports = function(Component) {
         lab: lab
       });
     }
+
     componentDidMount() {
       this.getLabData();
-        if (this.props.onMount) {
-            const editContainer = document.getElementById('edit-container')
-            var containerWidth=600
-            var containerHeight=450
-            if (editContainer) {
-                containerWidth=editContainer.offsetWidth-24
-                containerHeight=editContainer.offsetHeight-16
-            }
-            this.props.onMount(containerWidth,containerHeight)
-        }
     }  
 
     render() {
@@ -106,12 +96,12 @@ module.exports = function(Component) {
                 </p>
               ) : (
                 <p class="is-size-12">
-                    <div class="map-container">
-                      Lab Editor As Navigation<br/>
-                      <Link to="/ui/lab-inventory">
-                        Enter Demo Freezer
-                      </Link>
-                    </div>
+                  <div class="map-container">
+                    Lab Editor As Navigation<br/>
+                    <Link to="/ui/lab-inventory">
+                      Enter Demo Freezer
+                    </Link>
+                  </div>
                 </p>
               )} 
             </div>

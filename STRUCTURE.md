@@ -1,7 +1,29 @@
 # Structure
 State and Component structure for the /src/js/demo/ components.  
 
-
+```
+App
+| 
+ --- LabPanel
+|
+ --- LabInventory
+  |
+   --- DataPanel
+    |
+     --- ContainerProfile
+    |
+     --- ContainerNewForm
+    |
+     --- ContainerEditForm
+    |
+     --- PhysicalProfile
+    |
+     --- PhysicalNewForm
+    |
+     --- PhysicalEditForm
+  |
+   --- MapPanel
+```
 ## LabPanel
 [/src/js/components/demo/LabPanel.js](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/LabPanel.js) - The fullscreen lab view / edit using the free form editor.  
 

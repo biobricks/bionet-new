@@ -71,29 +71,29 @@ Type: Object
 Default: Container or Physical Object
 
 ##### Container
-```
+```js
 {
  id: String,
  name: String,
  description: String,
  rows: Number,
  columns: Number,
- parent: String // id of parent record
- row: Number, // location in parent
- column: Number, location in parent
+ parent: String  // id of parent record
+ row: Number,    // location in parent
+ column: Number, // location in parent
  children: Array // array of container and/or physical objects
 }
 ```
 
 ##### Physical
-```
+```js
 {
  id: String,
  name: String,
  description: String,
- parent: String // id of parent record
- row: Number, // location in parent
- column: Number, location in parent
+ parent: String  // id of parent record
+ row: Number,    // location in parent
+ column: Number, // location in parent
 }
 ```
 

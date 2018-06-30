@@ -4,6 +4,22 @@ module.exports = function(Component) {
 
   return class ContainerProfile extends Component {
 
+    constructor(props){
+      super(props);
+      this.onRecordEnter = this.onRecordEnter.bind(this);
+      this.onRecordLeave = this.onRecordLeave.bind(this);
+    }
+
+    onRecordEnter(e) {
+      let recordId = e.target.getAttribute('id');
+      console.log(`Mouse Enter Record ${recordId}`);
+    }
+
+    onRecordLeave(e) {
+      let recordId = e.target.getAttribute('id');
+      console.log(`Mouse Leaving Record ${recordId}`);
+    }
+
     render() {
       let selectedRecord = this.props.selectedRecord;
       let parentRecord = this.props.parentRecord;
@@ -16,6 +32,8 @@ module.exports = function(Component) {
                 class="panel-block"
                 id={child.id}
                 onClick={this.props.selectRecord}
+                onMouseEnter={this.onRecordEnter}
+                onMouseLeave={this.onRecordLeave}
               >
                 <span class="panel-icon">
                   {(isContainer) ? (

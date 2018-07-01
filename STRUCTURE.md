@@ -167,6 +167,17 @@ The DataPanel component receives state and props from the LabInventory component
 State: See [LabInventory > State](https://github.com/biobricks/bionet-new/blob/master/STRUCTURE.md#state-1).  
 Props: See [LabInventory > Methods](https://github.com/biobricks/bionet-new/blob/master/STRUCTURE.md#methods).  
 
+### State
+
+#### formType
+Type: String  
+Default: ""  
+
+### Methods
+
+#### setFormType(event)
+This event method is attached to the initial select dropdown in 'new mode' and the formType state value.  
+It retrieves either a "Container" or a "Physical" value based on the select dropdown. The appropriate new form is loaded according to this value.  
 
 ## MapPanel
 [/src/js/components/demo/MapPanel.js](https://github.com/biobricks/bionet-new/blob/master/src/js/components/demo/MapPanel.js) - The right panel container component in the two-panel inventory component that holds Freeform, End-To-End and End-To-End With Image Views.  

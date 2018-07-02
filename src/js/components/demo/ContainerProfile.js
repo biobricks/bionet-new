@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { Link } from 'react-router-dom';
 
 module.exports = function(Component) {
 
@@ -12,12 +13,12 @@ module.exports = function(Component) {
 
     onRecordEnter(e) {
       let recordId = e.target.getAttribute('id');
-      console.log(`Mouse Enter Record ${recordId}`);
+      //console.log(`Mouse Enter Record ${recordId}`);
     }
 
     onRecordLeave(e) {
       let recordId = e.target.getAttribute('id');
-      console.log(`Mouse Leaving Record ${recordId}`);
+      //console.log(`Mouse Leaving Record ${recordId}`);
     }
 
     render() {
@@ -28,7 +29,8 @@ module.exports = function(Component) {
             children = this.props.selectedRecord.children.map((child, index) => {
             let isContainer = Object.keys(child).indexOf('children') > -1;
             return (
-              <a 
+              <Link
+                to={`/ui/lab-inventory/${child.id}`}
                 class="panel-block"
                 id={child.id}
                 onClick={this.props.selectRecord}
@@ -43,7 +45,7 @@ module.exports = function(Component) {
                   )}  
                 </span>
                 {child.name} 
-              </a>
+              </Link>
             )
           });
         }

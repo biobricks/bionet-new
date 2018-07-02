@@ -29,7 +29,6 @@ module.exports = function(Component) {
     }
 
     selectRecord(e) {
-      e.preventDefault();
       let recordId = e.target.getAttribute('id');
       console.info(`User clicked on record ${recordId}. Searching...`);
       
@@ -99,10 +98,20 @@ module.exports = function(Component) {
 
     getLabData() {
       const lab = fakeLabData;
+      const itemId = this.props.match.params.itemId || null;
+      
+      this.searchResult = null; 
+      this.getRecordById(itemId, lab);
+      let selectedRecord = this.searchResult;
+      
+      this.searchResult = null; 
+      this.getRecordById(selectedRecord.parent, lab);
+      let parentRecord = this.searchResult;
+
       this.setState({
         lab: lab,
-        parentRecord: lab,
-        selectedRecord: lab.children[0]
+        parentRecord,
+        selectedRecord
       });
     }
 

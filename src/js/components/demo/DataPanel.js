@@ -145,13 +145,14 @@ module.exports = function(Component) {
                   ) : null }                   
                   {(this.props.parentRecord.name !== "EndyLab") ? (
                     <li>
-                      <a 
+                      <Link 
+                        to={`/ui/lab-inventory/${this.props.parentRecord.id}`}
                         href="#"
                         id={this.props.parentRecord.id}
                         onClick={this.props.selectRecord}
                       >
                         {this.props.parentRecord.name}
-                      </a>
+                      </Link>
                     </li>
                   ) : null } 
                   <li>

@@ -61,7 +61,7 @@ module.exports = function(Component) {
                 
                 <Route exact path="/ui/test" component={TestComponent} />
                 <Route exact path="/ui/lab" component={LabPanelDemo} />
-                <Route exact path="/ui/lab-inventory" component={LabInventoryDemo} />
+                <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
 
                 <Route exact path="/signup" render={() => (
                   <Signup />

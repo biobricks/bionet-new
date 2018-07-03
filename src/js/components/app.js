@@ -60,9 +60,9 @@ module.exports = function(Component) {
                 <Route exact path="/" component={Search} />
                 
                 <Route path="/ui/test/:itemId" component={TestComponent} />
-                <Route exact path="/ui/lab" component={LabPanelDemo} />
                 <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
-
+                <Route exact path="/ui/lab" component={LabPanelDemo} />
+                
                 <Route exact path="/signup" render={() => (
                   <Signup />
                 )}/>

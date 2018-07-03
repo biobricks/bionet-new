@@ -136,6 +136,7 @@ export default class EditContainer extends Component {
     
     onDragEnd(source, xp, yp, isDrag) {
         // todo change to keyprop
+        if (!this.container) return
         console.log('Edit container onDragEnd:',source)
         source = _.find(this.state.items, {
             id: source
@@ -520,7 +521,10 @@ export default class EditContainer extends Component {
                 <div style={{marginTop:'20px'}}/>
                 <span className="pure-form" style={{display:'block',float:'right'}}><label>Zoom</label><SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/></span>
                 <div style={containerStyle} ref={node => this.container = node}>
-                    <Grid  state="editGrid" items={this.state.items}
+                    <Grid
+                            state="editGrid"
+                            gridId="editGrid"
+                            items={this.state.items}
                             onMove={this.onMove.bind(this)}
                             zoom={this.state.zoom}
                             dragEnabled={true}

@@ -29,7 +29,7 @@ module.exports = function (Component) {
                 attributes:{},
                 navMode:'navigate',
                 editMode:false,
-                editItem:currentItem
+                currentItem:currentItem
             }
         }
 
@@ -38,7 +38,7 @@ module.exports = function (Component) {
             const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
             this.setState({
                 id: props.id,
-                editItem:currentItem,
+                currentItem:currentItem,
                 inventoryPath: props.inventoryPath
             });
         }
@@ -179,12 +179,9 @@ module.exports = function (Component) {
         }
 
         render() {
-            if (!this.state.inventoryPath) return
+            if (!this.state.inventoryPath || !this.state.currentItem) return
             console.log('inventoryPath render, id:',this.state.id, this.state.inventoryPath)
-            
-            //const currentItem = app.actions.inventory.getLastPathItem()
-            const currentItem=this.state.editItem
-            if (!currentItem) return
+            const currentItem=this.state.currentItem
             
             if (typeof this.state.inventoryPath === 'object' && this.state.inventoryPath.constructor.name === 'Error') {
                 return (

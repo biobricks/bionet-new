@@ -106,6 +106,10 @@ export default class Grid extends Component {
                 setTimeout(this.getDOMWidth, 66);
             }
         }
+        
+        getContainer() {
+            return this.container
+        }
 
         getDOMWidth = ()=> {
             var width = this.container && this.container.clientWidth;
@@ -131,6 +135,7 @@ export default class Grid extends Component {
         componentWillUnmount() {
             console.log('grid componentWillUnmount')
             window.removeEventListener('resize', this.onResize);
+            if (this.container) this.container.removeEventListener('mousedown', this.onMouseDown.bind(this));
         }
 
         render() {
@@ -153,11 +158,15 @@ export default class Grid extends Component {
                     this.props.onDragStart,
                     this.props.onDragEnd,
                     this.props.onDragMove,
-                    this.props.keyProp);
+                    this.props.keyProp,
+                    this.props.gridId);
                 const itemsLength = this.props.items.length;
+                var keyCounter=0;
                 gridItems = this.props.items.map(item => {
-                    const key = item[this.props.keyProp];
-                    const index = sortedIndex[key];
+                    const id = item[this.props.keyProp];
+                    //const key = item[this.props.keyProp];
+                    const key = keyCounter++
+                    const index = sortedIndex[id];
                     //console.log('item w,h:', item.width, item.height)
                           return (
                           <WrappedDisplayObject

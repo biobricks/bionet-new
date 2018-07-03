@@ -11,7 +11,7 @@ export default class DragManager {
     dragY;
     keyProp;
 
-    constructor(moveFn, dragStartFn, dragEndFn, dragMoveFn, keyProp) {
+    constructor(moveFn, dragStartFn, dragEndFn, dragMoveFn, keyProp, gridId) {
         this.dragMove = this.dragMove.bind(this);
         this.endDrag = this.endDrag.bind(this);
         this.moveFn = moveFn;
@@ -20,6 +20,7 @@ export default class DragManager {
         this.dragMoveFn = dragMoveFn;
         this.keyProp = keyProp;
         this.isDrag=false
+        this.gridId=gridId
     }
 
     dragMove(e) {
@@ -65,7 +66,10 @@ export default class DragManager {
 
     endDrag(item) {
         const dragItem=(this.dragItem) ? this.dragItem : item
-        if (dragItem) this.dragEndFn(dragItem[this.keyProp], this.clientX, this.clientY, this.isDrag)
+        if (dragItem) {
+            console.log('Drag Manager, endDrag:',this.gridId,dragItem.name)
+            this.dragEndFn(dragItem[this.keyProp], this.clientX, this.clientY, this.isDrag)
+        }
         this.dragItem = null;
         this.isDrag=false
         if (this.update && typeof this.update === 'function') {
@@ -74,6 +78,9 @@ export default class DragManager {
         this.update = null;
         document.removeEventListener('mousemove', this.dragMove);
         document.removeEventListener('mouseup', this.endDrag);
+        document.removeEventListener('touchmove', this.dragMove);
+        document.removeEventListener('touchend', this.endDrag);
+        document.removeEventListener('touchcancel', this.endDrag);
     }
 
     startDrag(e, domNode, item, fnUpdate) {
@@ -92,8 +99,8 @@ export default class DragManager {
             this.initialEventY = pageY;
 
             document.addEventListener('mousemove', this.dragMove);
-            document.addEventListener('touchmove', this.dragMove);
             document.addEventListener('mouseup', this.endDrag);
+            document.addEventListener('touchmove', this.dragMove);
             document.addEventListener('touchend', this.endDrag);
             document.addEventListener('touchcancel', this.endDrag);
 

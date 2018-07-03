@@ -49,6 +49,7 @@ export default class BaseDisplayObject extends Component {
             if (this.props.dragManager && this.props.dragEnabled) {
                 this.props.dragManager.startDrag(e, this.domNode, this.props.item, this.updateDrag.bind(this));
             } else {
+                console.log('onDrag: endDrag')
                 if (this.props.dragManager) this.props.dragManager.endDrag(this.props.item)
             }
         }
@@ -96,8 +97,7 @@ export default class BaseDisplayObject extends Component {
         }
 
         componentWillUnmount() {
-            if (this.props.dragEnabled && this.domNode) {
-                this.props.dragManager.endDrag();
+            if (this.domNode) {
                 this.domNode.removeEventListener('mousedown', this.onDrag);
                 this.domNode.removeEventListener('touchstart', this.onDrag);
             }

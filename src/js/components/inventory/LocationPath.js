@@ -116,7 +116,10 @@ export default class LocationPath extends Component {
         }
         const locationPath = (
             <div className="tile is-vertical" style={containerStyle}>
-                <Grid state="navigateGrid" items={item.items}
+                <Grid
+                        state="navigateGrid"
+                        gridId="navGrid"
+                        items={item.items}
                         onMove={this.onMove.bind(this)}
                         zoom={this.props.zoom}
                         dragEnabled={false}

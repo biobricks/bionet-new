@@ -306,21 +306,43 @@ module.exports = function (Component) {
                 const width=this.props.width
                 const pathId={}
                 const newPath=this.state.inventoryPath
-                const id=this.state.id
+                const containerId = (currentItem.type==='physical') ? currentItem.parent_id : currentItem.id
                 newPath.map(container => {
                     pathId[container.id]=container.name
                 })
-                var zoom=1.0
+                var rootZoom=1.0
                 const initZoom=this.initZoom
-                const locationPath = newPath.map(container => {
-                    if (id===container.id) {
-                        var panelWidth=this.state.mapPanelWidth
+                console.log('inventoryPath, nav:',currentItem.name,currentItem.type,containerId)
+                var panelWidth=this.state.mapPanelWidth
+                var rootLocation=null
+                if (currentItem.type!=='lab') {
+                    const rootPath2 = newPath.map(container => {
+                        if (currentItem.type!=='lab' && container.type==='lab') {
+                            var panelWidth=this.state.mapPanelWidth
+                            const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
+                            rootZoom = initZoom(this.state.mapPanelWidth,containerLayout.layoutWidth)
+                            return containerLayout
+                        }
+                    })
+                    const rootPath = rootPath2.filter(container => { return container })
+                    rootLocation = (
+                        <div>
+                            <LocationPath path={rootPath} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoom={rootZoom}/>
+                            <br/>
+                        </div>
+                    )
+                }
+                var zoom=1.0
+                const locationPath2 = newPath.map(container => {
+                    if (containerId===container.id) {
+                        console.log('inventoryPath, nav: generating layout')
                         const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
-                        zoom = initZoom(this.state.mapPanelWidth,containerLayout.layoutWidth)
+                        zoom = initZoom(panelWidth,containerLayout.layoutWidth)
+                        if (container.type!=='lab') zoom *= 0.5
                         return containerLayout
                     }
                 })
-                    
+                const locationPath = locationPath2.filter(container => { return container })
                 dataPanel = (
                         <div class="column is-7-desktop">
                           <DataPanel 
@@ -347,7 +369,8 @@ module.exports = function (Component) {
                         >
                             <div id="inventory_tiles" class="tile is-5">
                                 <div class="tile is-vertical">
-                                    <div id="inventory_path" class="tile is-parent is-5" style={pathMaxHeight}>
+                                    <div id="inventory_path" class="tile is-vertical is-5" style={pathMaxHeight}>
+                                        {rootLocation}
                                         <LocationPath path={locationPath} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoom={zoom}/>
                                     </div>
                                 </div>

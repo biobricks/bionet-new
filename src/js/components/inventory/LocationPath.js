@@ -55,24 +55,13 @@ export default class LocationPath extends Component {
     }
     
     componentWillReceiveProps(props) {
-        console.log('LocationPath:',props.path)
-        this.setState({locationPath:props.path})
+        //console.log('LocationPath:',props.path)
+        //this.setState({locationPath:props.path})
     }
 
     onSelectItem(key) {
         console.log('Location Path: selectItem:',key)
         app.actions.inventory.refreshInventoryPath(key)
-        return
-        
-        const keyProp = this.props.keyProp
-        const items = this.state.locationPath[0].items.map(function (item) {
-            item.selected = item[keyProp] === key
-            return item;
-        });
-        const locationPath = this.state.locationPath.slice()
-        this.setState({
-            locationPath:locationPath
-        })
     }
     
     onMove(event) {
@@ -104,40 +93,40 @@ export default class LocationPath extends Component {
     }
 
     render() {
-        const item = this.state.locationPath[this.state.locationPath.length-1]
+        console.log('LocationPath render:',this.props.path)
+        if (!this.props.path) return
+        const item = this.props.path[0]
+        //console.log('LocationPath render2:',item)
+        //const item = this.props.locationPath[this.props.locationPath.length-1]
         //const item = this.state.locationPath[0]
         if (!item) return
+        console.log('LocationPath render3:',item)
+            //height:this.props.height+'px',
         const containerStyle = {
             padding:0,
             margin:0,
             width:this.props.width+'px',
-            height:this.props.height+'px',
             overflow:'auto'
         }
-        const locationPath = (
-            <div className="tile is-vertical" style={containerStyle}>
-                <Grid
-                        state="navigateGrid"
-                        gridId="navGrid"
-                        items={item.items}
-                        onMove={this.onMove.bind(this)}
-                        zoom={this.props.zoom}
-                        dragEnabled={false}
-                        responsive={true}
-                        majorGridLine={item.majorGridLine}
-                        verticalMargin={-1}
-                        onDragEnd={this.onSelectItem.bind(this)}
-                        gridWidth={item.gridWidth}
-                        gridHeight={item.gridHeight}
-                        layoutWidth={item.gridWidth*item.layoutWidthUnits}
-                        layoutHeight={item.gridHeight*item.layoutHeightUnits}
-                />
-            </div>
-        )
         return (
             <div ref={node => this.container = node}>
-                <div className="tile">
-                    {locationPath}
+                <div className="tile" style={containerStyle}>
+                    <Grid
+                            state="navigateGrid"
+                            gridId="navGrid"
+                            items={item.items}
+                            onMove={this.onMove.bind(this)}
+                            zoom={this.props.zoom}
+                            dragEnabled={false}
+                            responsive={true}
+                            majorGridLine={item.majorGridLine}
+                            verticalMargin={-1}
+                            onDragEnd={this.onSelectItem.bind(this)}
+                            gridWidth={item.gridWidth}
+                            gridHeight={item.gridHeight}
+                            layoutWidth={item.gridWidth*item.layoutWidthUnits}
+                            layoutHeight={item.gridHeight*item.layoutHeightUnits}
+                    />
                 </div>
             </div>
         )

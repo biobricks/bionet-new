@@ -59,7 +59,7 @@ module.exports = function(Component) {
               <div class="content-area">
                 <Route exact path="/" component={Search} />
                 
-                <Route exact path="/ui/test" component={TestComponent} />
+                <Route path="/ui/test/:itemId" component={TestComponent} />
                 <Route exact path="/ui/lab" component={LabPanelDemo} />
                 <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
 

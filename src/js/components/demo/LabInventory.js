@@ -15,12 +15,14 @@ module.exports = function(Component) {
         editMode: false,
         newMode: false,
         selectedRecord: {},
-        parentRecord: {}
+        selectedRecordPath: [],
+        parentRecord: {},
       };
       this.searchResult = null;
       this.getLabData = this.getLabData.bind(this);
       this.selectRecord = this.selectRecord.bind(this);
       this.getRecordById = this.getRecordById.bind(this);
+      this.getRecordPath = this.getRecordPath.bind(this);
       this.toggleNewMode = this.toggleNewMode.bind(this);
       this.toggleEditMode = this.toggleEditMode.bind(this);
       this.onSaveNewClick = this.onSaveNewClick.bind(this);
@@ -30,7 +32,7 @@ module.exports = function(Component) {
 
     selectRecord(e) {
       let recordId = e.target.getAttribute('id');
-      console.info(`User clicked on record ${recordId}. Searching...`);
+      //console.info(`User clicked on record ${recordId}. Searching...`);
       
       // selectedRecord
       this.searchResult = null;
@@ -42,9 +44,21 @@ module.exports = function(Component) {
       this.getRecordById(selectedRecord.parent, fakeLabData);
       let parentRecord = this.searchResult || {};
 
-      //console.log('Result:');
-      //console.log(selectedRecord);
-      //console.log(parentRecord);
+      // selectedRecordPath
+      this.setState({
+        selectedRecordPath: []
+      });
+      this.getRecordPath(selectedRecord);
+      let selectedRecordPath = this.state.selectedRecordPath;
+
+      // console.log('selectedRecord:');
+      // console.log(selectedRecord);
+      
+      // console.log('selectedRecordPath:');
+      // console.log(selectedRecordPath);
+
+      // console.log('parentRecord:');
+      // console.log(parentRecord);
 
       this.setState({
         selectedRecord,
@@ -66,6 +80,20 @@ module.exports = function(Component) {
           }
         }
       }      
+    }
+
+    getRecordPath(record) {
+      let selectedRecordPath = this.state.selectedRecordPath;
+      selectedRecordPath.unshift(record);
+      this.setState({
+        selectedRecordPath
+      });
+      if(record.parent){
+        this.searchResult = null;
+        this.getRecordById(record.parent, fakeLabData);
+        let parentRecord = this.searchResult;
+        this.getRecordPath(parentRecord);
+      }
     }
 
     toggleEditMode() {
@@ -107,6 +135,11 @@ module.exports = function(Component) {
       this.searchResult = null; 
       this.getRecordById(selectedRecord.parent, lab);
       let parentRecord = this.searchResult;
+
+      this.setState({
+        selectedRecordPath: []
+      });
+      this.getRecordPath(selectedRecord);
 
       this.setState({
         lab: lab,

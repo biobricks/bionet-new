@@ -39,6 +39,29 @@ module.exports = function(Component) {
       let selectedRecord = this.props.selectedRecord;
       let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
+      let breadcrumbs = this.props.selectedRecordPath.map((record) => {
+        return (
+          <li>
+            {(record.name === 'EndyLab') ? (
+              <Link 
+                to={`/ui/lab`}
+                href="#"
+              >
+                {record.name}
+              </Link>
+            ) : (
+              <Link 
+                to={`/ui/lab-inventory/${record.id}`}
+                href="#"
+                id={record.id}
+                onClick={this.props.selectRecord}
+              >
+                {record.name}
+              </Link>
+            )}
+          </li>          
+        );
+      });
       return (
         <div class="DataPanel panel has-background-white">
           <div class="panel-heading is-capitalized">
@@ -133,31 +156,7 @@ module.exports = function(Component) {
           <div class="panel-block">
               <nav class="breadcrumb is-capitalized" aria-label="breadcrumbs">
                 <ul>
-                  <li>
-                    <Link to="/ui/lab">
-                      {this.props.lab.name}
-                    </Link> 
-                  </li>
-                  {(this.props.parentRecord.name !== "EndyLab" && this.props.parentRecord.name !== "-80 Freezer 1") ? (
-                    <li>
-                      ...
-                    </li>
-                  ) : null }                   
-                  {(this.props.parentRecord.name !== "EndyLab") ? (
-                    <li>
-                      <Link 
-                        to={`/ui/lab-inventory/${this.props.parentRecord.id}`}
-                        href="#"
-                        id={this.props.parentRecord.id}
-                        onClick={this.props.selectRecord}
-                      >
-                        {this.props.parentRecord.name}
-                      </Link>
-                    </li>
-                  ) : null } 
-                  <li>
-                      {this.props.selectedRecord.name}
-                  </li>                 
+                  { breadcrumbs }
                 </ul>
               </nav>
           </div>

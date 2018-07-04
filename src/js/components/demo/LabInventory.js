@@ -5,6 +5,7 @@ module.exports = function(Component) {
 
   const DataPanel = require('./DataPanel.js')(Component);
   const MapPanel = require('./MapPanel.js')(Component);
+  const SuggestPanel = require('./SuggestPanel.js')(Component);
 
   return class LabInventory extends Component {
 
@@ -14,6 +15,7 @@ module.exports = function(Component) {
         lab: {},
         editMode: false,
         newMode: false,
+        formType: "",
         selectedRecord: {},
         selectedRecordPath: [],
         parentRecord: {},
@@ -28,6 +30,7 @@ module.exports = function(Component) {
       this.onSaveNewClick = this.onSaveNewClick.bind(this);
       this.onSaveEditClick = this.onSaveEditClick.bind(this);
       this.onDeleteClick = this.onDeleteClick.bind(this);
+      this.setFormType = this.setFormType.bind(this);
     }
 
     selectRecord(e) {
@@ -148,11 +151,23 @@ module.exports = function(Component) {
       });
     }
 
+    setFormType(e) {
+      let formType = e.target.value;
+      console.log(`Form type switched to ${formType}`);
+      this.setState({
+        formType
+      });
+    }
+
     componentDidMount() {
       this.getLabData();
     }  
 
     render() {
+      let isContainer = Object.keys(this.state.selectedRecord).indexOf('children') > -1;
+      let isPhysical = Object.keys(this.state.selectedRecord).indexOf('children') === -1;
+      let isNewMode = this.state.newMode;
+      let isEditMode = this.state.editMode;
       return (
         <div class="LabInventory">
           <div class="columns is-desktop">
@@ -165,12 +180,19 @@ module.exports = function(Component) {
                 onDeleteClick={this.onDeleteClick}
                 toggleEditMode={this.toggleEditMode}
                 toggleNewMode={this.toggleNewMode}
+                setFormType={this.setFormType}
               />
             </div>
             <div class="column is-5-desktop">
-              <MapPanel 
+              {(isNewMode && this.state.formType === 'Physical') ? (
+                <SuggestPanel 
                 {...this.state}
               />
+              ) : (
+                <MapPanel 
+                  {...this.state}
+                />
+              )}  
             </div>
           </div>
         </div>

@@ -12,22 +12,6 @@ module.exports = function(Component) {
 
   return class DataPanel extends Component {
     
-    constructor(props) {
-      super(props);
-      this.state = {
-        formType: ''
-      };
-      this.setFormType = this.setFormType.bind(this);
-    }
-    
-    setFormType(e) {
-      let formType = e.target.value;
-      console.log(`Form type switched to ${formType}`);
-      this.setState({
-        formType
-      });
-    }
-
     render() {
 
       <li class="is-active">{this.props.selectedRecord.name}</li>
@@ -186,8 +170,8 @@ module.exports = function(Component) {
                           <div class="select">
                             <select 
                               class="is-small"
-                              onChange={this.setFormType}
-                              value={this.state.formType}
+                              onChange={this.props.setFormType}
+                              value={this.props.formType}
                             >
                               <option value="">Select One</option>
                               <option value="Container">Container</option>
@@ -199,12 +183,12 @@ module.exports = function(Component) {
                     </div>
                   </div>
                 </div>
-                {(this.state.formType === 'Container') ? (
+                {(this.props.formType === 'Container') ? (
                   <ContainerNewForm 
                     {...this.props}
                   />
                 ) : null }
-                {(this.state.formType === 'Physical') ? (
+                {(this.props.formType === 'Physical') ? (
                   <PhysicalNewForm 
                   {...this.props}
                 />

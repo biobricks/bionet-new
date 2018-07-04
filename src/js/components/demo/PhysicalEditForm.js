@@ -62,6 +62,67 @@ module.exports = function(Component) {
               <div class="column is-12">
                 <div class="columns">
                   <div class="column is-narrow">
+                    <label class="label">License</label>
+                  </div>
+                  <div class="column">   
+                    <div class="select" name="license">
+                      <select>
+                        <option value="OpenMTA">OpenMTA</option>
+                        <option value="UBMTA">UBMTA</option>
+                        <option value="Limbo">Limbo</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="column is-12">
+                <div class="columns is-mobile">
+                  <div class="column is-narrow">
+                    <label class="label">Provenance</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input"
+                      type="text" 
+                      name="provenance"
+                      value={selectedRecord.provenance}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="column is-12">
+                <div class="columns is-mobile">
+                  <div class="column is-narrow">
+                    <label class="label">Genotype</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input"
+                      type="text" 
+                      name="genotype"
+                      value={selectedRecord.genotype}
+                    />
+                  </div>
+                </div>  
+              </div>
+              <div class="column is-12">
+                <div class="columns">
+                  <div class="column is-narrow">
+                    <label class="label">Sequence</label>
+                  </div>
+                  <div class="column">   
+                    <textarea 
+                      class="textarea" 
+                      name="sequence"
+                      value={selectedRecord.sequence}
+                      rows="3"
+                    >{selectedRecord.sequence}</textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="column is-12">
+                <div class="columns">
+                  <div class="column is-narrow">
                     <label class="label">Submitted To FreeGenes?</label>
                   </div>
                   <div class="column">   

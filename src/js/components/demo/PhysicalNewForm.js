@@ -18,7 +18,7 @@ module.exports = function(Component) {
         <div class="PhysicalNewForm">
           <div class="panel-block">
 
-            <div class="columns is-multiline is-gapless">
+            <div class="columns is-multiline">
               <div class="column is-12">
                 <div class="columns is-mobile">
                   <div class="column is-narrow">
@@ -26,7 +26,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input is-small"
+                      class="input  "
                       type="text" 
                       placeholder="Physical Name"
                     />
@@ -40,7 +40,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <textarea 
-                      class="textarea is-small"
+                      class="textarea  "
                       rows="2"
                       placeholder="A short description of the Physical."
                     ></textarea>
@@ -54,7 +54,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input is-small"
+                      class="input  "
                       type="number" 
                       min="1"
                     />
@@ -68,7 +68,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input is-small"
+                      class="input  "
                       type="number" 
                       min="1"
                     />

@@ -11,7 +11,7 @@ module.exports = function(Component) {
         <div class="PhysicalEditForm">
           <div class="panel-block">
 
-            <div class="columns is-multiline is-gapless">
+            <div class="columns is-multiline">
               <div class="column is-12">
                 <div class="columns is-mobile">
                   <div class="column is-narrow">
@@ -19,7 +19,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input is-small"
+                      class="input  "
                       type="text" 
                       value={selectedRecord.name}
                     />
@@ -33,7 +33,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <textarea 
-                      class="textarea is-small" 
+                      class="textarea  " 
                       value={selectedRecord.description}
                       rows="2"
                     >{selectedRecord.description}</textarea>
@@ -54,7 +54,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input is-small"
+                      class="input  "
                       type="number" 
                       value={selectedRecord.row}
                     />
@@ -68,7 +68,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input is-small"
+                      class="input  "
                       type="number" 
                       value={selectedRecord.column}
                     />

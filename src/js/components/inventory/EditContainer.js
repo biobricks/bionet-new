@@ -163,12 +163,12 @@ export default class EditContainer extends Component {
                         item.parent_x = col+1
                         item.parent_y = row+1
                     }
-                    console.log('onDragEnd updateItem',item)
+                    console.log('inventoryPath: onDragEnd updateItem',item)
                     return item
                 })
                 source.row = row
                 source.col = col
-                console.log('onDragEnd, moving', source)
+                console.log('inventoryPath: onDragEnd, moving', source)
                 const items = this.state.items.map(function (item) {
                     if (item.id===source.id) return source
                     return item
@@ -459,39 +459,10 @@ export default class EditContainer extends Component {
     
     render() {
         const containerStyle = {
-            padding:0,
-            margin:0,
             width:this.props.width+'px',
             height:this.props.height+'px',
-            overflow:'auto'
         }
-        /*
-                <div style={{marginTop:'20px'}}/>
-                <button id="clearItems" style={{position:'relative',left:35}}>Clear</button>
-        */
-        //                <hr style={{margin:'10px 0px 10px 0px',width:'1200px'}}/>
 
-        //console.log('rendering Grid Container:',this.props)
-        /*
-                <ContainerPropertiesForm
-                    name={this.state.layoutName}
-                    width={this.state.layoutWidthUnits}
-                    height={this.state.layoutHeightUnits}
-                    majorGridLine={this.state.majorGridLine}
-                    units={this.state.units}
-                    onChange={this.onUpdateContainerProperties.bind(this)}
-                />
-                <ItemPropertiesForm
-                    name={this.state.defaultName}
-                    width={this.state.defaultWidth}
-                    height={this.state.defaultHeight}
-                    color={this.state.defaultColor}
-                    fontSize={this.state.defaultFontSize}
-                    onChange={this.onUpdateItemProperties.bind(this)}
-                />
-                <div style={{marginTop:'20px'}}/>
-                <div style={{marginTop:'20px'}}/>
-        */
         var containerPropertiesForm=null
         if (this.props.fullWidth) {
             containerPropertiesForm = (
@@ -518,9 +489,19 @@ export default class EditContainer extends Component {
                     fontSize={this.state.defaultFontSize}
                     onChange={this.onUpdateItemProperties.bind(this)}
                 />
+
                 <div style={{marginTop:'20px'}}/>
-                <span className="pure-form" style={{display:'block',float:'right'}}><label>Zoom</label><SliderControl index={this.state.zoomIndex} values={this.zoomLevel} name="zoomSlider" onChange={this.onZoom.bind(this)}/></span>
-                <div style={containerStyle} ref={node => this.container = node}>
+                <span className="pure-form">
+                    <label>Zoom</label>
+                    <SliderControl
+                        index={this.state.zoomIndex}
+                        values={this.zoomLevel}
+                        name="zoomSlider"
+                        onChange={this.onZoom.bind(this)}
+                    />
+                </span>
+
+                <div className="EditContainer" style={containerStyle} ref={node => this.container = node}>
                     <Grid
                             state="editGrid"
                             gridId="editGrid"

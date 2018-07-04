@@ -41,7 +41,6 @@ export default class BaseDisplayObject extends Component {
         }
         
         onResizeStop(e,data) {
-            console.log('onResizeStop:',e,data)
             this.props.onResizeStop(this.props.item.id, data.size.width, data.size.height)
         }
 
@@ -49,7 +48,6 @@ export default class BaseDisplayObject extends Component {
             if (this.props.dragManager && this.props.dragEnabled) {
                 this.props.dragManager.startDrag(e, this.domNode, this.props.item, this.updateDrag.bind(this));
             } else {
-                console.log('onDrag: endDrag')
                 if (this.props.dragManager) this.props.dragManager.endDrag(this.props.item)
             }
         }
@@ -68,11 +66,11 @@ export default class BaseDisplayObject extends Component {
             const layout = new LayoutManager(options, this.props.layoutWidth, this.props.layoutHeight, gridWidth, gridHeight);
             const col = this.props.item.col
             const row = this.props.item.row
-                //console.log('BaseDisplayObject getStyle',row, col,this.props.item, this.props)
+
             const style = layout.getStyle(this.props.index, row, col,
                 this.props.animation,
                 this.props.item[this.props.filterProp]);
-            //If this is the object being dragged, return a different style
+
             if (this.props.dragManager && this.props.dragManager.dragItem &&
                 this.props.dragManager.dragItem[this.props.keyProp] === this.props.item[this.props.keyProp]) {
                 const dragStyle = this.props.dragManager.getStyle(this.state.dragX, this.state.dragY);
@@ -87,9 +85,9 @@ export default class BaseDisplayObject extends Component {
             }
             return style;
         }
+
         setDragNode(node) {
             if (!node) return
-            //console.log('setDragNode:',node)
             this.domNode = node
             this.domNode.addEventListener('mousedown', this.onDrag);
             this.domNode.addEventListener('touchstart', this.onDrag);

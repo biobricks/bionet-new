@@ -1,5 +1,6 @@
 .pure-form {
     text-align:left;
+    display:block;
 }
 .pure-form input, .pure-form label, .pure-form select {
     margin-right:10px;
@@ -12,3 +13,8 @@ label {
     -ms-user-select: none; /* IE10+ */
 }
 
+.EditContainer {
+    padding:0;
+    margin:0;
+    overflow:auto;
+}

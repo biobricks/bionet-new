@@ -14,13 +14,14 @@ import WrappedDisplayObject from './BaseDisplayObject';
 import DragManager from './DragManager';
 import LayoutManager from './LayoutManager';
 import PropTypes from 'prop-types';
+import GridCss from './Grid.scss'
 
 export default class Grid extends Component {
         // todo:
         // add images for items backgroundImage: `url('${this.props.item.url}')`
         // overlay grid onto background image
         // enable/disable grid display
-            //animation: 'transform 300ms ease',
+        //animation: 'transform 300ms ease',
 
         static defaultProps = {
             items: [],
@@ -81,8 +82,6 @@ export default class Grid extends Component {
                 const clientY = isTouch ? e.targetTouches[0].pageY : e.pageY;
                 const gridWidth = (this.props.gridWidth * this.props.zoom);
                 const gridHeight = (this.props.gridHeight * this.props.zoom);
-                //{'url': 'http://invisionapp.com/subsystems/do_ui_kit/assets/img/screens/original-1x/screen-1-1-login.jpg', 'name': 'login', 'sort': 1, 'key': 1},
-                //const id = this.props.items.length
                 const id=0
                 const item = {
                     url: 'test',
@@ -125,7 +124,6 @@ export default class Grid extends Component {
         }
 
         componentDidMount() {
-            //If responsive, listen for resize
             if (this.props.responsive) {
                 window.addEventListener('resize', this.onResize);
             }
@@ -133,7 +131,6 @@ export default class Grid extends Component {
         }
 
         componentWillUnmount() {
-            console.log('grid componentWillUnmount')
             window.removeEventListener('resize', this.onResize);
             if (this.container) this.container.removeEventListener('mousedown', this.onMouseDown.bind(this));
         }
@@ -153,6 +150,7 @@ export default class Grid extends Component {
             const gridHeight = (this.props.gridHeight * this.props.zoom);
             var gridItems = null
             if (this.props.items) {
+                
                 const dragManager = new DragManager(
                     this.props.onMove,
                     this.props.onDragStart,
@@ -160,20 +158,19 @@ export default class Grid extends Component {
                     this.props.onDragMove,
                     this.props.keyProp,
                     this.props.gridId);
-                const itemsLength = this.props.items.length;
+                
                 var keyCounter=0;
+                
                 gridItems = this.props.items.map(item => {
                     const id = item[this.props.keyProp];
-                    //const key = item[this.props.keyProp];
                     const key = keyCounter++
                     const index = sortedIndex[id];
-                    //console.log('item w,h:', item.width, item.height)
-                          return (
+                    return (
                           <WrappedDisplayObject
                             item={item}
                             index={index}
                             key={key}
-                            itemsLength={itemsLength}
+                            itemsLength={this.props.items.length}
                             animation={this.props.animation}
                             itemWidth={item.width}
                             itemHeight={item.height}
@@ -191,8 +188,9 @@ export default class Grid extends Component {
                             dragManager={dragManager}
                             onResizeStop={this.props.onResizeStop}
                           />
-                        );
+                    );
                 });
+                
             }
 
             const options = {
@@ -208,25 +206,16 @@ export default class Grid extends Component {
             const gridMinorXAxis=gridWidth
             const gridMinorYAxis=gridHeight
             
-            //console.log('grid size:',gridMajorXAxis,gridMinorXAxis)
-            //const backgroundColor = '#269'
-            //const gridColorMajorAxis = 'rgba(255,255,255,.25)'
-            //const gridColorMinorAxis = 'rgba(255,255,255,.125)'
             const backgroundColor = '#fff'
             const gridColorMajorAxis = 'rgba(0,0,255,.25)'
             const gridColorMinorAxis = 'rgba(0,0,255,.125)'
             const backgroundImage="linear-gradient("+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient("+gridColorMinorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMinorAxis+" 1px, transparent 1px)"
-            
-            //const backgroundImage="linear-gradient(transparent "+gridMajorXAxis-1+"px, "+gridColorMajorAxis+" " +gridMajorXAxis+"px)"
-            //const backgroundImage="repeating-linear-gradient(transparent "+gridMajorXAxis-1+"px, "+gridColorMajorAxis+" " +gridMajorXAxis+"px),repeating-linear-gradient(90deg, "+gridColorMajorAxis+" 1px, transparent 1px),repeating-linear-gradient("+gridColorMinorAxis+" 1px, transparent 1px),repeating-linear-gradient(90deg, "+gridColorMinorAxis+" 1px, transparent 1px)"
             
             const backgroundSize=gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px"
 
             const gridStyle = {
                 width: this.props.zoom*this.props.layoutWidth,
                 height: this.props.zoom*this.props.layoutHeight,
-                position: 'relative',
-                display: 'block',
                 backgroundColor:backgroundColor,
                 backgroundImage: backgroundImage,
                 backgroundSize: backgroundSize

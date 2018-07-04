@@ -98,7 +98,6 @@ module.exports = function (Component) {
         
         loggedInUser(loggedInUser) {
             //console.log('logged in inventory: user', loggedInUser, app.remote, this.initialized)
-            
             if (!loggedInUser) {
                 return
             }
@@ -107,7 +106,6 @@ module.exports = function (Component) {
             app.actions.inventory.getFavorites()
             app.actions.inventory.getWorkbenchContainer()
             const id = (this.props.match) ? this.props.match.params.id : null
-            //console.log('logged in user')
             this.getInventoryPath(id)
         }
         
@@ -118,19 +116,13 @@ module.exports = function (Component) {
         }
         
         render() {
+            console.log('inventoryPath render',this.state.inventoryPath)
             if (!app.state.global.user) {
                 // todo: this message could be displayed for reasons other than not having a logged in user
                 return (
                     <div>You must be logged in to view this page.</div>
                 )
             }
-            //console.log('inventory main render:', this.props, this.state)
-            /*
-                <div id="inventory_view" class="tile" style={{marginLeft:'10px',marginTop:'10px'}}>
-                    <ActionNavbar state="inventoryNav" inventoryPath={this.state.inventoryPath} menu={this.state.types}/>
-                    <InventoryPath state="inventoryPath" id={this.state.id} inventoryPath={this.state.inventoryPath}/>
-                </div>
-            */
             return (
                 <InventoryPath state="inventoryPath" id={this.state.id} inventoryPath={this.state.inventoryPath}/>
             )

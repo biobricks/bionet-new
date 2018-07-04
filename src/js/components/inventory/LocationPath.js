@@ -7,6 +7,7 @@ from 'react';
 import Grid from './Grid';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+import LocationPathCSS from './LocationPath.scss'
 // import Perf from 'react-addons-perf';
 
 export default class LocationPath extends Component {
@@ -54,11 +55,6 @@ export default class LocationPath extends Component {
         };
     }
     
-    componentWillReceiveProps(props) {
-        //console.log('LocationPath:',props.path)
-        //this.setState({locationPath:props.path})
-    }
-
     onSelectItem(key) {
         console.log('Location Path: selectItem:',key)
         app.actions.inventory.refreshInventoryPath(key)
@@ -68,7 +64,6 @@ export default class LocationPath extends Component {
     }
     
     onResize = ()=> {
-        //console.log('grid onResize')
         if (window.requestAnimationFrame) {
             window.requestAnimationFrame(this.getDOMWidth);
         } else {
@@ -78,7 +73,6 @@ export default class LocationPath extends Component {
     
     getDOMWidth = ()=> {
         var rect = this.container && this.container.getBoundingClientRect();
-        //console.log('getDOMWidth',this.container,rect)
         if (!rect) return
         this.setState({
             layoutTop:rect.top,
@@ -93,24 +87,17 @@ export default class LocationPath extends Component {
     }
 
     render() {
-        console.log('LocationPath render:',this.props.path)
         if (!this.props.path) return
         const item = this.props.path[0]
-        //console.log('LocationPath render2:',item)
-        //const item = this.props.locationPath[this.props.locationPath.length-1]
-        //const item = this.state.locationPath[0]
         if (!item) return
-        console.log('LocationPath render3:',item)
-            //height:this.props.height+'px',
+        
         const containerStyle = {
-            padding:0,
-            margin:0,
             width:this.props.width+'px',
-            overflow:'auto'
         }
+        
         return (
             <div ref={node => this.container = node}>
-                <div className="tile" style={containerStyle}>
+                <div className="tile LocationPath" style={containerStyle}>
                     <Grid
                             state="navigateGrid"
                             gridId="navGrid"

@@ -11,7 +11,7 @@ module.exports = function(Component) {
       return (
         <div class="PhysicalProfile">
           <div class="panel-block">
-            <div class="columns is-multiline is-gapless">
+            <div class="columns is-multiline">
               <div class="column is-12">
                 <div class="columns is-gapless">
                   <div class="column is-narrow">

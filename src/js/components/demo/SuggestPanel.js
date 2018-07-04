@@ -14,7 +14,7 @@ module.exports = function(Component) {
     }
 
     getSuggestions() {
-      let suggestions = [
+      let suggestions  = [
         {
           "id": "HyAC6l1DWQ",
           "name": "dolores",
@@ -94,10 +94,10 @@ module.exports = function(Component) {
       return (
         <div class="MapPanel panel has-background-white">
           <div className="panel-heading">
-            Virtual Suggestions
+            Suggestions
           </div>
           <div className="panel-block">
-            Select A Suggestion (optional)
+            Select An Existing Item (optional)
           </div>
           {suggestions}
         </div>

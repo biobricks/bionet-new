@@ -3,6 +3,8 @@ import {Link} from 'react-router-dom';
 
 module.exports = function(Component) {
 
+  const MapGrid = require('./MapGrid.js')(Component);
+
   return class MapPanel extends Component {
 
 	  render() {
@@ -19,7 +21,9 @@ module.exports = function(Component) {
           </div>
           <div className="panel-block">
             <div id="nav-panel" class="map-container">
-
+              <MapGrid 
+                {...this.props}
+              />
             </div>
           </div>         
         </div>

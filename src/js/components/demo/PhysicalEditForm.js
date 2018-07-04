@@ -20,7 +20,8 @@ module.exports = function(Component) {
                   <div class="column">   
                     <input 
                       class="input"
-                      type="text" 
+                      type="text"
+                      name="name" 
                       value={selectedRecord.name}
                     />
                   </div>
@@ -33,7 +34,8 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <textarea 
-                      class="textarea" 
+                      class="textarea"
+                      name="description" 
                       value={selectedRecord.description}
                       rows="2"
                     >{selectedRecord.description}</textarea>
@@ -65,8 +67,8 @@ module.exports = function(Component) {
                     <label class="label">License</label>
                   </div>
                   <div class="column">   
-                    <div class="select" name="license">
-                      <select>
+                    <div class="select">
+                      <select name="license">
                         <option value="OpenMTA">OpenMTA</option>
                         <option value="UBMTA">UBMTA</option>
                         <option value="Limbo">Limbo</option>
@@ -83,7 +85,7 @@ module.exports = function(Component) {
                   <div class="column">   
                     <input 
                       class="input"
-                      type="text" 
+                      type="text"
                       name="provenance"
                       value={selectedRecord.provenance}
                     />
@@ -145,8 +147,8 @@ module.exports = function(Component) {
                     <label class="label">FreeGenes Stage</label>
                   </div>
                   <div class="column">   
-                    <div class="select" name="freeGenesStage">
-                      <select>
+                    <div class="select">
+                      <select name="freeGenesStage">
                         <option value="0">0 - Not Submitted</option>
                         <option value="1">1 - Submitted</option>
                         <option value="2">2 - Optimizing</option>

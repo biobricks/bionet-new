@@ -7,7 +7,7 @@ import SimpleDisplayObjectCss from './SimpleDisplayObject.scss'
 //const ResizableBox = require('../ResizableBox');
 //const Resizable = require('re-resizable').Resizable;
 
-export default class SimpleContainer extends React.Component {
+export default class SimpleDisplayObject extends React.Component {
     // todo:
     // add default props, prop-types, constructor
     // add images for items backgroundImage: `url('${this.props.item.url}')`
@@ -30,11 +30,15 @@ export default class SimpleContainer extends React.Component {
             width:itemWidth+'px'
         }
         const label = (itemWidth<40) ? '' : this.props.item.name
-        const selectedClass = (this.props.item.selected) ? 'selectedDisplayObject' : 'deselectedDisplayObject'
-        
+        var highlightedClass=''
+        if (this.props.highlighted) {
+            highlightedClass = (this.props.highlighted) ? 'highlightedDisplayObject' : 'deselectedDisplayObject'
+        } else {
+            highlightedClass = (this.props.item.selected) ? 'selectedDisplayObject' : 'deselectedDisplayObject'
+        }
         //console.log('rendering Sample Display',this.props.item.height, itemHeight)
         return (
-            <div style={itemStyle} className={"gridItem tooltip displayObject "+selectedClass} data-tooltip={this.props.item.name} ref={node => this.props.setDragNode(node)}>
+            <div style={itemStyle} className={"gridItem tooltip displayObject "+highlightedClass} data-tooltip={this.props.item.name} ref={node => this.props.setDragNode(node)}>
                 <span className="itemTextStyle" style={itemTextStyle}>{label}</span>
             </div>
         )

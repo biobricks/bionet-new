@@ -13,12 +13,14 @@ module.exports = function(Component) {
 
     onRecordEnter(e) {
       let recordId = e.target.getAttribute('id');
-      console.log(`Mouse Enter Record ${recordId}`);
+      if (this.props.onRecordEnter) this.props.onRecordEnter(recordId)
+      //console.log(`Mouse Enter Record ${recordId}`);
     }
 
     onRecordLeave(e) {
       let recordId = e.target.getAttribute('id');
-      console.log(`Mouse Leaving Record ${recordId}`);
+      if (this.props.onRecordLeave) this.props.onRecordLeave(recordId)
+      //console.log(`Mouse Leaving Record ${recordId}`);
     }
 
     render() {
@@ -34,8 +36,8 @@ module.exports = function(Component) {
                 class="panel-block"
                 id={child.id}
                 onClick={this.props.selectRecord}
-                onMouseEnter={this.onRecordEnter}
-                onMouseLeave={this.onRecordLeave}                
+                onMouseEnter={this.onRecordEnter.bind(this)}
+                onMouseLeave={this.onRecordLeave.bind(this)}
               >
                 <span class="panel-icon">
                   {(isContainer) ? (

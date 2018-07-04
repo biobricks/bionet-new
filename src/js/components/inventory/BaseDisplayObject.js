@@ -108,6 +108,7 @@ export default class BaseDisplayObject extends Component {
                     <DisplayObject
                         item={this.props.item}
                         index={this.props.index}
+                        highlighted={this.props.highlighted}
                         itemsLength={this.props.itemsLength}
                         gridWidth={this.props.gridWidth}
                         gridHeight={this.props.gridHeight}

@@ -165,7 +165,19 @@ module.exports = function (Component) {
         onNavPanelMount(width,height) {
             this.setState({mapPanelWidth:width,mapPanelHeight:height})
         }
-
+        onRecordEnter(id) {
+            //console.log('inventoryPath onRecordEnter:',id)
+            this.setState({
+                highlightedRecord:id
+            })
+        }
+        onRecordLeave(id) {
+            //console.log('inventoryPath onRecordLeave:',id)
+            this.setState({
+                highlightedRecord:null
+            })
+        }
+        
         render() {
             if (!this.state.inventoryPath || !this.state.currentItem) return
             console.log('inventoryPath render, id:',this.state.id, this.state.inventoryPath)
@@ -255,6 +267,8 @@ module.exports = function (Component) {
                                 selectRecord={selectRecord}
                                 toggleEditMode={this.toggleEditMode.bind(this)}
                                 onSaveEditClick={this.onSaveEditClick.bind(this)}
+                                onRecordEnter={this.onRecordEnter.bind(this)}
+                                onRecordLeave={this.onRecordLeave.bind(this)}
                                 >
                                 {dataItems}
                             </DataPanel>
@@ -307,9 +321,16 @@ module.exports = function (Component) {
                         }
                     })
                     const rootPath = rootPath2.filter(container => { return container })
+                    if (this.state.highlightedRecord) console.log('baseDisplayObject, highlighted',this.state.highlightedRecord)
                     rootLocation = (
                         <div>
-                            <LocationPath path={rootPath} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoom={rootZoom}/>
+                            <LocationPath
+                                path={rootPath}
+                                width={this.state.mapPanelWidth}
+                                height={this.state.mapPanelHeight}
+                                zoom={rootZoom}
+                                highlightedRecord={this.state.highlightedRecord}
+                            />
                             <br/>
                         </div>
                     )
@@ -335,6 +356,8 @@ module.exports = function (Component) {
                             selectRecord={selectRecord}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             onSaveEditClick={this.onSaveEditClick.bind(this)}
+                            onRecordEnter={this.onRecordEnter.bind(this)}
+                            onRecordLeave={this.onRecordLeave.bind(this)}
                             >
                             {dataItems}
                         </DataPanel>
@@ -352,7 +375,13 @@ module.exports = function (Component) {
                                 <div class="tile is-vertical">
                                     <div id="inventory_path" class="tile is-vertical is-5" style={pathMaxHeight}>
                                         {rootLocation}
-                                        <LocationPath path={locationPath} width={this.state.mapPanelWidth} height={this.state.mapPanelHeight} zoom={zoom}/>
+                                        <LocationPath
+                                            path={locationPath}
+                                            width={this.state.mapPanelWidth}
+                                            height={this.state.mapPanelHeight}
+                                            zoom={zoom}
+                                            highlightedRecord={this.state.highlightedRecord}
+                                        />
                                     </div>
                                 </div>
                             </div>

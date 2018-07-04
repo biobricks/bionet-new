@@ -102,6 +102,7 @@ export default class LocationPath extends Component {
                             state="navigateGrid"
                             gridId="navGrid"
                             items={item.items}
+                            highlightedRecord={this.props.highlightedRecord}
                             onMove={this.onMove.bind(this)}
                             zoom={this.props.zoom}
                             dragEnabled={false}

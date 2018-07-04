@@ -165,11 +165,13 @@ export default class Grid extends Component {
                     const id = item[this.props.keyProp];
                     const key = keyCounter++
                     const index = sortedIndex[id];
+                    const highlighted = (item.id===this.props.highlightedRecord) ? true : false
                     return (
                           <WrappedDisplayObject
                             item={item}
                             index={index}
                             key={key}
+                            highlighted={highlighted}
                             itemsLength={this.props.items.length}
                             animation={this.props.animation}
                             itemWidth={item.width}

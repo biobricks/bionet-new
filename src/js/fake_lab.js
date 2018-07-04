@@ -51,7 +51,14 @@ const lab = {
                       "description": "Iusto dignissimos modi.",
                       "parent": "HydR6l1D-7",
                       "row": 1,
-                      "column": 1
+                      "column": 1,
+                      "available": true,
+                      "license": "openMTA",
+                      "freeGenes": false,
+                      "freeGenesStage": 0,
+                      "provenance": "Unknown",
+                      "genotype": "None",
+                      "sequence": "ATGGGTCGTGGCCTGCATGTTGCCGTAGTTGGTGCAACGGGTGCTGTCGGCCAGCAGATGCTGAAAACTCTGGAGGACCGCAATTTCGAAATGGACACCCTGACGCTGCTGTCCAGCAAGCGCTC"
                     },
                     {
                       "id": "ryn06eyPbm",
@@ -59,7 +66,14 @@ const lab = {
                       "description": "Quas ad aut.",
                       "parent": "HydR6l1D-7",
                       "row": 1,
-                      "column": 2
+                      "column": 2,
+                      "available": false,
+                      "license": "openMTA",
+                      "freeGenes": true,
+                      "freeGenesStage": 2,
+                      "provenance": "Unknown",
+                      "genotype": "None",
+                      "sequence": "ATGGGTCGTGGCCTGCATGTTGCCGTAGTTGGTGCAACGGGTGCTGTCGGCCAGCAGATGCTGAAAACTCTGGAGGACCGCAATTTCGAAATGGACACCCTGACGCTGCTGTCCAGCAAGCGCTC"
                     },
                     {
                       "id": "rka06lkDWX",
@@ -67,7 +81,14 @@ const lab = {
                       "description": "In asperiores autem eos enim consequatur alias veritatis neque et.",
                       "parent": "HydR6l1D-7",
                       "row": 1,
-                      "column": 3
+                      "column": 3,
+                      "available": true,
+                      "license": "UBMTA",
+                      "freeGenes": false,
+                      "freeGenesStage": 0,
+                      "provenance": "Unknown",
+                      "genotype": "None",
+                      "sequence": "ATGGGTCGTGGCCTGCATGTTGCCGTAGTTGGTGCAACGGGTGCTGTCGGCCAGCAGATGCTGAAAACTCTGGAGGACCGCAATTTCGAAATGGACACCCTGACGCTGCTGTCCAGCAAGCGCTC"
                     }
                   ]
                 },
@@ -87,7 +108,14 @@ const lab = {
                       "description": "Nihil molestiae sunt.",
                       "parent": "S1YATekDZQ",
                       "row": 1,
-                      "column": 1
+                      "column": 1,
+                      "available": true,
+                      "license": "openMTA",
+                      "freeGenes": false,
+                      "freeGenesStage": 0,
+                      "provenance": "Unknown",
+                      "genotype": "None",
+                      "sequence": "ATGGGTCGTGGCCTGCATGTTGCCGTAGTTGGTGCAACGGGTGCTGTCGGCCAGCAGATGCTGAAAACTCTGGAGGACCGCAATTTCGAAATGGACACCCTGACGCTGCTGTCCAGCAAGCGCTC"
                     },
                     {
                       "id": "ByJxCTl1DbQ",
@@ -95,7 +123,14 @@ const lab = {
                       "description": "In quis eligendi ex dolore.",
                       "parent": "S1YATekDZQ",
                       "row": 1,
-                      "column": 2
+                      "column": 2,
+                      "available": true,
+                      "license": "Limbo",
+                      "freeGenes": false,
+                      "freeGenesStage": 0,
+                      "provenance": "Unknown",
+                      "genotype": "None",
+                      "sequence": "ATGGGTCGTGGCCTGCATGTTGCCGTAGTTGGTGCAACGGGTGCTGTCGGCCAGCAGATGCTGAAAACTCTGGAGGACCGCAATTTCGAAATGGACACCCTGACGCTGCTGTCCAGCAAGCGCTC"
                     },
                     {
                       "id": "ryexAaeJPWX",
@@ -103,7 +138,14 @@ const lab = {
                       "description": "Et cum nihil ut est adipisci itaque.",
                       "parent": "S1YATekDZQ",
                       "row": 1,
-                      "column": 3
+                      "column": 3,
+                      "available": true,
+                      "license": "openMTA",
+                      "freeGenes": false,
+                      "freeGenesStage": 0,
+                      "provenance": "Unknown",
+                      "genotype": "None",
+                      "sequence": "ATGGGTCGTGGCCTGCATGTTGCCGTAGTTGGTGCAACGGGTGCTGTCGGCCAGCAGATGCTGAAAACTCTGGAGGACCGCAATTTCGAAATGGACACCCTGACGCTGCTGTCCAGCAAGCGCTC"
                     }
                   ]
                 },

@@ -34,7 +34,8 @@ module.exports = function (Component) {
         }
 
         componentWillReceiveProps(props) {
-            if (!props.inventoryPath || props.id===this.state.id) return
+            if (!props.inventoryPath) return
+            //if (!props.inventoryPath || props.id===this.state.id) return
             const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
             this.setState({
                 id: props.id,
@@ -91,22 +92,9 @@ module.exports = function (Component) {
             app.actions.inventory.selectInventoryId(selectedItem.parent_id)
         }
         
-        selectedItemHeader() {
-            return null
-            const path = this.props.inventoryPath
-            if (!path || path.length<1) return null
-            const selectedItem = path[path.length-1]
-            if (!selectedItem) return null
-            const iconStyle = "font-size:20px;"
-            const navArrowStyle = "font-size:20px;color:#808080;justify-content:center;margin-right:20px;cursor:pointer;"
-            const navArrow = (path.length>1) ? (<span onclick={this.navigateParent.bind(this)} class={"mdi mdi-arrow-left"} style={navArrowStyle}/>) : null
-            const setNavMode = function(e) {
-                this.setState({navMode:e.target.value})
-            }
-        }
-        
         toggleEditMode() {
             if (this.state.editMode) {
+                console.log('inventoryPath, toggleEditMode refreshing inventory path')
                 app.actions.inventory.refreshInventoryPath(this.state.id)
             }
             this.setState({editMode:!this.state.editMode})
@@ -191,13 +179,8 @@ module.exports = function (Component) {
             
             var childItems = (currentItem) ? currentItem.children : null
             const attributes = app.actions.inventory.getAttributesForType(currentItem.type)
-            const selectedItemHeader = this.selectedItemHeader()
           
             const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
-            const itemChild = "border:1px solid grey;margin:0;padding:0;"
-
-            const itemMaxHeight = "margin:0;padding:0;height:calc(100vh - "+this.state.containerSize+"px - 40px)"
-            const pathChild = "border: 1px solid grey; height:"+this.state.containerSize+"px;margin:0;padding:0;"
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
             const tableHeight =  window.innerHeight-this.state.containerSize-100
 
@@ -288,7 +271,6 @@ module.exports = function (Component) {
                         selectedRecord={currentItem}
                         toggleEditMode={this.toggleEditMode.bind(this)}
                         parentRecord={{}}
-                        header={selectedItemHeader}
                         onMount={this.onEditPanelMount.bind(this)}
                         >
                             <div id="inventory_tiles" class="tile is-12">
@@ -364,7 +346,6 @@ module.exports = function (Component) {
                         {...this.state}
                         selectedRecord={currentItem}
                         parentRecord={{}}
-                        header={selectedItemHeader}
                         onMount={this.onNavPanelMount.bind(this)}
                         >
                             <div id="inventory_tiles" class="tile is-5">

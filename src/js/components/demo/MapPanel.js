@@ -22,8 +22,7 @@ module.exports = function(Component) {
               <span>{this.props.parentRecord.name}</span>
             ) : null }
           </div>
-          <div className="panel-block">
-            <div id="nav-panel" class="map-container">
+          <div id="nav-panel" class="map-container">
             {(isContainer) ? (
               <MapGrid 
                 {...this.props}
@@ -36,8 +35,8 @@ module.exports = function(Component) {
                 record={this.props.parentRecord}
               />
             ) : null }              
-            </div>
-          </div>         
+          </div>
+                 
         </div>
       )
     }

@@ -4,14 +4,18 @@
   left: 0;
   width: 100%;
   height: auto;
-  border: 1px solid black;
+  border: 1px solid #bbb;
+  border-top: none;
   .columns {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #ddd;
+    &:last-child {
+      border-bottom: none;
+    }
     &.grid {
       margin: 0;
     }
     .column {
-      border-right: 1px solid black;
+      border-right: 1px solid #ddd;
       padding-top: 100%;
       &:last-child {
         border-right: none;

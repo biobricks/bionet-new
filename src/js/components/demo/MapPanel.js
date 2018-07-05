@@ -24,9 +24,18 @@ module.exports = function(Component) {
           </div>
           <div className="panel-block">
             <div id="nav-panel" class="map-container">
+            {(isContainer) ? (
               <MapGrid 
                 {...this.props}
+                record={this.props.selectedRecord}
               />
+            ) : null }
+            {(!isContainer) ? (
+              <MapGrid 
+                {...this.props}
+                record={this.props.parentRecord}
+              />
+            ) : null }              
             </div>
           </div>         
         </div>

@@ -34,7 +34,7 @@ $breakpoint-desktop: 1024px;
     position: relative;
     display: block;
     width: 100%;
-    min-height: 80vh;
+    min-height: calc(100vh - 125px);
     height: auto;
     // background-color: #ccc;
     // border: 1px solid #aaa;

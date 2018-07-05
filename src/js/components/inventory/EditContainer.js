@@ -464,7 +464,7 @@ export default class EditContainer extends Component {
         }
 
         var containerPropertiesForm=null
-        if (this.props.fullWidth) {
+        //if (this.props.fullWidth) {
             containerPropertiesForm = (
                 <div>
                     <ContainerPropertiesForm
@@ -478,9 +478,11 @@ export default class EditContainer extends Component {
                     <hr/>
                 </div>
             )
-        }
+        //}
         return (
             <div>
+                {containerPropertiesForm}
+                <div style={{marginTop:'20px'}}/>
                 <ItemPropertiesForm
                     name={this.state.defaultName}
                     width={this.state.defaultWidth}

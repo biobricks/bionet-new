@@ -32,7 +32,7 @@ module.exports = function(Component) {
     }
     onSave() {
         console.log('PhysicalNew onSave:',this.state)
-        if (this.props.onSave) this.props.onSave(this.state)
+        if (this.props.onSaveNew) this.props.onSaveNew(this.state)
     }
     render() {
       let selectedRecord = this.props.selectedRecord;

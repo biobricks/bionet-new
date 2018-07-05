@@ -16,6 +16,10 @@ module.exports = function (Component) {
     const DataPanel = require('../data_panel.js')(Component);
     const MapPanel = require('../map_panel.js')(Component);
     const LabPanel = require('../lab_panel.js')(Component);
+    
+    const NEW_MODE_PHYSICAL_STEP1 = 1
+    const NEW_MODE_PHYSICAL_STEP2 = 2
+    const NEW_MODE_CONTAINER = 3
 
     return class InventoryPath extends Component {
         constructor(props) {
@@ -93,12 +97,31 @@ module.exports = function (Component) {
             app.actions.inventory.selectInventoryId(selectedItem.parent_id)
         }
         
+        onFormType(formType) {
+            const newMode = (formType==='Physical') ? NEW_MODE_PHYSICAL_STEP1 : NEW_MODE_CONTAINER
+            this.setState({
+                newMode:newMode,
+                formType:formType
+            })
+        }
+        
         toggleNewMode() {
             if (this.state.newMode) {
-                console.log('inventoryPath, toggleNewMode refreshing inventory path')
-                app.actions.inventory.refreshInventoryPath(this.state.id)
+                this.setState({newMode:false})
+            } else {
+                const newMode = (this.state.formType==='Physical') ? NEW_MODE_PHYSICAL_STEP1 : NEW_MODE_CONTAINER
+                this.setState({newMode:true})
             }
-            this.setState({newMode:!this.state.newMode})
+        }
+        
+        onSaveNew(data) {
+            console.log('inventoryPath onSaveNew:',data)
+            this.setState({newMode:NEW_MODE_PHYSICAL_STEP2})
+        }
+        
+        onAssignNew(data) {
+            console.log('inventoryPath onSaveNew:',data)
+            this.setState({newMode:false})
         }
         
         toggleEditMode() {
@@ -110,6 +133,7 @@ module.exports = function (Component) {
         }
 
         onSaveEditClick() {
+            console.log('inventoryPath onSaveEditClick:')
         }
 
         onUpdateContainerProperties(props) {
@@ -274,6 +298,7 @@ module.exports = function (Component) {
                                 breadcrumbs={breadcrumbs}
                                 parentRecord={parentRecord}
                                 selectRecord={selectRecord}
+                                onFormType={this.onFormType.bind(this)}
                                 toggleNewMode={this.toggleNewMode.bind(this)}
                                 toggleEditMode={this.toggleEditMode.bind(this)}
                                 onSaveEditClick={this.onSaveEditClick.bind(this)}
@@ -371,9 +396,11 @@ module.exports = function (Component) {
                             parentRecord={parentRecord}
                             selectRecord={selectRecord}
                             newMode={this.state.newMode}
+                            onFormType={this.onFormType.bind(this)}
                             toggleNewMode={this.toggleNewMode.bind(this)}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             onSaveEditClick={this.onSaveEditClick.bind(this)}
+                            onSaveNew={this.onSaveNew.bind(this)}
                             onRecordEnter={this.onRecordEnter.bind(this)}
                             onRecordLeave={this.onRecordLeave.bind(this)}
                             >
@@ -382,6 +409,23 @@ module.exports = function (Component) {
                         </DataPanel>
                     </div>
                 )
+                var locationPathComponent=null
+                //todo: set newMode only after create type has been specified, ie physical or container
+                //todo: change constant name
+                if (this.state.newMode===NEW_MODE_PHYSICAL_STEP1) {
+                    rootLocation=null
+                    locationPathComponent=<div>Virtual search</div>
+                } else {
+                    locationPathComponent=(
+                        <LocationPath
+                            path={locationPath}
+                            width={this.state.mapPanelWidth}
+                            height={this.state.mapPanelHeight}
+                            zoom={zoom}
+                            highlightedRecord={this.state.highlightedRecord}
+                        />
+                    )
+                }
                 navPanel = (
                     <div class="column is-5-desktop">
                       <MapPanel
@@ -394,13 +438,7 @@ module.exports = function (Component) {
                                 <div class="tile is-vertical">
                                     <div id="inventory_path" class="tile is-vertical is-5" style={pathMaxHeight}>
                                         {rootLocation}
-                                        <LocationPath
-                                            path={locationPath}
-                                            width={this.state.mapPanelWidth}
-                                            height={this.state.mapPanelHeight}
-                                            zoom={zoom}
-                                            highlightedRecord={this.state.highlightedRecord}
-                                        />
+                                        {locationPathComponent}
                                     </div>
                                 </div>
                             </div>

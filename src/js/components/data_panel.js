@@ -17,12 +17,12 @@ module.exports = function(Component) {
       this.state = {
         formType: ''
       };
-      this.setFormType = this.setFormType.bind(this);
     }
     
     setFormType(e) {
       let formType = e.target.value;
       console.log(`Form type switched to ${formType}`);
+      if (this.props.onFormType) this.props.onFormType(formType)
       this.setState({
         formType
       });
@@ -173,7 +173,7 @@ module.exports = function(Component) {
                           <div class="select">
                             <select 
                               class="is-small"
-                              onChange={this.setFormType}
+                              onChange={this.setFormType.bind(this)}
                               value={this.state.formType}
                             >
                               <option value="">Select One</option>

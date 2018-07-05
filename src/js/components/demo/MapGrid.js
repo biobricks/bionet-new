@@ -5,75 +5,43 @@ module.exports = function(Component) {
   return class MapGrid extends Component {
 
     render() {
-      
-      // create new array with number of items equal to the objects column count 
-      //let colArray = new Array(this.props.record.columns);
+      let containerStyles = {
+        'gridTemplateColumns': '',
+        'gridTemplateRows': ''
+      };
+      for(let i = 0; i < this.props.record.columns; i++){
+        containerStyles.gridTemplateColumns += '1fr';
+        if(i !== (this.props.record.columns - 1)) {
+          containerStyles.gridTemplateColumns += ' ';
+        }
+      }
+      for(let i = 0; i < this.props.record.rows; i++){
+        containerStyles.gridTemplateRows += '1fr';
+        if(i !== (this.props.record.rows - 1)) {
+          containerStyles.gridTemplateRows += ' ';
+        }
+      }
+      let record = this.props.record;
+      let childrenEls = [];
+      if(record && record.children){
+        childrenEls = record.children.map((child, index) => {
+          return (
+            <div class="grid-item">
+              {child.name}
+            </div>
+          );
+        });
+      }
 
-      // let rows = rowArray.map((row, index) => {
-      //   return (
-          
-      //   );
-      // });
-      // for(let i = 0; i < colArray.length; i++){
-      //   colArray[i] = {
-      //     no: i + 1
-      //   }
-      // }
-
-      // let row = colArray.map((column, index) => {
-      //   return (
-      //     <div class="column">
-      //       <div class="cell">
-      //         <span class="cell-location">{column.no}</span>
-      //       </div>  
-      //     </div>
-      //   );
-      // });
-
-      let grid = createGrid(this.props.record.rows, this.props.record.columns);
+      // add emptys
 
       return (
         <div class="MapGrid">
-          {grid}
+          <div class="grid-container" style={containerStyles}>
+            {childrenEls}
+          </div>
         </div>
       )
     }
-  }
-}
-
-function createGridRow(rowNumber, columnCount) {
-  let columnArray = [];
-  for(let i = 0; i < columnCount; i++){
-    columnArray.push({
-      no: i + 1
-    });
-  }
-  let resultArray = columnArray.map((column, index) => {
-    return (
-      <div class="column">
-        <a class="cell">
-          <span class="cell-location">{rowNumber}, {column.no}</span>
-        </a>  
-      </div>
-    );
-  });
-  return resultArray;
-}
-
-function createGrid(rowCount, columnCount){
-  let rowArray = [];
-  for(let i = 0; i < rowCount; i++){
-    rowArray.push({
-      no: i + 1
-    });
-  }
-  let resultArray = rowArray.map((row, index) => {
-    let gridRow = createGridRow(row.no, columnCount);
-    return (
-      <div class="grid columns is-mobile is-gapless is-multiline">
-        {gridRow}
-      </div>
-    )
-  });
-  return resultArray;
+  } 
 }

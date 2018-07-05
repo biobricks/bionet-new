@@ -1,40 +1,17 @@
 .MapGrid {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  border: 1px solid #bbb;
+  // width: 100%;
+  // height: auto;
+  border: 1px solid #dbdbdb;
   border-top: none;
-  .columns {
-    border-bottom: 1px solid #ddd;
-    &:last-child {
-      border-bottom: none;
-    }
-    &.grid {
-      margin: 0;
-    }
-    .column {
-      border-right: 1px solid #ddd;
-      padding-top: 100%;
-      &:last-child {
-        border-right: none;
-      }
-      .cell {
-        position: relative;
-        display: block;
-        width: 100%;
-        padding-top: 100%;
-        &:hover { 
-          background-color: lightblue; 
-        }
-        .cell-location {
-          position: absolute;
-          width: 100%;
-          top: calc(50% - 0.75em);
-          text-align: center;
-        }
-      }
-    }
+  .grid-container {
+    display: grid;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-top: none;
+    min-height: 80vh;
+    .grid-item {
+      border: 1px solid #ccc;
+      &:hover { background-color: whitesmoke; }
+    }  
   }
 }

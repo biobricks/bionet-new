@@ -10,22 +10,33 @@ module.exports = function(Component) {
 	  render() {
       let record = this.props.selectedRecord;
       let isContainer = Object.keys(record).indexOf('children') > -1;
+      let isEditMode = this.props.editMode;
+      let isNewMode = this.props.newMode;    
       return (
         <div class="MapPanel panel has-background-white">
           <div className="panel-heading">
             {(isContainer) ? (
               <span>{this.props.selectedRecord.name}</span>
-            ) : (
+            ) : null }
+            {(!isContainer) ? (
               <span>{this.props.parentRecord.name}</span>
-            )}
+            ) : null }
           </div>
-          <div className="panel-block">
-            <div id="nav-panel" class="map-container">
+          <div id="nav-panel" class="map-container">
+            {(isContainer) ? (
               <MapGrid 
                 {...this.props}
+                record={this.props.selectedRecord}
               />
-            </div>
-          </div>         
+            ) : null }
+            {(!isContainer) ? (
+              <MapGrid 
+                {...this.props}
+                record={this.props.parentRecord}
+              />
+            ) : null }              
+          </div>
+                 
         </div>
       )
     }

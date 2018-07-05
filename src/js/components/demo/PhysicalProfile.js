@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { EBUSY } from 'constants';
 
 module.exports = function(Component) {
 
@@ -10,7 +11,7 @@ module.exports = function(Component) {
       return (
         <div class="PhysicalProfile">
           <div class="panel-block">
-            <div class="columns is-multiline is-gapless">
+            <div class="columns is-multiline">
               <div class="column is-12">
                 <div class="columns is-gapless">
                   <div class="column is-narrow">
@@ -32,15 +33,59 @@ module.exports = function(Component) {
                 </div>
               </div>
               <div class="column is-12">
-                <div class="columns is-mobile">
+                <div class="columns is-gapless">
                   <div class="column is-narrow">
-                    <label class="label">Location</label>
+                    <label class="label">Available</label>
                   </div>
                   <div class="column">   
-                    {parentRecord.name} - Row {selectedRecord.row}, Col {selectedRecord.column}
+                    {(selectedRecord.available) ? (
+                      <span>Yes</span>
+                    ) : (
+                      <span>No</span>
+                    )}
                   </div>
                 </div>
-              </div>              
+              </div>
+              <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">License</label>
+                  </div>
+                  <div class="column">   
+                    {selectedRecord.license}
+                  </div>
+                </div>
+              </div>
+              <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Provenance</label>
+                  </div>
+                  <div class="column">   
+                    {selectedRecord.provenance}
+                  </div>
+                </div>
+              </div> 
+              <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Genotype</label>
+                  </div>
+                  <div class="column">   
+                    {selectedRecord.genotype}
+                  </div>
+                </div>
+              </div> 
+              <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Sequence</label>
+                  </div>
+                  <div class="column">   
+                    <span class="sequence">{selectedRecord.sequence}</span>
+                  </div>
+                </div>
+              </div>             
             </div>    
           </div>
         </div>

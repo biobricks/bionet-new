@@ -64,7 +64,7 @@ module.exports = function(Component) {
                 </div>
               </div>
               <div class="column is-12">
-                <div class="columns is-gapless">
+                <div class="columns is-gapless profile">
                   <div class="column is-narrow">
                     <label class="label">Description</label>
                   </div>

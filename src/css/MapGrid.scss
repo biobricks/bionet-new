@@ -2,7 +2,39 @@
   position: absolute;
   top: 0;
   left: 0;
-  min-width: 100px;
-  min-height: 100px;
-  background-color: lightblue;
+  width: 100%;
+  height: auto;
+  border: 1px solid #bbb;
+  border-top: none;
+  .columns {
+    border-bottom: 1px solid #ddd;
+    &:last-child {
+      border-bottom: none;
+    }
+    &.grid {
+      margin: 0;
+    }
+    .column {
+      border-right: 1px solid #ddd;
+      padding-top: 100%;
+      &:last-child {
+        border-right: none;
+      }
+      .cell {
+        position: relative;
+        display: block;
+        width: 100%;
+        padding-top: 100%;
+        &:hover { 
+          background-color: lightblue; 
+        }
+        .cell-location {
+          position: absolute;
+          width: 100%;
+          top: calc(50% - 0.75em);
+          text-align: center;
+        }
+      }
+    }
+  }
 }

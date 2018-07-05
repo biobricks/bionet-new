@@ -41,26 +41,6 @@ module.exports = function(Component) {
             })
             console.log('data_panel breadcrumbs:',breadcrumbs)
         }
-        /*
-                  <li>
-                    <Link to="/ui/lab">
-                      {this.props.lab.name}
-                    </Link>
-                  </li>
-                  {(!parentRecordIsLab) ? (
-                
-                      <li>
-                        <a
-                          id={this.props.parentRecord.id}
-                          onClick={this.props.selectRecord}
-                        >
-                          {this.props.parentRecord.name}
-                        </a>
-                      </li>
-               
-                  ) : null }
-                  <li class="is-active">{this.props.selectedRecord.name}</li>
-        */
       let isViewMode = !this.props.editMode && !this.props.newMode;
       let isEditMode = this.props.editMode;
       let isNewMode = this.props.newMode;

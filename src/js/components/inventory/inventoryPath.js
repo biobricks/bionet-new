@@ -29,6 +29,7 @@ module.exports = function (Component) {
                 attributes:{},
                 navMode:'navigate',
                 editMode:false,
+                newMode:false,
                 currentItem:currentItem
             }
         }
@@ -90,6 +91,14 @@ module.exports = function (Component) {
             const selectedItem = path[path.length-1]
             if (!selectedItem) return null
             app.actions.inventory.selectInventoryId(selectedItem.parent_id)
+        }
+        
+        toggleNewMode() {
+            if (this.state.newMode) {
+                console.log('inventoryPath, toggleNewMode refreshing inventory path')
+                app.actions.inventory.refreshInventoryPath(this.state.id)
+            }
+            this.setState({newMode:!this.state.newMode})
         }
         
         toggleEditMode() {
@@ -265,6 +274,7 @@ module.exports = function (Component) {
                                 breadcrumbs={breadcrumbs}
                                 parentRecord={parentRecord}
                                 selectRecord={selectRecord}
+                                toggleNewMode={this.toggleNewMode.bind(this)}
                                 toggleEditMode={this.toggleEditMode.bind(this)}
                                 onSaveEditClick={this.onSaveEditClick.bind(this)}
                                 onRecordEnter={this.onRecordEnter.bind(this)}
@@ -335,6 +345,12 @@ module.exports = function (Component) {
                         </div>
                     )
                 }
+                
+                var newItem=null
+                if (this.state.newMode) {
+                    
+                }
+                
                 var zoom=1.0
                 const locationPath2 = newPath.map(container => {
                     if (containerId===container.id) {
@@ -354,12 +370,15 @@ module.exports = function (Component) {
                             breadcrumbs={breadcrumbs}
                             parentRecord={parentRecord}
                             selectRecord={selectRecord}
+                            newMode={this.state.newMode}
+                            toggleNewMode={this.toggleNewMode.bind(this)}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             onSaveEditClick={this.onSaveEditClick.bind(this)}
                             onRecordEnter={this.onRecordEnter.bind(this)}
                             onRecordLeave={this.onRecordLeave.bind(this)}
                             >
                             {dataItems}
+                            {newItem}
                         </DataPanel>
                     </div>
                 )

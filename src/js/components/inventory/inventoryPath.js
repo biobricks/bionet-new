@@ -196,6 +196,7 @@ module.exports = function (Component) {
             this.setState({editPanelWidth:width,editPanelHeight:height})
         }
         onNavPanelMount(width,height) {
+            console.log('inventoryPath, onNavPanelMount:',width,height)
             this.setState({mapPanelWidth:width,mapPanelHeight:height})
         }
         onRecordEnter(id) {

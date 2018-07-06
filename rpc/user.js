@@ -786,6 +786,26 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p, pan
     },
 
 
+    emptyRequestTrash: function(curUser, cb) {
+      var s = db.request.createReadStream();
+
+      var toDelete = [];
+
+      s.on('data', function(data) {
+        if(data.value.trashed) {
+          toDelete.push(data.key);
+        }
+      });
+
+      s.on('end', function() {
+        if(!toDelete.length) return cb();
+
+        async.each(toDelete, function(key, next) {
+          db.request.del(key, next)
+        }, cb);
+      });
+    },
+
     changeRequestTrashed: function(curUser, id, trashed, cb) {
       db.request.get(id, function(err, data) {
         if(err) return cb(err);

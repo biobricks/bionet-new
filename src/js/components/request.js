@@ -25,7 +25,14 @@ module.exports = function(Component) {
         "Waiting for bionet lawyer approval",
         "Waiting for Stanford Tech Transfer Office signature",
         "Waiting for requesting institute's Tech Transfer Office signature",
-        "Waiting to ship",
+        "Ready to ship"
+      ];
+
+      this.statusTextDone = [
+        "Unknown",
+        "Approved by bionet lawyer",
+        "Signed by Stanford Tech Transfer Office",
+        "Signed by requesting institute's Tech Transfer Office",
         "Shipped"
       ];
 
@@ -189,17 +196,16 @@ module.exports = function(Component) {
 
         var statusNumber;
         if(this.state.request.status === 'sent') {
-          statusNumber = 6;
+          statusNumber = 5;
         } else {
           statusNumber = this.state.pandaStatus;
         }
 
-        console.log("PANDA:", this.state.pandaStatus, this.statusText.length);
         var statusItems = [];
         var i;
         for(i=1; i < this.statusText.length; i++) {
           statusItems.push((
-            <li className={(statusNumber === i) ? 'selected' : ''}>{this.statusText[i]} {(statusNumber > i) ? '✓' : ''}</li>
+            <li className={(statusNumber === i) ? 'selected' : ''}>{(statusNumber > i) ? (this.statusTextDone[i] + ' ✓') : this.statusText[i]}</li>
           ));
         }
         if(statusItems.length) {

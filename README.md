@@ -84,6 +84,7 @@ cd ..
 ```
 cd bionet-new/
 mkdir -p static/build
+mkdir -p pandadoc
 cp settings.js.example settings.js 
 cp settings.client.js.example settings.client.js 
 ```
@@ -103,13 +104,21 @@ and copy the ssh public key for each labdevice client to the `labdevice/client_k
 
 # Email
 
-You will want to have a local SMTP server so the bionet can send outgoing emails. Install postfix and accept default options for everything but the system mail name. Ensure that the system mail name is the full domain name used by users to access the website, e.g. `my.domain.org`.
+If you're running in production mode you will probably want to have a local SMTP server so the bionet can send outgoing emails. Install postfix and accept default options for everything but the system mail name. Ensure that the system mail name is the full domain name used by users to access the website, e.g. `my.domain.org`.
 
 ```
 sudo apt install postfix
 ```
 
+Another option is to change the mail server settings in `settings.js`.
+
 # Building and development
+
+The very first time you build you have to do:
+
+```
+gulp build:css
+```
 
 To begin developing simply run:
 
@@ -119,10 +128,10 @@ npm run dev
 
 This will start the server, watch for changes to js and css files and enable hot module reloading.
 
-If you don't want hot module reloading do:
+The hot module reloading can be a bit buggy. You can run development mode without it like so:
 
 ```
-npm run dev --cold
+./bin/dev.js --cold
 ```
 
 Also available are these `npm run` commands:
@@ -138,8 +147,6 @@ Also available are these `npm run` commands:
 * watch-css: watch js and build when changed
 
 # The bionet commands
-
-Currently there are a few commands. The plan is to eventually make all of their functionality accessible from the central `bionet` command.
 
 ## ./bin/server.js
 
@@ -173,7 +180,6 @@ This command is described more in the backup section.
 Here are some notes for setting up the bionet for production use.
 
 ## Web app
-
 
 ## label-printer client
 

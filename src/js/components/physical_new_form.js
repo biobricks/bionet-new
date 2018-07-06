@@ -18,6 +18,14 @@ module.exports = function(Component) {
         const newState = Object.assign(this.state, newProps)
         this.setState(newState,()=>{/*console.log('PhysicalNew update:',this.state)*/})
         if (this.props.onChange) this.props.onChange(newProps)
+        
+        //todo: ashnagz doesn't seem to be setting state correctly
+        app.state.PhysicalNewForm=this.state
+        /*
+        app.setState({
+            PhysicalNewForm:this.state
+        })
+        */
     }
     onName(e) {
         this.update({name:e.target.value})

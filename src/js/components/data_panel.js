@@ -27,6 +27,11 @@ module.exports = function(Component) {
         formType
       });
     }
+      
+    onSaveNewClick() {
+        console.log('onSaveNewClick:',app.state.PhysicalNewForm)
+        if (this.props.onSaveNew) this.props.onSaveNew(app.state.PhysicalNewForm)
+    }
 
     render() {
         var breadcrumbs = null
@@ -102,7 +107,7 @@ module.exports = function(Component) {
                         </span>
                         <span 
                           class="button is-small is-success"
-                          onClick={this.props.onSaveNewClick}
+                          onClick={this.onSaveNewClick.bind(this)}
                         >
                           <i class="mdi mdi-content-save"></i>
                         </span>
@@ -192,8 +197,9 @@ module.exports = function(Component) {
                   />
                 ) : null }
                 {(this.state.formType === 'Physical') ? (
-                  <PhysicalNewForm 
-                  {...this.props}
+                  <PhysicalNewForm
+                    state="PhysicalNewForm"
+                    {...this.props}
                 />
               ) : null }
               </div>

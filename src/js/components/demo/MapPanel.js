@@ -22,7 +22,7 @@ module.exports = function(Component) {
               <span>{this.props.parentRecord.name}</span>
             ) : null }
           </div>
-          <div id="nav-panel" class="map-container">
+          <div class="map-container">
             {(isContainer) ? (
               <MapGrid 
                 {...this.props}

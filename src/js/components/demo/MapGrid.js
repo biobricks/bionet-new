@@ -22,15 +22,26 @@ module.exports = function(Component) {
         }
       }
       let record = this.props.record;
-      let childrenEls = [];
+    
+      let childElements = [];
       if(record && record.children){
-        childrenEls = record.children.map((child, index) => {
-          return (
-            <div class="grid-item">
-              {child.name}
-            </div>
-          );
-        });
+        
+        // get total number of cells in grid
+        let cellCount = record.rows * record.columns;
+
+        // fill childElements array with empty cells
+        for(let i = 0; i < cellCount;i++){
+          childElements.push(<div class="empty grid-item"></div>);  
+        }
+
+        // replace with children by position
+        // childElements = record.children.map((child, index) => {
+        //   return (
+        //     <div class="grid-item">
+        //       {child.name}
+        //     </div>
+        //   );
+        // });
       }
 
       // add emptys
@@ -38,7 +49,7 @@ module.exports = function(Component) {
       return (
         <div class="MapGrid">
           <div class="grid-container" style={containerStyles}>
-            {childrenEls}
+            {childElements}
           </div>
         </div>
       )

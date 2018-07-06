@@ -6,6 +6,9 @@ $breakpoint-desktop: 1024px;
     font-size: 1.4em;
     padding: 0.3em 0.75em;
   }
+  .panel-body {
+    border: none;
+  }
   .toolbox {
     position: relative;
     display: flex;

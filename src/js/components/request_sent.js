@@ -15,6 +15,9 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
 
+      this.state = {
+        requestID: this.props.match.params.id,
+      };
     }
 
 	  render() {
@@ -30,9 +33,13 @@ module.exports = function(Component) {
                 </div>
               </div>
             </section>
-            <div class="description">
-              <p>Your request has been successfully sent to the individuals responsible for request-fulfillment for the <span>{app.settings.lab}</span> bionet node.</p>
+            <div>
+              <p style="font-weight:bold">Your request has been submitted.</p>
+
+              <p>You can use <Link to={'/request-show/'+this.state.requestID}>this link</Link> to check the status of your request.</p>
+          
             </div>
+            <div style="float:left;clear:both"></div>
         </div>
       )
     }

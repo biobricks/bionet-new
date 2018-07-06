@@ -2,8 +2,10 @@
 var through = require('through2');
 var rpc = require('rpc-multistream'); // rpc and stream multiplexing
 var validations = require('../common/validations.js');
+var uuid = require('uuid').v4;
+var xtend = require('xtend');
 
-module.exports = function(settings, users, accounts, db, index, mailer, p2p) { 
+module.exports = function(settings, users, accounts, db, index, mailer, p2p, pandadoc) { 
   return {
       
     getInventoryRoot: function(curUser, cb) {
@@ -114,6 +116,89 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
      });
     }, 
 
+    getRequestStatus: function(curUser, pandadocID, cb) {
+      pandadoc.getDocumentStatus(pandadocID, function(err, status) {
+        if(err) return cb(err);
+        
+        cb(null, status);
+      });
+    },
+
+    getRequest: function(curUser, key, cb) {
+      db.request.get(key, function(err, data) {
+        if(err) return cb(err);
+        
+        if(!data.pandadocID) return cb(null, data);
+
+        pandadoc.getDocumentDetails(data.pandadocID, function(err, details) {
+          if(err) return cb(null, data);
+
+          cb(null, data, details);
+        });
+      });
+    },
+
+    createRequest: function(curUser, virtual_id, data, cb) {
+
+      db.virtual.get(virtual_id, function(err, virtual) {
+        if(err) return cb(err);
+
+        // index by most recent first
+        var now = (new Date).getTime();
+        var dKey = (Number.MAX_SAFE_INTEGER - now).toString() + uuid();
+        
+        var req = xtend(data, {
+          status: 'requested',
+          virtual_id: virtual.id,
+          virtualName: virtual.name,
+          time: now,
+        });
+        
+        var recipient = {
+          email: data.ttoEmail,
+          first_name: 'Tech Transfer Office',
+          last_name: 'Representative',
+          role: 'recipient'
+        };
+
+        var pandaData = {
+          exhibit_b: false,
+          recipient_org_name: data.orgName,
+          recipient_org_address: data.orgAddress,
+          recipient_scientist_name: data.name,
+          recipient_scientist_title: data.title,
+          material_description: virtual.name,
+          shipping_address_name: data.shippingName,
+          shipping_address: data.shippingAddress,
+          transmittal_fee: false,
+          transmittal_fee_amount: "0",
+          attribution: false,
+          notify_on_redistribute: false,
+          attachment_present: false
+        };
+
+        var emailMsg = "The researcher " + pandaData.recipient_scientist_title + " " + pandaData.recipient_scientist_name + " has ordered the biomaterial " + virtual.name + " from Endy Lab at Stanford via the bionet. To complete this order, a signature from a representative of your institute's Tech Transfer Office (or equivalent) is required and the researcher has identified you as this representative. To approve this transfer, please sign the linked Material Transfer Agreement.";
+
+        pandadoc.createDocument(recipient, emailMsg, pandaData, settings.pandadoc.omta_template_uuid, function(err, pandadocID) {
+          if(err) return cb(err);
+
+          req.pandadocID = pandadocID;
+
+          db.request.put(dKey, req, function(err) {
+            if(err) return cb(err);
+            
+            mailer.sendMaterialRequest(virtual, dKey, data.email, data.shippingAddress, data.name, data.orgName, data.msg, function(err, info) {
+              if(err) return cb(err);
+              
+
+              cb(null, data, dKey)
+            });
+          });
+        });
+      });
+    },
+
+
     // stream of search results for virtuals
     searchVirtuals: rpc.syncReadStream(function(curUser, q, opts) {
       var opts = opts || {};
@@ -124,8 +209,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
           next(null, null);
         });
       }
-
-      console.log("CALLED!");
 
       var skipped = 0;
       var pushed = 0;

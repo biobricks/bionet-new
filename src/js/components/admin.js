@@ -23,28 +23,33 @@ module.exports = function(Component) {
     componentDidMount() {
 
       util.whenConnected(function() {
-        this.componentDidMount();
-      }.bind(this));
 
-      var self = this;
-      app.actions.p2p.getPeers(function(err, peers) {
-        if(err) {
-          self.changeState({
-            peers: "Failed to get list of peers"
-          });
-          return;
-        }
+        var self = this;
+        app.actions.p2p.getPeers(function(err, peers) {
+          if(err) {
+            self.changeState({
+              peers: "Failed to get list of peers"
+            });
+            return;
+          }
 
-       self.changeState({peers});
-      });
-
-      var users = [];
-      var s = app.actions.user.list();
-      s.on('data', function(user) {
-        users.push(user);
-        this.changeState({
-          users: users
+          self.changeState({peers});
         });
+
+        var users = [];
+        var s = app.actions.user.list();
+        s.on('data', function(user) {
+          users.push(user);
+          this.changeState({
+            users: users
+          });
+        }.bind(this));
+
+        app.remote.getPandadocStatus(function(err, status) {
+          this.setState({
+            pandadoc: status
+          });
+        }.bind(this));
       }.bind(this));
     };
 
@@ -91,23 +96,50 @@ module.exports = function(Component) {
         ));
       }
       
-
+      var pandadocStatus = (
+          <p>Status unknown</p>
+      );;
+      if(this.state.pandadoc === 'disabled') {
+        pandadocStatus = (
+          <p>PandaDoc integration has not been enabled</p>
+        );
+      } else if(this.state.pandadoc === 'enabled') {
+        pandadocStatus = (
+            <p>
+              PandaDoc integration is enabled but has not been authenticated.<br/>
+              <a href="/pandadoc/login">Click here to authenticate</a>
+            </p>
+        );
+      } else if(this.state.pandadoc === 'authenticated') {
+        pandadocStatus = (
+          <p>PandaDoc integration is enabled and authenticated</p>
+        );
+      }
       return (
         <div>
           <div>
-            <h3>Connected peers:</h3>
+            <h3>Connected peers</h3>
+            <p></p>
             <ul>
               {peers}
             </ul>
           </div>
+          <p></p>
           <div>
-            <h3>Users:</h3>
+            <h3>Users</h3>
+            <p></p>
             <ul>
               {users}
             </ul>
           </div>
+          <p></p>
           <div>
           <Link to="/admin/create-user">Create user</Link>
+          </div>
+          <p></p>
+          <div>
+            <h3>PandaDoc integration</h3>
+            {pandadocStatus}
           </div>
         </div>
       )

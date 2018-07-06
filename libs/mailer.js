@@ -65,7 +65,7 @@ module.exports = function(opts, base_url) {
     });
   };
 
-  this.sendMaterialRequest = function(m, requesterEmail, physicalAddress, name, org, msg, cb) {
+  this.sendMaterialRequest = function(m, requestID, requesterEmail, physicalAddress, name, org, msg, cb) {
     if(!m || !m.name) {
       return cb("Cannot send email verification email: Missing material or material name");
     }
@@ -74,7 +74,8 @@ module.exports = function(opts, base_url) {
 
     var txt = "You have received a request for materials from "+name+" <"+requesterEmail+"> from the lab/institute: "+org+"\n\n";
     txt += "The material request is for: "+m.name+"\n\n";
-    txt += "Link: "+base_url+"/virtual/show/"+m.id+"\n\n";
+    txt += "Link to virtual: "+base_url+"/virtual/show/"+m.id+"\n\n";
+    txt += "Link to request: "+base_url+"/request/"+requestID+"\n\n";
     txt += "Shipping address:\n\n"+physicalAddress+"\n\n";
     if(msg && msg.trim()) {
       txt += "The requester included the following message: \n\n"+msg+"\n\n";
@@ -86,8 +87,23 @@ module.exports = function(opts, base_url) {
       text: txt
     }, function(err, info) {
       if(err) return cb(err);
-      return cb(null, info);
-    });
+
+
+      txt = "You have requested a biomaterial from the bionet\n\n";
+      txt += "The requested biomaterial: "+m.name+"\n\n";
+      txt += "Link to biomaterial info: "+base_url+"/virtual/show/"+m.id+"\n\n";
+      txt += "You can use the following URL to check the status of your request: \n\n"
+      txt += "  "+base_url+"/request/"+requestID+"\n\n";
+
+      this.send({
+        to: requesterEmail,
+        subject: "[bionet] Biomaterial request confirmation",
+        text: txt
+      }, function(err, info) {
+
+        return cb(null, info);
+      });
+    }.bind(this));
   };
 
 

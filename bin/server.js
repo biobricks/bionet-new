@@ -112,6 +112,9 @@ router.addRoute('/user-static/*', function(req, res, match) {
   });
 });
 
+if(settings.pandadoc) {
+  var pandadoc = require('../libs/pandadoc.js')(settings, router, jsonRPCLogin, userCookieAuth);
+}
 
 
 var server = http.createServer(function(req, res) {
@@ -146,10 +149,10 @@ console.log("Starting http server on " + (settings.hostname || '*') + " port " +
 server.listen(settings.port, settings.hostname)
 
 
-var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer, p2p);
+var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer, p2p, pandadoc);
 
 // these functions only available to users in the 'user' group
-rpcMethods.user = require('../rpc/user.js')(settings, users, accounts, db, index, mailer, p2p);
+rpcMethods.user = require('../rpc/user.js')(settings, users, accounts, db, index, mailer, p2p, pandadoc);
 
 var login = require('../libs/login.js')(db, users, accounts);
 

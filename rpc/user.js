@@ -33,7 +33,7 @@ function del(curUser, db, dbName, key, cb) {
   });
 }
 
-module.exports = function(settings, users, accounts, db, index, mailer, p2p) { 
+module.exports = function(settings, users, accounts, db, index, mailer, p2p, pandadoc) { 
 
   return {
     secret: function(curUser, cb) {
@@ -297,6 +297,17 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
         cb(err);
       });
     },
+
+    clearRequests: rpc.syncReadStream(function(curUser) {
+      var s = db.request.createReadStream();
+      s.on('data', function(o) {
+        db.request.del(o.key, function() {});
+      });
+    }),
+
+    getRequests: rpc.syncReadStream(function(curUser) {
+      return db.request.createReadStream();
+    }),
     
     getType: function(curUser, name, cb) {
       name = name.toLowerCase().trim().replace(/\s+/g, ' ')
@@ -774,12 +785,69 @@ module.exports = function(settings, users, accounts, db, index, mailer, p2p) {
       });
     },
 
+
+    changeRequestTrashed: function(curUser, id, trashed, cb) {
+      db.request.get(id, function(err, data) {
+        if(err) return cb(err);
+        
+        data.trashed = trashed;
+
+        db.request.put(id, data, cb);
+      });
+    },
+
+    changeRequestStatus: function(curUser, id, status, cb) {
+      db.request.get(id, function(err, data) {
+        if(err) return cb(err);
+        
+        data.status = status;
+
+        db.request.put(id, data, cb);
+      });
+    },
+
+    // TODO not currently used
     requestMaterial: function(curUser, peerID, id, cb) {
       if(!p2p) return cb(new Error("Node does not support p2p"));
       var peer = p2p.connector.peers[peerID];
       if(!peer || !peer.remote) return cb(new Error("No such peer: "+peerID));
 
       peer.remote.requestMaterialRemote(id, curUser.user.email, settings.physicalAddress, cb);
+    },
+
+    freegenesCreatePlate: function(curUser, parent_id, name, cb) {
+      var m = {
+        name: name,
+        parent_id: parent_id
+      };
+      db.savePhysical(m, null, null, cb);
+    },
+
+    freegenesCreatePart: function(curUser, virtual_id, parent_id, name, cb) {
+      var m = {
+        name: name,
+        parent_id: parent_id,
+        virtual_id: virtual_id
+      };
+      db.savePhysical(m, null, null, cb);
+    },
+
+    getPandadocStatus: function(curUser, cb) {
+      if(!settings.pandadoc) {
+        process.nextTick(function() {
+          cb(null, "disabled");
+        });
+        return;
+      }
+      if(!pandadoc.authenticated) {
+        process.nextTick(function() {
+          cb(null, "enabled");
+        });
+        return;
+      }
+      process.nextTick(function() {
+        cb(null, "authenticated");
+      });
     },
 
     // This is a function used by other programs 

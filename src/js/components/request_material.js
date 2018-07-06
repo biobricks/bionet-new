@@ -3,7 +3,6 @@ import {h} from 'preact';
 import linkState from 'linkstate';
 import {Link} from 'react-router-dom';
 import xtend from 'xtend';
-import strftime from 'strftime';
 
 import util from '../util.js';
 
@@ -32,20 +31,26 @@ module.exports = function(Component) {
     request(e) {
       e.preventDefault();
       
-      app.remote.requestLocalMaterial(
-        this.state.id, 
-        this.state.email,
-        this.state.address,
-        this.state.name,
-        this.state.lab,
-        this.state.message,
-        function(err) {
+      app.remote.createRequest(
+        this.state.id,
+        { 
+          email: this.state.email,
+          title: this.state.title,
+          name: this.state.name,
+          orgName: this.state.orgName,
+          orgAddress: this.state.orgAddress,
+          ttoEmail: this.state.ttoEmail,
+          shippingAddress: this.state.shippingAddress,
+          shippingName: this.state.shippingName,
+          msg: this.state.message
+        },
+        function(err, data, requestID) {
           if(err) {
             app.actions.notify("Sending request failed");
             console.error(err);
             return;
           }
-          app.actions.route('/request-sent');
+          app.actions.route('/request-sent/' + requestID);
         });
     }
 
@@ -138,11 +143,17 @@ module.exports = function(Component) {
               </div>
             </section>
             <div class="description">
-              <p>Please provide you name, laboratory name, email and physical address.</p>
+              <p>To request this biomaterial please complete the form below.</p>
             </div>
             <div class="container post-hero-area">
               <div class="columns">
                 <div class="column is-6">
+                  <div class="field">
+                    <label class="label">Your title</label>
+                    <div class="control">
+                      <input class="input" type="text" onChange={linkState(this, 'title')} />
+                    </div>
+                  </div>
                   <div class="field">
                     <label class="label">Your name</label>
                     <div class="control">
@@ -159,15 +170,37 @@ module.exports = function(Component) {
                     </div>
                   </div>
                   <div class="field">
-                    <label class="label">Your lab/institution</label>
+                    <label class="label">Name of your institute</label>
                     <div class="control">
-                      <input class="input" type="text" onChange={linkState(this, 'lab')} />
+                      <input class="input" type="text" onChange={linkState(this, 'orgName')} />
                     </div>
                   </div>
                   <div class="field">
-                    <label class="label">Your physical address</label>
+                    <label class="label">Address of your institute</label>
                     <div class="control">
-                      <textarea class="textarea" onChange={linkState(this, 'address')}></textarea>
+                      <textarea class="textarea" onChange={linkState(this, 'orgAddress')}></textarea>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Email of your institute's Tech Transfer Office</label>
+                    <div class="control has-icons-left">
+                      <input class="input" type="text" onChange={linkState(this, 'ttoEmail')} />
+                      <span class="icon is-small is-left">
+                        <i class="fa fa-envelope"></i>
+                      </span>
+                    </div>
+                    <p>A representative of your institute's tech transfer office will have to sign off on an Open Material Transfer Agreement (OpenMTA) before the biomaterial can be shipped</p>
+                  </div>
+                  <div class="field">
+                    <label class="label">Shipping address</label>
+                    <div class="control">
+                      <textarea class="textarea" onChange={linkState(this, 'shippingAddress')}></textarea>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Name of person to receive material</label>
+                    <div class="control">
+                      <textarea class="textarea" onChange={linkState(this, 'shippingName')}></textarea>
                     </div>
                   </div>
                   <div class="field">

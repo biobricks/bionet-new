@@ -10,6 +10,7 @@ module.exports = function(Component) {
 
 	  render() {
 
+      var optionalLeftItems = [];
       var optionalNavItems = [];
       var loginLogout;
 
@@ -20,6 +21,12 @@ module.exports = function(Component) {
             <span>Logout</span>
           </Link>
         );
+
+        optionalLeftItems.push((
+          <Link class="navbar-item " to="/requests">
+            Requests
+          </Link>
+        ));
 
         if(util.user.isInGroup('admin')) {
           optionalNavItems.push((
@@ -94,6 +101,7 @@ module.exports = function(Component) {
               <Link class="navbar-item " to="/scan">
                 Scan
               </Link>
+              {optionalLeftItems}
             </div>
 
             <div class="navbar-end">

@@ -39,7 +39,7 @@ export default class EditContainer extends Component {
             this.zoomLevel.push(zl)
         }
         const zoomIndex = this.initZoomIndex(props.zoom, this.zoomLevel)
-        
+        const items=(props.items) ? props.items : []
         this.state = {
             gridWidth:40,
             gridHeight:40,

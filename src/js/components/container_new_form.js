@@ -7,13 +7,16 @@ module.exports = function(Component) {
     render() {
       let selectedRecord = this.props.selectedRecord;
       let parentRecord = this.props.parentRecord;
-      let children = this.props.selectedRecord.children.map((child, index) => {
-        return (
-          <div class="container-child">
-            Row {child.row}, Col {child.column}: {child.name} 
-          </div>
-        )
-      });
+      let children = null
+      if (this.props.selectedRecord.children) {
+          children = this.props.selectedRecord.children.map((child, index) => {
+            return (
+              <div class="container-child">
+                Row {child.row}, Col {child.column}: {child.name} 
+              </div>
+            )
+          });
+      }
       return (
         <div class="ContainerNewForm">
           <div class="panel-block">

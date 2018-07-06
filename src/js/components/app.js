@@ -18,6 +18,8 @@ module.exports = function(Component) {
   var Virtual = require('./virtual.js')(Component);
   var EditVirtual = require('./edit_virtual.js')(Component);
   var RequestMaterial = require('./request_material.js')(Component);
+  var RequestList = require('./request_list.js')(Component);
+  var Request = require('./request.js')(Component);
   var RequestSent = require('./request_sent.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
   var Settings = require('./settings.js')(Component);
@@ -71,7 +73,9 @@ module.exports = function(Component) {
                 <Route path="/virtual/edit/:id" component={EditVirtual} />
 
                 <Route path="/request/:id" component={RequestMaterial} />
-                <Route path="/request-sent" component={RequestSent} />
+                <Route path="/request-show/:id" component={Request} />
+                <Route path="/requests" component={RequestList} />
+                <Route path="/request-sent/:id" component={RequestSent} />
 
                 <Switch>
                   <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />

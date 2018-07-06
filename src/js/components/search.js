@@ -18,7 +18,9 @@ function diff(a, b) {
 
 module.exports = function(Component) {
 
-  var SearchResults = require('./search_results.js')(Component)
+  var SearchBar = require('./search_bar.js')(Component)
+  var SearchResults = require('./search_results_new.js')(Component)
+  var SearchPagination = require('./search_pagination.js')(Component)
 
   return class Search extends Component {
 
@@ -33,11 +35,18 @@ module.exports = function(Component) {
           scope: 'local',
           text: this.props.match.params.query,
           type: this.props.match.params.type || 'human',
-          onlyAvailable: !!(this.props.match.params.available)
+          onlyAvailable: !!(this.props.match.params.available),
         },
         page: parseInt(this.props.match.params.page) || 1,
         results: [],
         perPage: 25,
+        loading: false,
+        
+        // new stuff
+        resultsView: false,
+        status: "bionet search",
+        inventoryView: false,
+        inventoryEditView: false
       };
 
       util.whenConnected(function() {
@@ -99,14 +108,11 @@ module.exports = function(Component) {
       el.focus();
     }
 
-    // TODO this should just use this.state rather than receiving properties
-    // and should not run a query if no query params changed
     doSearch(isNewQuery) {
 
       if(!this.state.query || !this.state.query.text || !this.state.query.text.trim()) return;
 
       this.setState({
-        loading: true,
         results: [],
         page: parseInt(this.state.page),
         isNewQuery: isNewQuery,
@@ -114,7 +120,6 @@ module.exports = function(Component) {
       });
 
       if(this.state.query.scope === 'global') {
-      console.log("SEARCHING:", this.state.page, this.state.query);
 
         var stream = app.actions.search.global(this.state.query.type, this.state.query.text);
 
@@ -191,7 +196,8 @@ module.exports = function(Component) {
       var results = 0;
       stream.on('data', function(data) {
         var o = {
-          loading: false
+          loading: false,
+          resultsView: true
         };
 
         // TODO We're doing client side filtering here :(
@@ -219,6 +225,10 @@ module.exports = function(Component) {
         self.prevStream = null;
       });
       
+    }
+
+    n() {
+
     }
 
     search(e) {
@@ -263,6 +273,10 @@ module.exports = function(Component) {
         const isNewQuery = diff(this.state.query, this.state.lastQuery);
         const isNewPage = this.props.match.params.page !== nextProps.match.params.page;
         if(isNewQuery || isNewPage) {
+          this.setState({
+            loading: true,
+            status: "Searching for " + this.state.query
+          });
           util.whenConnected(function() {
             this.doSearch(isNewQuery);
           }.bind(this));
@@ -272,104 +286,36 @@ module.exports = function(Component) {
 
 
 	  render() {
-
-      var results;
-      // this occurs when running a new search but not when paginating
-      if(this.state.loading && this.state.isNewQuery) {
-
-        results = (
-          <div class="spinner">
-            <div class="cssload-whirlpool"></div>
-          </div>
-        );
-      } else if(this.state.lastQuery) {
-        results = (
-          <SearchResults query={this.state.lastQuery} loading={this.state.loading} results={this.state.results} page={this.state.page} numpages={Math.ceil(this.state.hits / this.state.perPage)} />
-        );
-      }
-
-      var hint = '';
-      if(this.state.query && this.state.query.text && this.state.query.text.length < 20) {
-        hint = (
-            <div class="hint">
-            
-              <div class="hint-label hint-warning-title">Hint:</div>
-              <div class="hint-text hint-warning">
-                <p>Your sequence is only <span>{this.state.query.text.length}</span> nucleotides long. BLAST+ doesn't work very well for short sequences.</p>
-                <p class="other">Try increasing the length of your search string to e.g. 30 nucleotides.</p>
-              </div>
-            <div class="float-clear"></div> 
-          </div>
-        );
-      }
-
-      var oldHint = (
-          <div class="hint">
-          
-            <div class="hint-label">Hint:</div>
-            <div class="hint-text">
-              <p>You can search using either human language or a nucleotide sequence.</p>
-              <p class="other">For advanced search tips have a look at <Link to="/help/search">search syntax help</Link>.</p>
-            </div>
-            <div class="float-clear"></div> 
-          </div>
-      );
-
-
       return (
-        <div>
-
-          <form onsubmit={this.search.bind(this)}>
-            <div class="field has-addons">
-              <div class="control has-icons-left">
-                <input class="input" id="query" type="text" oninput={this.onQueryInput.bind(this)} placeholder="Bionet Search" value={this.state.query.text} />
-                <span className="icon is-medium is-left">
-                  <i className="mdi mdi-24px mdi-search-web" />
-                </span> 
-              </div>               
-              <div class="control">
-                <a class="button is-info" onclick={this.search.bind(this)}>
-                  Search
-                </a>
-              </div>
-            </div>
-            <div class="control">
-              <label class="radio">
-                <input type="radio" name="scope" value="local" onchange={this.changeScope.bind(this)} checked={this.state.query.scope === 'local'} />
-                &nbsp;Local search
-              </label>
-              <label class="radio">
-                <input type="radio" name="scope" value="global" onchange={this.changeScope.bind(this)} checked={this.state.query.scope === 'global'} />
-                &nbsp;Global search
-              </label>
-            </div>
-            <div class="control">
-              <label class="radio">
-                <input type="radio" name="type" value="human" onchange={this.changeQueryType.bind(this)} checked={this.state.query.type === 'human'} />
-                &nbsp;Human language
-              </label>
-              <label class="radio">
-                <input type="radio" name="type" value="blast" onchange={this.changeQueryType.bind(this)} checked={this.state.query.type === 'blast'} />
-                &nbsp;Nucletide sequence
-              </label>
-              <label class="radio" disabled>
-                <input type="radio" name="type" value="blast_aa" onchange={this.changeQueryType.bind(this)} checked={this.state.query.type === 'blast_aa'} disabled />
-                &nbsp;Amino Acid Sequence
-              </label>
-            </div>
-            <div class="field">
-              <div class="control">
-                <label class="checkbox">
-                <input id="onlyAvailable" type="checkbox" onchange={linkState(this, 'query.onlyAvailable')} checked={this.state.query.onlyAvailable} />
-                &#160;Show only currently available materials
-                </label>
-              </div>
-            </div>
-            {hint}
-          </form>
-          {results}
+      <section className="columns is-desktop is-gapless">  
+        <div className="column is-8-desktop">
+        	<div className="search-container">
+    	      <div className="columns">
+    	        <div className="column">
+    	          <SearchBar 
+    	          	query={ this.state.query.text }
+                  status={ this.state.status }
+                  loading={ this.state.loading }              
+    	          	onChangeQuery={ this.onQueryInput.bind(this) }
+    	          	onSubmitQuery={ this.search.bind(this) }
+    	          />
+                { (this.state.resultsView === true) ? (
+                  <div>
+                    <SearchResults 
+                      {...this.state}
+                      selectProfileView={ this.n }
+                      changeSortKey={ this.n }
+                      toggleSortAsc={ this.n }
+                    />
+                    <SearchPagination query={this.state.lastQuery} loading={this.state.loading} results={this.state.results} page={this.state.page} numpages={Math.ceil(this.state.hits / this.state.perPage)} perPage={this.state.perPage} />
+                  </div>
+                ) : null }
+    	        </div>
+    	      </div>
+          </div>
         </div>
-      )
+      </section>            
+      );
     }
   }
 }

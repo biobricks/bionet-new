@@ -73,6 +73,22 @@ var settings = {
     port: 9200
   },
 
+/* 
+  // To enable pandadoc integration
+  // uncomment and fill out client_id and client_secret
+  // Then visit /pandadoc/auth to complete the one-time authentication
+  pandadoc: {
+    access_token_filepath: path.join(__dirname, 'pandadoc', 'token.json'),
+    client_id: 'pandadoc_client_id',   
+    client_secret: 'pandadoc_client_secret',
+    omta_template_uuid: 'template_uuid',
+    // Redirect url is configured via the pandadoc web app.
+    // Go to https://app.pandadoc.com/developers/
+    // Log in, then click your app in the list, click settings
+    // and fill out "Redirect URI"
+    redirect_url: 'http://localhost:8000/pandadoc/callback'
+  },
+*/
   // Settings related to label printing
   labDevice: {
 

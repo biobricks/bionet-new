@@ -42,6 +42,8 @@
     "routes": "^2.1.0",
     "rpc-multiauth": "0.0.2",
     "rpc-multistream": "^0.9.7",
+    "simple-oauth2": "^2.2.0",
+    "simple-query-string": "^1.3.2",
     "ssh2": "^0.5.5",
     "subleveldown": "^2.1.0",
     "through2": "^2.0.3",
@@ -51,6 +53,7 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
+    "@mdi/font": "^2.4.85",
     "FontLoader": "0.0.2",
     "aliasify": "^2.1.0",
     "ashnazg": "^1.0.5",
@@ -88,7 +91,6 @@
     "less": "^2.7.2",
     "linkstate": "^1.1.0",
     "marked": "^0.3.12",
-    "mdi": "^2.1.19",
     "mocha": "^5.0.5",
     "noty": "^3.1.3",
     "preact": "^8.2.7",

@@ -11,7 +11,7 @@ $fa-font-path: "../fonts/font_awesome"; /* set font-awesome font path */
 
 
 $mdi-font-path: "../fonts/materialdesignicons";
-@import "../../node_modules/mdi/scss/materialdesignicons.scss";
+@import "../../node_modules/@mdi/font/scss/materialdesignicons.scss";
 
 @import "spinners.scss";
 
@@ -360,4 +360,25 @@ p.description {
 }
 
 /* addExisting.js END */
+
+/* request-list.js BEGIN */
+
+.request-list {
+
+  h2 {
+    padding-bottom: 1rem;
+  }
+
+  ul {
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  li.trashed {
+    text-decoration: line-through
+  }
+
+}
+
+/* request-list.js END */
 

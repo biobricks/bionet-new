@@ -6,7 +6,8 @@ module.exports = function(Component) {
   return class MapPanel extends Component {
     componentDidMount() {
         if (this.props.onMount) {
-            const mapContainer = document.getElementById('nav-panel')
+            //const mapContainer = document.getElementById('nav-panel')
+            const mapContainer = document.getElementById('map-panel')
             var containerWidth=450
             var containerHeight=600
             if (mapContainer) {

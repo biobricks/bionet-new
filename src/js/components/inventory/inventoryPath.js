@@ -42,6 +42,7 @@ module.exports = function (Component) {
             if (!props.inventoryPath) return
             //if (!props.inventoryPath || props.id===this.state.id) return
             const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
+            //if (this.state.newMode===NEW_MODE_PHYSICAL_STEP2) this.toggleEditMode()
             this.setState({
                 id: props.id,
                 currentItem:currentItem,
@@ -107,16 +108,78 @@ module.exports = function (Component) {
         
         toggleNewMode() {
             if (this.state.newMode) {
-                this.setState({newMode:false})
+                this.setState({
+                    newMode:false,
+                    location:null,
+                })
             } else {
                 const newMode = (this.state.formType==='Physical') ? NEW_MODE_PHYSICAL_STEP1 : NEW_MODE_CONTAINER
-                this.setState({newMode:true})
+                this.setState({
+                    newMode:true,
+                    location:null
+                })
             }
         }
         
-        onSaveNew(data) {
-            console.log('inventoryPath onSaveNew:',data)
-            this.setState({newMode:NEW_MODE_PHYSICAL_STEP2})
+        onSaveNew(dbData) {
+            const instances = dbData.instances
+            const thisModule=this
+            const parentId = this.props.id
+            console.log('inventoryPath onSaveNew:',dbData, instances)
+            delete dbData.instances
+            const currentItem=this.state.currentItem
+            var children = (currentItem) ? currentItem.children : null
+            var childCells={}
+            if (children) {
+                for (var i=0; i<children.length; i++) {
+                    var child=children[i]
+                    var index=child.parent_x+','+child.parent_y
+                    childCells[index]=child.id
+                }
+            }
+            const containerLayout = app.actions.inventory.initContainerProps(currentItem,currentItem.id,this.state.editPanelWidth,1,true)
+            const rows = containerLayout.layoutHeightUnits
+            const cols = containerLayout.layoutWidthUnits
+
+            const emptyCellArray=[]
+            for (var row=1; row<=rows; row++) {
+                for (var col=1; col<=cols; col++) {
+                    var index=col+','+row
+                    if (!childCells[index]) emptyCellArray.push({parent_y:row,parent_x:col})
+                }
+            }
+            console.log('inventoryPath onSaveNew: list',rows,cols,emptyCellArray, childCells, containerLayout)
+            
+            app.actions.inventory.saveVirtual(dbData, function(err, virtual_id) {
+                if (err) {
+                    app.actions.notify(err.message, 'error');
+                    return
+                }
+                console.log('onSaveNew saveVirtual result, ',virtual_id)
+                dbData.id = virtual_id
+                app.actions.notify(dbData.name+" created", 'notice', 2000);
+                
+                app.actions.inventory.generatePhysicals(virtual_id, dbData.name, instances, parentId, emptyCellArray, function(err, physicals) {
+                    if (err) {
+                        app.actions.notify(err.message, 'error');
+                        return
+                    }
+                    const mergedPhysicals = (children && children.length && children.length>0 ) ? physicals.concat(children) : physicals
+                    currentItem.children=mergedPhysicals
+                    //console.log('onSaveNew: new physicals:',mergedPhysicals,currentItem)
+                    app.actions.inventory.refreshInventoryPath(currentItem.id)
+                        //location:currentItem,
+                    setTimeout(()=>{
+                        //thisModule.toggleEditMode()
+                        /*
+                        thisModule.setState({
+                            editMode:true,
+                            newMode:NEW_MODE_PHYSICAL_STEP2
+                        })
+                        */
+                    },1000)
+                })
+            })
         }
         
         onAssignNew(data) {
@@ -277,18 +340,24 @@ module.exports = function (Component) {
             if (this.state.editMode) {
                 const pathId={}
                 var zoomIndex=1
-                const newPath=this.state.inventoryPath
-                const id=this.state.id
-                newPath.map(container => {
-                    pathId[container.id]=container.name
-                })
                 var location=null
-                for (var i=0; i<newPath.length; i++) {
-                    location=newPath[i]
-                    if (location.id===id) {
-                        break
+                if (this.state.location) {
+                    location=this.state.location
+                    pathId[location.id]=location.name
+                } else {
+                    const newPath=this.state.inventoryPath
+                    const id=this.state.id
+                    newPath.map(container => {
+                        pathId[container.id]=container.name
+                    })
+                    for (var i=0; i<newPath.length; i++) {
+                        location=newPath[i]
+                        if (location.id===id) {
+                            break
+                        }
                     }
                 }
+                
                 if (!location) return
                 var editPanelClass='is-12-desktop'
                 var fullWidth=true
@@ -416,7 +485,7 @@ module.exports = function (Component) {
                 var locationPathComponent=null
                 //todo: set newMode only after create type has been specified, ie physical or container
                 //todo: change constant name
-                if (this.state.newMode===NEW_MODE_PHYSICAL_STEP1) {
+                if (this.state.newMode===NEW_MODE_PHYSICAL_STEP1&&0) {
                     rootLocation=null
                     locationPathComponent=<div>Virtual search</div>
                 } else {

@@ -311,8 +311,9 @@ module.exports = {
         });
         return locationPath
     },
-    initContainerProps: function(container, pathId, maxWidth, _gridScale) {
+    initContainerProps: function(container, pathId, maxWidth, _gridScale, _newItems) {
         var gridScale = (_gridScale) ? _gridScale : 1
+        var newItems = (_newItems) ? true : false
         //console.log('locationPath:',container,container.xUnits,container.yUnits)
         var rows=1
         var cols=1
@@ -363,6 +364,7 @@ module.exports = {
                     key:key,
                     sort:key,
                     selected:pathId[item.id],
+                    newItem:newItems,
                     name:name,
                     col:(item.parent_x-1)*gridScale,
                     row:(item.parent_y-1)*gridScale,

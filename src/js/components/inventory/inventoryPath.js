@@ -159,7 +159,7 @@ module.exports = function (Component) {
                 dbData.id = virtual_id
                 app.actions.notify(dbData.name+" created", 'notice', 2000);
                 
-                app.actions.inventory.generatePhysicals(virtual_id, dbData.name, instances, parentId, emptyCellArray, function(err, physicals) {
+                app.actions.inventory.generatePhysicals(virtual_id, dbData.name, instances, parentId, emptyCellArray, dbData.color, function(err, physicals) {
                     if (err) {
                         app.actions.notify(err.message, 'error');
                         return

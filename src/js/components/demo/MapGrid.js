@@ -32,7 +32,11 @@ module.exports = function(Component) {
 
         // fill childElements array with empty cells
         for(let i = 0; i < cellCount;i++){
-          childElements.push(<div class="empty grid-item"></div>);  
+          childElements.push(
+            <div class="empty grid-item">
+              <div class="grid-item-label">empty</div>
+            </div>
+          );  
         }
 
         // replace empty cells with positioned children

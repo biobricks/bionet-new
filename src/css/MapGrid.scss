@@ -20,7 +20,7 @@ $breakpoint-desktop: 1024px;
       display: grid;
       grid-template-rows: 1fr;
       grid-template-columns: 1fr;
-      overflow: hidden;
+      overflow: hidden; 
       &.active { background-color: lightblue; }
       &:hover { background-color: whitesmoke; }
       &:hover.active { background-color: lightblue; }
@@ -29,6 +29,11 @@ $breakpoint-desktop: 1024px;
         text-align: center;
         color: #333;
       }
-    }  
+    }
+    .empty.grid-item {
+      .grid-item-label {
+        color: #ddd !important;
+      }  
+    }    
   }
 }

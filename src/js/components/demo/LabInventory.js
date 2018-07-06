@@ -191,6 +191,7 @@ module.exports = function(Component) {
               ) : (
                 <MapPanel 
                   {...this.state}
+                  selectRecord={this.selectRecord}
                 />
               )}  
             </div>

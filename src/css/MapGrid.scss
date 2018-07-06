@@ -1,17 +1,39 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
 .MapGrid {
   // width: 100%;
   // height: auto;
-  border: 1px solid #dbdbdb;
-  border-top: none;
+  // border: 1px solid #dbdbdb;
+  // border-top: none;
   .grid-container {
     display: grid;
     width: 100%;
-    border: 1px solid #ccc;
+    // border: 1px solid #ccc;
     border-top: none;
-    min-height: 80vh;
-    .grid-item {
+    min-height: 40vh;
+    @media (min-width: $breakpoint-tablet) {
+      min-height: 80vh;
+    }    
+    .grid-item {      
       border: 1px solid #ccc;
+      display: grid;
+      grid-template-rows: 1fr;
+      grid-template-columns: 1fr;
+      overflow: hidden; 
+      &.active { background-color: lightblue; }
       &:hover { background-color: whitesmoke; }
-    }  
+      &:hover.active { background-color: lightblue; }
+      .grid-item-label {
+        align-self: center;
+        text-align: center;
+        color: #333;
+      }
+    }
+    .empty.grid-item {
+      .grid-item-label {
+        color: #ddd !important;
+      }  
+    }    
   }
 }

@@ -8,12 +8,6 @@ import marked from 'marked';
 
 import util from '../util.js';
 
-/*
-  ToDo:
-
-  * make a "request biomaterial" button
-*/
-
 module.exports = function(Component) {
 
   var FreegenesStatus = require('./freegenes_status.js')(Component)
@@ -77,6 +71,9 @@ module.exports = function(Component) {
         this.setState({
           virtual: data
         });
+
+        // TODO remove
+        window.vv = data;
 
         app.remote.instancesOfVirtual(id, function(err, data) {
           if(err) {
@@ -269,9 +266,11 @@ module.exports = function(Component) {
       }
 
 
+      var freegenesStatus;
       var status = '';
       if(this.state.virtual && this.state.virtual.freegenes) {
-        status = (<FreegenesStatus status={util.getFreegenesStatus(this.state.virtual)} />);
+        freegenesStatus = util.getFreegenesStatus(this.state.virtual);
+        status = (<FreegenesStatus status={freegenesStatus} />);
       }
 
       var virtual = '';
@@ -376,6 +375,15 @@ module.exports = function(Component) {
         )
       }
 
+      var requestLink = '';
+      if(freegenesStatus === 'shipping') {
+        requestLink = (
+          <p>
+            <Link to={'/request/'+this.state.id}>Request this biomaterial</Link>
+          </p>
+        );
+      }
+
       return (
         <div class="Virtual panel">
           <div class="panel-heading">
@@ -415,6 +423,7 @@ module.exports = function(Component) {
           <div>
             {loading}
           </div>
+          {requestLink}
         </div>
       )
     }

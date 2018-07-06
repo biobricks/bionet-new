@@ -1,3 +1,6 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
 .MapGrid {
   // width: 100%;
   // height: auto;
@@ -8,7 +11,10 @@
     width: 100%;
     // border: 1px solid #ccc;
     border-top: none;
-    min-height: 80vh;
+    min-height: 40vh;
+    @media (min-width: $breakpoint-tablet) {
+      min-height: 80vh;
+    }    
     .grid-item {
       border: 1px solid #ccc;
       &:hover { background-color: whitesmoke; }

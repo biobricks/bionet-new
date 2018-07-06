@@ -745,7 +745,7 @@ module.exports = {
         return attributes
     },
 
-    generatePhysicals: function (virtualId, seriesName, instances, container_id, emptyCellArray, cb) {
+    generatePhysicals: function (virtualId, seriesName, instances, container_id, emptyCellArray, color, cb) {
         if (instances===0) {
             if (cb) cb(null)
             return
@@ -771,7 +771,8 @@ module.exports = {
                 virtual_id:virtualId,
                 parent_id: container_id,
                 parent_x: x,
-                parent_y: y
+                parent_y: y,
+                color:color
             }
             instancesList.push(dbData)
         }

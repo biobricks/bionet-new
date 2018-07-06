@@ -1,5 +1,6 @@
 
 import { h } from 'preact';
+import ColorPicker from 'react-color-picker'
 
 module.exports = function(Component) {
 
@@ -11,8 +12,13 @@ module.exports = function(Component) {
             name:'',
             description:'',
             content:'',
-            instances:1
+            instances:1,
+            enableColorPicker:false,
+            color:'aqua'
         }
+    }
+    onSelectColor(e) {
+        this.setState({enableColorPicker:!this.state.enableColorPicker})
     }
     update(newProps) {
         const newState = Object.assign(this.state, newProps)
@@ -30,14 +36,38 @@ module.exports = function(Component) {
     onName(e) {
         this.update({name:e.target.value})
     }
+    onInstances(e) {
+        this.update({instances:e.target.value})
+    }
     onDescription(e) {
         this.update({description:e.target.value})
     }
     onContent(e) {
         this.update({content:e.target.value})
     }
-    onInstances(e) {
-        this.update({instances:e.target.value})
+    onGenotype(e) {
+        this.update({genotype:e.target.value})
+    }
+    onLicense(e) {
+        this.update({license:e.target.value})
+    }
+    onFreeGenes(e) {
+        this.update({freeGenes:e.target.value})
+    }
+    onFreeGenesStage(e) {
+        this.update({freeGenesStage:e.target.value})
+    }
+    onSequence(e) {
+        this.update({sequence:e.target.value})
+    }
+    onProvenance(e) {
+        this.update({provenance:e.target.value})
+    }
+    onIsAvailable(e) {
+        this.update({isAvailable:e.target.value})
+    }
+    onSetColor(color, c) {
+        this.update({color:color})
     }
     onSave() {
         console.log('PhysicalNew onSave:',this.state)
@@ -57,6 +87,16 @@ module.exports = function(Component) {
             )
           });
       }
+        var colorPicker = null
+        if (this.state.enableColorPicker) {
+            colorPicker = (
+                    <div style={{position:'relative',display:'inline-block',backgroundColor:'#ffffff'}}>
+                        <div style={{position:'fixed',zIndex:'11000'}}>
+                            <ColorPicker value={this.state.color} onDrag={this.onSetColor.bind(this)}/>
+                        </div>
+                    </div>
+                )
+        }
         
       return (
         <div class="PhysicalNewForm">
@@ -108,11 +148,15 @@ module.exports = function(Component) {
                   <div class="column">   
                     <div class="control">
                       <label class="radio">
-                        <input type="radio" name="available" />
+                        <input type="radio" name="available"
+                          onChange={this.onIsAvailable.bind(this)}
+                        />
                         &nbsp;Yes
                       </label>
                       <label class="radio">
-                        <input type="radio" name="available" checked/>
+                        <input type="radio" name="available"
+                          onChange={this.onIsAvailable.bind(this)}
+                        checked/>
                         &nbsp;No
                       </label>
                     </div>
@@ -127,7 +171,10 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <div class="select">
-                      <select name="license">
+                      <select
+                        name="license"
+                          onChange={this.onLicense.bind(this)}
+                        >
                         <option value="OpenMTA">OpenMTA</option>
                         <option value="UBMTA">UBMTA</option>
                         <option value="Limbo">Limbo</option>
@@ -174,6 +221,18 @@ module.exports = function(Component) {
               <div class="column is-12">
                 <div class="columns is-mobile">
                   <div class="column is-narrow">
+                    <label class="label">Color</label>
+                  </div>
+                    <span onClick={this.onSelectColor.bind(this)} style={{backgroundColor:this.state.color}}>
+                        {this.state.color}
+                    </span>
+                    {colorPicker}
+                </div>  
+              </div>
+    
+              <div class="column is-12">
+                <div class="columns is-mobile">
+                  <div class="column is-narrow">
                     <label class="label">Genotype</label>
                   </div>
                   <div class="column">   
@@ -181,6 +240,7 @@ module.exports = function(Component) {
                       class="input"
                       type="text" 
                       name="genotype"
+                      onChange={this.onGenotype.bind(this)}
                     />
                   </div>
                 </div>  
@@ -196,6 +256,7 @@ module.exports = function(Component) {
                       class="input"
                       type="text" 
                       name="provenance"
+                      onChange={this.onProvenance.bind(this)}
                     />
                   </div>
                 </div>
@@ -211,6 +272,7 @@ module.exports = function(Component) {
                       class="textarea" 
                       name="sequence"
                       rows="3"
+                      onChange={this.onSequence.bind(this)}
                     ></textarea>
                   </div>
                 </div>
@@ -228,7 +290,12 @@ module.exports = function(Component) {
                         &nbsp;Yes
                       </label>
                       <label class="radio">
-                        <input type="radio" name="freeGenes" checked/>
+                        <input
+                            type="radio"
+                            name="freeGenes"
+                          onChange={this.onFreeGenes.bind(this)}
+                            checked
+                        />
                         &nbsp;No
                       </label>
                     </div>
@@ -243,7 +310,10 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <div class="select">
-                      <select name="freeGenesStage">
+                      <select
+                        name="freeGenesStage"
+                          onChange={this.onFreeGenesStage.bind(this)}
+                        >
                         <option value="0">0 - Not Submitted</option>
                         <option value="1">1 - Submitted</option>
                         <option value="2">2 - Optimizing</option>
@@ -257,14 +327,6 @@ module.exports = function(Component) {
                   </div>
                 </div>
               </div> 
-    
-              <div class="column is-12">
-                <div class="columns is-gapless">
-                  <div class="column is-narrow">
-                  <button onClick={this.onSave.bind(this)} >Save</button>
-                  </div>
-                </div>
-              </div>
     
             </div>
           </div>

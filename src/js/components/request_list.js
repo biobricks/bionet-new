@@ -81,6 +81,23 @@ module.exports = function(Component) {
       )
     }
 
+    emptyTrash(e) {
+      e.preventDefault();
+
+      if(!confirm("Are you sure you want to permanently delete all trashed requests?")) return;
+
+      app.remote.emptyRequestTrash(function(err) {
+        if(err) return app.actions.notify(err, 'error');
+
+        app.actions.notify("Emptied trash");
+        this.setState({
+          loading: true,
+          requests: []
+        });
+        this.getRequests();
+      }.bind(this));
+    }
+
 	  render() {
 
       var loading = '';
@@ -143,7 +160,10 @@ module.exports = function(Component) {
 
       if(trashedRequests.length) {
         trashedRequests = ((
-          <ul>{trashedRequests}</ul>
+          <div>
+            <ul>{trashedRequests}</ul>
+            <a href="#" onclick={this.emptyTrash.bind(this)}>Empty trash</a>
+          </div>
         ))
       } else {
         trashedRequests = (

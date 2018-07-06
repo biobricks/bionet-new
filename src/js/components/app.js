@@ -12,6 +12,7 @@ module.exports = function(Component) {
   var Login = require('./login.js')(Component);
   var Logout = require('./logout.js')(Component);
   var PasswordReset = require('./password_reset.js')(Component);
+  var PasswordCompleteReset = require('./password_complete_reset.js')(Component);
   var Search = require('./search.js')(Component);
   var Help = require('./help.js')(Component);
   var Count = require('./count.js')(Component);
@@ -90,6 +91,7 @@ module.exports = function(Component) {
                 )}/>
 
                 <Route path="/password-reset" component={PasswordReset} />
+                <Route path="/password-complete-reset/:code" component={PasswordCompleteReset} />
 
                 <Route path="/settings" component={Settings} />
 

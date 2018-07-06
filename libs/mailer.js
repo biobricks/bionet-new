@@ -115,7 +115,7 @@ module.exports = function(opts, base_url) {
     this.send({
       to: user.email,
       subject: "Password reset request",
-      text: "A password reset has been requested.\n\nTo reset your password please visit this link: \n\n" + base_url+'/password-reset/'+code + "\n\n"
+      text: "A password reset has been requested.\n\nTo reset your password please visit this link: \n\n" + base_url+'/password-complete-reset/'+code + "\n\n"
     }, function(err, info) {
       if(err) return cb(err);
       return cb();

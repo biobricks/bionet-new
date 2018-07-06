@@ -27,12 +27,14 @@ module.exports = function(Component) {
               <MapGrid 
                 {...this.props}
                 record={this.props.selectedRecord}
+                selectRecord={this.props.selectRecord}
               />
             ) : null }
             {(!isContainer) ? (
               <MapGrid 
                 {...this.props}
                 record={this.props.parentRecord}
+                selectRecord={this.props.selectRecord}
               />
             ) : null }              
           </div>

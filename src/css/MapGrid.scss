@@ -15,9 +15,20 @@ $breakpoint-desktop: 1024px;
     @media (min-width: $breakpoint-tablet) {
       min-height: 80vh;
     }    
-    .grid-item {
+    .grid-item {      
       border: 1px solid #ccc;
+      display: grid;
+      grid-template-rows: 1fr;
+      grid-template-columns: 1fr;
+      overflow: hidden;
+      &.active { background-color: lightblue; }
       &:hover { background-color: whitesmoke; }
+      &:hover.active { background-color: lightblue; }
+      .grid-item-label {
+        align-self: center;
+        text-align: center;
+        color: #333;
+      }
     }  
   }
 }

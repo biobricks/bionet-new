@@ -210,8 +210,8 @@ module.exports = function (Component) {
             app.actions.inventory.updateItem(props.id, function(err, item) {
                 props.layoutWidthUnits = props.xUnits,
                 props.layoutWidth = props.gridWidth*props.xUnits
-                layoutHeightUnits = props.yUnits,
-                layoutHeight = props.gridHeight*props.yUnits
+                props.layoutHeightUnits = props.yUnits,
+                props.layoutHeight = props.gridHeight*props.yUnits
                 const updatedItem = Object.assign(item, props)
                 delete updatedItem.xUnits
                 delete updatedItem.yUnits

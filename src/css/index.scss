@@ -11,7 +11,10 @@ $fa-font-path: "../fonts/font_awesome"; /* set font-awesome font path */
 
 
 $mdi-font-path: "../fonts/materialdesignicons";
-@import "../../node_modules/@mdi/font/scss/materialdesignicons.scss";
+@import "../../node_modules/mdi/scss/materialdesignicons.scss";
+/* TODO we should switch to the new @mdi/font npm package
+  @import "../../node_modules/@mdi/font/scss/materialdesignicons.scss";
+*/
 
 @import "spinners.scss";
 
@@ -379,6 +382,5 @@ p.description {
   }
 
 }
-
 /* request-list.js END */
 

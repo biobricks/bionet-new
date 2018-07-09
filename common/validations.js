@@ -82,6 +82,46 @@ module.exports = {
     return o;
   },
 
+
+  passwordReset: function(o, lostFocus, opts) {
+    var opts = opts || {};
+    var validation = {};
+/*
+    // email
+    if(o.email) {
+      if(!emailValidator.validate(o.email)) {
+        validation.email = "This is not a valid email address";
+      } else {
+        validation.email = false; // no validation issues
+      }
+    } else {
+      if(lostFocus) {
+        validation.email = "Email address is required";
+      }
+    }
+*/
+    // password
+    if(o.password) {
+      var score = zxcvbn(o.password).score;
+      if(score < 2) {
+        validation.password = "Your password isn't quite strong enough. Try adding numbers, upper-case letters or other symbols.";
+      } else if(score < 3) {
+        validation.password = ["Your password is a bit weak but acceptable", 'warning'];
+      } else if(score >= 4) {
+        validation.password = ["Your password is very strong", 'success'];
+      } else {
+        validation.password = false; // no validation issues
+      }
+    } else {
+      if(lostFocus) {
+        validation.password = "Password is required";
+      }
+    }
+
+    o.validation = validation;
+    return o;
+  },
+
   serverCheck(o, f, opts) {
     opts = opts || {};
     opts.server = true;

@@ -91,6 +91,6 @@ var self = module.exports = {
   },
 
   passwordReset: function(usernameOrEmail, cb) {
-    app.remote.requestPasswordReset(usernameOrEmail, cb);    
+    app.remote.requestPasswordReset(usernameOrEmail, cb);
   }
 };

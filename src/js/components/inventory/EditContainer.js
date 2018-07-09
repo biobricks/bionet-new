@@ -115,6 +115,7 @@ export default class EditContainer extends Component {
     
     selectItem(item) {
         console.log('selectItem:',item)
+        if (!this.state.items) return
         const keyProp = this.props.keyProp
         const key = (item && item[keyProp]) ? item[keyProp] : null
         this.selectedItem = item
@@ -464,7 +465,7 @@ export default class EditContainer extends Component {
         }
 
         var containerPropertiesForm=null
-        //if (this.props.fullWidth) {
+        if (this.props.fullWidth) {
             containerPropertiesForm = (
                 <div>
                     <ContainerPropertiesForm
@@ -476,13 +477,13 @@ export default class EditContainer extends Component {
                         onChange={this.onUpdateContainerProperties.bind(this)}
                     />
                     <hr/>
+                    <div style={{marginTop:'20px'}}/>
                 </div>
             )
-        //}
+        }
         return (
             <div>
                 {containerPropertiesForm}
-                <div style={{marginTop:'20px'}}/>
                 <ItemPropertiesForm
                     name={this.state.defaultName}
                     width={this.state.defaultWidth}

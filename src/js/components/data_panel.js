@@ -28,6 +28,10 @@ module.exports = function(Component) {
       });
     }
       
+    onSaveEditClick() {
+        if (this.props.onSaveEditClick) this.props.onSaveEditClick(app.state.ContainerEditForm)
+    }
+      
     onSaveNewClick() {
         console.log('onSaveNewClick:',app.state.PhysicalNewForm)
         if (this.props.onSaveNew) this.props.onSaveNew(app.state.PhysicalNewForm)
@@ -126,7 +130,7 @@ module.exports = function(Component) {
                         </span>
                         <span 
                           class="button is-small is-success"
-                          onClick={this.props.onSaveEditClick}
+                          onClick={this.onSaveEditClick.bind(this)}
                         >
                           <i class="mdi mdi-content-save"></i>
                         </span>
@@ -211,6 +215,7 @@ module.exports = function(Component) {
               <div>
                 {(isContainer) ? (
                   <ContainerEditForm 
+                    state="ContainerEditForm"
                     {...this.props}
                   />
                 ) : (

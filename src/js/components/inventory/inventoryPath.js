@@ -195,8 +195,13 @@ module.exports = function (Component) {
             this.setState({editMode:!this.state.editMode})
         }
 
-        onSaveEditClick() {
-            console.log('inventoryPath onSaveEditClick:')
+        onSaveEditClick(props) {
+            delete props.validation
+            console.log('inventoryPath onSaveEditClick:', props)
+            app.actions.inventory.updateItem(props.id, function(err, item) {
+                const updatedItem = Object.assign(item, props)
+                return updatedItem
+            })
         }
 
         onUpdateContainerProperties(props) {
@@ -361,6 +366,7 @@ module.exports = function (Component) {
                 var editPanelClass='is-12-desktop'
                 var fullWidth=true
                 if (location.type!=='lab') {
+                    fullWidth=false
                     editPanelClass='is-5-desktop'
                     dataPanel = (
                             <div class="column is-7-desktop">

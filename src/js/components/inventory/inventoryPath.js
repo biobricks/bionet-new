@@ -209,9 +209,9 @@ module.exports = function (Component) {
             console.log('inventoryPath onSaveEditClick:', props)
             app.actions.inventory.updateItem(props.id, function(err, item) {
                 props.layoutWidthUnits = props.xUnits,
-                props.layoutWidth = this.gridWidth*props.xUnits
+                props.layoutWidth = props.gridWidth*props.xUnits
                 layoutHeightUnits = props.yUnits,
-                layoutHeight = this.gridHeight*props.yUnits
+                layoutHeight = props.gridHeight*props.yUnits
                 const updatedItem = Object.assign(item, props)
                 delete updatedItem.xUnits
                 delete updatedItem.yUnits

@@ -14,12 +14,16 @@ export default class LocationPath extends Component {
 
     static defaultProps = {
         path: [],
-        keyProp:'id'
+        keyProp:'id',
+        gridEnabled:true,
+        borderEnabled:false
     }
 
     static propTypes = {
         path: PropTypes.arrayOf(PropTypes.object).isRequired,
-        keyProp: PropTypes.string
+        keyProp: PropTypes.string,
+        gridEnabled:PropTypes.bool,
+        borderEnabled:PropTypes.bool
     }
 
     constructor(props, context) {
@@ -106,8 +110,8 @@ export default class LocationPath extends Component {
                             onMove={this.onMove.bind(this)}
                             zoom={this.props.zoom}
                             dragEnabled={false}
-                            gridEnabled={false}
-                            borderEnabled={true}
+                            gridEnabled={this.props.gridEnabled}
+                            borderEnabled={this.props.borderEnabled}
                             responsive={true}
                             majorGridLine={item.majorGridLine}
                             verticalMargin={-1}

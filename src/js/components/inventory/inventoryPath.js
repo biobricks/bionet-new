@@ -417,13 +417,12 @@ module.exports = function (Component) {
                 const initZoom=this.initZoom
                 console.log('inventoryPath, nav:',currentItem.name,currentItem.type,containerId)
                 var panelWidth=this.state.mapPanelWidth
+                var zoomWidth = Math.min(200,this.state.mapPanelWidth)
                 var rootLocation=null
                 if (currentItem.type!=='lab') {
                     const rootPath2 = newPath.map(container => {
                         if (currentItem.type!=='lab' && container.type==='lab') {
-                            var panelWidth=this.state.mapPanelWidth
                             const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
-                            var zoomWidth = Math.min(200,this.state.mapPanelWidth)
                             rootZoom = initZoom(zoomWidth,containerLayout.layoutWidth)
                             return containerLayout
                         }
@@ -434,9 +433,11 @@ module.exports = function (Component) {
                         <div>
                             <LocationPath
                                 path={rootPath}
-                                width={this.state.mapPanelWidth}
+                                width={zoomWidth}
                                 height={this.state.mapPanelHeight}
                                 zoom={rootZoom}
+                                gridEnabled={false}
+                                borderEnabled={true}
                                 highlightedRecord={this.state.highlightedRecord}
                             />
                             <br/>
@@ -495,6 +496,8 @@ module.exports = function (Component) {
                             width={this.state.mapPanelWidth}
                             height={this.state.mapPanelHeight}
                             zoom={zoom}
+                            gridEnabled={true}
+                            borderEnabled={false}
                             highlightedRecord={this.state.highlightedRecord}
                         />
                     )

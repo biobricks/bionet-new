@@ -1,6 +1,6 @@
 $selectedColor: #ff0000;
 $deSelectedColor: #000000;
-$highlightedColor: #004000;
+$highlightedColor: #ff0000;
 .selectedDisplayObject {
     border: 3px solid $selectedColor;
 }
@@ -8,7 +8,7 @@ $highlightedColor: #004000;
     border: 1px solid $deSelectedColor;
 }
 .highlightedDisplayObject {
-    border: 4px solid $highlightedColor;
+    border: 3px solid $highlightedColor;
 }
 .displayObject {
     background-size: 100% 100%;

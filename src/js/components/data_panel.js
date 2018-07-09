@@ -33,8 +33,11 @@ module.exports = function(Component) {
     }
       
     onSaveNewClick() {
-        console.log('onSaveNewClick:',app.state.PhysicalNewForm)
-        if (this.props.onSaveNew) this.props.onSaveNew(app.state.PhysicalNewForm)
+        if (this.props.onSaveNew) {
+            const item = (this.state.formType==='Container') ? app.state.ContainerNewForm : app.state.PhysicalNewForm
+            console.log('onSaveNewClick:',item)
+            this.props.onSaveNew(item)
+        }
     }
 
     render() {
@@ -197,6 +200,7 @@ module.exports = function(Component) {
                 </div>
                 {(this.state.formType === 'Container') ? (
                   <ContainerNewForm 
+                    state="ContainerNewForm"
                     {...this.props}
                   />
                 ) : null }
@@ -220,6 +224,7 @@ module.exports = function(Component) {
                   />
                 ) : (
                   <PhysicalEditForm 
+                    state="PhysicalEditForm"
                     {...this.props}
                   />
                 )}  

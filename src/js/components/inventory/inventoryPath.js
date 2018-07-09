@@ -122,6 +122,15 @@ module.exports = function (Component) {
         }
         
         onSaveNew(dbData) {
+            if (dbData.type==='physical') this.onSaveNewPhysical(dbData)
+            else this.onSaveNewContainer(dbData)
+        }
+        
+        onSaveNewContainer(item) {
+            console.log('onSaveNewContainer:',item)
+        }
+        
+        onSaveNewPhysical(dbData) {
             const instances = dbData.instances
             const thisModule=this
             const parentId = this.props.id
@@ -199,7 +208,13 @@ module.exports = function (Component) {
             delete props.validation
             console.log('inventoryPath onSaveEditClick:', props)
             app.actions.inventory.updateItem(props.id, function(err, item) {
+                props.layoutWidthUnits = props.xUnits,
+                props.layoutWidth = this.gridWidth*props.xUnits
+                layoutHeightUnits = props.yUnits,
+                layoutHeight = this.gridHeight*props.yUnits
                 const updatedItem = Object.assign(item, props)
+                delete updatedItem.xUnits
+                delete updatedItem.yUnits
                 return updatedItem
             })
         }

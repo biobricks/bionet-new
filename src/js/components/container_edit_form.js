@@ -33,12 +33,14 @@ module.exports = function(Component) {
     componentWillReceiveProps(props) {
         if (props.selectedRecord) {
             console.log('container_edit_form props:',props)
+            const xUnits = (props.selectedRecord.layoutWidthUnits) ? props.selectedRecord.layoutWidthUnits : props.selectedRecord.xUnits
+            const yUnits = (props.selectedRecord.layoutHeightUnits) ? props.selectedRecord.layoutHeightUnits : props.selectedRecord.yUnits
             this.setState({
                 id: props.selectedRecord.id,
                 name: props.selectedRecord.name,
                 description: props.selectedRecord.description,
-                xUnits: props.selectedRecord.xUnits,
-                yUnits: props.selectedRecord.yUnits,
+                xUnits: xUnits,
+                yUnits: yUnits,
                 units: props.selectedRecord.units,
                 color: props.selectedRecord.color,
                 majorGridLine: props.selectedRecord.majorGridLine

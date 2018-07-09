@@ -34,6 +34,8 @@ export default class Grid extends Component {
             verticalMargin: -1,
             responsive: false,
             dragEnabled: false,
+            gridEnabled: true,
+            borderEnabled: false,
             zoom: 1,
             onMove: () => {},
             onDragStart: () => {},
@@ -50,6 +52,8 @@ export default class Grid extends Component {
             majorGridLine:PropTypes.number,
             responsive: PropTypes.bool,
             dragEnabled: PropTypes.bool,
+            gridEnabled: PropTypes.bool,
+            borderEnabled: PropTypes.bool,
             keyProp: PropTypes.string,
             sortProp: PropTypes.string,
             filterProp: PropTypes.string,
@@ -203,25 +207,33 @@ export default class Grid extends Component {
             };
             const layout = new LayoutManager(options, this.state.layoutWidth, this.state.layoutHeight);
             
-            const gridMajorXAxis=gridWidth*this.props.majorGridLine
-            const gridMajorYAxis=gridHeight*this.props.majorGridLine
-            const gridMinorXAxis=gridWidth
-            const gridMinorYAxis=gridHeight
-            
+            // todo: add background color to props
             const backgroundColor = '#fff'
-            const gridColorMajorAxis = 'rgba(0,0,255,.25)'
-            const gridColorMinorAxis = 'rgba(0,0,255,.125)'
-            const backgroundImage="linear-gradient("+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient("+gridColorMinorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMinorAxis+" 1px, transparent 1px)"
-            
-            const backgroundSize=gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px"
-
-            const gridStyle = {
+            var gridStyle = {
                 width: this.props.zoom*this.props.layoutWidth,
                 height: this.props.zoom*this.props.layoutHeight,
                 backgroundColor:backgroundColor,
-                backgroundImage: backgroundImage,
-                backgroundSize: backgroundSize
             }
+            if (this.props.borderEnabled) {
+                gridStyle.border = '1px solid black'
+            }
+            if (this.props.gridEnabled) {
+                const gridMajorXAxis=gridWidth*this.props.majorGridLine
+                const gridMajorYAxis=gridHeight*this.props.majorGridLine
+                const gridMinorXAxis=gridWidth
+                const gridMinorYAxis=gridHeight
+
+                // todo: add grid line color to props
+                const gridColorMajorAxis = 'rgba(0,0,255,.25)'
+                const gridColorMinorAxis = 'rgba(0,0,255,.125)'
+                const backgroundImage="linear-gradient("+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient("+gridColorMinorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMinorAxis+" 1px, transparent 1px)"
+
+                const backgroundSize=gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px"
+                
+                gridStyle.backgroundImage = backgroundImage
+                gridStyle.backgroundSize = backgroundSize
+            }
+            
             return (
                 <div
                     style={gridStyle}

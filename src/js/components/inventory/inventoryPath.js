@@ -289,9 +289,8 @@ module.exports = function (Component) {
             var childItems = (currentItem) ? currentItem.children : null
             const attributes = app.actions.inventory.getAttributesForType(currentItem.type)
       
-// This seems unnecessary and made the outer div smaller than the inner divs in height
-//            const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
-          const pathMaxHeight = "margin:0;padding:0;"
+            //const pathMaxHeight = "height: "+this.state.containerSize+"px;margin:0;padding:0;"
+            const pathMaxHeight = "margin:0;padding:0;"
 
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
             const tableHeight =  window.innerHeight-this.state.containerSize-100
@@ -424,7 +423,8 @@ module.exports = function (Component) {
                         if (currentItem.type!=='lab' && container.type==='lab') {
                             var panelWidth=this.state.mapPanelWidth
                             const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
-                            rootZoom = initZoom(this.state.mapPanelWidth,containerLayout.layoutWidth)
+                            var zoomWidth = Math.min(200,this.state.mapPanelWidth)
+                            rootZoom = initZoom(zoomWidth,containerLayout.layoutWidth)
                             return containerLayout
                         }
                     })

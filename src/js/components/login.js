@@ -16,9 +16,17 @@ module.exports = function(Component) {
         password: ''
       };
     };
+
+    formToState() {
+      this.setState({
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value,
+      });
+    }
     
     login(e) {
       e.preventDefault();
+      this.formToState();
 
       var username = this.state.username.trim();
       var password = this.state.password.trim();
@@ -51,6 +59,7 @@ module.exports = function(Component) {
         });
         app.actions.notify("Logged in!", 'notice');
         app.actions.route('/');
+        window.scrollTo(0,0)
       }.bind(this));
       
     };
@@ -121,7 +130,7 @@ module.exports = function(Component) {
                   <div class="field">
                     <label class="label">Username</label>
                     <div class="control has-icons-left has-icons-right">
-                      <input class="input" type="text" oninput={linkState(this, 'username')} />
+                      <input id="username" class="input" type="text" oninput={linkState(this, 'username')} />
                       <span class="icon is-small is-left">
                         <i class="fa fa-user"></i>
                       </span>
@@ -132,7 +141,7 @@ module.exports = function(Component) {
                   <div class="field">
                     <label class="label">Password</label>
                     <div class="control has-icons-left has-icons-right">
-                      <input class="input" type="password" oninput={linkState(this, 'password')} />
+                      <input id="password" class="input" type="password" oninput={linkState(this, 'password')} />
                       <span class="icon is-small is-left">
                         <i class="fa fa-lock"></i>
                       </span>

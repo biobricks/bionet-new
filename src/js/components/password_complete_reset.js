@@ -36,7 +36,7 @@ module.exports = function(Component) {
 
     submit(e) {
       e.preventDefault();
-      console.log("AAAA");
+
       if(!this.isValid()) {
         // TODO align bulma and noty severity names and colors
         app.actions.notify("Missing or incorrect signup info", 'error');
@@ -94,7 +94,7 @@ module.exports = function(Component) {
                   <div class="field">
                     <label class="label">New password</label>
                     <div class="control has-icons-left has-icons-right">
-                      <input class={'input ' + this.validateInputClass('password')} type="password" onInput={this.validator('password')} onfocusout={this.validator('password', true)} value={this.state.password} />
+                      <input class={'input ' + this.validateInputClass('password')} type="password" onInput={this.validator('password')} onfocusout={this.validator('password', true)} value={this.state.password} autocomplete="off" />
                       <span class="icon is-small is-left">
                         <i class="fa fa-lock"></i>
                       </span>

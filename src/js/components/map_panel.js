@@ -6,13 +6,12 @@ module.exports = function(Component) {
   return class MapPanel extends Component {
     componentDidMount() {
         if (this.props.onMount) {
-            //const mapContainer = document.getElementById('nav-panel')
-            const mapContainer = document.getElementById('map-panel')
+            const mapContainer = document.getElementById('map-panel-item')
             var containerWidth=450
             var containerHeight=600
             if (mapContainer) {
-                containerWidth=mapContainer.offsetWidth-24
-                containerHeight=mapContainer.offsetHeight-16
+                containerWidth=mapContainer.offsetWidth
+                containerHeight=mapContainer.offsetHeight
             }
             this.props.onMount(containerWidth,containerHeight)
         }
@@ -31,7 +30,7 @@ module.exports = function(Component) {
             )}
           </div>
           <div className="panel-block">
-            <div id="nav-panel" class="map-container">{this.props.children}</div>
+            <div id="map-panel-item" class="map-container">{this.props.children}</div>
           </div>         
         </div>
       )

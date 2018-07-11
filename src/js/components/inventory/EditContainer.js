@@ -324,6 +324,16 @@ export default class EditContainer extends Component {
     
     componentDidMount() {
         this.onResize();
+        if (this.props.onMount) {
+            const editContainer = document.getElementById('edit-container')
+            var containerWidth=600
+            var containerHeight=450
+            if (editContainer) {
+                containerWidth=editContainer.offsetWidth-24
+                containerHeight=editContainer.offsetHeight-16
+            }
+            this.props.onMount(containerWidth,containerHeight)
+        }
     }
 
     onToplevClick(e) {
@@ -504,7 +514,7 @@ export default class EditContainer extends Component {
                     />
                 </span>
 
-                <div className="EditContainer" style={containerStyle} ref={node => this.container = node}>
+                <div id="EditContainerDiv" className="EditContainer" style={containerStyle} ref={node => this.container = node}>
                     <Grid
                             state="editGrid"
                             gridId="editGrid"

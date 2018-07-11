@@ -82,7 +82,9 @@ export default class LocationPath extends Component {
             layoutTop:rect.top,
             layoutLeft:rect.left,
             layoutRight:rect.right,
-            layoutBottom:rect.bottom
+            layoutBottom:rect.bottom,
+            layoutWidth:rect.width,
+            layoutHeight:rect.height
         })
     }
     
@@ -94,9 +96,16 @@ export default class LocationPath extends Component {
         if (!this.props.path) return
         const item = this.props.path[0]
         if (!item) return
-        
-        const containerStyle = {
-            width:this.props.width+'px',
+            //height:this.props.height+'px'
+        var containerStyle={}
+        if (this.state.layoutHeight<this.props.height) {
+            containerStyle = {
+                height:this.props.height+'px',
+            }
+        } else {
+            containerStyle = {
+                width:this.props.width+'px',
+            }
         }
         
         return (

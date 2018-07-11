@@ -77,7 +77,9 @@ export default class Grid extends Component {
         onMouseDown(e) {
             if (!this.container) return
             const isTouch = e.targetTouches && e.targetTouches.length === 1;
-            console.log('adding new item:', e)
+            console.log('grid on mouse down:', e)
+            return
+            
             if (e.button === 0 || isTouch) {
                 const rect = this.container.getBoundingClientRect();
                 const layoutLeft = rect.left

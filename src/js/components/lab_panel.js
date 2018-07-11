@@ -12,11 +12,12 @@ module.exports = function(Component) {
         editMode: true,
         lab: {},
       };
-      this.getLabData = this.getLabData.bind(this);
-      this.toggleEditMode = this.toggleEditMode.bind(this);
-      this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
     }
-
+      
+    toggleNewMode() {
+        if (this.props.toggleNewMode) this.props.toggleNewMode()
+    }
+      
     toggleEditMode() {
         this.setState({
             editMode: !this.state.editMode
@@ -25,29 +26,21 @@ module.exports = function(Component) {
     }
 
     onSaveButtonClick() {
-      alert('Since the Lab Editor is edit-in-place, this button can toggle this.state.editMode back to false and have the map from the editor act as navigation rather than Lab Editor.');
       this.toggleEditMode();
     }
 
-    getLabData() {
-      const lab = fakeLabData;
-      this.setState({
-        lab: lab
-      });
-    }
     componentDidMount() {
-      this.getLabData();
         if (this.props.onMount) {
-            const editContainer = document.getElementById('edit-container')
-            var containerWidth=600
-            var containerHeight=450
-            if (editContainer) {
-                containerWidth=editContainer.offsetWidth-24
-                containerHeight=editContainer.offsetHeight-16
+            const mapContainer = document.getElementById('map-panel-item')
+            var containerWidth=450
+            var containerHeight=600
+            if (mapContainer) {
+                containerWidth=mapContainer.offsetWidth
+                containerHeight=mapContainer.offsetHeight
             }
             this.props.onMount(containerWidth,containerHeight)
         }
-    }  
+    }
 
     render() {
       let lab = this.state.lab;
@@ -66,13 +59,19 @@ module.exports = function(Component) {
                         <div class="buttons has-addons">
                           <span 
                             class="button is-small"
-                            onClick={this.toggleEditMode}
+                            onClick={this.toggleEditMode.bind(this)}
                           >
                             <i class="mdi mdi-arrow-left-bold"></i>
                           </span>
                           <span 
+                            class="button is-small is-link"
+                            onClick={this.toggleNewMode.bind(this)}
+                          >
+                          <i class="mdi mdi-plus"></i>
+                          </span>
+                          <span 
                             class="button is-small is-success"
-                            onClick={this.onSaveButtonClick}
+                            onClick={this.onSaveButtonClick.bind(this)}
                           >
                             <i class="mdi mdi-content-save"></i>
                           </span>
@@ -86,7 +85,7 @@ module.exports = function(Component) {
                         <div class="buttons has-addons">
                           <span 
                             class="button is-small is-link"
-                            onClick={this.toggleEditMode}
+                            onClick={this.toggleEditMode.bind(this)}
                           >
                             <i class="mdi mdi-pencil"></i>
                           </span>
@@ -101,12 +100,12 @@ module.exports = function(Component) {
           <div class="panel-block">
             <div id="edit-container" class="lab-editor">
               {(isEditMode) ? (
-                <p class="is-size-12">
+                <p id="map-panel-item" class="is-size-12">
                     <div class="map-container">{this.props.children}</div>
                 </p>
               ) : (
                 <p class="is-size-12">
-                    <div class="map-container">{this.props.children}</div>
+                    <div id="map-panel-item" class="map-container">{this.props.children}</div>
                 </p>
               )} 
             </div>

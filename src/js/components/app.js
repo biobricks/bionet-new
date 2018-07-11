@@ -39,8 +39,11 @@ module.exports = function(Component) {
   const LabInventory = require('./lab_inventory.js')(Component);
 
   // UI/UX Demo Components
-  const LabPanelDemo = require('./demo/LabPanel.js')(Component);
+  const LabPanelDemo     = require('./demo/LabPanel.js')(Component);
   const LabInventoryDemo = require('./demo/LabInventory.js')(Component);
+  const LoginPanelDemo   = require('./demo/LoginPanel.js')(Component);
+  const SignupPanelDemo   = require('./demo/SignupPanel.js')(Component);
+  const ResetPanelDemo   = require('./demo/ResetPanel.js')(Component);
   
   // just an example of dynamically loading js
   var DynamicLoading = require('./dynamic_loading.js')(Component);
@@ -62,10 +65,14 @@ module.exports = function(Component) {
               <div class="content-area">
                 <Route exact path="/" component={Search} />
                 
+                
                 <Route path="/ui/test/:itemId" component={TestComponent} />
                 <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
                 <Route exact path="/ui/lab" component={LabPanelDemo} />
-                
+                <Route exact path="/ui/login" component={LoginPanelDemo} />
+                <Route exact path="/ui/signup" component={SignupPanelDemo} />
+                <Route exact path="/ui/password-reset" component={ResetPanelDemo} />
+
                 <Route exact path="/signup" render={() => (
                   <Signup />
                 )}/>

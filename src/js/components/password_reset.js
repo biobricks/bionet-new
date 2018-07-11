@@ -78,7 +78,7 @@ module.exports = function(Component) {
                   <div class="field">
                     <label class="label">Email</label>
                     <div class="control has-icons-left has-icons-right">
-                      <input class='input' type="text" onInput={this.check.bind(this)} placeholder="hint: email address used for sign-up" />
+                      <input class='input' type="text" onInput={this.check.bind(this)} placeholder="hint: email address used for sign-up" autocomplete="off" />
                       <span class="icon is-small is-left">
                         <i class="fa fa-envelope"></i>
                       </span>

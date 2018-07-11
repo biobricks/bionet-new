@@ -327,6 +327,7 @@ module.exports = function (Component) {
                         />)
 
             } else {
+                /*
                 dataItems=(
                     <div className="pure-form">
                         <div style={{marginTop:'20px'}}/>
@@ -340,6 +341,7 @@ module.exports = function (Component) {
                         <EditTable state="edittable" item={currentItem} items={childItems} height={tableHeight} attributes={attributes}/>
                     </div>
                 )
+                */
             }
 
             var dataPanel=null
@@ -405,26 +407,50 @@ module.exports = function (Component) {
                 }
                 const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
                 const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
-                    
-                editPanel = (
-                    <div class={'column '+editPanelClass}>
-                      <LabPanel
-                        {...this.state}
-                        selectedRecord={currentItem}
-                        toggleEditMode={this.toggleEditMode.bind(this)}
-                        parentRecord={{}}
-                        onMount={this.onEditPanelMount.bind(this)}
-                        >
-                            <div id="inventory_tiles" class="tile is-12">
-                                <div class="tile is-vertical">
-                                    <div id="inventory_path" class="tile is-parent is-12" style={pathMaxHeight}>
-                                        <EditContainer container={containerLayout} items={containerLayout.items} width={this.state.editPanelWidth} height={this.state.editPanelHeight} zoom={zoom} fullWidth={fullWidth}/>
-                                    </div>
-                                </div>
+                const editContainer = (
+                    <div id="inventory_tiles" class="tile is-12">
+                        <div class="tile is-vertical">
+                            <div id="inventory_path" class="tile is-parent is-12" style={pathMaxHeight}>
+                                <EditContainer
+                                    container={containerLayout}
+                                    items={containerLayout.items}
+                                    width={this.state.editPanelWidth}
+                                    height={this.state.editPanelHeight}
+                                    zoom={zoom}
+                                    fullWidth={fullWidth}
+                                    onMount={this.onEditPanelMount.bind(this)}
+                                />
                             </div>
-                      </LabPanel>
+                        </div>
                     </div>
                 )
+                if (currentItem.type==='lab') {
+                    editPanel = (
+                        <div class={'column '+editPanelClass}>
+                          <LabPanel
+                            {...this.state}
+                            selectedRecord={currentItem}
+                            toggleEditMode={this.toggleEditMode.bind(this)}
+                            parentRecord={{}}
+                            >
+                            {editContainer}
+                          </LabPanel>
+                        </div>
+                    )
+                } else {
+                    editPanel = (
+                        <div class={'column '+editPanelClass}>
+                          <MapPanel
+                            {...this.state}
+                            selectedRecord={currentItem}
+                            toggleEditMode={this.toggleEditMode.bind(this)}
+                            parentRecord={{}}
+                            >
+                            {editContainer}
+                          </MapPanel>
+                        </div>
+                    )
+                }
             } else {
                 
                 const width=this.props.width
@@ -438,13 +464,16 @@ module.exports = function (Component) {
                 const initZoom=this.initZoom
                 console.log('inventoryPath, nav:',currentItem.name,currentItem.type,containerId)
                 var panelWidth=this.state.mapPanelWidth
+                var panelHeight=this.state.mapPanelHeight
                 var zoomWidth = Math.min(200,this.state.mapPanelWidth)
+                var zoomHeight = this.state.mapPanelHeight
                 var rootLocation=null
                 if (currentItem.type!=='lab') {
                     const rootPath2 = newPath.map(container => {
                         if (currentItem.type!=='lab' && container.type==='lab') {
                             const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                             rootZoom = initZoom(zoomWidth,containerLayout.layoutWidth)
+                            zoomHeight -= containerLayout.layoutHeight*rootZoom-20
                             return containerLayout
                         }
                     })
@@ -455,7 +484,6 @@ module.exports = function (Component) {
                             <LocationPath
                                 path={rootPath}
                                 width={zoomWidth}
-                                height={this.state.mapPanelHeight}
                                 zoom={rootZoom}
                                 gridEnabled={false}
                                 borderEnabled={true}
@@ -474,10 +502,9 @@ module.exports = function (Component) {
                 var zoom=1.0
                 const locationPath2 = newPath.map(container => {
                     if (containerId===container.id) {
-                        console.log('inventoryPath, nav: generating layout')
+                        console.log('inventoryPath, nav: generating layout:', zoomHeight, panelHeight, this.state.mapPanelHeight)
                         const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                         zoom = initZoom(panelWidth,containerLayout.layoutWidth)
-                        if (container.type!=='lab') zoom *= 0.5
                         return containerLayout
                     }
                 })
@@ -515,7 +542,7 @@ module.exports = function (Component) {
                         <LocationPath
                             path={locationPath}
                             width={this.state.mapPanelWidth}
-                            height={this.state.mapPanelHeight}
+                            height={zoomHeight}
                             zoom={zoom}
                             gridEnabled={true}
                             borderEnabled={false}
@@ -531,7 +558,7 @@ module.exports = function (Component) {
                         parentRecord={{}}
                         onMount={this.onNavPanelMount.bind(this)}
                         >
-                            <div id="inventory_tiles">
+                            <div id="inventory_tiles" class="tile is-5">
                                 <div class="tile is-vertical">
                                     <div id="inventory_path" class="tile is-vertical is-5" style={pathMaxHeight}>
                                         {rootLocation}

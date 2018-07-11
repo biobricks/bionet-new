@@ -149,6 +149,7 @@ module.exports = function(Component) {
               <ContainerProfile 
                 {...this.props}
                 selectRecord={this.props.selectRecord}
+                setHoveredRecord={this.props.setHoveredRecord}
               />
             ) : null }
             {(isViewMode && !isContainer) ? (

@@ -23,7 +23,7 @@ $breakpoint-desktop: 1024px;
       overflow: hidden; 
       &.active { background-color: lightblue; }
       &:hover { background-color: whitesmoke; }
-      &:hover.active { background-color: lightblue; }
+      &:hover.active { background-color: whitesmoke; }
       .grid-item-label {
         align-self: center;
         text-align: center;

@@ -2,6 +2,8 @@
   .panel-block {
     border-top: none;
   }
+  .panel-block.active { background-color: lightblue }
+  .panel-block.active:hover { background-color: whitesmoke; }
   .column.profile {
     margin-top: 7px;
   }

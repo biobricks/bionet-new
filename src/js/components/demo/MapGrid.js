@@ -5,6 +5,24 @@ module.exports = function(Component) {
 
   return class MapGrid extends Component {
 
+    constructor(props){
+      super(props);
+      this.onRecordEnter = this.onRecordEnter.bind(this);
+      this.onRecordLeave = this.onRecordLeave.bind(this);
+    }
+
+    onRecordEnter(e) {
+      let recordId = e.target.getAttribute('id');
+      console.log(`entered ${recordId}`);
+      this.props.setHoveredRecord(recordId);
+    }
+
+    onRecordLeave(e) {
+      let recordId = e.target.getAttribute('id');
+      console.log(`left ${recordId}`);
+      this.props.setHoveredRecord(null);
+    }
+
     render() {
       let containerStyles = {
         'gridTemplateColumns': '',
@@ -45,29 +63,27 @@ module.exports = function(Component) {
           // get position of current child record based on its relationship with parent size
           let childIndex = ((childRecord.row * record.columns) - record.columns) + childRecord.column - 1;
           // replace empty with child
-          if(childRecord.id === this.props.selectedRecord.id){
-            childElements[childIndex] = (
-              <div class="active grid-item">
-                <div class="grid-item-label">{childRecord.name}</div>
-              </div>
-            );  
-          } else {
-            childElements[childIndex] = (
-              <Link 
-                to={`/ui/lab-inventory/${childRecord.id}`} 
-                class="grid-item"
+          let classNames = childRecord.id === this.props.selectedRecord.id || 
+            childRecord.id === this.props.hoveredRecord.id ? "active grid-item" : "grid-item";
+
+          childElements[childIndex] = (
+            <Link 
+              to={`/ui/lab-inventory/${childRecord.id}`} 
+              class={classNames}
+              id={`${childRecord.id}`}
+              onClick={this.props.selectRecord}
+              onMouseEnter={this.onRecordEnter}
+              onMouseLeave={this.onRecordLeave}                
+            >
+              <div 
+                class="grid-item-label"
                 id={`${childRecord.id}`}
-                onClick={this.props.selectRecord}
               >
-                <div 
-                  class="grid-item-label"
-                  id={`${childRecord.id}`}
-                >
-                  {childRecord.name}
-                </div>
-              </Link>
-            );
-          }
+                {childRecord.name}
+              </div>
+            </Link>
+          );
+      
         }
 
         // replace with children by position

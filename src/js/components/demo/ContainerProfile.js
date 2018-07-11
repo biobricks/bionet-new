@@ -13,12 +13,14 @@ module.exports = function(Component) {
 
     onRecordEnter(e) {
       let recordId = e.target.getAttribute('id');
-      //console.log(`Mouse Enter Record ${recordId}`);
+      console.log(`entered ${recordId}`);
+      this.props.setHoveredRecord(recordId);
     }
 
     onRecordLeave(e) {
       let recordId = e.target.getAttribute('id');
-      //console.log(`Mouse Leaving Record ${recordId}`);
+      console.log(`left ${recordId}`);
+      this.props.setHoveredRecord(null);
     }
 
     render() {
@@ -26,29 +28,30 @@ module.exports = function(Component) {
       let parentRecord = this.props.parentRecord;
       let children;
       if (this.props.selectedRecord.children) {
-            children = this.props.selectedRecord.children.map((child, index) => {
-            let isContainer = Object.keys(child).indexOf('children') > -1;
-            return (
-              <Link
-                to={`/ui/lab-inventory/${child.id}`}
-                class="panel-block"
-                id={child.id}
-                onClick={this.props.selectRecord}
-                onMouseEnter={this.onRecordEnter}
-                onMouseLeave={this.onRecordLeave}
-              >
-                <span class="panel-icon">
-                  {(isContainer) ? (
-                    <i class="mdi mdi-grid"></i>
-                  ) : (
-                    <i class="mdi mdi-flask"></i>
-                  )}  
-                </span>
-                {child.name} 
-              </Link>
-            )
-          });
-        }
+        children = this.props.selectedRecord.children.map((child, index) => {
+          let isContainer = Object.keys(child).indexOf('children') > -1;
+          let classNames = this.props.hoveredRecord && child.id === this.props.hoveredRecord.id ? "active panel-block" : "panel-block";
+          return (
+            <Link
+              to={`/ui/lab-inventory/${child.id}`}
+              class={classNames}
+              id={child.id}
+              onClick={this.props.selectRecord}
+              onMouseEnter={this.onRecordEnter}
+              onMouseLeave={this.onRecordLeave}
+            >
+              <span class="panel-icon">
+                {(isContainer) ? (
+                  <i class="mdi mdi-grid"></i>
+                ) : (
+                  <i class="mdi mdi-flask"></i>
+                )}  
+              </span>
+              {child.name} 
+            </Link>
+          );
+        });
+      }
       return (
         <div class="ContainerProfile">
           <div class="panel-block">

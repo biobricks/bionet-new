@@ -19,9 +19,11 @@ module.exports = function(Component) {
         selectedRecord: {},
         selectedRecordPath: [],
         parentRecord: {},
+        hoveredRecord: {}
       };
       this.searchResult = null;
       this.getLabData = this.getLabData.bind(this);
+      this.setHoveredRecord = this.setHoveredRecord.bind(this);
       this.selectRecord = this.selectRecord.bind(this);
       this.getRecordById = this.getRecordById.bind(this);
       this.getRecordPath = this.getRecordPath.bind(this);
@@ -31,6 +33,13 @@ module.exports = function(Component) {
       this.onSaveEditClick = this.onSaveEditClick.bind(this);
       this.onDeleteClick = this.onDeleteClick.bind(this);
       this.setFormType = this.setFormType.bind(this);
+    }
+
+    setHoveredRecord(hoveredRecordId) {
+      this.searchResult = null;
+      this.getRecordById(hoveredRecordId, fakeLabData);
+      let hoveredRecord = this.searchResult || {};
+      this.setState({ hoveredRecord });
     }
 
     selectRecord(e) {
@@ -181,21 +190,24 @@ module.exports = function(Component) {
                 toggleEditMode={this.toggleEditMode}
                 toggleNewMode={this.toggleNewMode}
                 setFormType={this.setFormType}
+                setHoveredRecord={this.setHoveredRecord}
               />
             </div>
             <div class="column is-5-desktop">
               {(isNewMode && this.state.formType === 'Physical') ? (
                 <SuggestPanel 
-                {...this.state}
-              />
+                  {...this.state}
+                  setHoveredRecord={this.setHoveredRecord}
+                />
               ) : (
                 <MapPanel 
                   {...this.state}
                   selectRecord={this.selectRecord}
+                  setHoveredRecord={this.setHoveredRecord}
                 />
               )}  
             </div>
-          </div>
+            </div>
         </div>
       )
     }

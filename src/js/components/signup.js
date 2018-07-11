@@ -30,6 +30,12 @@ module.exports = function(Component) {
       });
     }
     
+    cancel(e) {
+      e.preventDefault();
+
+      app.actions.route('/');
+    }
+
 	  render() {
 
       return (
@@ -112,7 +118,7 @@ module.exports = function(Component) {
                       <input type="submit" class="button is-link" value="Create" />
                     </div>
                     <div class="control">
-                      <button class="button is-text">Cancel</button>
+                      <button class="button is-text" onclick={this.cancel.bind(this)}>Cancel</button>
                     </div>
                   </div>
                 </div>

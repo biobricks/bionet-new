@@ -100,7 +100,6 @@ export default class LocationPath extends Component {
             //height:this.props.height+'px'
         const containerStyle = {
             width:this.props.width+'px',
-            height:this.props.height+'px',
         }
         
         return (

@@ -509,6 +509,7 @@ module.exports = function (Component) {
                                 path={rootPath}
                                 container={rootContainer}
                                 width={zoomWidth}
+                                height={zoomHeight}
                                 zoom={rootZoom}
                                 gridEnabled={false}
                                 borderEnabled={true}

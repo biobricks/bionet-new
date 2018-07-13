@@ -252,6 +252,8 @@ module.exports = function (Component) {
         }
         
         onEditPanelMount(width,height) {
+            const id= (this.state.id) ? this.state.id : 'no selected record '
+            console.log('onEditPanelMount:',id,width,height)
             this.setState({editPanelWidth:width,editPanelHeight:height})
         }
         onNavPanelMount(width,height) {
@@ -421,25 +423,19 @@ module.exports = function (Component) {
                             toggleEditItemMode={this.onToggleEditItem.bind(this)}
                             parentRecord={{}}
                             >
-                                <div id="inventory_tiles" class="tile">
-                                    <div class="tile is-vertical">
-                                        <div id="inventory_path" class="tile is-parent" style={pathMaxHeight}>
-                                            <EditContainer
-                                                container={containerLayout}
-                                                items={containerLayout.items}
-                                                width={this.state.editPanelWidth}
-                                                height={this.state.editPanelHeight}
-                                                zoom={zoom}
-                                                fullWidth={true}
-                                                onMount={this.onEditPanelMount.bind(this)}
-                                                editItem={this.state.toggleEditItem}
-                                                newItem={this.state.toggleNewItem}
-                                                onToggleEdit={this.onToggleEditItem.bind(this)}
-                                                onToggleNew={this.onToggleNewItem.bind(this)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                                <EditContainer
+                                    container={containerLayout}
+                                    items={containerLayout.items}
+                                    width={this.state.editPanelWidth}
+                                    height={this.state.editPanelHeight}
+                                    zoom={zoom}
+                                    fullWidth={true}
+                                    onMount={this.onEditPanelMount.bind(this)}
+                                    editItem={this.state.toggleEditItem}
+                                    newItem={this.state.toggleNewItem}
+                                    onToggleEdit={this.onToggleEditItem.bind(this)}
+                                    onToggleNew={this.onToggleNewItem.bind(this)}
+                                />
                           </LabPanel>
                         </div>
                     )

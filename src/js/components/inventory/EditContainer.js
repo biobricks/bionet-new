@@ -51,7 +51,8 @@ export default class EditContainer extends Component {
             defaultHeight : 1,
             defaultColor : 'aqua',
             defaultFontSize:'0.3',
-            items:items
+            items:items,
+            editItemMode:false
         };
         this.componentWillReceiveProps(props)
     }
@@ -156,8 +157,10 @@ export default class EditContainer extends Component {
         const y2 = this.state.layoutBottom
         const x = (xp+this.container.scrollLeft-this.state.layoutLeft)/this.state.zoom
         const y = (yp+this.container.scrollTop-this.state.layoutTop)/this.state.zoom
-        const col = Math.round(x / this.gridWidth)
-        const row = Math.round(y / this.gridHeight)
+        const col = Math.trunc(x / this.gridWidth)
+        const row = Math.trunc(y / this.gridHeight)
+        //const col = Math.round(x / this.gridWidth)
+        //const row = Math.round(y / this.gridHeight)
         const isOutsideGrid = xp < x1 || xp > x2 || yp < y1 || yp > y2 || col >= this.state.layoutWidthUnits || row >= this.state.layoutHeightUnits
         console.log('onDragEnd:', isDrag, xp, yp, x1,x2,y1,y2,col,row)
         if (isDrag) {
@@ -281,10 +284,15 @@ export default class EditContainer extends Component {
         item.id = id
         item.key = id;
         item.sort = id;
+        /*
         item.name = this.state.defaultName
         item.width = this.state.defaultWidth * this.gridWidth
         item.height = this.state.defaultHeight * this.gridHeight
-        item.color = this.state.defaultColor
+        */
+        item.name = 'New Item'
+        item.width = this.gridWidth
+        item.height = this.gridHeight
+        item.color = 'rgba(255,0,0,0.2)'
         item.fontSize = this.state.defaultFontSize
         //item.row--
         
@@ -370,9 +378,11 @@ export default class EditContainer extends Component {
     
     componentDidMount() {
         this.onResize();
+        console.log('EditContainer componentDidMount:',this.props,this.state)
         if (this.props.onMount) {
-            //const editContainer = document.getElementById('EditContainerDiv')
-            const editContainer = document.getElementById('edit-container')
+            const editContainerId = (this.props.fullWidth) ? 'EditContainerDiv' : 'edit-container'
+            const editContainer = document.getElementById(editContainerId)
+            console.log('EditContainer componentDidMount:',editContainerId)
             var containerWidth=600
             var containerHeight=450
             if (editContainer) {
@@ -401,7 +411,7 @@ export default class EditContainer extends Component {
             //console.log('onToplevClick:', pageX, pageY, rect)
         }
         console.log('EditContainer onToplevClick:',pageX,pageY,isOutside)
-        if (isOutside) this.selectItem()
+        //if (isOutside) this.selectItem()
     }
     
     onUpdateContainerProperties(props) {
@@ -516,8 +526,10 @@ export default class EditContainer extends Component {
     }
 
     toggleEditMode(){}
+    toggleEditItemMode(){
+        this.setState({editItemMode:!this.state.editItemMode})
+    }
     toggleNewMode(){}
-    toggleEditItemMode(){}
     onDeleteClick(){}
     onSaveButtonClick(){}
 
@@ -530,6 +542,7 @@ export default class EditContainer extends Component {
         const name=this.state.defaultName
         const isEditMode=true
         if (this.props.fullWidth) {
+            const isEditItemMode=this.state.editItemMode
             var containerPropertiesForm=null
             var itemPropertiesForm = null
             containerPropertiesForm = (
@@ -542,6 +555,7 @@ export default class EditContainer extends Component {
                         units={this.state.units}
                         onChange={this.onUpdateContainerProperties.bind(this)}
                     />
+                    <div className="vertical-spacing"/>
                     <span className="pure-form">
                         <label>Zoom</label>
                         <SliderControl
@@ -551,42 +565,47 @@ export default class EditContainer extends Component {
                             onChange={this.onZoom.bind(this)}
                         />
                     </span>
-                    <div className="vertical-spacing"/>
                 </div>
             )
-
-            if (this.props.editItem || this.props.newItem) {
-                itemPropertiesForm=(
-                    <div style={{height:'120px'}}>
-                        <div className="vertical-spacing"/>
-                        <ItemPropertiesForm
+            /*
                             name={this.state.defaultName}
                             width={this.state.defaultWidth}
                             height={this.state.defaultHeight}
                             color={this.state.defaultColor}
                             fontSize={this.state.defaultFontSize}
-                            onChange={this.onUpdateItemProperties.bind(this)}
-                        />
-                        <div className="vertical-spacing"/>
-                    </div>
-                )
-            } else {
-                if (this.state.item) {
+            */
+            const item=this.state.item
+            console.log('EditContainer render item:',item,this.state,this.props)
+            if (item) {
+                if (isEditItemMode || this.props.newItem) {
                     itemPropertiesForm=(
-                    <div style={{height:'120px'}}>
-                        <div className="pure-form">
-                            <label>Name:</label><span>{this.state.defaultName}</span>
-                            <br/>
-                            <label>Width:</label><span>{this.state.defaultWidth}</span>
-                            <br/>
-                            <label>Height:</label><span>{this.state.defaultHeight}</span>
-                            <br/>
-                            <label>Color:</label><span>{this.state.defaultColor}</span>
-                            <br/>
-                            <label>Font Size:</label><span>{this.state.defaultFontSize}</span>
+                        <div style={{height:'120px'}}>
+                            <ItemPropertiesForm
+                                name={item.name}
+                                width={item.xUnits}
+                                height={item.yUnits}
+                                color={item.color}
+                                fontSize={item.fontSize}
+                                onChange={this.onUpdateItemProperties.bind(this)}
+                            />
                         </div>
-                    </div>
                     )
+            } else {
+                itemPropertiesForm=(
+                <div style={{height:'120px'}}>
+                    <div className="pure-form">
+                        <label>Name:</label><span>{this.state.defaultName}</span>
+                        <br/>
+                        <label>Width:</label><span>{this.state.defaultWidth}</span>
+                        <br/>
+                        <label>Height:</label><span>{this.state.defaultHeight}</span>
+                        <br/>
+                        <label>Color:</label><span>{this.state.defaultColor}</span>
+                        <br/>
+                        <label>Font Size:</label><span>{this.state.defaultFontSize}</span>
+                    </div>
+                </div>
+                )
                 }
             }
             var itemProperties=null
@@ -597,23 +616,37 @@ export default class EditContainer extends Component {
                     <div class="is-block">
                       <div class="columns is-gapless">
                         <div class="column">
-                          { (isEditMode) ? (
+                          { (isEditItemMode) ? (
                             <div>
                               {name}
                               <div class="toolbox is-pulled-right">
                                 <div class="buttons has-addons">
                                   <span 
                                     class="button is-small"
-                                    onClick={this.toggleEditMode.bind(this)}
+                                    onClick={this.toggleEditItemMode.bind(this)}
                                   >
                                     <i class="mdi mdi-arrow-left-bold"></i>
                                   </span>
                                   <span 
                                     class="button is-small is-success"
-                                    onClick={this.toggleNewMode.bind(this)}
+                                    onClick={this.onSaveButtonClick.bind(this)}
                                   >
-                                  <i class="mdi mdi-plus"></i>
+                                    <i class="mdi mdi-content-save"></i>
                                   </span>
+                                  <span 
+                                    class="button is-small is-danger"
+                                    onClick={this.onDeleteClick.bind(this)}
+                                  >
+                                  <i class="mdi mdi-delete-variant"></i>
+                                 </span>
+                                </div>
+                              </div>                    
+                            </div>
+                          ) : (
+                            <div>
+                              {name}
+                              <div class="toolbox is-pulled-right">
+                                <div class="buttons has-addons">
                                   <span 
                                     class="button is-small is-link"
                                     onClick={this.toggleEditItemMode.bind(this)}
@@ -625,27 +658,7 @@ export default class EditContainer extends Component {
                                     onClick={this.onDeleteClick.bind(this)}
                                   >
                                   <i class="mdi mdi-delete-variant"></i>
-                                </span>
-                                  <span 
-                                    class="button is-small is-success"
-                                    onClick={this.onSaveButtonClick.bind(this)}
-                                  >
-                                    <i class="mdi mdi-content-save"></i>
-                                  </span>
-                                </div>
-                              </div>                    
-                            </div>
-                          ) : (
-                            <div>
-                              {name}
-                              <div class="toolbox is-pulled-right">
-                                <div class="buttons has-addons">
-                                  <span 
-                                    class="button is-small is-link"
-                                    onClick={this.toggleEditMode.bind(this)}
-                                  >
-                                    <i class="mdi mdi-pencil"></i>
-                                  </span>
+                                 </span>
                                 </div>
                               </div>                      
                             </div>
@@ -661,9 +674,8 @@ export default class EditContainer extends Component {
                 )
             }
             return (
-             <div>
-                <div class="columns">
-                    <div class="column is-3">
+                <div class="columns is-12-desktop">
+                    <div class="column is-3-desktop">
                         <div class="panel-block">
                             {containerPropertiesForm}
                         </div>
@@ -671,30 +683,29 @@ export default class EditContainer extends Component {
                         {itemProperties}
                     </div>
 
-                    <div class="column is-9">
-                        <div id="EditContainerDiv" className="EditContainer" style={containerStyle} ref={node => this.container = node}>
+                    <div id="EditContainerDiv" class="column is-9-desktop" style={{height:'100%'}}>
+                        <div className="EditContainer" style={containerStyle} ref={node => this.container = node}>
                             <Grid
-                                    state="editGrid"
-                                    gridId="editGrid"
-                                    items={this.state.items}
-                                    onMove={this.onMove.bind(this)}
-                                    zoom={this.state.zoom}
-                                    dragEnabled={true}
-                                    onDragEnd={this.onDragEnd.bind(this)}
-                                    onResizeStop={this.onResizeStop.bind(this)}
-                                    onNewItem={this.onNewItem.bind(this)}
-                                    responsive={true}
-                                    majorGridLine={this.state.majorGridLine}
-                                    verticalMargin={-1}
-                                    gridWidth={this.gridWidth}
-                                    gridHeight={this.gridHeight}
-                                    layoutWidth={this.state.layoutWidth}
-                                    layoutHeight={this.state.layoutHeight}
+                                state="editGrid"
+                                gridId="editGrid"
+                                items={this.state.items}
+                                onMove={this.onMove.bind(this)}
+                                zoom={this.state.zoom}
+                                dragEnabled={true}
+                                onDragEnd={this.onDragEnd.bind(this)}
+                                onResizeStop={this.onResizeStop.bind(this)}
+                                onNewItem={this.onNewItem.bind(this)}
+                                responsive={true}
+                                majorGridLine={this.state.majorGridLine}
+                                verticalMargin={-1}
+                                gridWidth={this.gridWidth}
+                                gridHeight={this.gridHeight}
+                                layoutWidth={this.state.layoutWidth}
+                                layoutHeight={this.state.layoutHeight}
                             />
                         </div>
                     </div>
                 </div>
-            </div>
             )
         }
         

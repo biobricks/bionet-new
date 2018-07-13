@@ -223,6 +223,13 @@ export default class EditContainer extends Component {
                     if (itemAr.id===item.id) return item
                     return itemAr
                 });
+                this.setState({
+                    item:null,
+                    defaultWidth:1,
+                    defaultHeight:1,
+                    defaultColor:'aqua',
+                    fontSize:0.3
+                })
                 this.onUpdateItems(items)
             }
         }.bind(this))
@@ -530,7 +537,14 @@ export default class EditContainer extends Component {
         this.setState({editItemMode:!this.state.editItemMode})
     }
     toggleNewMode(){}
-    onDeleteClick(){}
+    onDeleteItemClick(){
+        const item = this.state.item
+        console.log('onDeleteItemClick, deleting:',item)
+        if (item) {
+            this.deleteItem(item)
+            this.selectItem(item,this.state.items)
+        }
+    }
     onSaveButtonClick(){}
 
     render() {
@@ -635,7 +649,7 @@ export default class EditContainer extends Component {
                                   </span>
                                   <span 
                                     class="button is-small is-danger"
-                                    onClick={this.onDeleteClick.bind(this)}
+                                    onClick={this.onDeleteItemClick.bind(this)}
                                   >
                                   <i class="mdi mdi-delete-variant"></i>
                                  </span>
@@ -655,7 +669,7 @@ export default class EditContainer extends Component {
                                   </span>
                                   <span 
                                     class="button is-small is-danger"
-                                    onClick={this.onDeleteClick.bind(this)}
+                                    onClick={this.onDeleteItemClick.bind(this)}
                                   >
                                   <i class="mdi mdi-delete-variant"></i>
                                  </span>

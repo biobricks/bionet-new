@@ -53,7 +53,7 @@ module.exports = function(Component) {
         this.setState(newState)
         if (this.props.onChange) this.props.onChange(newProps)
         //todo: ashnagz doesn't seem to be setting state correctly
-        app.state.ContainerEditForm=this.state
+        app.state.ContainerEditForm=newState
         /*
         app.setState({
             ContainerEditForm:this.state

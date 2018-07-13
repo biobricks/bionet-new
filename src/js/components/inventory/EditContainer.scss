@@ -2,8 +2,12 @@
     text-align:left;
     display:block;
 }
-.pure-form input, .pure-form label, .pure-form select {
+.pure-form input, .pure-form label, .pure-form select, .pure-form span {
     margin-right:10px;
+}
+
+.pure-form span {
+    font-weight:700;
 }
 
 label {
@@ -17,4 +21,7 @@ label {
     padding:0;
     margin:0;
     overflow:auto;
+}
+.vertical-spacing {
+    margin-top:20px;
 }

@@ -18,6 +18,10 @@ module.exports = function(Component) {
         if (this.props.toggleNewMode) this.props.toggleNewMode()
     }
       
+    toggleEditItemMode() {
+        if (this.props.toggleEditItemMode) this.props.toggleEditItemMode()
+    }
+      
     toggleEditMode() {
         this.setState({
             editMode: !this.state.editMode
@@ -64,12 +68,6 @@ module.exports = function(Component) {
                             <i class="mdi mdi-arrow-left-bold"></i>
                           </span>
                           <span 
-                            class="button is-small is-link"
-                            onClick={this.toggleNewMode.bind(this)}
-                          >
-                          <i class="mdi mdi-plus"></i>
-                          </span>
-                          <span 
                             class="button is-small is-success"
                             onClick={this.onSaveButtonClick.bind(this)}
                           >
@@ -77,7 +75,7 @@ module.exports = function(Component) {
                           </span>
                         </div>
                       </div>                    
-                    </div>  
+                    </div>
                   ) : (
                     <div>
                       {name}

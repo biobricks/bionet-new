@@ -320,8 +320,8 @@ module.exports = {
         var itemCols=1
         var itemRows=1
         if (container.layoutWidthUnits) {
-            cols = container.layoutWidthUnits
-            rows = container.layoutHeightUnits
+            cols = Number(container.layoutWidthUnits)
+            rows = Number(container.layoutHeightUnits)
             gridScale=1
         }
         else {

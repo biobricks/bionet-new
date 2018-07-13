@@ -14,9 +14,17 @@ module.exports = function(Component) {
     
     constructor(props) {
       super(props);
-      this.state = {
-        formType: ''
-      };
+      this.componentWillReceiveProps(props)
+    }
+      
+    componentWillReceiveProps(props) {
+      if (props.editMode) {
+          var formType = (props.selectedRecord.type !== 'physical') ? 'Container' : 'Physical'
+          this.setState({
+            formType: formType
+          })
+          //if (this.props.onFormType) this.props.onFormType(formType)
+      }
     }
     
     setFormType(e) {
@@ -24,19 +32,27 @@ module.exports = function(Component) {
       console.log(`Form type switched to ${formType}`);
       if (this.props.onFormType) this.props.onFormType(formType)
       this.setState({
-        formType
+        formType:formType
       });
     }
       
     onSaveEditClick() {
-        if (this.props.onSaveEditClick) this.props.onSaveEditClick(app.state.ContainerEditForm)
+        if (this.props.onSaveEdit) {
+            const item = (this.state.formType==='Container') ? app.state.ContainerEditForm : app.state.PhysicalEditForm
+            console.log('data_panel onSaveEditClick:',item, this.state)
+            this.props.onSaveEdit(item, this.state.formType.toLowerCase())
+        }
     }
       
     onSaveNewClick() {
         if (this.props.onSaveNew) {
             const item = (this.state.formType==='Container') ? app.state.ContainerNewForm : app.state.PhysicalNewForm
-            console.log('onSaveNewClick:',item)
-            this.props.onSaveNew(item)
+            if (this.props.recordLocation) {
+                item.parent_x = this.props.recordLocation.col+1
+                item.parent_y = this.props.recordLocation.row+1
+            }
+            console.log('data_panel onSaveNewClick:',item)
+            this.props.onSaveNew(item, this.state.formType.toLowerCase())
         }
     }
 
@@ -163,13 +179,11 @@ module.exports = function(Component) {
             {(isViewMode && isContainer) ? (
               <ContainerProfile 
                 {...this.props}
-                selectRecord={this.props.selectRecord}
               />
             ) : null }
             {(isViewMode && !isContainer) ? (
               <PhysicalProfile 
                 {...this.props}
-                selectRecord={this.props.selectRecord}
               />
             ) : null }
             {(isNewMode && isContainer) ? (

@@ -48,6 +48,8 @@ export default class ContainerPropertiesForm extends Component {
     update(newProps) {
         const newState = Object.assign(this.state, newProps)
         this.setState(newState)
+        app.state.ContainerEditForm = newState
+        app.state.ContainerNewForm = newState
         if (this.props.onChange) this.props.onChange(newProps)
     }
     onName(e) {

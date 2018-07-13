@@ -18,14 +18,6 @@ module.exports = function(Component) {
         parentRecord: {}
       };
       this.searchResult = null;
-      this.getLabData = this.getLabData.bind(this);
-      this.selectRecord = this.selectRecord.bind(this);
-      this.getRecordById = this.getRecordById.bind(this);
-      this.toggleNewMode = this.toggleNewMode.bind(this);
-      this.toggleEditMode = this.toggleEditMode.bind(this);
-      this.onSaveNewClick = this.onSaveNewClick.bind(this);
-      this.onSaveEditClick = this.onSaveEditClick.bind(this);
-      this.onDeleteClick = this.onDeleteClick.bind(this);
     }
 
     selectRecord(e) {
@@ -83,11 +75,13 @@ module.exports = function(Component) {
 
     onSaveEditClick() {
       alert('To-Do: Here is where the Container/Physical changes needs to be saved.');
+      if (this.props.onSaveEdit) this.props.onSaveEdit(app.state.ContainerEditForm)
       this.toggleEditMode();
     }
 
     onSaveNewClick() {
       alert('To-Do: Here is where the new Container/Physical needs to be saved.');
+      if (this.props.onSaveNew) this.props.onSaveNew(app.state.ContainerNewForm)
       this.toggleNewMode();
     }
 
@@ -96,19 +90,6 @@ module.exports = function(Component) {
       this.toggleEditMode();      
     }
 
-    getLabData() {
-      const lab = fakeLabData;
-      this.setState({
-        lab: lab,
-        parentRecord: lab,
-        selectedRecord: lab.children[0]
-      });
-    }
-
-    componentDidMount() {
-      this.getLabData();
-    }  
-
     render() {
       return (
         <div class="LabInventory">
@@ -116,12 +97,12 @@ module.exports = function(Component) {
             <div class="column is-7-desktop">
               <DataPanel 
                 {...this.state}
-                selectRecord={this.selectRecord}
-                onSaveNewClick={this.onSaveNewClick}
-                onSaveEditClick={this.onSaveEditClick}
-                onDeleteClick={this.onDeleteClick}
-                toggleEditMode={this.toggleEditMode}
-                toggleNewMode={this.toggleNewMode}
+                selectRecord={this.selectRecord.bind(this)}
+                onSaveNew={this.onSaveNewClick.bind(this)}
+                onSaveEdit={this.onSaveEditClick.bind(this)}
+                onDeleteClick={this.onDeleteClick.bind(this)}
+                toggleEditMode={this.toggleEditMode.bind(this)}
+                toggleNewMode={this.toggleNewMode.bind(this)}
               />
             </div>
             <div class="column is-5-desktop">

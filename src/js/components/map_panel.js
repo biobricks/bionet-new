@@ -16,7 +16,7 @@ module.exports = function(Component) {
             this.props.onMount(containerWidth,containerHeight)
         }
       }
-	  render() {
+	  render() {   
       let record = this.props.selectedRecord;
       let isContainer = this.props.selectedRecord.type !== 'physical'
       //let isContainer = Object.keys(record).indexOf('children') > -1;

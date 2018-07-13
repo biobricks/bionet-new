@@ -34,7 +34,9 @@ module.exports = function (Component) {
                 navMode:'navigate',
                 editMode:false,
                 newMode:false,
-                currentItem:currentItem
+                toggleEditItem:false,
+                toggleNewItem:false,
+                currentItem:currentItem,
             }
         }
 
@@ -111,23 +113,34 @@ module.exports = function (Component) {
                 this.setState({
                     newMode:false,
                     location:null,
+                    layoutWidthUnits:null,
+                    layoutHeightUnits:null,
+                    majorGridLine:null,
+                    recordLocation:null
                 })
             } else {
                 const newMode = (this.state.formType==='Physical') ? NEW_MODE_PHYSICAL_STEP1 : NEW_MODE_CONTAINER
                 this.setState({
-                    newMode:true,
+                    newMode:newMode,
                     location:null
                 })
             }
         }
         
-        onSaveNew(dbData) {
-            if (dbData.type==='physical') this.onSaveNewPhysical(dbData)
+        onSaveNew(dbData, type) {
+            if (type==='physical') this.onSaveNewPhysical(dbData)
             else this.onSaveNewContainer(dbData)
         }
         
         onSaveNewContainer(item) {
             console.log('onSaveNewContainer:',item)
+            if (!this.state.currentItem) return
+            const parentId = this.state.currentItem.id 
+            item.parent_id = parentId
+            app.actions.inventory.saveToInventory(item,null,null,function(err,id){
+                console.log('onSaveNewContainer, saveToInventory:',err,id)
+                app.actions.inventory.refreshInventoryPath(parentId)
+            }.bind(this))
         }
         
         onSaveNewPhysical(dbData) {
@@ -177,16 +190,6 @@ module.exports = function (Component) {
                     currentItem.children=mergedPhysicals
                     //console.log('onSaveNew: new physicals:',mergedPhysicals,currentItem)
                     app.actions.inventory.refreshInventoryPath(currentItem.id)
-                        //location:currentItem,
-                    setTimeout(()=>{
-                        //thisModule.toggleEditMode()
-                        /*
-                        thisModule.setState({
-                            editMode:true,
-                            newMode:NEW_MODE_PHYSICAL_STEP2
-                        })
-                        */
-                    },1000)
                 })
             })
         }
@@ -201,80 +204,53 @@ module.exports = function (Component) {
                 console.log('inventoryPath, toggleEditMode refreshing inventory path')
                 app.actions.inventory.refreshInventoryPath(this.state.id)
             }
-            this.setState({editMode:!this.state.editMode})
+            this.setState({
+                editMode:!this.state.editMode,
+                layoutWidthUnits:null,
+                layoutHeightUnits:null,
+                majorGridLine:null,
+                recordLocation:null
+            })
+        }
+        
+        toggleEditItemMode() {
+            this.setState({toggleEditItem:!this.state.toggleEditItem})
         }
 
-        onSaveEditClick(props) {
+        onSaveEdit(props) {
+            if (!props) return
             delete props.validation
-            console.log('inventoryPath onSaveEditClick:', props)
+            console.log('inventoryPath onSaveEdit:', props)
             app.actions.inventory.updateItem(props.id, function(err, item) {
                 props.layoutWidthUnits = props.xUnits,
                 props.layoutWidth = props.gridWidth*props.xUnits
                 props.layoutHeightUnits = props.yUnits,
                 props.layoutHeight = props.gridHeight*props.yUnits
                 const updatedItem = Object.assign(item, props)
+                console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
                 delete updatedItem.xUnits
                 delete updatedItem.yUnits
                 return updatedItem
             })
         }
 
-        onUpdateContainerProperties(props) {
-            app.actions.inventory.updateItem(this.state.containerId,function(err,item){
-                var updatedItem={}
-                if (props.width) {
-                    const update = {
-                        layoutWidthUnits:props.width,
-                        layoutWidth: this.gridWidth*props.width
-                    }
-                    updatedItem = Object.assign(item,update)
-                } else if (props.height) {
-                    const update = {
-                        layoutHeightUnits:props.height,
-                        layoutHeight: this.gridHeight*props.height
-                    }
-                    updatedItem = Object.assign(item,update)
-                } else {
-                    updatedItem = Object.assign(item,props)
+        onChangeItemProperties(props) {
+            if (!this.state.currentItem) return
+            const currentItem = this.state.currentItem
+            if (currentItem.type==='physical') {
+                console.log('inventoryPath onChangeItemProperties physical:',props)
+            } else {
+                console.log('inventoryPath onChangeItemProperties container:',props)
+                if (props.xUnits) {
+                    this.setState({layoutWidthUnits:props.xUnits})
+                } else if (props.yUnits) {
+                    this.setState({layoutHeightUnits:props.yUnits})
+                } else if (props.majorGridLine) {
+                    this.setState({majorGridLine:props.majorGridLine})
                 }
-                console.log('updateSelection:',updatedItem)
-                return updatedItem
-            }.bind(this))
-            
-            //console.log('onUpdateContainerProperties:',props)
-            if (props.name) {
-                this.setState({
-                    layoutName: props.name
-                })
-            }
-            if (props.width) {
-                this.setState({
-                    layoutWidthUnits:props.width,
-                    layoutWidth: this.gridWidth*props.width
-                })
-            }
-            if (props.height) {
-                this.setState({
-                    layoutHeightUnits:props.height,
-                    layoutHeight: this.gridHeight*props.height
-                })
-            }
-            if (props.majorGridLine) {
-                this.setState({
-                    majorGridLine: props.majorGridLine
-                })
-            }
-            if (props.units) {
-                this.setState({
-                    units:props.units
-                })
-            }
-            if (props.zoom) {
-                this.setState({
-                    zoom:props.zoom
-                })
             }
         }
+        
         onEditPanelMount(width,height) {
             this.setState({editPanelWidth:width,editPanelHeight:height})
         }
@@ -292,6 +268,26 @@ module.exports = function (Component) {
             //console.log('inventoryPath onRecordLeave:',id)
             this.setState({
                 highlightedRecord:null
+            })
+        }
+        onToggleEditItem() {
+            this.setState({
+                toggleEditItem:!this.state.toggleEditItem
+            })
+        }
+        onToggleNewItem() {
+            this.setState({
+                toggleNewItem:!this.state.toggleNewItem
+            })
+        }
+        onSelectItem(item) {
+            this.setState({
+                selectedItem:item
+            })
+        }
+        onRecordLocation(item) {
+            this.setState({
+                recordLocation:item
             })
         }
         
@@ -323,7 +319,7 @@ module.exports = function (Component) {
                             height={currentItem.layoutHeightUnits}
                             majorGridLine={currentItem.majorGridLine}
                             units={currentItem.units}
-                            onChange={this.onUpdateContainerProperties.bind(this)}
+                            onChange={this.onChangeItemProperties.bind(this)}
                         />)
 
             } else {
@@ -363,7 +359,7 @@ module.exports = function (Component) {
                 var zoomIndex=1
                 var location=null
                 if (this.state.location) {
-                    location=this.state.location
+                    location=Object.assign(this.state.location,{})
                     pathId[location.id]=location.name
                 } else {
                     const newPath=this.state.inventoryPath
@@ -372,7 +368,7 @@ module.exports = function (Component) {
                         pathId[container.id]=container.name
                     })
                     for (var i=0; i<newPath.length; i++) {
-                        location=newPath[i]
+                        location=Object.assign(newPath[i],{})
                         if (location.id===id) {
                             break
                         }
@@ -396,34 +392,25 @@ module.exports = function (Component) {
                                 onFormType={this.onFormType.bind(this)}
                                 toggleNewMode={this.toggleNewMode.bind(this)}
                                 toggleEditMode={this.toggleEditMode.bind(this)}
-                                onSaveEditClick={this.onSaveEditClick.bind(this)}
+                                onSaveEdit={this.onSaveEdit.bind(this)}
+                                onSaveNew={this.onSaveNew.bind(this)}
                                 onRecordEnter={this.onRecordEnter.bind(this)}
                                 onRecordLeave={this.onRecordLeave.bind(this)}
+                                onChange={this.onChangeItemProperties.bind(this)}
+                                recordLocation={this.state.recordLocation}
                                 >
                                 {dataItems}
                             </DataPanel>
                         </div>
                     )
                 }
+                if (this.state.layoutWidthUnits) location.layoutWidthUnits = this.state.layoutWidthUnits
+                if (this.state.layoutHeightUnits) location.layoutHeightUnits = this.state.layoutHeightUnits
+                if (this.state.majorGridLine) location.majorGridLine = this.state.majorGridLine
+
                 const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
                 const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
-                const editContainer = (
-                    <div id="inventory_tiles" class="tile is-12">
-                        <div class="tile is-vertical">
-                            <div id="inventory_path" class="tile is-parent is-12" style={pathMaxHeight}>
-                                <EditContainer
-                                    container={containerLayout}
-                                    items={containerLayout.items}
-                                    width={this.state.editPanelWidth}
-                                    height={this.state.editPanelHeight}
-                                    zoom={zoom}
-                                    fullWidth={fullWidth}
-                                    onMount={this.onEditPanelMount.bind(this)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )
+                console.log('inventoryPath render, zoom:',zoom,this.state.layoutWidthUnits)
                 if (currentItem.type==='lab') {
                     editPanel = (
                         <div class={'column '+editPanelClass}>
@@ -431,9 +418,28 @@ module.exports = function (Component) {
                             {...this.state}
                             selectedRecord={currentItem}
                             toggleEditMode={this.toggleEditMode.bind(this)}
+                            toggleEditItemMode={this.onToggleEditItem.bind(this)}
                             parentRecord={{}}
                             >
-                            {editContainer}
+                                <div id="inventory_tiles" class="tile is-5">
+                                    <div class="tile is-vertical">
+                                        <div id="inventory_path" class="tile is-parent is-5" style={pathMaxHeight}>
+                                            <EditContainer
+                                                container={containerLayout}
+                                                items={containerLayout.items}
+                                                width={this.state.editPanelWidth}
+                                                height={this.state.editPanelHeight}
+                                                zoom={zoom}
+                                                fullWidth={true}
+                                                onMount={this.onEditPanelMount.bind(this)}
+                                                editItem={this.state.toggleEditItem}
+                                                newItem={this.state.toggleNewItem}
+                                                onToggleEdit={this.onToggleEditItem.bind(this)}
+                                                onToggleNew={this.onToggleNewItem.bind(this)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                           </LabPanel>
                         </div>
                     )
@@ -446,7 +452,25 @@ module.exports = function (Component) {
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             parentRecord={{}}
                             >
-                            {editContainer}
+                                <div id="inventory_tiles" class="tile is-5">
+                                    <div class="tile is-vertical">
+                                        <div id="inventory_path" class="tile is-parent is-5" style={pathMaxHeight}>
+                                            <EditContainer
+                                                container={containerLayout}
+                                                items={containerLayout.items}
+                                                width={this.state.editPanelWidth}
+                                                height={this.state.editPanelHeight}
+                                                zoom={zoom}
+                                                fullWidth={false}
+                                                onMount={this.onEditPanelMount.bind(this)}
+                                                editItem={this.state.toggleEditItem}
+                                                newItem={this.state.toggleNewItem}
+                                                onToggleEdit={this.onToggleEditItem.bind(this)}
+                                                onToggleNew={this.onToggleNewItem.bind(this)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                           </MapPanel>
                         </div>
                     )
@@ -468,12 +492,14 @@ module.exports = function (Component) {
                 var zoomWidth = Math.min(200,this.state.mapPanelWidth)
                 var zoomHeight = this.state.mapPanelHeight
                 var rootLocation=null
+                var rootContainer=null
                 if (currentItem.type!=='lab') {
                     const rootPath2 = newPath.map(container => {
                         if (currentItem.type!=='lab' && container.type==='lab') {
                             const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                             rootZoom = initZoom(zoomWidth,containerLayout.layoutWidth)
                             zoomHeight -= containerLayout.layoutHeight*rootZoom-20
+                            rootContainer=containerLayout
                             return containerLayout
                         }
                     })
@@ -483,6 +509,7 @@ module.exports = function (Component) {
                         <div>
                             <LocationPath
                                 path={rootPath}
+                                container={rootContainer}
                                 width={zoomWidth}
                                 zoom={rootZoom}
                                 gridEnabled={false}
@@ -500,11 +527,13 @@ module.exports = function (Component) {
                 }
                 
                 var zoom=1.0
+                var itemContainer=null
                 const locationPath2 = newPath.map(container => {
                     if (containerId===container.id) {
                         console.log('inventoryPath, nav: generating layout:', zoomHeight, panelHeight, this.state.mapPanelHeight)
                         const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                         zoom = initZoom(panelWidth,containerLayout.layoutWidth)
+                        itemContainer=containerLayout
                         return containerLayout
                     }
                 })
@@ -521,7 +550,7 @@ module.exports = function (Component) {
                             onFormType={this.onFormType.bind(this)}
                             toggleNewMode={this.toggleNewMode.bind(this)}
                             toggleEditMode={this.toggleEditMode.bind(this)}
-                            onSaveEditClick={this.onSaveEditClick.bind(this)}
+                            onSaveEdit={this.onSaveEdit.bind(this)}
                             onSaveNew={this.onSaveNew.bind(this)}
                             onRecordEnter={this.onRecordEnter.bind(this)}
                             onRecordLeave={this.onRecordLeave.bind(this)}
@@ -534,13 +563,30 @@ module.exports = function (Component) {
                 var locationPathComponent=null
                 //todo: set newMode only after create type has been specified, ie physical or container
                 //todo: change constant name
-                if (this.state.newMode===NEW_MODE_PHYSICAL_STEP1&&0) {
+                //if (this.state.newMode===NEW_MODE_PHYSICAL_STEP1&&0) {
+                if (this.state.newMode===NEW_MODE_CONTAINER) {
                     rootLocation=null
-                    locationPathComponent=<div>Virtual search</div>
+                    locationPathComponent=(
+                        <EditContainer
+                            container={itemContainer}
+                            items={itemContainer.items}
+                            width={this.state.editPanelWidth}
+                            height={this.state.editPanelHeight}
+                            zoom={zoom}
+                            fullWidth={false}
+                            onMount={this.onEditPanelMount.bind(this)}
+                            editItem={this.state.toggleEditItem}
+                            newItem={this.state.toggleNewItem}
+                            onToggleEdit={this.onToggleEditItem.bind(this)}
+                            onToggleNew={this.onToggleNewItem.bind(this)}
+                            onRecordLocation={this.onRecordLocation.bind(this)}
+                        />
+                    )
                 } else {
                     locationPathComponent=(
                         <LocationPath
                             path={locationPath}
+                            container={itemContainer}
                             width={this.state.mapPanelWidth}
                             height={zoomHeight}
                             zoom={zoom}

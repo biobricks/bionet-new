@@ -78,7 +78,6 @@ export default class Grid extends Component {
             if (!this.container) return
             const isTouch = e.targetTouches && e.targetTouches.length === 1;
             console.log('grid on mouse down:', e)
-            return
             
             if (e.button === 0 || isTouch) {
                 const rect = this.container.getBoundingClientRect();
@@ -123,7 +122,8 @@ export default class Grid extends Component {
 
             if (this.state.layoutWidth !== width) {
                 this.setState({
-                    layoutWidth: width
+                    layoutWidth: width,
+                    layoutHeight: height
                 });
             }
             if (this.container) this.container.addEventListener('mousedown', this.onMouseDown.bind(this));
@@ -186,8 +186,8 @@ export default class Grid extends Component {
                             gridHeight={gridHeight}
                             layoutTop={rect.top}
                             layoutLeft={rect.left}
-                            layoutWidth={this.state.layoutWidth}
-                            layoutHeight={this.state.layoutHeight}
+                            layoutWidth={this.props.layoutWidth}
+                            layoutHeight={this.props.layoutHeight}
                             verticalMargin={this.props.verticalMargin}
                             zoom={this.props.zoom}
                             keyProp={this.props.keyProp}
@@ -207,7 +207,7 @@ export default class Grid extends Component {
                 verticalMargin: this.props.verticalMargin,
                 zoom: this.props.zoom
             };
-            const layout = new LayoutManager(options, this.state.layoutWidth, this.state.layoutHeight);
+            const layout = new LayoutManager(options, this.props.layoutWidth, this.props.layoutHeight);
             
             // todo: add background color to props
             const backgroundColor = '#fff'
@@ -239,7 +239,7 @@ export default class Grid extends Component {
             return (
                 <div
                     style={gridStyle}
-                    className="grid tile is-2"
+                    className="grid"
                     ref={node => this.container = node}
                 >
                     {gridItems}

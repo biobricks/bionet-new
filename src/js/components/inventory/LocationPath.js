@@ -93,24 +93,19 @@ export default class LocationPath extends Component {
     }
 
     render() {
-        if (!this.props.path) return
-        const item = this.props.path[0]
+        
+        const item=this.props.container
         if (!item) return
+        
             //height:this.props.height+'px'
-        var containerStyle={}
-        if (this.state.layoutHeight<this.props.height) {
-            containerStyle = {
-                height:this.props.height+'px',
-            }
-        } else {
-            containerStyle = {
-                width:this.props.width+'px',
-            }
+        const containerStyle = {
+            width:this.props.width+'px',
+            height:this.props.height+'px',
         }
         
         return (
             <div ref={node => this.container = node}>
-                <div className="tile LocationPath" style={containerStyle}>
+                <div className="LocationPath" style={containerStyle}>
                     <Grid
                             state="navigateGrid"
                             gridId="navGrid"
@@ -125,10 +120,10 @@ export default class LocationPath extends Component {
                             majorGridLine={item.majorGridLine}
                             verticalMargin={-1}
                             onDragEnd={this.onSelectItem.bind(this)}
-                            gridWidth={item.gridWidth}
-                            gridHeight={item.gridHeight}
-                            layoutWidth={item.gridWidth*item.layoutWidthUnits}
-                            layoutHeight={item.gridHeight*item.layoutHeightUnits}
+                            gridWidth={this.gridWidth}
+                            gridHeight={this.gridHeight}
+                            layoutWidth={this.gridWidth*item.layoutWidthUnits}
+                            layoutHeight={this.gridHeight*item.layoutHeightUnits}
                     />
                 </div>
             </div>

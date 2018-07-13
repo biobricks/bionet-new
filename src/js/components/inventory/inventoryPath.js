@@ -278,6 +278,7 @@ module.exports = function (Component) {
             })
         }
         onToggleNewItem() {
+            console.log('inventoryPath onToggleNewItem')
             this.setState({
                 toggleNewItem:!this.state.toggleNewItem
             })
@@ -421,6 +422,7 @@ module.exports = function (Component) {
                             selectedRecord={currentItem}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             toggleEditItemMode={this.onToggleEditItem.bind(this)}
+                            toggleNewMode={this.onToggleNewItem.bind(this)}
                             parentRecord={{}}
                             >
                                 <EditContainer

@@ -88,6 +88,7 @@ export default class Grid extends Component {
                 const gridWidth = (this.props.gridWidth * this.props.zoom);
                 const gridHeight = (this.props.gridHeight * this.props.zoom);
                 const id=0
+                    //row: Math.trunc((clientY - layoutTop) / gridHeight)
                 const item = {
                     url: 'test',
                     name: 'test',

@@ -582,8 +582,8 @@ export default class EditContainer extends Component {
                         <div style={{height:'120px'}}>
                             <ItemPropertiesForm
                                 name={item.name}
-                                width={item.xUnits}
-                                height={item.yUnits}
+                                width={this.state.defaultWidth}
+                                height={this.state.defaultHeight}
                                 color={item.color}
                                 fontSize={item.fontSize}
                                 onChange={this.onUpdateItemProperties.bind(this)}
@@ -600,7 +600,7 @@ export default class EditContainer extends Component {
                         <br/>
                         <label>Height:</label><span>{this.state.defaultHeight}</span>
                         <br/>
-                        <label>Color:</label><span>{this.state.defaultColor}</span>
+                        <label>Color</label><span style={{backgroundColor:this.state.defaultColor}}>{this.state.defaultColor}</span>
                         <br/>
                         <label>Font Size:</label><span>{this.state.defaultFontSize}</span>
                     </div>

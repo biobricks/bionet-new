@@ -334,6 +334,7 @@ export default class EditContainer extends Component {
 
     onMove(event) {
     }
+
     clearSelection(e) {
         e.stopPropagation()
         e.preventDefault()
@@ -370,6 +371,7 @@ export default class EditContainer extends Component {
     componentDidMount() {
         this.onResize();
         if (this.props.onMount) {
+            //const editContainer = document.getElementById('EditContainerDiv')
             const editContainer = document.getElementById('edit-container')
             var containerWidth=600
             var containerHeight=450
@@ -512,11 +514,13 @@ export default class EditContainer extends Component {
             zoom:zoom
         })
     }
+
     toggleEditMode(){}
     toggleNewMode(){}
     toggleEditItemMode(){}
     onDeleteClick(){}
     onSaveButtonClick(){}
+
     render() {
         console.log('EditContainer render:',this.state,this.props)
         const containerStyle = {
@@ -524,11 +528,10 @@ export default class EditContainer extends Component {
             height:this.props.height+'px',
         }
         const name=this.state.defaultName
-        //const isEditMode=this.state.isEditMode
         const isEditMode=true
-        var containerPropertiesForm=null
         if (this.props.fullWidth) {
-            /*
+            var containerPropertiesForm=null
+            var itemPropertiesForm = null
             containerPropertiesForm = (
                 <div>
                     <ContainerPropertiesForm
@@ -551,131 +554,170 @@ export default class EditContainer extends Component {
                     <div className="vertical-spacing"/>
                 </div>
             )
-            */
-        }
 
-        var itemPropertiesForm = null
-        /*
-        if (this.props.editItem || this.props.newItem) {
-            itemPropertiesForm=(
-                <div style={{height:'120px'}}>
-                    <div className="vertical-spacing"/>
-                    <ItemPropertiesForm
-                        name={this.state.defaultName}
-                        width={this.state.defaultWidth}
-                        height={this.state.defaultHeight}
-                        color={this.state.defaultColor}
-                        fontSize={this.state.defaultFontSize}
-                        onChange={this.onUpdateItemProperties.bind(this)}
-                    />
-                    <div className="vertical-spacing"/>
-                </div>
-            )
-        } else {
-            //if (this.state.item) {
+            if (this.props.editItem || this.props.newItem) {
                 itemPropertiesForm=(
-                <div style={{height:'120px'}}>
+                    <div style={{height:'120px'}}>
                         <div className="vertical-spacing"/>
-                        <div className="pure-form">
-                            <label>Name:</label><span>{this.state.defaultName}</span>
-                            <label>Width:</label><span>{this.state.defaultWidth}</span>
-                            <label>Height:</label><span>{this.state.defaultHeight}</span>
-                            <label>Color:</label><span>{this.state.defaultColor}</span>
-                            <label>Font Size:</label><span>{this.state.defaultFontSize}</span>
-                        </div>
+                        <ItemPropertiesForm
+                            name={this.state.defaultName}
+                            width={this.state.defaultWidth}
+                            height={this.state.defaultHeight}
+                            color={this.state.defaultColor}
+                            fontSize={this.state.defaultFontSize}
+                            onChange={this.onUpdateItemProperties.bind(this)}
+                        />
                         <div className="vertical-spacing"/>
                     </div>
                 )
-            //}
-        }
-        */
+            } else {
+                if (this.state.item) {
+                    itemPropertiesForm=(
+                    <div style={{height:'120px'}}>
+                        <div className="pure-form">
+                            <label>Name:</label><span>{this.state.defaultName}</span>
+                            <br/>
+                            <label>Width:</label><span>{this.state.defaultWidth}</span>
+                            <br/>
+                            <label>Height:</label><span>{this.state.defaultHeight}</span>
+                            <br/>
+                            <label>Color:</label><span>{this.state.defaultColor}</span>
+                            <br/>
+                            <label>Font Size:</label><span>{this.state.defaultFontSize}</span>
+                        </div>
+                    </div>
+                    )
+                }
+            }
+            var itemProperties=null
+            if (itemPropertiesForm) {
+                itemProperties = (
+                  <div>
+                  <div class="panel-heading">
+                    <div class="is-block">
+                      <div class="columns is-gapless">
+                        <div class="column">
+                          { (isEditMode) ? (
+                            <div>
+                              {name}
+                              <div class="toolbox is-pulled-right">
+                                <div class="buttons has-addons">
+                                  <span 
+                                    class="button is-small"
+                                    onClick={this.toggleEditMode.bind(this)}
+                                  >
+                                    <i class="mdi mdi-arrow-left-bold"></i>
+                                  </span>
+                                  <span 
+                                    class="button is-small is-success"
+                                    onClick={this.toggleNewMode.bind(this)}
+                                  >
+                                  <i class="mdi mdi-plus"></i>
+                                  </span>
+                                  <span 
+                                    class="button is-small is-link"
+                                    onClick={this.toggleEditItemMode.bind(this)}
+                                  >
+                                    <i class="mdi mdi-pencil"></i>
+                                  </span>
+                                  <span 
+                                    class="button is-small is-danger"
+                                    onClick={this.onDeleteClick.bind(this)}
+                                  >
+                                  <i class="mdi mdi-delete-variant"></i>
+                                </span>
+                                  <span 
+                                    class="button is-small is-success"
+                                    onClick={this.onSaveButtonClick.bind(this)}
+                                  >
+                                    <i class="mdi mdi-content-save"></i>
+                                  </span>
+                                </div>
+                              </div>                    
+                            </div>
+                          ) : (
+                            <div>
+                              {name}
+                              <div class="toolbox is-pulled-right">
+                                <div class="buttons has-addons">
+                                  <span 
+                                    class="button is-small is-link"
+                                    onClick={this.toggleEditMode.bind(this)}
+                                  >
+                                    <i class="mdi mdi-pencil"></i>
+                                  </span>
+                                </div>
+                              </div>                      
+                            </div>
+                          )}
+                        </div>
+                      </div>    
+                    </div>
+                  </div>
+                  <div class="panel-block">
+                      {itemPropertiesForm}
+                  </div>
+                  </div>
+                )
+            }
+            return (
+             <div>
+                <div class="columns">
+                    <div class="column is-3">
+                        <div class="panel-block">
+                            {containerPropertiesForm}
+                        </div>
+                        <div className="vertical-spacing"/>
+                        {itemProperties}
+                    </div>
 
-        return (
-         <div>
-            {containerPropertiesForm}
-          <div class="panel-heading">
-            <div class="is-block">
-              <div class="columns is-gapless">
-                <div class="column">
-                  { (isEditMode) ? (
-                    <div>
-                      {name}
-                      <div class="toolbox is-pulled-right">
-                        <div class="buttons has-addons">
-                          <span 
-                            class="button is-small"
-                            onClick={this.toggleEditMode.bind(this)}
-                          >
-                            <i class="mdi mdi-arrow-left-bold"></i>
-                          </span>
-                          <span 
-                            class="button is-small is-success"
-                            onClick={this.toggleNewMode.bind(this)}
-                          >
-                          <i class="mdi mdi-plus"></i>
-                          </span>
-                          <span 
-                            class="button is-small is-link"
-                            onClick={this.toggleEditItemMode.bind(this)}
-                          >
-                            <i class="mdi mdi-pencil"></i>
-                          </span>
-                          <span 
-                            class="button is-small is-danger"
-                            onClick={this.onDeleteClick.bind(this)}
-                          >
-                          <i class="mdi mdi-delete-variant"></i>
-                        </span>
-                          <span 
-                            class="button is-small is-success"
-                            onClick={this.onSaveButtonClick.bind(this)}
-                          >
-                            <i class="mdi mdi-content-save"></i>
-                          </span>
+                    <div class="column is-9">
+                        <div id="EditContainerDiv" className="EditContainer" style={containerStyle} ref={node => this.container = node}>
+                            <Grid
+                                    state="editGrid"
+                                    gridId="editGrid"
+                                    items={this.state.items}
+                                    onMove={this.onMove.bind(this)}
+                                    zoom={this.state.zoom}
+                                    dragEnabled={true}
+                                    onDragEnd={this.onDragEnd.bind(this)}
+                                    onResizeStop={this.onResizeStop.bind(this)}
+                                    onNewItem={this.onNewItem.bind(this)}
+                                    responsive={true}
+                                    majorGridLine={this.state.majorGridLine}
+                                    verticalMargin={-1}
+                                    gridWidth={this.gridWidth}
+                                    gridHeight={this.gridHeight}
+                                    layoutWidth={this.state.layoutWidth}
+                                    layoutHeight={this.state.layoutHeight}
+                            />
                         </div>
-                      </div>                    
                     </div>
-                  ) : (
-                    <div>
-                      {name}
-                      <div class="toolbox is-pulled-right">
-                        <div class="buttons has-addons">
-                          <span 
-                            class="button is-small is-link"
-                            onClick={this.toggleEditMode.bind(this)}
-                          >
-                            <i class="mdi mdi-pencil"></i>
-                          </span>
-                        </div>
-                      </div>                      
-                    </div>
-                  )}
                 </div>
-              </div>    
             </div>
-          </div>
-                {itemPropertiesForm}
-
-                <div id="EditContainerDiv" className="EditContainer" style={containerStyle} ref={node => this.container = node}>
-                    <Grid
-                            state="editGrid"
-                            gridId="editGrid"
-                            items={this.state.items}
-                            onMove={this.onMove.bind(this)}
-                            zoom={this.state.zoom}
-                            dragEnabled={true}
-                            onDragEnd={this.onDragEnd.bind(this)}
-                            onResizeStop={this.onResizeStop.bind(this)}
-                            onNewItem={this.onNewItem.bind(this)}
-                            responsive={true}
-                            majorGridLine={this.state.majorGridLine}
-                            verticalMargin={-1}
-                            gridWidth={this.gridWidth}
-                            gridHeight={this.gridHeight}
-                            layoutWidth={this.state.layoutWidth}
-                            layoutHeight={this.state.layoutHeight}
-                    />
-                </div>
+            )
+        }
+        
+        return (
+            <div id="EditContainerDiv" className="EditContainer" style={containerStyle} ref={node => this.container = node}>
+                <Grid
+                        state="editGrid"
+                        gridId="editGrid"
+                        items={this.state.items}
+                        onMove={this.onMove.bind(this)}
+                        zoom={this.state.zoom}
+                        dragEnabled={true}
+                        onDragEnd={this.onDragEnd.bind(this)}
+                        onResizeStop={this.onResizeStop.bind(this)}
+                        onNewItem={this.onNewItem.bind(this)}
+                        responsive={true}
+                        majorGridLine={this.state.majorGridLine}
+                        verticalMargin={-1}
+                        gridWidth={this.gridWidth}
+                        gridHeight={this.gridHeight}
+                        layoutWidth={this.state.layoutWidth}
+                        layoutHeight={this.state.layoutHeight}
+                />
             </div>
         )
     }

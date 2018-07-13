@@ -74,8 +74,12 @@ export default class ContainerPropertiesForm extends Component {
         return(
             <form className="pure-form">
                 <label>Name</label><input onChange={this.onName.bind(this)} type='text' value={this.state.name} style={{width:160}}/>
+                <br/>
                 <label>Width</label><input onChange={this.onWidth.bind(this)} type='text' value={this.state.width} style={{width:80}}/>
-                <label>Height</label><input onChange={this.onHeight.bind(this)} type='text' value={this.state.height} style={{width:80}}/>   <label>Units</label>
+                <br/>
+                <label>Height</label><input onChange={this.onHeight.bind(this)} type='text' value={this.state.height} style={{width:80}}/>
+                <br/>
+                <label>Units</label>
                 <select value={this.state.units} onChange={this.onUnits.bind(this)} style={{paddingTop:'4px'}}>
                     <option value="m">m</option>
                     <option value="cm">cm</option>
@@ -83,6 +87,7 @@ export default class ContainerPropertiesForm extends Component {
                     <option value="ft">ft</option>
                     <option value="in">in</option>
                 </select>
+                <br/>
                 <label>Grid Line</label><input onChange={this.onMajorGridLine.bind(this)} type='text' value={this.state.majorGridLine} style={{width:80}}/>
             </form>
         )

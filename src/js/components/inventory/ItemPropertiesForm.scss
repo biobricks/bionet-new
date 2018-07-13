@@ -1,3 +1,9 @@
+.pure-form label {
+    //margin-right:40px;
+    min-width:70px;
+    display: inline-block;
+}
+
 .react-color-picker,
 .react-color-picker__saturation-spectrum,
 .react-color-picker__hue-spectrum {

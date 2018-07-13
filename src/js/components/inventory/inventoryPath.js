@@ -421,9 +421,9 @@ module.exports = function (Component) {
                             toggleEditItemMode={this.onToggleEditItem.bind(this)}
                             parentRecord={{}}
                             >
-                                <div id="inventory_tiles" class="tile is-5">
+                                <div id="inventory_tiles" class="tile">
                                     <div class="tile is-vertical">
-                                        <div id="inventory_path" class="tile is-parent is-5" style={pathMaxHeight}>
+                                        <div id="inventory_path" class="tile is-parent" style={pathMaxHeight}>
                                             <EditContainer
                                                 container={containerLayout}
                                                 items={containerLayout.items}
@@ -452,9 +452,9 @@ module.exports = function (Component) {
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             parentRecord={{}}
                             >
-                                <div id="inventory_tiles" class="tile is-5">
+                                <div id="inventory_tiles" class="tile">
                                     <div class="tile is-vertical">
-                                        <div id="inventory_path" class="tile is-parent is-5" style={pathMaxHeight}>
+                                        <div id="inventory_path" class="tile is-parent" style={pathMaxHeight}>
                                             <EditContainer
                                                 container={containerLayout}
                                                 items={containerLayout.items}
@@ -604,9 +604,9 @@ module.exports = function (Component) {
                         parentRecord={{}}
                         onMount={this.onNavPanelMount.bind(this)}
                         >
-                            <div id="inventory_tiles" class="tile is-5">
+                            <div id="inventory_tiles" class="tile">
                                 <div class="tile is-vertical">
-                                    <div id="inventory_path" class="tile is-vertical is-5" style={pathMaxHeight}>
+                                    <div id="inventory_path" class="tile is-vertical" style={pathMaxHeight}>
                                         {rootLocation}
                                         {locationPathComponent}
                                     </div>

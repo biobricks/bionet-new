@@ -91,11 +91,15 @@ export default class ItemPropertiesForm extends Component {
         return(
             <form className="pure-form" style={{textAlign:'left'}}>
                 <label>Name</label><input onChange={this.onName.bind(this)} type='text' value={this.state.name} style={{width:160}}/>
+                <br/>
                 <label>Color</label><span onClick={this.onSelectColor.bind(this)} style={{backgroundColor:this.state.color}}>{this.state.color}</span>
+                <br/>
                 {colorPicker}
                 <br/>
                 <label>Width</label><input onChange={this.onWidth.bind(this)} type='text' value={this.state.width} style={{width:80}}/>
+                <br/>
                 <label>Height</label><input onChange={this.onHeight.bind(this)} type='text' value={this.state.height} style={{width:80}}/>
+                <br/>
                 <label>Font Size</label><input onChange={this.onFontSize.bind(this)} type='text' value={this.state.fontSize} style={{width:80}}/>
             </form>
         )

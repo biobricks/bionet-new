@@ -305,6 +305,12 @@ export default class EditContainer extends Component {
         item.color = 'rgba(255,0,0,0.2)'
         item.fontSize = this.state.defaultFontSize
         item.newItem=true
+        item.xUnits=1
+        item.yUnits=1
+        item.majorGridLine=1
+        item.newItem=true
+        item.layoutWidthUnits=this.state.layoutWidthUnits
+        item.layoutHeightUnits=this.state.layoutHeightUnits
         
         // filter out prior new items
         var updatedItems = this.unselectNewItem(this.state.items)
@@ -555,6 +561,9 @@ export default class EditContainer extends Component {
         item.height = this.gridHeight
         item.color = 'rgba(255,0,0,0.2)'
         item.fontSize = this.state.defaultFontSize
+        item.xUnits=1
+        item.yUnits=1
+        item.majorGridLine=1
         item.newItem=true
         this.setState({
             item:item,
@@ -587,6 +596,8 @@ export default class EditContainer extends Component {
             delete newItem.newMode
             delete newItem.key
             delete newItem.sort
+            //delete newItem.width
+            //delete newItem.height
             const parentId = (this.props.container.id) ? this.props.container.id : null
             if (!parentId) {
                 console.log('onSaveItemClick no parent')

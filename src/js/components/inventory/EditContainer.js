@@ -38,7 +38,6 @@ export default class EditContainer extends Component {
         for (var zl = 0.25; zl <= 2.0; zl += 0.25) {
             this.zoomLevel.push(zl)
         }
-        const zoomIndex = this.initZoomIndex(props.zoom, this.zoomLevel)
         const items=(props.items) ? props.items : []
         this.state = {
             gridWidth:40,
@@ -52,9 +51,7 @@ export default class EditContainer extends Component {
             defaultHeight : 1,
             defaultColor : 'aqua',
             defaultFontSize:'0.3',
-            zoomIndex:zoomIndex,
-            zoom:this.zoomLevel[zoomIndex],
-            items:props.items
+            items:items
         };
         this.componentWillReceiveProps(props)
     }
@@ -62,14 +59,13 @@ export default class EditContainer extends Component {
     componentWillReceiveProps(props) {
         const container=props.container
         console.log('EditContainer props:',props, this.state)
-        var zoomIndex = this.state.zoomIndex
-        var zoom = this.state.zoom
+        var zoomIndex = 1
+        var zoom = 1.0
         if (props.zoom) {
-        //if (props.width) {
             zoomIndex = this.initZoomIndex(props.zoom, this.zoomLevel)
             zoom = this.zoomLevel[zoomIndex]
-            console.log('EditContainer componentWillReceiveProps, zoom:',zoom,zoomIndex)
         }
+
         this.setState({
             containerId:container.id,
             units:container.units,
@@ -113,16 +109,17 @@ export default class EditContainer extends Component {
         this.onUpdateItems(items)
     };
     
-    selectItem(item) {
-        console.log('selectItem:',item)
-        if (!this.state.items) return
+    selectItem(item,_updatedItems) {
         const keyProp = this.props.keyProp
         const key = (item && item[keyProp]) ? item[keyProp] : null
         this.selectedItem = item
-        const items = this.state.items.map(function (_item) {
+        const updatedItems = (_updatedItems) ? _updatedItems : this.state.items
+        var items = updatedItems.map(function (_item) {
             _item.selected = _item[keyProp] === key
             return _item;
         });
+        console.log('selectItem:',item,items,this.state.items)
+        
         if (item) {
             this.setState({
                 item:item,
@@ -169,26 +166,37 @@ export default class EditContainer extends Component {
                 // gridtodo: delete physical api call
                 console.log('onDragEnd, deleting')
                 this.deleteItem(source)
+                this.selectItem(source,this.state.items)
             } else {
-                app.actions.inventory.updateItem(source.id,function(err,item){
-                    if (!err) {
-                        item.parent_x = col+1
-                        item.parent_y = row+1
-                    }
-                    console.log('inventoryPath: onDragEnd updateItem',item)
-                    return item
-                })
+                var updatedItems=this.state.items
+                if (!source.id.startsWith('_new_')) {
+                    updatedItems=this.unselectNewItem(this.state.items)
+                    app.actions.inventory.updateItem(source.id,function(err,item){
+                        if (!err) {
+                            item.parent_x = col+1
+                            item.parent_y = row+1
+                        }
+                        console.log('inventoryPath: onDragEnd updateItem',item)
+                        return item
+                    })
+                }
                 source.row = row
                 source.col = col
                 console.log('inventoryPath: onDragEnd, moving', source)
-                const items = this.state.items.map(function (item) {
+                const items = updatedItems.map(function (item) {
                     if (item.id===source.id) return source
                     return item
                 });
-                this.onUpdateItems(items)
+                //var updatedItems = this.unselectNewItems(items)
+                //this.onUpdateItems(updatedItems)
+                this.selectItem(source,updatedItems)
             }
+        } else {
+            const items = this.unselectNewItem(this.state.items)
+            //const items=this.state.items
+            //this.onUpdateItems(items)
+            this.selectItem(source,items)
         }
-        if (!isOutsideGrid) this.selectItem(source)
     }
     
     deleteItem(item) {
@@ -240,13 +248,21 @@ export default class EditContainer extends Component {
         })
     }
 
+    unselectNewItem(items) {
+        var updatedItems=[]
+        if (items) updatedItems = items.filter(function (item) {
+            return !item.id.startsWith('_new_')
+        });
+        return updatedItems
+    }
+
     onNewItem(item) {
         // search all items for click inside item bounds (row, row+height, col, col+width), abort add new item if inside existing
         console.log('EditContainer onNewItem',item)
         const x = item.col
         const y = item.row
         if (x<0 || x >= this.state.layoutWidthUnits || y<0 || y >= this.state.layoutHeightUnits) {
-            this.selectItem(null)
+            this.selectItem()
             return
         }
         const items = (this.state.items) ? this.state.items : []
@@ -264,23 +280,22 @@ export default class EditContainer extends Component {
         const id='_new_'+items.length
         item.id = id
         item.key = id;
-        item.sort = item.key;
+        item.sort = id;
         item.name = this.state.defaultName
         item.width = this.state.defaultWidth * this.gridWidth
         item.height = this.state.defaultHeight * this.gridHeight
         item.color = this.state.defaultColor
         item.fontSize = this.state.defaultFontSize
         //item.row--
-        console.log('EditContainer onNewItem, adding',item)
         
         // filter out prior new items
-        var updatedItems=[]
-        if (this.state.items) updatedItems = this.state.items.filter(function (item) {
-            return !item.id.startsWith('_new_')
-        });
+        var updatedItems = this.unselectNewItem(this.state.items)
         updatedItems.push(item)
-        this.onUpdateItems(updatedItems)
-        this.selectItem(item)
+        //this.onUpdateItems(updatedItems)
+        
+        console.log('EditContainer onNewItem, adding',item,updatedItems)
+        this.selectItem(item,updatedItems)
+        
 
         /*
         const physical={
@@ -310,6 +325,7 @@ export default class EditContainer extends Component {
             this.selectItem(item)
         }.bind(this))
         */
+        
     }
 
     onUpdateItems(items) {
@@ -383,7 +399,7 @@ export default class EditContainer extends Component {
             //console.log('onToplevClick:', pageX, pageY, rect)
         }
         console.log('EditContainer onToplevClick:',pageX,pageY,isOutside)
-        if (isOutside) this.selectItem(null)
+        if (isOutside) this.selectItem()
     }
     
     onUpdateContainerProperties(props) {
@@ -502,6 +518,7 @@ export default class EditContainer extends Component {
     onDeleteClick(){}
     onSaveButtonClick(){}
     render() {
+        console.log('EditContainer render:',this.state,this.props)
         const containerStyle = {
             width:this.props.width+'px',
             height:this.props.height+'px',

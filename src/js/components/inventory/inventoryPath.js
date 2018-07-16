@@ -37,6 +37,7 @@ module.exports = function (Component) {
                 toggleEditItem:false,
                 toggleNewItem:false,
                 currentItem:currentItem,
+                fullWidth:false
             }
         }
 
@@ -358,6 +359,8 @@ module.exports = function (Component) {
             const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
             
             if (this.state.editMode) {
+                var fullWidth=this.state.fullWidth
+                if (currentItem.type==='lab') fullWidth=true
                 const pathId={}
                 var zoomIndex=1
                 var location=null
@@ -381,8 +384,7 @@ module.exports = function (Component) {
                 if (!location) return
                 var editPanelClass='is-12-desktop'
                 var fullWidth=true
-                if (location.type!=='lab') {
-                    fullWidth=false
+                if (!fullWidth) {
                     editPanelClass='is-5-desktop'
                     dataPanel = (
                             <div class="column is-7-desktop">
@@ -416,7 +418,7 @@ module.exports = function (Component) {
                 console.log('inventoryPath render, zoom:',zoom,this.state.layoutWidthUnits)
                 //onMount={this.onEditPanelMount.bind(this)}
 
-                if (currentItem.type==='lab') {
+                if (fullWidth) {
                     editPanel = (
                         <div class={'column '+editPanelClass}>
                           <LabPanel

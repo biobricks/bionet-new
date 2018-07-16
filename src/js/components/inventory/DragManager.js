@@ -37,8 +37,6 @@ export default class DragManager {
             const clientX = isTouch ? e.touches[0].clientX : e.clientX;
             const clientY = isTouch ? e.touches[0].clientY : e.clientY;
 
-            //this.dragX = clientX;
-            //this.dragY = clientY;
             this.dragX = clientX - this.initialMouseX;
             this.dragY = clientY - this.initialMouseY;
             this.clientX = this.dragX
@@ -67,9 +65,8 @@ export default class DragManager {
     }
 
     //endDrag(item) {
-    endDrag(e) {
-        const dragItem=this.dragItem
-        //const dragItem=(this.dragItem) ? this.dragItem : item
+    endDrag(item) {
+        const dragItem=(this.dragItem) ? this.dragItem : item
         var selectedDomElementAr = document.getElementsByClassName('selectedDisplayObject');
         var selectedDomElement = selectedDomElementAr[0]
         console.log('Drag Manager, endDrag:',dragItem, selectedDomElement)
@@ -108,8 +105,6 @@ export default class DragManager {
 
             this.initialMouseX = Math.trunc(pageX - (rect.left + window.pageXOffset));
             this.initialMouseY = Math.trunc(pageY - (rect.top + window.pageYOffset));
-            //this.initialMouseX = Math.round(pageX - (rect.left + window.pageXOffset));
-            //this.initialMouseY = Math.round(pageY - (rect.top + window.pageYOffset));
             this.initialEventX = pageX;
             this.initialEventY = pageY;
 

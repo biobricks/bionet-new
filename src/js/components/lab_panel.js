@@ -11,6 +11,7 @@ module.exports = function(Component) {
       this.state = {
         editMode: true,
         lab: {},
+        fullScreen:false
       };
     }
       
@@ -27,6 +28,11 @@ module.exports = function(Component) {
             editMode: !this.state.editMode
         });
         if (this.props.toggleEditMode) this.props.toggleEditMode()
+    }
+      
+    toggleFullscreenMode() {
+        const fullWidth=!this.props.fullWidth
+        if (this.props.toggleFullscreenMode) this.props.toggleFullscreenMode(fullWidth)
     }
 
     onSaveButtonClick() {
@@ -73,7 +79,15 @@ module.exports = function(Component) {
                           >
                           <i class="mdi mdi-plus"></i>
                           </span>
+      
                           <span 
+                            class="button is-small is-link"
+                            onClick={this.toggleFullscreenMode.bind(this)}
+                          >
+                          {(this.props.fullWidth) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
+                          </span>
+
+                            <span 
                             class="button is-small is-success"
                             onClick={this.onSaveButtonClick.bind(this)}
                           >

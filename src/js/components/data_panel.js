@@ -14,6 +14,9 @@ module.exports = function(Component) {
     
     constructor(props) {
       super(props);
+        this.state={
+            fullScreen:false
+        }
       this.componentWillReceiveProps(props)
     }
       
@@ -54,6 +57,11 @@ module.exports = function(Component) {
             console.log('data_panel onSaveNewClick:',item)
             this.props.onSaveNew(item, this.state.formType.toLowerCase())
         }
+    }
+      
+    toggleFullscreenMode() {
+        const fullWidth=!this.props.fullWidth
+        if (this.props.toggleFullscreenMode) this.props.toggleFullscreenMode(fullWidth)
     }
 
     render() {
@@ -134,6 +142,12 @@ module.exports = function(Component) {
                         >
                           <i class="mdi mdi-content-save"></i>
                         </span>
+                          <span 
+                            class="button is-small is-link"
+                            onClick={this.toggleFullscreenMode.bind(this)}
+                          >
+                          {(this.state.fullScreen) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
+                          </span>
                       </div>
                     </div>                    
                   ): null }
@@ -159,6 +173,12 @@ module.exports = function(Component) {
                         >
                           <i class="mdi mdi-delete-variant"></i>
                         </span>
+                          <span 
+                            class="button is-small is-link"
+                            onClick={this.toggleFullscreenMode.bind(this)}
+                          >
+                          {(this.props.fullWidth) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
+                          </span>
                       </div>
                     </div>                    
                   ): null }

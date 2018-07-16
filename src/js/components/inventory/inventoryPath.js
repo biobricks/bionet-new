@@ -214,6 +214,11 @@ module.exports = function (Component) {
             })
         }
         
+        toggleFullscreenMode(fullScreen) {
+            console.log('toggleFullscreenMode:',fullScreen)
+            this.setState({fullWidth:fullScreen})
+        }
+        
         toggleEditItemMode() {
             this.setState({toggleEditItem:!this.state.toggleEditItem})
         }
@@ -282,6 +287,11 @@ module.exports = function (Component) {
             console.log('inventoryPath onToggleNewItem')
             this.setState({
                 toggleNewItem:!this.state.toggleNewItem
+            })
+        }
+        onToggleFullscreen(fullScreen) {
+            this.setState({
+                fullScreen:fullScreen
             })
         }
         onSelectItem(item) {
@@ -383,7 +393,6 @@ module.exports = function (Component) {
                 
                 if (!location) return
                 var editPanelClass='is-12-desktop'
-                var fullWidth=true
                 if (!fullWidth) {
                     editPanelClass='is-5-desktop'
                     dataPanel = (
@@ -394,9 +403,11 @@ module.exports = function (Component) {
                                 breadcrumbs={breadcrumbs}
                                 parentRecord={parentRecord}
                                 selectRecord={selectRecord}
+                                fullWidth={fullWidth}
                                 onFormType={this.onFormType.bind(this)}
                                 toggleNewMode={this.toggleNewMode.bind(this)}
                                 toggleEditMode={this.toggleEditMode.bind(this)}
+                                toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
                                 onSaveEdit={this.onSaveEdit.bind(this)}
                                 onSaveNew={this.onSaveNew.bind(this)}
                                 onRecordEnter={this.onRecordEnter.bind(this)}
@@ -424,8 +435,10 @@ module.exports = function (Component) {
                           <LabPanel
                             {...this.state}
                             selectedRecord={currentItem}
+                            fullWidth={fullWidth}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             toggleEditItemMode={this.onToggleEditItem.bind(this)}
+                            toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
                             toggleNewMode={this.onToggleNewItem.bind(this)}
                             parentRecord={{}}
                             >
@@ -550,9 +563,11 @@ module.exports = function (Component) {
                             parentRecord={parentRecord}
                             selectRecord={selectRecord}
                             newMode={this.state.newMode}
+                            fullWidth={fullWidth}
                             onFormType={this.onFormType.bind(this)}
                             toggleNewMode={this.toggleNewMode.bind(this)}
                             toggleEditMode={this.toggleEditMode.bind(this)}
+                            toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
                             onSaveEdit={this.onSaveEdit.bind(this)}
                             onSaveNew={this.onSaveNew.bind(this)}
                             onRecordEnter={this.onRecordEnter.bind(this)}

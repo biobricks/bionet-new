@@ -35,7 +35,7 @@ module.exports = function(Component) {
 
     componentDidMount() {
         if (this.props.onMount) {
-            const mapContainer = document.getElementById('map-panel-item')
+            const mapContainer = document.getElementById('EditContainerDiv')
             var containerWidth=450
             var containerHeight=600
             if (mapContainer) {

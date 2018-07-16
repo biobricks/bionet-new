@@ -414,6 +414,8 @@ module.exports = function (Component) {
                 const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
                 const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
                 console.log('inventoryPath render, zoom:',zoom,this.state.layoutWidthUnits)
+                //onMount={this.onEditPanelMount.bind(this)}
+
                 if (currentItem.type==='lab') {
                     editPanel = (
                         <div class={'column '+editPanelClass}>
@@ -432,9 +434,9 @@ module.exports = function (Component) {
                                     height={this.state.editPanelHeight}
                                     zoom={zoom}
                                     fullWidth={true}
-                                    onMount={this.onEditPanelMount.bind(this)}
                                     editItem={this.state.toggleEditItem}
                                     newItem={this.state.toggleNewItem}
+                                    onMount={this.onEditPanelMount.bind(this)}
                                     onToggleEdit={this.onToggleEditItem.bind(this)}
                                     onToggleNew={this.onToggleNewItem.bind(this)}
                                 />
@@ -493,7 +495,7 @@ module.exports = function (Component) {
                 var rootContainer=null
                 if (currentItem.type!=='lab') {
                     const rootPath2 = newPath.map(container => {
-                        if (currentItem.type!=='lab' && container.type==='lab') {
+                        if (container.type==='lab') {
                             const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                             rootZoom = initZoom(zoomWidth,containerLayout.layoutWidth)
                             zoomHeight -= containerLayout.layoutHeight*rootZoom-20

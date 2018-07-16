@@ -213,8 +213,8 @@ export default class Grid extends Component {
             // todo: add background color to props
             const backgroundColor = '#fff'
             var gridStyle = {
-                width: this.props.zoom*this.props.layoutWidth,
-                height: this.props.zoom*this.props.layoutHeight,
+                width: this.props.zoom*this.props.layoutWidth+2,
+                height: this.props.zoom*this.props.layoutHeight+2,
                 backgroundColor:backgroundColor,
             }
             if (this.props.borderEnabled) {

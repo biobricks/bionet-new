@@ -110,7 +110,7 @@ module.exports = function(Component) {
                   )}  
                 </pre>
               </div>
-              <div class="stringify">
+              <div class="stringify mt-2">
                 <h3>Current User</h3>
                 <pre class="mt-1">
                   {currentUser && (

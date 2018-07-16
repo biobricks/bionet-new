@@ -239,6 +239,27 @@ module.exports = function (Component) {
                 return updatedItem
             })
         }
+        onDelete() {
+            const item=this.state.currentItem
+            if (!item) return
+            const id = item.id
+            if (!id) return
+            const name = item.name
+            const parentId = item.parent_id
+            console.log('deleting item 1:', id, name, parentId, item)
+            app.actions.prompt.display('Do you wish to delete '+name+'?', null, function(accept) {
+                if (accept) {
+                    app.actions.inventory.delPhysical(id, function(err,id2) {
+                        if (err) {
+                            app.actions.notify(err.message, 'error');
+                            return
+                        }
+                        app.actions.notify(name+" deleted", 'notice', 2000);
+                    })
+                    app.actions.inventory.refreshInventoryPath(parentId)
+                }
+            }.bind(this))
+        }
 
         onChangeItemProperties(props) {
             if (!this.state.currentItem) return
@@ -410,6 +431,7 @@ module.exports = function (Component) {
                                 toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
                                 onSaveEdit={this.onSaveEdit.bind(this)}
                                 onSaveNew={this.onSaveNew.bind(this)}
+                                onDelete={this.onDelete.bind(this)}
                                 onRecordEnter={this.onRecordEnter.bind(this)}
                                 onRecordLeave={this.onRecordLeave.bind(this)}
                                 onChange={this.onChangeItemProperties.bind(this)}
@@ -568,6 +590,7 @@ module.exports = function (Component) {
                             toggleNewMode={this.toggleNewMode.bind(this)}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
+                            onDelete={this.onDelete.bind(this)}
                             onSaveEdit={this.onSaveEdit.bind(this)}
                             onSaveNew={this.onSaveNew.bind(this)}
                             onRecordEnter={this.onRecordEnter.bind(this)}

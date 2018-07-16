@@ -46,6 +46,9 @@ module.exports = function(Component) {
             this.props.onSaveEdit(item, this.state.formType.toLowerCase())
         }
     }
+    onDeleteClick() {
+        if (this.props.onDelete) this.props.onDelete()
+    }
       
     onSaveNewClick() {
         if (this.props.onSaveNew) {
@@ -169,7 +172,7 @@ module.exports = function(Component) {
                         </span>
                         <span 
                           class="button is-small is-danger"
-                          onClick={this.props.onDeleteClick}
+                          onClick={this.onDeleteClick.bind(this)}
                         >
                           <i class="mdi mdi-delete-variant"></i>
                         </span>

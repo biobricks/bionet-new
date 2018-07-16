@@ -37,18 +37,18 @@ module.exports = function(Component) {
             const xUnits = (props.selectedRecord.layoutWidthUnits) ? props.selectedRecord.layoutWidthUnits : props.selectedRecord.xUnits
             const yUnits = (props.selectedRecord.layoutHeightUnits) ? props.selectedRecord.layoutHeightUnits : props.selectedRecord.yUnits
             const gridItemSize = this.gridItemSize
+            /*
             const width=(props.selectedRecord.width) ? props.selectedRecord.width : 1
             const height=(props.selectedRecord.height) ? props.selectedRecord.height : 1
-            //const width=(props.selectedRecord.width) ? props.selectedRecord.width/gridItemSize : 1
-            //const height=(props.selectedRecord.height) ? props.selectedRecord.height/gridItemSize : 1
+                width: width,
+                height: height,
+            */
             this.setState({
                 id: props.selectedRecord.id,
                 name: props.selectedRecord.name,
                 description: props.selectedRecord.description,
                 xUnits: xUnits,
                 yUnits: yUnits,
-                width: width,
-                height: height,
                 units: props.selectedRecord.units,
                 color: props.selectedRecord.color,
                 majorGridLine: props.selectedRecord.majorGridLine
@@ -100,6 +100,39 @@ module.exports = function(Component) {
     onColor(e) {
         this.update({color:e.target.value})
     }
+      /*
+            <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Width</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input  "
+                      type="number" 
+                      onChange={this.onWidth.bind(this)}
+                      value={this.state.width}
+                    />
+                  </div>
+                </div>
+              </div>
+          
+            <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Height</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input  "
+                      type="number" 
+                      onChange={this.onHeight.bind(this)}
+                      value={this.state.height}
+                    />
+                  </div>
+                </div>
+              </div>
+      */
     render() {
       let selectedRecord = this.props.selectedRecord;
       let parentRecord = this.props.parentRecord;
@@ -176,38 +209,6 @@ module.exports = function(Component) {
                       type="number" 
                       onChange={this.onYUnits.bind(this)}
                       value={this.state.yUnits}
-                    />
-                  </div>
-                </div>
-              </div>
-          
-            <div class="column is-12">
-                <div class="columns is-gapless">
-                  <div class="column is-narrow">
-                    <label class="label">Width</label>
-                  </div>
-                  <div class="column">   
-                    <input 
-                      class="input  "
-                      type="number" 
-                      onChange={this.onWidth.bind(this)}
-                      value={this.state.width}
-                    />
-                  </div>
-                </div>
-              </div>
-          
-            <div class="column is-12">
-                <div class="columns is-gapless">
-                  <div class="column is-narrow">
-                    <label class="label">Height</label>
-                  </div>
-                  <div class="column">   
-                    <input 
-                      class="input  "
-                      type="number" 
-                      onChange={this.onHeight.bind(this)}
-                      value={this.state.height}
                     />
                   </div>
                 </div>

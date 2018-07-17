@@ -139,6 +139,7 @@ module.exports = function (Component) {
             const parentId = this.state.currentItem.id 
             item.parent_id = parentId
             app.actions.inventory.saveToInventory(item,null,null,function(err,id){
+                app.actions.notify(item.name+" saved", 'notice', 2000);
                 console.log('onSaveNewContainer, saveToInventory:',err,id)
                 app.actions.inventory.refreshInventoryPath(parentId)
             }.bind(this))
@@ -190,6 +191,7 @@ module.exports = function (Component) {
                     const mergedPhysicals = (children && children.length && children.length>0 ) ? physicals.concat(children) : physicals
                     currentItem.children=mergedPhysicals
                     //console.log('onSaveNew: new physicals:',mergedPhysicals,currentItem)
+                    app.actions.notify("New physical saved", 'notice', 2000);
                     app.actions.inventory.refreshInventoryPath(currentItem.id)
                 })
             })
@@ -236,6 +238,7 @@ module.exports = function (Component) {
                 console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
                 delete updatedItem.xUnits
                 delete updatedItem.yUnits
+                app.actions.notify(item.name+" saved", 'notice', 2000);
                 return updatedItem
             })
         }

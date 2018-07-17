@@ -11,7 +11,6 @@ module.exports = function(Component) {
         this.state={
             name:'',
             description:'',
-            content:'',
             instances:1,
             enableColorPicker:false,
             color:'aqua'
@@ -41,9 +40,6 @@ module.exports = function(Component) {
     }
     onDescription(e) {
         this.update({description:e.target.value})
-    }
-    onContent(e) {
-        this.update({content:e.target.value})
     }
     onGenotype(e) {
         this.update({genotype:e.target.value})
@@ -180,23 +176,6 @@ module.exports = function(Component) {
                         <option value="Limbo">Limbo</option>
                       </select>
                     </div>
-                  </div>
-                </div>
-              </div>
-    
-              <div class="column is-12">
-                <div class="columns is-mobile">
-                  <div class="column is-narrow">
-                    <label class="label">Content</label>
-                  </div>
-                  <div class="column">   
-                    <textarea 
-                      class="textarea is-small"
-                      rows="2"
-                      placeholder="Markdown content."
-                      onChange={this.onContent.bind(this)}
-                      value={this.state.content} 
-                    ></textarea>
                   </div>
                 </div>
               </div>

@@ -4,28 +4,8 @@ import PropTypes from 'prop-types';
 module.exports = function(Component) {
 
   return class ContainerEditForm extends Component {
-/*      
-    static defaultProps = {
-        name: '',
-        description: '',
-        width: 1,
-        height: 1,
-        units: 'm',
-        color:'aqua',
-        majorGridLine: 1
-    }
 
-    static propTypes = {
-        name: PropTypes.string,
-        description: PropTypes.string,
-        width: PropTypes.number,
-        height: PropTypes.number,
-        units: PropTypes.string,
-        color: PropTypes.string,
-        majorGridLine: PropTypes.number
-    }
-*/
-    constructor(props, context) {
+      constructor(props, context) {
         super(props, context)
         this.gridItemSize=40
         this.componentWillReceiveProps(props)
@@ -37,20 +17,15 @@ module.exports = function(Component) {
             const xUnits = (props.selectedRecord.layoutWidthUnits) ? props.selectedRecord.layoutWidthUnits : props.selectedRecord.xUnits
             const yUnits = (props.selectedRecord.layoutHeightUnits) ? props.selectedRecord.layoutHeightUnits : props.selectedRecord.yUnits
             const gridItemSize = this.gridItemSize
-            /*
-            const width=(props.selectedRecord.width) ? props.selectedRecord.width : 1
-            const height=(props.selectedRecord.height) ? props.selectedRecord.height : 1
-                width: width,
-                height: height,
-            */
+
             this.setState({
                 id: props.selectedRecord.id,
                 name: props.selectedRecord.name,
                 description: props.selectedRecord.description,
                 xUnits: xUnits,
                 yUnits: yUnits,
-                units: props.selectedRecord.units,
                 color: props.selectedRecord.color,
+                viewOrientation: (props.selectedRecord.viewOrientation) ? props.selectedRecord.viewOrientation : 'top',
                 majorGridLine: props.selectedRecord.majorGridLine
             })
         }
@@ -60,10 +35,6 @@ module.exports = function(Component) {
         const newState = Object.assign(this.state, newProps)
         this.setState(newState)
         if (this.props.onChange) this.props.onChange(newProps)
-        
-        //const gridItemSize = this.gridItemSize
-        //newState.width *= gridItemSize
-        //newState.height *= gridItemSize
         
         //todo: ashnagz doesn't seem to be setting state correctly
         app.state.ContainerEditForm=newState
@@ -75,6 +46,9 @@ module.exports = function(Component) {
     }
     onName(e) {
         this.update({name:e.target.value})
+    }
+    onViewOrientation(e) {
+        this.update({viewOrientation:e.target.value})
     }
     onDescription(e) {
         this.update({description:e.target.value})
@@ -94,45 +68,10 @@ module.exports = function(Component) {
     onMajorGridLine(e) {
         this.update({majorGridLine:Number(e.target.value)})
     }
-    onUnits(e) {
-        this.update({units:e.target.value})
-    }
     onColor(e) {
         this.update({color:e.target.value})
     }
-      /*
-            <div class="column is-12">
-                <div class="columns is-gapless">
-                  <div class="column is-narrow">
-                    <label class="label">Width</label>
-                  </div>
-                  <div class="column">   
-                    <input 
-                      class="input  "
-                      type="number" 
-                      onChange={this.onWidth.bind(this)}
-                      value={this.state.width}
-                    />
-                  </div>
-                </div>
-              </div>
-          
-            <div class="column is-12">
-                <div class="columns is-gapless">
-                  <div class="column is-narrow">
-                    <label class="label">Height</label>
-                  </div>
-                  <div class="column">   
-                    <input 
-                      class="input  "
-                      type="number" 
-                      onChange={this.onHeight.bind(this)}
-                      value={this.state.height}
-                    />
-                  </div>
-                </div>
-              </div>
-      */
+
     render() {
       let selectedRecord = this.props.selectedRecord;
       let parentRecord = this.props.parentRecord;
@@ -146,6 +85,7 @@ module.exports = function(Component) {
             )
           });
       }
+        
       return (
         <div class="ContainerEditForm">
           <div class="panel-block">
@@ -166,6 +106,39 @@ module.exports = function(Component) {
                   </div>
                 </div>
               </div>
+    
+              <div class="column is-12">
+                <div class="columns">
+                  <div class="column is-narrow">
+                    <label class="label">View</label>
+                  </div>
+                  <div class="column">   
+                    <div class="control">
+                      <label class="radio">
+                        <input
+                            type="radio"
+                            name="viewOrientation"
+                            value="top"
+                            onChange={this.onViewOrientation.bind(this)}
+                            checked={(this.state.viewOrientation==='top')}
+                            />
+                        &nbsp;Top plan
+                      </label>
+                      <label class="radio">
+                        <input
+                            type="radio"
+                            name="viewOrientation"
+                            value="side"
+                            onChange={this.onViewOrientation.bind(this)}
+                            checked={(this.state.viewOrientation==='side')}
+                        />
+                        &nbsp;Side
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
               <div class="column is-12">
                 <div class="columns is-gapless">
                   <div class="column is-narrow">
@@ -185,56 +158,30 @@ module.exports = function(Component) {
             <div class="column is-12">
                 <div class="columns is-gapless">
                   <div class="column is-narrow">
-                    <label class="label">X axis grid units</label>
+                    <span style={{display:'inline-block'}}>  
+                        <label className="label">Rows</label>
+                    </span>
                   </div>
                   <div class="column">   
-                    <input 
-                      class="input  "
-                      type="number" 
-                      onChange={this.onXUnits.bind(this)}
-                      value={this.state.xUnits}
-                    />
-                  </div>
+                    <span style={{display:'inline-block'}}>  
+                        <input 
+                          type="number" 
+                          style={{display:'inline-block',width:'40px'}}
+                          onChange={this.onYUnits.bind(this)}
+                          value={this.state.yUnits}
+                        />
+                        <label style={{display:'inline-block',fontSize:'1rem',fontWeight:700,marginLeft:'20px'}}>Columns</label>
+                        <input 
+                          type="number" 
+                          style={{display:'inline-block',width:'40px',marginLeft:'20px'}}
+                          onChange={this.onXUnits.bind(this)}
+                          value={this.state.xUnits}
+                        />
+                    </span>
+                  </div>              
                 </div>
               </div>              
           
-            <div class="column is-12">
-                <div class="columns is-gapless">
-                  <div class="column is-narrow">
-                    <label class="label">Y axis grid units</label>
-                  </div>
-                  <div class="column">   
-                    <input 
-                      class="input  "
-                      type="number" 
-                      onChange={this.onYUnits.bind(this)}
-                      value={this.state.yUnits}
-                    />
-                  </div>
-                </div>
-              </div>
-          
-            <div class="column is-12">
-                <div class="columns is-gapless">
-                  <div class="column is-narrow">
-                    <label class="label">Units</label>
-                  </div>
-                  <div class="column">   
-                    <select
-                        value={this.state.units}
-                        onChange={this.onUnits.bind(this)}
-                        style={{paddingTop:'4px'}}
-                        >
-                        <option value="m">m</option>
-                        <option value="cm">cm</option>
-                        <option value="mm">mm</option>
-                        <option value="ft">ft</option>
-                        <option value="in">in</option>
-                    </select>
-                  </div>
-                </div>
-              </div>              
-
             <div class="column is-12">
                 <div class="columns is-gapless">
                   <div class="column is-narrow">

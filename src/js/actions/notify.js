@@ -12,6 +12,9 @@ TODO make a theme using bulma $colors
 and in this js remap types to same types are used in bulma $colors
 */
 
+//import "noty/src/noty.scss";
+//import "noty/src/themes/mint.scss";
+
 module.exports = function(msg, type, timeout) {
   if(!msg) return;
   if(typeof timeout !== 'number') timeout = 5000;
@@ -19,7 +22,7 @@ module.exports = function(msg, type, timeout) {
   const messageText = (typeof msg ==='string') ? msg.replace(/\r?\n/g, '<br/>') :  "Notify error: message typeof \""+ typeof msg +"\" not supported"
   new Noty({
     text: messageText,
-    theme: 'mint',
+    theme: 'bootstrap-v4',
     type: type || 'warning', 
     timeout: timeout
   }).show();

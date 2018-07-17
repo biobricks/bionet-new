@@ -452,6 +452,7 @@ export default class EditContainer extends Component {
                 updatedItem = Object.assign(item,props)
             }
             console.log('updateSelection:',updatedItem)
+            app.actions.notify(item.name+" saved", 'notice', 2000);
             return updatedItem
         }.bind(this))
         

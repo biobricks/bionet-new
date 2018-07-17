@@ -18,13 +18,32 @@ module.exports = function(Component) {
     }
       
     componentWillReceiveProps(props) {
-      if (props.editMode) {
+      console.log("--- PROOOPS data panel");
+      if(props.virtualID) {
+        this.setState({
+          virtualID: props.virtualID,
+          formType: 'Physical'
+        })
+        app.remote.get(props.virtualID, function(err, m) {
+          if(err) return; // TODO handle error
+
+          app.changeState({
+            PhysicalNewForm: {
+              name: m.name,
+              description: m.description
+            }
+          });
+        }.bind(this));
+
+      } else if (props.editMode) {
           var formType = (props.selectedRecord.type !== 'physical') ? 'Container' : 'Physical'
           this.setState({
             formType: formType
           })
           //if (this.props.onFormType) this.props.onFormType(formType)
       }
+
+
     }
     
     setFormType(e) {
@@ -75,7 +94,14 @@ module.exports = function(Component) {
       let parentRecord = this.props.parentRecord;
       let selectedRecord = this.props.selectedRecord;
       //let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;      
-      let isContainer = this.props.selectedRecord.type !== 'physical'
+      let isContainer = this.props.selectedRecord.type !== 'physical'        
+      if(this.state.virtualID) {
+        isNewMode = true;
+      }
+
+
+      console.log("----------", isNewMode, isContainer, this.state.formType)
+
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
       return (
         <div class="DataPanel panel has-background-white">

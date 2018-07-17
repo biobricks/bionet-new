@@ -120,6 +120,7 @@ module.exports = function(Component) {
                 </Switch>
                 
                 <Switch>
+                    <Route path="/inventory/new/:virtual_id" key="without-id" component={Inventory}/>
                     <Route path="/inventory/:id" key="with-id" component={Inventory}/>
                     <Route path="/inventory" key="without-id" component={Inventory}/>
                 </Switch>

@@ -1,4 +1,5 @@
 import { h } from 'preact'
+import { Link } from 'react-router-dom';
 import ashnazg from 'ashnazg'
 import LocationPath from './LocationPath'
 import EditContainer from './EditContainer'
@@ -34,13 +35,20 @@ module.exports = function (Component) {
                 navMode:'navigate',
                 editMode:false,
                 newMode:false,
+                suggestMode:false,
                 toggleEditItem:false,
                 toggleNewItem:false,
                 currentItem:currentItem,
             }
+
+          if(props.inventoryPath && props.inventoryPath.virtual_id) {
+            this.state.newMode = NEW_MODE_PHYSICAL_STEP2;
+            this.state.virtualID = props.inventoryPath.virtual_id;
+          }
         }
 
         componentWillReceiveProps(props) {
+          console.log("--- PROOOPS inventoryPath");
             if (!props.inventoryPath) return
             //if (!props.inventoryPath || props.id===this.state.id) return
             const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
@@ -385,6 +393,7 @@ module.exports = function (Component) {
                             <div class="column is-7-desktop">
                               <DataPanel 
                                 {...this.state}
+                                virtualID={this.state.virtualID}
                                 selectedRecord={currentItem}
                                 breadcrumbs={breadcrumbs}
                                 parentRecord={parentRecord}
@@ -582,6 +591,8 @@ module.exports = function (Component) {
                             onRecordLocation={this.onRecordLocation.bind(this)}
                         />
                     )
+                
+
                 } else {
                     locationPathComponent=(
                         <LocationPath
@@ -596,7 +607,51 @@ module.exports = function (Component) {
                         />
                     )
                 }
-                navPanel = (
+                if(this.state.suggestMode) {
+
+                  var suggestResults;
+
+                  if(this.state.suggestMode.loading) {
+                    suggestResults = (
+                      <p>Loading...</p>
+                    )
+                  } else if(!this.state.suggestMode.results.length) {
+                    suggestResults = (
+                      <p>No matches</p>
+                    )
+                  } else {
+                    var results = [];
+                    var i, res;
+                    for(i=0; i < this.state.suggestMode.results.length; i++) {
+                      res = this.state.suggestMode.results[i];
+                      results.push((
+                        <li>
+                          <Link to={'/inventory/new/'+res.value.id}>{res.value.name}</Link>
+                        </li>
+                      ));
+                    }
+
+                    suggestResults = (
+                      <div>
+                        <ul>{results}</ul>
+                      </div>
+                    );
+                  }
+
+                  navPanel = (
+                    <div class="column is-5-desktop">
+                      <div id="map-panel" class="MapPanel panel has-background-white">
+                        <div className="panel-heading">
+                          <span>Suggesting</span>
+                        </div>
+                        <div className="panel-block">
+                          {suggestResults}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                } else {
+                  navPanel = (
                     <div class="column is-5-desktop">
                       <MapPanel
                         {...this.state}
@@ -614,7 +669,8 @@ module.exports = function (Component) {
                             </div>
                       </MapPanel>
                     </div>
-                )
+                  )
+                }
             }
             return (
                 <div class="LabInventory">

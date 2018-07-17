@@ -33,6 +33,92 @@ module.exports = function(Component) {
         })
         */
     }
+
+    // begin suggestion existing virtuals when name input field is focused
+    nameFocus(e) {
+      this.suggestVirtual(e);
+    }
+
+    suggestVirtual(e) {
+      this.update({name:e.target.value})
+
+      var query = e.target.value.trim();
+      if(!query) {
+        app.changeState({
+          inventoryPath: {
+            suggestMode: false
+          }
+        });
+        return true;
+      }
+
+      app.changeState({
+        inventoryPath: {
+          suggestMode: {
+            results: ['foo'],
+            loading: true
+          }
+        }
+      });
+
+      var s = app.remote.searchVirtuals(query, {
+        offset: 0,
+        maxResults: 20
+      });
+
+      var results = []
+
+      s.on('data', function(data) {
+        if(!e.target.value.trim()) return;
+        results = results.concat([data]);
+
+        console.log("RESULTS:", results.length);
+
+        app.changeState({
+          inventoryPath: {
+            suggestMode: {
+              results: results
+            }
+          }
+        });
+
+      }.bind(this));
+
+      s.on('end', function() {
+        if(!e.target.value.trim()) {
+          app.changeState({
+            inventoryPath: {
+              suggestMode: false
+            }
+          });    
+          return;
+        }
+        app.changeState({
+          inventoryPath: {
+            suggestMode: {
+              results: results,
+              loading: false
+            }
+          }
+        });        
+      });
+
+      return true;
+    }
+
+    // stop suggestion existing virtuals when name input field loses focus
+    nameBlur(e) {
+
+    }
+
+    descriptionFocus(e) {
+      app.changeState({
+        inventoryPath: {
+          suggestMode: false
+        }
+      });
+    }
+
     onName(e) {
         this.update({name:e.target.value})
     }
@@ -100,6 +186,7 @@ module.exports = function(Component) {
         
       return (
         <div class="PhysicalNewForm">
+          <form autocomplete="off">
           <div class="panel-block">
 
             <div class="columns is-multiline">
@@ -116,7 +203,10 @@ module.exports = function(Component) {
                       name="name"
                       placeholder="Physical Name"
                       onChange={this.onName.bind(this)}
-                      value={this.state.name} 
+                      value={this.state.name}
+                      onInput={this.suggestVirtual.bind(this)}
+                      onFocus={this.nameFocus.bind(this)}
+                      onBlur={this.nameBlur.bind(this)}
                     />
                   </div>
                 </div>
@@ -135,6 +225,7 @@ module.exports = function(Component) {
                       placeholder="A short description of the Physical."
                       onChange={this.onDescription.bind(this)}
                       value={this.state.description} 
+                      onFocus={this.descriptionFocus.bind(this)}
                     ></textarea>
                   </div>
                 </div>
@@ -330,6 +421,7 @@ module.exports = function(Component) {
     
             </div>
           </div>
+          </form>
         </div>
       )
     }

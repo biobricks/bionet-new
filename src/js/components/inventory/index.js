@@ -18,6 +18,13 @@ module.exports = function (Component) {
                 types:{},
                 inventoryPath:null
             }
+
+          if(props.match.params.virtual_id) {
+            this.state.inventoryPath = {
+              virtual_id: props.match.params.virtual_id
+            }
+          }
+
             ashnazg.listen('global.user', this.loggedInUser.bind(this));
         }
         
@@ -25,6 +32,16 @@ module.exports = function (Component) {
             const id = (props.match) ? props.match.params.id : null
             //console.log('inventory main props:', id, this.state.id, this.props)
             if (id !== this.state.id || app.state.inventory.forceRefresh) this.getInventoryPath(id)
+
+          if(props.match.params.virtual_id) {
+            this.setState({
+              inventoryPath: {
+                virtual_id: props.match.params.virtual_id
+              }
+            })
+          }
+
+          
         }
         
         componentWillMount() {
@@ -123,6 +140,7 @@ module.exports = function (Component) {
                     <div>You must be logged in to view this page.</div>
                 )
             }
+
             return (
                 <InventoryPath state="inventoryPath" id={this.state.id} inventoryPath={this.state.inventoryPath}/>
             )

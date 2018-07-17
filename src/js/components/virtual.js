@@ -255,6 +255,12 @@ module.exports = function(Component) {
       // });
     }
 
+    makeRequestable() {
+      this.setState({
+        requestable: true
+      });
+    }
+
 	  render() {
 
       if(this.state.error) {
@@ -376,7 +382,7 @@ module.exports = function(Component) {
       }
 
       var requestLink = '';
-      if(freegenesStatus === 'shipping') {
+      if(freegenesStatus === 'shipping' || this.state.requestable) {
         requestLink = (
           <p>
             <Link to={'/request/'+this.state.id}>Request this biomaterial</Link>
@@ -409,9 +415,9 @@ module.exports = function(Component) {
             ) : null }         
           </div>
           {(this.state.virtual && this.state.virtual.freegenes) ? (
-            <div class="panel-block">
+              <div class="panel-block" onDblClick={this.makeRequestable.bind(this)}>
               {status}
-            </div>              
+            </div>            
           ) : null }
         
           {virtual}

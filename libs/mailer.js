@@ -75,7 +75,7 @@ module.exports = function(opts, base_url) {
     var txt = "You have received a request for materials from "+name+" <"+requesterEmail+"> from the lab/institute: "+org+"\n\n";
     txt += "The material request is for: "+m.name+"\n\n";
     txt += "Link to virtual: "+base_url+"/virtual/show/"+m.id+"\n\n";
-    txt += "Link to request: "+base_url+"/request/"+requestID+"\n\n";
+    txt += "Link to request: "+base_url+"/request-show/"+requestID+"\n\n";
     txt += "Shipping address:\n\n"+physicalAddress+"\n\n";
     if(msg && msg.trim()) {
       txt += "The requester included the following message: \n\n"+msg+"\n\n";

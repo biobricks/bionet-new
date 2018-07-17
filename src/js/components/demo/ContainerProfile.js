@@ -32,13 +32,13 @@ module.exports = function(Component) {
           let isContainer = Object.keys(child).indexOf('children') > -1;
           let classNames = this.props.hoveredRecord && child.id === this.props.hoveredRecord.id ? "active panel-block" : "panel-block";
           return (
-            <Link
-              to={`/ui/lab-inventory/${child.id}`}
+            <a
+              to={`/ui/inventory/${child.id}`}
               class={classNames}
               id={child.id}
-              onClick={this.props.selectRecord}
-              onMouseEnter={this.onRecordEnter}
-              onMouseLeave={this.onRecordLeave}
+              onClick={this.props.onClickLink}
+              //onMouseEnter={this.onRecordEnter}
+              //onMouseLeave={this.onRecordLeave}
             >
               <span class="panel-icon">
                 {(isContainer) ? (
@@ -48,7 +48,7 @@ module.exports = function(Component) {
                 )}  
               </span>
               {child.name} 
-            </Link>
+            </a>
           );
         });
       }

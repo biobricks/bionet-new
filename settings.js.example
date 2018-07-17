@@ -46,6 +46,15 @@ var settings = {
     requestFulfillerEmail: "someone@example.org" // Email where requests for biomaterials are sent
   },
 
+  freegenes_mailer: {
+    type: "console", // can also be "direct" or "console"
+    host: "localhost", // only needed for type: "smtp"
+    port: 25, // only needed for type: "smtp"
+    tls: false,
+    from_address: "freegenes@biobricks.org",
+    subjectPrefix: "[freegenes]" // system email subjects are prefixed with this
+  },
+
   // ----------
   // File paths
   // Note: All file paths are converted to absolute paths on app startup
@@ -86,7 +95,17 @@ var settings = {
     // Go to https://app.pandadoc.com/developers/
     // Log in, then click your app in the list, click settings
     // and fill out "Redirect URI"
-    redirect_url: 'http://localhost:8000/pandadoc/callback'
+    redirect_url: 'http://localhost:8000/pandadoc/callback',
+    approver: {
+      email: 'approver@example.com',
+      first_name: 'bionet',
+      last_name: 'approver'
+    },
+    stanford: {
+      email: 'stanford-tto@example.com',
+      first_name: 'stanford',
+      last_name: 'tto'
+    }
   },
 */
   // Settings related to label printing

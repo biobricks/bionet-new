@@ -40,6 +40,7 @@ module.exports = function(Component) {
   // UI/UX Demo Components
   const LabPanelDemo     = require('./demo/LabPanel.js')(Component);
   const LabInventoryDemo = require('./demo/LabInventory.js')(Component);
+  const InventoryDemo = require('./demo/Inventory.js')(Component);
   const LoginPanelDemo   = require('./demo/LoginPanel.js')(Component);
   const SignupPanelDemo  = require('./demo/SignupPanel.js')(Component);
   const ResetPanelDemo   = require('./demo/ResetPanel.js')(Component);
@@ -68,6 +69,8 @@ module.exports = function(Component) {
                 
                 <Route path="/ui/test/:itemId" component={TestComponent} />
                 <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
+                <Route path="/ui/inventory/:id" component={InventoryDemo} />
+                
                 <Route exact path="/ui/lab" component={LabPanelDemo} />
                 <Route exact path="/ui/login" component={LoginPanelDemo} />
                 <Route exact path="/ui/signup" component={SignupPanelDemo} />
@@ -80,10 +83,12 @@ module.exports = function(Component) {
                 <Route path="/virtual/show/:id" component={Virtual} />
                 <Route path="/virtual/edit/:id" component={EditVirtual} />
 
-                <Route path="/request/:id" component={RequestMaterial} />
-                <Route path="/request-show/:id" component={Request} />
-                <Route path="/requests" component={RequestList} />
-                <Route path="/request-sent/:id" component={RequestSent} />
+                <Switch>
+                  <Route path="/request/:id" component={RequestMaterial} />
+                  <Route path="/request-show/:id" component={Request} />
+                  <Route path="/requests" component={RequestList} />
+                  <Route path="/request-sent/:id" component={RequestSent} />
+                </Switch>
 
                 <Switch>
                   <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />
@@ -120,6 +125,7 @@ module.exports = function(Component) {
                 </Switch>
                 
                 <Switch>
+                    <Route path="/inventory/new/:virtual_id" key="without-id" component={Inventory}/>
                     <Route path="/inventory/:id" key="with-id" component={Inventory}/>
                     <Route path="/inventory" key="without-id" component={Inventory}/>
                 </Switch>

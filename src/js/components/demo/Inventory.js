@@ -29,16 +29,20 @@ module.exports = function(Component) {
     }
 
     toggleEditMode() {
+      console.log('toggle edit mode fired');
       this.setState({
         editMode: !this.state.editMode
       });
+      console.log(this.state);
     }
 
     toggleNewMode() {
+      console.log('toggle new mode fired');
       this.setState({
         editMode: false,
         newMode: !this.state.newMode
       });
+      console.log(this.state);
     }    
 
     getInventoryPath(id, callback) {
@@ -71,6 +75,7 @@ module.exports = function(Component) {
 
     componentDidUpdate() {
       console.log('componentDidUpdate fired');
+      console.log(this.state);
       const idParam = this.props.match.params.id ? this.props.match.params.id : null;       
       if(idParam !== this.state.selectedRecord.id){
         this.getInventoryPath(idParam, (error, inventoryPath) => {
@@ -96,45 +101,6 @@ module.exports = function(Component) {
     }
 
     render() {
-      // const selectedRecord = this.state.selectedRecord;
-      // const inventoryPath = this.state.inventoryPath;
-      // const title = Object.keys(selectedRecord).length > 0 ? selectedRecord.name : 'Loading...';
-      // const titleIcon = selectedRecord && Object.keys(selectedRecord).indexOf('children') > -1 ? (
-      //   <i class="mdi mdi-grid"></i>
-      // ):(
-      //   <i class="mdi mdi-flask"></i>
-      // );
-      // const creator = selectedRecord.created ? selectedRecord.created.user : null;
-      // const createdAt = selectedRecord.created ? selectedRecord.created.time : null;
-
-      // const breadcrumbs = inventoryPath.map((item, index) => {
-      //   const itemIsContainer = Object.keys(item).indexOf('children') > -1;
-      //   return (
-      //     <li>
-      //       <Link 
-      //         to={`/ui/inventory/${item.id}`}
-      //         onClick={this.setInventoryPath}
-      //       >
-      //         &nbsp;{item.name}
-      //       </Link>
-      //     </li>
-      //   );
-      // });
-      // const hasChildren = selectedRecord.children && selectedRecord.children.length > 0;
-      // let children;
-      // if(hasChildren){
-      //   children = selectedRecord.children.map((child, index) => {
-      //     let iconClass = Object.keys(child).indexOf('children') > -1 ? "mdi mdi-grid" : "mdi mdi-flask";
-      //     return (
-      //       <Link 
-      //         to={`/ui/inventory/${child.id}`}
-      //         className="panel-block"
-      //       >
-      //         <i class={iconClass}></i>&nbsp;&nbsp;{child.name}
-      //       </Link>
-      //     );
-      //   });
-      // }
       if(this.state.redirect){ 
         return (
           <Redirect
@@ -147,9 +113,12 @@ module.exports = function(Component) {
           <div class="columns is-desktop">
             <div class="column is-7-desktop">
               <DataPanel
+                {...this.state}
                 selectedRecord={this.state.selectedRecord}
                 inventoryPath={this.state.inventoryPath}
                 onClickLink={this.onClickLink}
+                toggleNewMode={this.toggleNewMode}
+                toggleEditMode={this.toggleEditMode}
               />
             </div>
             <div class="column is-5-desktop">

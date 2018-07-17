@@ -19,33 +19,23 @@ module.exports = function(Component) {
       let isViewMode = !this.props.editMode && !this.props.newMode;
       let isEditMode = this.props.editMode;
       let isNewMode = this.props.newMode;
-      let parentRecord = this.props.parentRecord;
       let selectedRecord = this.props.selectedRecord;
       let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
-      let breadcrumbs = this.props.selectedRecordPath.map((record) => {
+      const breadcrumbs = this.props.inventoryPath.map((item, index) => {
+        const itemIsContainer = Object.keys(item).indexOf('children') > -1;
         return (
           <li>
-            {(record.name === 'EndyLab') ? (
-              <Link 
-                to={`/ui/lab`}
-                href="#"
-              >
-                {record.name}
-              </Link>
-            ) : (
-              <Link 
-                to={`/ui/lab-inventory/${record.id}`}
-                href="#"
-                id={record.id}
-                onClick={this.props.selectRecord}
-              >
-                {record.name}
-              </Link>
-            )}
-          </li>          
+            <a 
+              to={`/ui/inventory/${item.id}`}
+              onClick={this.props.onClickLink}
+            >
+              {item.name}
+            </a>
+          </li>
         );
       });
+
       return (
         <div class="DataPanel panel has-background-white">
           <div class="panel-heading is-capitalized">
@@ -148,7 +138,7 @@ module.exports = function(Component) {
             {(isViewMode && isContainer) ? (
               <ContainerProfile 
                 {...this.props}
-                selectRecord={this.props.selectRecord}
+                onClickLink={this.props.onClickLink}
                 setHoveredRecord={this.props.setHoveredRecord}
               />
             ) : null }

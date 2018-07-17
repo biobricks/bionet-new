@@ -17,8 +17,8 @@ module.exports = function(Component) {
       <li class="is-active">{this.props.selectedRecord.name}</li>
         
       let isViewMode = !this.props.editMode && !this.props.newMode;
-      let isEditMode = this.props.editMode;
-      let isNewMode = this.props.newMode;
+      let isEditMode = this.props.editMode === true;
+      let isNewMode = this.props.newMode === true;
       let selectedRecord = this.props.selectedRecord;
       let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);

@@ -150,7 +150,8 @@ export default class EditContainer extends Component {
         if (this.props.onRecordLocation) this.props.onRecordLocation(item)
     }
     
-    onDragEnd(source, xp, yp, isDrag) {
+    onDragEnd(source, xp, yp, isDrag, top, left) {
+    //onDragEnd(source, cxp, cyp, isDrag, xp, yp) {
         // todo change to keyprop
         if (!this.container) return
         console.log('Edit container onDragEnd:',source)
@@ -165,17 +166,15 @@ export default class EditContainer extends Component {
         const y = (yp+this.container.scrollTop-this.state.layoutTop)/this.state.zoom
         const col = Math.trunc(x / this.gridWidth)
         const row = Math.trunc(y / this.gridHeight)
-        //const col = Math.round(x / this.gridWidth)
-        //const row = Math.round(y / this.gridHeight)
         const isOutsideGrid = xp < x1 || xp > x2 || yp < y1 || yp > y2 || col >= this.state.layoutWidthUnits || row >= this.state.layoutHeightUnits
         console.log('onDragEnd:', isDrag, xp, yp, x1,x2,y1,y2,col,row)
         if (isDrag) {
             this.selectedItem = null
             if (isOutsideGrid) {
                 // gridtodo: delete physical api call
-                console.log('onDragEnd, deleting')
-                this.deleteItem(source)
-                this.selectItem(source,this.state.items)
+                //console.log('onDragEnd, deleting')
+                //this.deleteItem(source)
+                //this.selectItem(source,this.state.items)
             } else {
                 var updatedItems=this.state.items
                 if (!source.id.startsWith('_new_')) {
@@ -396,10 +395,11 @@ export default class EditContainer extends Component {
         this.onResize();
         console.log('EditContainer componentDidMount:',this.props,this.state)
         if (this.props.onMount) {
-            const editContainerId = (this.props.fullWidth) ? 'EditContainerDiv' : 'edit-container'
-            //const editContainerId = 'edit-container'
+            //const editContainerId = (this.props.fullWidth) ? 'EditContainerDiv' : 'edit-container'
+            const editContainerId = (this.props.fullWidth) ? 'EditContainerDiv' : 'map-panel-item'
+            //const editContainerId = 'EditContainerDiv'
             const editContainer = document.getElementById(editContainerId)
-            console.log('EditContainer componentDidMount:',editContainerId)
+            console.log('EditContainer componentDidMount:',editContainerId,editContainer)
             var containerWidth=600
             var containerHeight=450
             if (editContainer) {

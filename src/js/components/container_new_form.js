@@ -35,11 +35,14 @@ module.exports = function(Component) {
         this.setState(newState)
         if (this.props.onChange) this.props.onChange(newProps)
         //todo: ashnagz doesn't seem to be setting state correctly
+        const gridItemSize=40
         app.state.ContainerNewForm={
             name: this.state.name,
             description: this.state.description,
             xUnits: this.state.xUnits,
             yUnits: this.state.yUnits,
+            width: this.state.width*gridItemSize,
+            height: this.state.height*gridItemSize,
             units: this.state.units,
             color:this.state.color,
             majorGridLine: this.state.majorGridLine
@@ -61,6 +64,12 @@ module.exports = function(Component) {
     }
     onYUnits(e) {
         this.update({yUnits:Number(e.target.value)})
+    }
+    onWidth(e) {
+        this.update({width:Number(e.target.value)})
+    }
+    onHeight(e) {
+        this.update({height:Number(e.target.value)})
     }
     onMajorGridLine(e) {
         this.update({majorGridLine:Number(e.target.value)})
@@ -147,6 +156,38 @@ module.exports = function(Component) {
                       type="number" 
                       onChange={this.onYUnits.bind(this)}
                       value={this.state.yUnits}
+                    />
+                  </div>
+                </div>
+              </div>
+          
+            <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Width</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input  "
+                      type="number" 
+                      onChange={this.onWidth.bind(this)}
+                      value={this.state.width}
+                    />
+                  </div>
+                </div>
+              </div>
+          
+            <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Height</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input  "
+                      type="number" 
+                      onChange={this.onHeight.bind(this)}
+                      value={this.state.height}
                     />
                   </div>
                 </div>

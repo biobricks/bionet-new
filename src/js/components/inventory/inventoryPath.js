@@ -37,6 +37,7 @@ module.exports = function (Component) {
                 toggleEditItem:false,
                 toggleNewItem:false,
                 currentItem:currentItem,
+                fullWidth:false
             }
         }
 
@@ -213,6 +214,11 @@ module.exports = function (Component) {
             })
         }
         
+        toggleFullscreenMode(fullScreen) {
+            console.log('toggleFullscreenMode:',fullScreen)
+            this.setState({fullWidth:fullScreen})
+        }
+        
         toggleEditItemMode() {
             this.setState({toggleEditItem:!this.state.toggleEditItem})
         }
@@ -232,6 +238,27 @@ module.exports = function (Component) {
                 delete updatedItem.yUnits
                 return updatedItem
             })
+        }
+        onDelete() {
+            const item=this.state.currentItem
+            if (!item) return
+            const id = item.id
+            if (!id) return
+            const name = item.name
+            const parentId = item.parent_id
+            console.log('deleting item 1:', id, name, parentId, item)
+            app.actions.prompt.display('Do you wish to delete '+name+'?', null, function(accept) {
+                if (accept) {
+                    app.actions.inventory.delPhysical(id, function(err,id2) {
+                        if (err) {
+                            app.actions.notify(err.message, 'error');
+                            return
+                        }
+                        app.actions.notify(name+" deleted", 'notice', 2000);
+                    })
+                    app.actions.inventory.refreshInventoryPath(parentId)
+                }
+            }.bind(this))
         }
 
         onChangeItemProperties(props) {
@@ -281,6 +308,11 @@ module.exports = function (Component) {
             console.log('inventoryPath onToggleNewItem')
             this.setState({
                 toggleNewItem:!this.state.toggleNewItem
+            })
+        }
+        onToggleFullscreen(fullScreen) {
+            this.setState({
+                fullScreen:fullScreen
             })
         }
         onSelectItem(item) {
@@ -358,6 +390,8 @@ module.exports = function (Component) {
             const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
             
             if (this.state.editMode) {
+                var fullWidth=this.state.fullWidth
+                if (currentItem.type==='lab') fullWidth=true
                 const pathId={}
                 var zoomIndex=1
                 var location=null
@@ -380,9 +414,7 @@ module.exports = function (Component) {
                 
                 if (!location) return
                 var editPanelClass='is-12-desktop'
-                var fullWidth=true
-                if (location.type!=='lab') {
-                    fullWidth=false
+                if (!fullWidth) {
                     editPanelClass='is-5-desktop'
                     dataPanel = (
                             <div class="column is-7-desktop">
@@ -392,11 +424,14 @@ module.exports = function (Component) {
                                 breadcrumbs={breadcrumbs}
                                 parentRecord={parentRecord}
                                 selectRecord={selectRecord}
+                                fullWidth={fullWidth}
                                 onFormType={this.onFormType.bind(this)}
                                 toggleNewMode={this.toggleNewMode.bind(this)}
                                 toggleEditMode={this.toggleEditMode.bind(this)}
+                                toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
                                 onSaveEdit={this.onSaveEdit.bind(this)}
                                 onSaveNew={this.onSaveNew.bind(this)}
+                                onDelete={this.onDelete.bind(this)}
                                 onRecordEnter={this.onRecordEnter.bind(this)}
                                 onRecordLeave={this.onRecordLeave.bind(this)}
                                 onChange={this.onChangeItemProperties.bind(this)}
@@ -414,14 +449,18 @@ module.exports = function (Component) {
                 const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
                 const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
                 console.log('inventoryPath render, zoom:',zoom,this.state.layoutWidthUnits)
-                if (currentItem.type==='lab') {
+                //onMount={this.onEditPanelMount.bind(this)}
+
+                if (fullWidth) {
                     editPanel = (
                         <div class={'column '+editPanelClass}>
                           <LabPanel
                             {...this.state}
                             selectedRecord={currentItem}
+                            fullWidth={fullWidth}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             toggleEditItemMode={this.onToggleEditItem.bind(this)}
+                            toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
                             toggleNewMode={this.onToggleNewItem.bind(this)}
                             parentRecord={{}}
                             >
@@ -432,9 +471,9 @@ module.exports = function (Component) {
                                     height={this.state.editPanelHeight}
                                     zoom={zoom}
                                     fullWidth={true}
-                                    onMount={this.onEditPanelMount.bind(this)}
                                     editItem={this.state.toggleEditItem}
                                     newItem={this.state.toggleNewItem}
+                                    onMount={this.onEditPanelMount.bind(this)}
                                     onToggleEdit={this.onToggleEditItem.bind(this)}
                                     onToggleNew={this.onToggleNewItem.bind(this)}
                                 />
@@ -493,7 +532,7 @@ module.exports = function (Component) {
                 var rootContainer=null
                 if (currentItem.type!=='lab') {
                     const rootPath2 = newPath.map(container => {
-                        if (currentItem.type!=='lab' && container.type==='lab') {
+                        if (container.type==='lab') {
                             const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                             rootZoom = initZoom(zoomWidth,containerLayout.layoutWidth)
                             zoomHeight -= containerLayout.layoutHeight*rootZoom-20
@@ -546,9 +585,12 @@ module.exports = function (Component) {
                             parentRecord={parentRecord}
                             selectRecord={selectRecord}
                             newMode={this.state.newMode}
+                            fullWidth={fullWidth}
                             onFormType={this.onFormType.bind(this)}
                             toggleNewMode={this.toggleNewMode.bind(this)}
                             toggleEditMode={this.toggleEditMode.bind(this)}
+                            toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
+                            onDelete={this.onDelete.bind(this)}
                             onSaveEdit={this.onSaveEdit.bind(this)}
                             onSaveNew={this.onSaveNew.bind(this)}
                             onRecordEnter={this.onRecordEnter.bind(this)}

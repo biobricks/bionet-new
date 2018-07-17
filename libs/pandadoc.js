@@ -166,7 +166,7 @@ function sendDocument(id, message, accessToken, cb) {
 
   "{\"id\":\"<doc_id_string>\",\"name\":\"Open Material Transfer Agreement\",\"status\":\"document.uploaded\",\"date_created\":\"2018-05-24T15:21:51.847167Z\",\"date_modified\":\"2018-05-24T15:21:51.847167Z\",\"uuid\":\"<uuid_string>\"}"
 */
-function createDocument(recipient, formData, templateUUID, accessToken, cb) {
+function createDocument(recipient, approver, stanford, formData, templateUUID, accessToken, cb) {
 
   // convert format from `key: value` to `[{name: key, value: value}]`
   var fields = {};
@@ -178,24 +178,13 @@ function createDocument(recipient, formData, templateUUID, accessToken, cb) {
   }
 
   recipient.role = 'recipient';
-  var stanford = {
-    email: "tto-stanford@juul.io",
-    first_name: "Tech transfer",
-    last_name: "Officer",
-    role: 'stanford'
-  };
-
-  var approverRecipient = {
-    email: 'approver@juul.io',
-    first_name: 'bionet',
-    last_name: 'approver',
-    role: 'approver'
-  };
+  stanford.role = 'stanford';
+  approver.role = 'approver';
 
   var data = {
     name: "Open Material Transfer Agreement",
     template_uuid: templateUUID,
-    recipients: [approverRecipient, recipient, stanford],
+    recipients: [approver, recipient, stanford],
     fields: fields
   };
 
@@ -254,6 +243,7 @@ function PandaDoc(settings, router, login, userCookieAuth, opts) {
     debug: false
   }, opts || {});
 
+  this.settings = settings;
   this.authenticated = false;
 
   this.oa = oauthCreate(settings.pandadoc.client_id, settings.pandadoc.client_secret);
@@ -405,9 +395,7 @@ function PandaDoc(settings, router, login, userCookieAuth, opts) {
   this.createDocument = function(recipient, emailMsg, data, templateUUID, cb) {
     var accessToken = this.token.token.token.access_token;
 
-    console.log("THIIS:", accessToken);
-
-    createDocument(recipient, data, templateUUID, accessToken, function(err, id) {
+    createDocument(recipient, this.settings.pandadoc.approver, this.settings.pandadoc.stanford, data, templateUUID, accessToken, function(err, id) {
       if(err) return cb(err);
       
       sendDocument(id, emailMsg, accessToken, function(err) {

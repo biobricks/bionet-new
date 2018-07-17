@@ -13,13 +13,13 @@ module.exports = function(Component) {
 
     onRecordEnter(e) {
       let recordId = e.target.getAttribute('id');
-      console.log(`entered ${recordId}`);
+      //console.log(`entered ${recordId}`);
       this.props.setHoveredRecord(recordId);
     }
 
     onRecordLeave(e) {
       let recordId = e.target.getAttribute('id');
-      console.log(`left ${recordId}`);
+      //console.log(`left ${recordId}`);
       this.props.setHoveredRecord(null);
     }
 
@@ -40,8 +40,8 @@ module.exports = function(Component) {
               class={classNames}
               id={child.id}
               onClick={this.props.onClickLink}
-              //onMouseEnter={this.onRecordEnter}
-              //onMouseLeave={this.onRecordLeave}
+              onMouseEnter={this.onRecordEnter}
+              onMouseLeave={this.onRecordLeave}
             >
               <span class="panel-icon">
                 {(isContainer) ? (

@@ -356,15 +356,22 @@ module.exports = function(Component) {
                   <div class="column">   
                     <div class="control">
                       <label class="radio">
-                        <input type="radio" name="freeGenes" />
+                        <input
+                            type="radio"
+                            name="freeGenes"
+                            value={true}
+                            onChange={this.onFreeGenes.bind(this)}
+                            checked={this.state.freeGenes}
+                        />
                         &nbsp;Yes
                       </label>
                       <label class="radio">
                         <input
                             type="radio"
                             name="freeGenes"
-                          onChange={this.onFreeGenes.bind(this)}
-                            checked
+                            value={false}
+                            onChange={this.onFreeGenes.bind(this)}
+                            checked={!this.state.freeGenes}
                         />
                         &nbsp;No
                       </label>

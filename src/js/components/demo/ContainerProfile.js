@@ -29,7 +29,10 @@ module.exports = function(Component) {
       let children;
       if (this.props.selectedRecord.children) {
         children = this.props.selectedRecord.children.map((child, index) => {
-          let isContainer = Object.keys(child).indexOf('children') > -1;
+          
+          //let isContainer = Object.keys(child).indexOf('children') > -1;
+          let isContainer = child.layoutHeightUnits && child.layoutWidthUnits && child.layoutHeightUnits > 1 && child.layoutWidthUnits > 1;
+
           let classNames = this.props.hoveredRecord && child.id === this.props.hoveredRecord.id ? "active panel-block" : "panel-block";
           return (
             <a

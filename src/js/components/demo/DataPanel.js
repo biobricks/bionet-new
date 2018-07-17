@@ -20,7 +20,11 @@ module.exports = function(Component) {
       let isEditMode = this.props.editMode === true;
       let isNewMode = this.props.newMode === true;
       let selectedRecord = this.props.selectedRecord;
-      let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;
+      
+      //let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;
+      let isContainer = selectedRecord.layoutHeightUnits && selectedRecord.layoutWidthUnits && selectedRecord.layoutHeightUnits > 1 && selectedRecord.layoutWidthUnits > 1;
+
+
       let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
       const breadcrumbs = this.props.inventoryPath.map((item, index) => {
         const itemIsContainer = Object.keys(item).indexOf('children') > -1;

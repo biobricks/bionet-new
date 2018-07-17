@@ -83,10 +83,12 @@ module.exports = function(Component) {
                 <Route path="/virtual/show/:id" component={Virtual} />
                 <Route path="/virtual/edit/:id" component={EditVirtual} />
 
-                <Route path="/request/:id" component={RequestMaterial} />
-                <Route path="/request-show/:id" component={Request} />
-                <Route path="/requests" component={RequestList} />
-                <Route path="/request-sent/:id" component={RequestSent} />
+                <Switch>
+                  <Route path="/request/:id" component={RequestMaterial} />
+                  <Route path="/request-show/:id" component={Request} />
+                  <Route path="/requests" component={RequestList} />
+                  <Route path="/request-sent/:id" component={RequestSent} />
+                </Switch>
 
                 <Switch>
                   <Route path="/search/:query/:page?/:scope?/:type?/:available?" component={Search} />

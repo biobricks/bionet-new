@@ -64,11 +64,21 @@ export default class DragManager {
         this.dragMoveFn(e);
     }
 
+    //endDrag(item) {
     endDrag(item) {
         const dragItem=(this.dragItem) ? this.dragItem : item
+        var selectedDomElementAr = document.getElementsByClassName('selectedDisplayObject');
+        var selectedDomElement = selectedDomElementAr[0]
+        console.log('Drag Manager, endDrag:',dragItem, selectedDomElement)
         if (dragItem) {
-            console.log('Drag Manager, endDrag:',this.gridId,dragItem.name)
-            this.dragEndFn(dragItem[this.keyProp], this.clientX, this.clientY, this.isDrag)
+            var top = this.clientX
+            var left = this.clientY
+            if (selectedDomElement) {
+                var rect = selectedDomElement.getBoundingClientRect();
+                top = rect.top
+                left = rect.left
+            }
+            this.dragEndFn(dragItem[this.keyProp], this.clientX, this.clientY, this.isDrag, top, left)
         }
         this.dragItem = null;
         this.isDrag=false
@@ -93,8 +103,8 @@ export default class DragManager {
             const pageX = isTouch ? e.targetTouches[0].pageX : e.pageX;
             const pageY = isTouch ? e.targetTouches[0].pageY : e.pageY;
 
-            this.initialMouseX = Math.round(pageX - (rect.left + window.pageXOffset));
-            this.initialMouseY = Math.round(pageY - (rect.top + window.pageYOffset));
+            this.initialMouseX = Math.trunc(pageX - (rect.left + window.pageXOffset));
+            this.initialMouseY = Math.trunc(pageY - (rect.top + window.pageYOffset));
             this.initialEventX = pageX;
             this.initialEventY = pageY;
 

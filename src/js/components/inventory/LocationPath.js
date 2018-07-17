@@ -90,6 +90,19 @@ export default class LocationPath extends Component {
     
     componentDidMount() {
         this.onResize();
+        console.log('LocationPath componentDidMount:',this.props,this.state)
+        if (this.props.onMount) {
+            const mapContainerId = 'map-panel-item'
+            const mapContainer = document.getElementById(mapContainerId)
+            console.log('EditContainer componentDidMount:',mapContainerId,mapContainer)
+            var containerWidth=600
+            var containerHeight=450
+            if (mapContainer) {
+                containerWidth=mapContainer.offsetWidth-24
+                containerHeight=mapContainer.offsetHeight-16
+            }
+            this.props.onMount(containerWidth,containerHeight)
+        }
     }
 
     render() {
@@ -100,7 +113,6 @@ export default class LocationPath extends Component {
             //height:this.props.height+'px'
         const containerStyle = {
             width:this.props.width+'px',
-            height:this.props.height+'px',
         }
         
         return (

@@ -11,6 +11,7 @@ module.exports = function(Component) {
       this.state = {
         editMode: true,
         lab: {},
+        fullScreen:false
       };
     }
       
@@ -28,6 +29,11 @@ module.exports = function(Component) {
         });
         if (this.props.toggleEditMode) this.props.toggleEditMode()
     }
+      
+    toggleFullscreenMode() {
+        const fullWidth=!this.props.fullWidth
+        if (this.props.toggleFullscreenMode) this.props.toggleFullscreenMode(fullWidth)
+    }
 
     onSaveButtonClick() {
       this.toggleEditMode();
@@ -35,7 +41,7 @@ module.exports = function(Component) {
 
     componentDidMount() {
         if (this.props.onMount) {
-            const mapContainer = document.getElementById('map-panel-item')
+            const mapContainer = document.getElementById('EditContainerDiv')
             var containerWidth=450
             var containerHeight=600
             if (mapContainer) {
@@ -68,6 +74,20 @@ module.exports = function(Component) {
                             <i class="mdi mdi-arrow-left-bold"></i>
                           </span>
                           <span 
+                            class="button is-small is-link"
+                            onClick={this.toggleNewMode.bind(this)}
+                          >
+                          <i class="mdi mdi-plus"></i>
+                          </span>
+      
+                          <span 
+                            class="button is-small is-link"
+                            onClick={this.toggleFullscreenMode.bind(this)}
+                          >
+                          {(this.props.fullWidth) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
+                          </span>
+
+                            <span 
                             class="button is-small is-success"
                             onClick={this.onSaveButtonClick.bind(this)}
                           >

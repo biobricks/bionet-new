@@ -27,6 +27,7 @@ module.exports = function(Component) {
 */
     constructor(props, context) {
         super(props, context)
+        this.gridItemSize=40
         this.componentWillReceiveProps(props)
     }
     
@@ -35,6 +36,13 @@ module.exports = function(Component) {
             console.log('container_edit_form props:',props)
             const xUnits = (props.selectedRecord.layoutWidthUnits) ? props.selectedRecord.layoutWidthUnits : props.selectedRecord.xUnits
             const yUnits = (props.selectedRecord.layoutHeightUnits) ? props.selectedRecord.layoutHeightUnits : props.selectedRecord.yUnits
+            const gridItemSize = this.gridItemSize
+            /*
+            const width=(props.selectedRecord.width) ? props.selectedRecord.width : 1
+            const height=(props.selectedRecord.height) ? props.selectedRecord.height : 1
+                width: width,
+                height: height,
+            */
             this.setState({
                 id: props.selectedRecord.id,
                 name: props.selectedRecord.name,
@@ -52,6 +60,11 @@ module.exports = function(Component) {
         const newState = Object.assign(this.state, newProps)
         this.setState(newState)
         if (this.props.onChange) this.props.onChange(newProps)
+        
+        //const gridItemSize = this.gridItemSize
+        //newState.width *= gridItemSize
+        //newState.height *= gridItemSize
+        
         //todo: ashnagz doesn't seem to be setting state correctly
         app.state.ContainerEditForm=newState
         /*
@@ -72,6 +85,12 @@ module.exports = function(Component) {
     onYUnits(e) {
         this.update({yUnits:Number(e.target.value)})
     }
+    onWidth(e) {
+        this.update({width:Number(e.target.value)})
+    }
+    onHeight(e) {
+        this.update({height:Number(e.target.value)})
+    }
     onMajorGridLine(e) {
         this.update({majorGridLine:Number(e.target.value)})
     }
@@ -81,6 +100,39 @@ module.exports = function(Component) {
     onColor(e) {
         this.update({color:e.target.value})
     }
+      /*
+            <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Width</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input  "
+                      type="number" 
+                      onChange={this.onWidth.bind(this)}
+                      value={this.state.width}
+                    />
+                  </div>
+                </div>
+              </div>
+          
+            <div class="column is-12">
+                <div class="columns is-gapless">
+                  <div class="column is-narrow">
+                    <label class="label">Height</label>
+                  </div>
+                  <div class="column">   
+                    <input 
+                      class="input  "
+                      type="number" 
+                      onChange={this.onHeight.bind(this)}
+                      value={this.state.height}
+                    />
+                  </div>
+                </div>
+              </div>
+      */
     render() {
       let selectedRecord = this.props.selectedRecord;
       let parentRecord = this.props.parentRecord;

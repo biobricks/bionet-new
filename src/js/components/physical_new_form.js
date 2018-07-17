@@ -235,14 +235,22 @@ module.exports = function(Component) {
                   <div class="column">   
                     <div class="control">
                       <label class="radio">
-                        <input type="radio" name="available"
-                          onChange={this.onIsAvailable.bind(this)}
+                        <input
+                            type="radio"
+                            name="available"
+                            value={true}
+                            checked={this.state.isAvailable}
+                            onChange={this.onIsAvailable.bind(this)}
                         />
                         &nbsp;Yes
                       </label>
                       <label class="radio">
-                        <input type="radio" name="available"
-                          onChange={this.onIsAvailable.bind(this)}
+                        <input
+                            type="radio"
+                            name="available"
+                            value={false}
+                            checked={!this.state.isAvailable}
+                            onChange={this.onIsAvailable.bind(this)}
                         checked/>
                         &nbsp;No
                       </label>
@@ -250,6 +258,7 @@ module.exports = function(Component) {
                   </div>
                 </div>
               </div>
+    
     
               <div class="column is-12">
                 <div class="columns">

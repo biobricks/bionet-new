@@ -1,4 +1,3 @@
-
 import { h } from 'preact';
 import ColorPicker from 'react-color-picker'
 
@@ -13,7 +12,9 @@ module.exports = function(Component) {
             description:'',
             instances:1,
             enableColorPicker:false,
-            color:'aqua'
+            color:'aqua',
+            isAvailable:true,
+            freeGenes:false
         }
     }
     onSelectColor(e) {
@@ -21,7 +22,9 @@ module.exports = function(Component) {
     }
     update(newProps) {
         const newState = Object.assign(this.state, newProps)
-        this.setState(newState,()=>{/*console.log('PhysicalNew update:',this.state)*/})
+        console.log('PhysicalNew update:',newState)
+        
+        this.setState(newState,()=>{console.log('PhysicalNew update:',this.state)})
         if (this.props.onChange) this.props.onChange(newProps)
         
         //todo: ashnagz doesn't seem to be setting state correctly
@@ -134,7 +137,7 @@ module.exports = function(Component) {
         this.update({license:e.target.value})
     }
     onFreeGenes(e) {
-        this.update({freeGenes:e.target.value})
+        this.update({freeGenes:e.target.value==='free'})
     }
     onFreeGenesStage(e) {
         this.update({freeGenesStage:e.target.value})
@@ -146,7 +149,7 @@ module.exports = function(Component) {
         this.update({provenance:e.target.value})
     }
     onIsAvailable(e) {
-        this.update({isAvailable:e.target.value})
+        this.update({isAvailable:e.target.value==='available'})
     }
     onSetColor(color, c) {
         this.update({color:color})
@@ -238,7 +241,7 @@ module.exports = function(Component) {
                         <input
                             type="radio"
                             name="available"
-                            value={true}
+                            value="available"
                             checked={this.state.isAvailable}
                             onChange={this.onIsAvailable.bind(this)}
                         />
@@ -248,10 +251,10 @@ module.exports = function(Component) {
                         <input
                             type="radio"
                             name="available"
-                            value={false}
+                            value="unavailable"
                             checked={!this.state.isAvailable}
                             onChange={this.onIsAvailable.bind(this)}
-                        checked/>
+                        />
                         &nbsp;No
                       </label>
                     </div>
@@ -368,7 +371,7 @@ module.exports = function(Component) {
                         <input
                             type="radio"
                             name="freeGenes"
-                            value={true}
+                            value="free"
                             onChange={this.onFreeGenes.bind(this)}
                             checked={this.state.freeGenes}
                         />
@@ -378,7 +381,7 @@ module.exports = function(Component) {
                         <input
                             type="radio"
                             name="freeGenes"
-                            value={false}
+                            value="notfree"
                             onChange={this.onFreeGenes.bind(this)}
                             checked={!this.state.freeGenes}
                         />

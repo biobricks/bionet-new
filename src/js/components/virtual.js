@@ -415,7 +415,7 @@ module.exports = function(Component) {
             ) : null }         
           </div>
           {(this.state.virtual && this.state.virtual.freegenes) ? (
-              <div class="panel-block" onDblClick={this.makeRequestable.bind(this)}>
+              <div class="panel-block">
               {status}
             </div>            
           ) : null }
@@ -423,7 +423,7 @@ module.exports = function(Component) {
           {virtual}
         
           <div class="panel-block">
-            <h5>Physical Instances</h5>
+            <h5 onDblClick={this.makeRequestable.bind(this)}>Physical Instances</h5>
           </div>
           {physicals}
           <div>

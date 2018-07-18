@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import ashnazg from 'ashnazg';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 module.exports = function(Component) {
 
@@ -18,7 +18,9 @@ module.exports = function(Component) {
         inventoryPath: [],
         selectedRecord: {},
         editMode: false,
-        newMode: false
+        newMode: false,
+        formType: "",
+        hoveredRecord: {}
       };
       //console.log(app.actions.inventory);
       //ashnazg.listen('global.user', this.loggedInUser.bind(this));
@@ -26,23 +28,25 @@ module.exports = function(Component) {
       this.toggleNewMode = this.toggleNewMode.bind(this);
       this.getInventoryPath = this.getInventoryPath.bind(this);
       this.onClickLink = this.onClickLink.bind(this);
+      this.setFormType = this.setFormType.bind(this);
+      this.setHoveredRecord = this.setHoveredRecord.bind(this);
     }
 
     toggleEditMode() {
-      console.log('toggle edit mode fired');
+      //console.log('toggle edit mode fired');
       this.setState({
         editMode: !this.state.editMode
       });
-      console.log(this.state);
+      //console.log(this.state);
     }
 
     toggleNewMode() {
-      console.log('toggle new mode fired');
+      //console.log('toggle new mode fired');
       this.setState({
         editMode: false,
         newMode: !this.state.newMode
       });
-      console.log(this.state);
+      //console.log(this.state);
     }    
 
     getInventoryPath(id, callback) {
@@ -57,7 +61,7 @@ module.exports = function(Component) {
 
     onClickLink(e){
       e.preventDefault();
-      console.log('on click link fired');
+      //console.log('on click link fired');
       const redirectTo = e.target.getAttribute('to');
       this.setState({
         redirect: true,
@@ -65,17 +69,36 @@ module.exports = function(Component) {
       });   
     }
 
-    componentWillReceiveProps(props){
-      console.log('componentWillReceiveProps fired'); 
+    setFormType(e) {
+      let formType = e.target.value;
+      console.log(`Form type switched to ${formType}`);
+      this.setState({
+        formType
+      });
     }
 
-    componentDidMount() {
-      console.log('componentDidMount fired');
+    setHoveredRecord(hoveredRecordId) {
+      //console.log(`setHoveredRecord fired for id: ${hoveredRecordId}`);
+      if(hoveredRecordId !== null){
+        this.getInventoryPath(hoveredRecordId, (error, inventoryPath) => {
+          if(error){ 
+            console.log(error);
+          } else {
+            let hoveredRecord = inventoryPath[inventoryPath.length - 1];
+            //console.log(hoveredRecord);
+            this.setState({ hoveredRecord });
+          }
+        });
+      } else {
+        this.setState({
+          hoveredRecord: null
+        });
+      }
     }
 
     componentDidUpdate() {
-      console.log('componentDidUpdate fired');
-      console.log(this.state);
+      //console.log('componentDidUpdate fired');
+      //console.log(this.state);
       const idParam = this.props.match.params.id ? this.props.match.params.id : null;       
       if(idParam !== this.state.selectedRecord.id){
         this.getInventoryPath(idParam, (error, inventoryPath) => {
@@ -84,10 +107,14 @@ module.exports = function(Component) {
             console.log(error);
           } else {
             selectedRecord = inventoryPath[inventoryPath.length - 1];
+            console.group();
+            console.log('Selected Record:');
             console.log(selectedRecord);
+            console.groupEnd();
             this.setState({
               inventoryPath,
-              selectedRecord
+              selectedRecord,
+              hoveredRecord: null
             });
           }
         });
@@ -119,6 +146,8 @@ module.exports = function(Component) {
                 onClickLink={this.onClickLink}
                 toggleNewMode={this.toggleNewMode}
                 toggleEditMode={this.toggleEditMode}
+                setFormType={this.setFormType}
+                setHoveredRecord={this.setHoveredRecord}
               />
             </div>
             <div class="column is-5-desktop">

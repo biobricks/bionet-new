@@ -11,7 +11,25 @@ module.exports = function(Component) {
   const PhysicalEditForm = require('./PhysicalEditForm.js')(Component);
 
   return class DataPanel extends Component {
-    
+  
+
+    // for demo toggle
+    // a record must have some type of attribute
+    // in persistence that can be toggled true/false
+    constructor(props) {
+      super(props);
+      this.state = {
+        isFavorite: false
+      };
+      this.toggleFavorite = this.toggleFavorite.bind(this);
+    }
+
+    toggleFavorite() {
+      this.setState({
+        isFavorite: !this.state.isFavorite
+      });
+    }
+
     render() {
 
       <li class="is-active">{this.props.selectedRecord.name}</li>
@@ -66,6 +84,23 @@ module.exports = function(Component) {
                   {(isViewMode) ? (
                     <div class="toolbox is-pulled-right">
                       <div class="buttons has-addons">
+                        
+                        {(this.state.isFavorite) ? (
+                          <span 
+                            class="button is-small is-warning has-text-white"
+                            onClick={this.toggleFavorite}
+                          >
+                            <i class="mdi mdi-star"></i>
+                          </span>
+                        ) : (
+                          <span 
+                            class="button is-small"
+                            onClick={this.toggleFavorite}
+                          >
+                            <i class="mdi mdi-star-outline"></i>
+                          </span>
+                        )}
+
                         <span 
                           class="button is-small is-success"
                           onClick={this.props.toggleNewMode}

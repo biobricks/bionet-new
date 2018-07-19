@@ -238,14 +238,24 @@ module.exports = function (Component) {
             delete props.validation
             console.log('inventoryPath onSaveEdit:', props)
             app.actions.inventory.updateItem(props.id, function(err, item) {
-                props.layoutWidthUnits = props.xUnits,
-                props.layoutWidth = props.gridWidth*props.xUnits
-                props.layoutHeightUnits = props.yUnits,
-                props.layoutHeight = props.gridHeight*props.yUnits
+                props.xUnits = (props.xUnits) ? Number(props.xUnits) : 1
+                props.yUnits = (props.yUnits) ? Number(props.yUnits) : 1
                 const updatedItem = Object.assign(item, props)
+                /*
+                const gridWidth=(props.gridWidth) ? props.gridWidth : 40
+                const gridHeight=(props.gridHeight) ? props.gridHeight : 40
+                props.layoutWidthUnits = xUnits,
+                props.layoutWidth = gridWidth*xUnits
+                props.layoutHeightUnits = yUnits,
+                props.layoutHeight = gridHeight*yUnits
+                */
+                delete updatedItem.gridWidth
+                delete updatedItem.gridHeight
+                delete updatedItem.layoutWidth
+                delete updatedItem.layoutHeight
+                delete updatedItem.layoutWidthUnits
+                delete updatedItem.layoutHeightUnits
                 console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
-                delete updatedItem.xUnits
-                delete updatedItem.yUnits
                 app.actions.notify(item.name+" saved", 'notice', 2000);
                 return updatedItem
             })
@@ -542,12 +552,14 @@ module.exports = function (Component) {
                 var zoomHeight = this.state.mapPanelHeight
                 var rootLocation=null
                 var rootContainer=null
+                var rootHeight=200
                 if (currentItem.type!=='lab') {
                     const rootPath2 = newPath.map(container => {
                         if (container.type==='lab') {
                             const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                             rootZoom = initZoom(zoomWidth,containerLayout.layoutWidth)
-                            zoomHeight -= containerLayout.layoutHeight*rootZoom-20
+                            rootHeight = containerLayout.layoutHeight*rootZoom
+                            zoomHeight -= rootHeight+20
                             rootContainer=containerLayout
                             return containerLayout
                         }
@@ -572,17 +584,18 @@ module.exports = function (Component) {
                 }
                 
                 var newItem=null
-                if (this.state.newMode) {
-                    
-                }
-                
                 var zoom=1.0
                 var itemContainer=null
                 const locationPath2 = newPath.map(container => {
                     if (containerId===container.id) {
-                        console.log('inventoryPath, nav: generating layout:', zoomHeight, panelHeight, this.state.mapPanelHeight)
                         const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
-                        zoom = initZoom(panelWidth,containerLayout.layoutWidth)
+                        if (containerLayout.layoutWidth >= containerLayout.layoutHeight) {
+                            zoom = initZoom(panelWidth,containerLayout.layoutWidth)
+                            console.log('inventoryPath, nav: generating layoutW:',containerLayout, zoom)
+                        } else {
+                            zoom = initZoom(panelHeight-rootHeight-60,containerLayout.layoutHeight)
+                            console.log('inventoryPath, nav: generating layoutH:',containerLayout, zoom)
+                        }
                         itemContainer=containerLayout
                         return containerLayout
                     }

@@ -348,6 +348,7 @@ module.exports = function (Component) {
             const currentItem=this.state.currentItem
             
             if (typeof this.state.inventoryPath === 'object' && this.state.inventoryPath.constructor.name === 'Error') {
+                console.log('inventoryPath error',typeof this.state.inventoryPath === 'object', this.state.inventoryPath)
                 return (
                     <h6 style="margin-top:15px;">{this.state.inventoryPath.message}</h6>
                 )
@@ -361,6 +362,8 @@ module.exports = function (Component) {
 
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
             const tableHeight =  window.innerHeight-this.state.containerSize-100
+            
+            console.log('InventoryPath render 0a')
 
             var dataItems = {}
             if (this.state.editMode) {
@@ -390,6 +393,7 @@ module.exports = function (Component) {
                 )
                 */
             }
+            console.log('InventoryPath render 0b')
 
             var dataPanel=null
             var navPanel=null
@@ -404,8 +408,9 @@ module.exports = function (Component) {
                 app.actions.inventory.refreshInventoryPath(e.target.id)
             }
             const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
-            
+            console.log('InventoryPath render 1')
             if (this.state.editMode) {
+                console.log('InventoryPath render 2')
                 var fullWidth=this.state.fullWidth
                 if (currentItem.type==='lab') fullWidth=true
                 const pathId={}
@@ -498,6 +503,7 @@ module.exports = function (Component) {
                         </div>
                     )
                 } else {
+                    console.log('InventoryPath render 1b')
                     editPanel = (
                         <div class={'column '+editPanelClass}>
                           <MapPanel

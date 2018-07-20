@@ -218,7 +218,7 @@ export default class Grid extends Component {
                 backgroundColor:backgroundColor,
             }
             if (this.props.borderEnabled) {
-                gridStyle.border = '1px solid black'
+                gridStyle.border = '1px solid #dbdbdb'
             }
             if (this.props.gridEnabled) {
                 const gridMajorXAxis=gridWidth*this.props.majorGridLine
@@ -227,8 +227,8 @@ export default class Grid extends Component {
                 const gridMinorYAxis=gridHeight
 
                 // todo: add grid line color to props
-                const gridColorMajorAxis = 'rgba(0,0,255,.25)'
-                const gridColorMinorAxis = 'rgba(0,0,255,.125)'
+                const gridColorMajorAxis = 'rgba(54,54,54,.25)'
+                const gridColorMinorAxis = 'rgba(54,54,54,.125)'
                 const backgroundImage="linear-gradient("+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMajorAxis+" 1px, transparent 1px),linear-gradient("+gridColorMinorAxis+" 1px, transparent 1px),linear-gradient(90deg, "+gridColorMinorAxis+" 1px, transparent 1px)"
 
                 const backgroundSize=gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMajorXAxis+"px "+gridMajorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px, "+gridMinorXAxis+"px "+gridMinorYAxis+"px"

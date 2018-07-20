@@ -92,14 +92,18 @@ module.exports = function (Component) {
         }
         
         addFavorite() {
-            const path = this.props.inventoryPath
-            if (!path || path.length<1) return null
-            const item = path[path.length-1]
+            const item = app.actions.inventory.getSelectedItem()
             if (!item) return
-            const id = item.id
-            app.actions.inventory.addFavorite(id, function() {
-                app.actions.notify("Item added to favorites", 'notice', 2000);
-            })
+            app.actions.inventory.addFavorite(item, function(err) {
+                if (err) {
+                    app.actions.notify(err.message, 'error');
+                    return
+                }
+                else {
+                    app.actions.notify(item.name+" added to favorites", 'notice', 2000);
+                    app.actions.inventory.getFavorites()
+                }
+            }.bind(this))
         }
         
         navigateParent(e) {
@@ -602,6 +606,7 @@ module.exports = function (Component) {
                     }
                 })
                 const locationPath = locationPath2.filter(container => { return container })
+                const favorites=app.state.favorites
                 dataPanel = (
                         <div class="column is-7-desktop">
                           <DataPanel 
@@ -619,6 +624,7 @@ module.exports = function (Component) {
                             onDelete={this.onDelete.bind(this)}
                             onSaveEdit={this.onSaveEdit.bind(this)}
                             onSaveNew={this.onSaveNew.bind(this)}
+                            favorites={favorites}
                             onRecordEnter={this.onRecordEnter.bind(this)}
                             onRecordLeave={this.onRecordLeave.bind(this)}
                             >

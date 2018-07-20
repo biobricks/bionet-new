@@ -38,6 +38,7 @@ module.exports = function(Component) {
   const LabInventory = require('./lab_inventory.js')(Component);
 
   // UI/UX Demo Components
+  const UiDemoIndex      = require('./demo/UiDemo.js')(Component);
   const LabPanelDemo     = require('./demo/LabPanel.js')(Component);
   const LabInventoryDemo = require('./demo/LabInventory.js')(Component);
   const InventoryDemo    = require('./demo/Inventory.js')(Component);
@@ -75,6 +76,7 @@ module.exports = function(Component) {
                 <Route path="/ui/test/:itemId" component={TestComponent} />
                 <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
                 <Route path="/ui/inventory/:id" component={InventoryDemo} />
+                <Route exact path="/ui" component={UiDemoIndex} />
                 <Route exact path="/ui/favorites" component={FavoritesDemo} />
                 <Route exact path="/ui/requests" component={RequestsDemo} />
                 <Route exact path="/ui/lab" component={LabPanelDemo} />

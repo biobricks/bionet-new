@@ -292,10 +292,10 @@ module.exports = function(Component) {
                         <div class="buttons has-addons">
                           <span 
                             class="button is-small"
-                            view="list"
+                            view="profile"
                             onClick={this.onSetView}
                           >
-                            <i class="mdi mdi-arrow-left-bold" view="list"></i>
+                            <i class="mdi mdi-arrow-left-bold" view="profile"></i>
                           </span>
                           <span 
                             class="button is-small is-success"

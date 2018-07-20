@@ -33,6 +33,7 @@ export default class EditContainer extends Component {
         this.gridWidth = 40
         this.gridHeight = 40
         this.selectedItem = null
+        this.dragId=null
         
         this.zoomLevel = []
         for (var zl = 0.25; zl <= 2.0; zl += 0.25) {
@@ -149,6 +150,13 @@ export default class EditContainer extends Component {
         this.onUpdateItems(items)
         if (this.props.onRecordLocation) this.props.onRecordLocation(item)
     }
+
+    onDragStart(e,id) {
+        console.log('Workbench onDragStart',id)
+        app.state.dragId = id
+        this.dragId = id
+        //e.dataTransfer.setData("text/plain", id)
+    }
     
     onDragEnd(source, xp, yp, isDrag, top, left) {
     //onDragEnd(source, cxp, cyp, isDrag, xp, yp) {
@@ -175,6 +183,39 @@ export default class EditContainer extends Component {
                 //console.log('onDragEnd, deleting')
                 //this.deleteItem(source)
                 //this.selectItem(source,this.state.items)
+                const id=this.dragId
+                const containerId = this.props.container.id
+                if (id) {
+                    console.log('workbench onDragEnd:',id)
+                    app.actions.inventory.saveToWorkbench(id,function(err,m) {
+                        console.log('workbench component, item added to workbench:',m)
+                        const items = this.state.items.map(function (itemAr) {
+                            if (itemAr.id===id) {
+                                itemAr.filtered=true
+                            }
+                            return itemAr
+                        });
+                        this.setState({
+                            item:null,
+                            defaultWidth:1,
+                            defaultHeight:1,
+                            defaultColor:'aqua',
+                            defaultFontSize:0.3
+                        })
+                        this.onUpdateItems(items)
+                        
+                        app.actions.inventory.getWorkbenchContainer( function(err,tree) {
+                            console.log('workbench getWorkbench:',tree)
+                            app.changeState(
+                                {
+                                    workbench: {
+                                        workbench: tree
+                                    }
+                                }
+                            )
+                        }.bind(this))
+                    }.bind(this))
+                }
             } else {
                 var updatedItems=this.state.items
                 if (!source.id.startsWith('_new_')) {
@@ -205,6 +246,7 @@ export default class EditContainer extends Component {
             //this.onUpdateItems(items)
             this.selectItem(source,items)
         }
+        this.dragId=null
     }
     
     deleteItem(item) {
@@ -791,6 +833,7 @@ export default class EditContainer extends Component {
                                 onMove={this.onMove.bind(this)}
                                 zoom={this.state.zoom}
                                 dragEnabled={true}
+                                onDragStart={this.onDragStart.bind(this)}
                                 onDragEnd={this.onDragEnd.bind(this)}
                                 onResizeStop={this.onResizeStop.bind(this)}
                                 onNewItem={this.onNewItem.bind(this)}
@@ -817,6 +860,7 @@ export default class EditContainer extends Component {
                         onMove={this.onMove.bind(this)}
                         zoom={this.state.zoom}
                         dragEnabled={true}
+                        onDragStart={this.onDragStart.bind(this)}
                         onDragEnd={this.onDragEnd.bind(this)}
                         onResizeStop={this.onResizeStop.bind(this)}
                         onNewItem={this.onNewItem.bind(this)}

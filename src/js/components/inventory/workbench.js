@@ -19,15 +19,16 @@ module.exports = function (Component) {
         
         getWorkbench() {
             app.actions.inventory.getWorkbenchContainer( function(err,tree) {
-                console.log('getWorkbench:',tree)
+                console.log('workbench getWorkbench:',tree)
                 this.setState({workbench:tree})
             }.bind(this))
         }
         
         drop(e) {
+            console.log('workbench moveItem drop')
             e.preventDefault();
             var data = e.dataTransfer.getData("text");
-            console.log('moveItem drop:',data)
+            console.log('workbench moveItem drop:',data)
             if (data) {
                 app.actions.inventory.saveToWorkbench(data,function(err,m) {
                     console.log('workbench component, item added to workbench:',m)
@@ -65,10 +66,17 @@ module.exports = function (Component) {
             const itemText = (totalItems===1) ? 'item' : 'items'
             var storageContainer = null
             const isActive = (this.state.moveActive) ? 'is-active' : ''
+            // <span style="color:#dbdbdb;font-weight:600;font-size:small;">
+            // style="background-color:#404040;padding:0px"
             return (
-                <a className="navbar-item is-dark" style="background-color:#404040;" ondrop={this.drop} ondragover={this.dragOver} draggable="true" ondragstart={this.dragStart}>
-                    <span style="color:#ffffff;margin-left:5px; margin-right:20px;font-weight:800;">{totalItems} {itemText} on bench</span>
-                </a>
+                <span
+                    class="button is small"
+                    style={{fontSize:'small'}}
+                    ondrop={this.drop}
+                    ondragover={this.dragOver}
+                    draggable="true"
+                    ondragstart={this.dragStart}
+                >{totalItems} {itemText} on bench</span>
             )
         }
     }

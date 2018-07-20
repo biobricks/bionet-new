@@ -1,0 +1,16 @@
+.UsersPanel {
+  .panel-block {
+    border-top: none;
+  }
+  .columns {
+    width: 100%;
+  }
+  .panel-block.active { background-color: lightblue }
+  .panel-block.active:hover { background-color: whitesmoke; }
+  .column.is-12 {
+    margin-top: 7px;
+  }
+  .column.is-narrow {
+    width: 135px;
+  }  
+}

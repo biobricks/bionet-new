@@ -53,7 +53,7 @@ module.exports = function(Component) {
       
     toggleFavorite() {
       const isFavorite = !this.state.isFavorite
-      if (this.props.onToggleFavorites) this.props.onToggleFavorites(isFavorite)
+      if (this.props.toggleFavoritesMode) this.props.toggleFavoritesMode(isFavorite)
       this.setState({
         isFavorite: isFavorite
       });

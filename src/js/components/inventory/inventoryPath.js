@@ -39,7 +39,9 @@ module.exports = function (Component) {
                 toggleEditItem:false,
                 toggleNewItem:false,
                 currentItem:currentItem,
-                fullWidth:false
+                fullWidth:false,
+                isFavorites:false,
+                favorites:app.state.favorites
             }
 
           if(props.inventoryPath && props.inventoryPath.virtual_id) {
@@ -59,6 +61,10 @@ module.exports = function (Component) {
                 currentItem:currentItem,
                 inventoryPath: props.inventoryPath
             });
+        }
+        
+        componentDidMount() {
+            this.setState({favorites:app.state.favorites})
         }
         
         initZoom(panelWidth,layoutWidth) {
@@ -92,8 +98,9 @@ module.exports = function (Component) {
         }
         
         addFavorite() {
-            const item = app.actions.inventory.getSelectedItem()
+            const item=this.state.currentItem
             if (!item) return
+            const self=this
             app.actions.inventory.addFavorite(item, function(err) {
                 if (err) {
                     app.actions.notify(err.message, 'error');
@@ -101,9 +108,13 @@ module.exports = function (Component) {
                 }
                 else {
                     app.actions.notify(item.name+" added to favorites", 'notice', 2000);
-                    app.actions.inventory.getFavorites()
+                    app.actions.inventory.getFavorites( (err,favorites) => {
+                        self.setState({
+                            favorites:favorites
+                        })
+                    })
                 }
-            }.bind(this))
+            })
         }
         
         navigateParent(e) {
@@ -122,22 +133,30 @@ module.exports = function (Component) {
         }
         
         toggleNewMode() {
-            if (this.state.newMode) {
-                this.setState({
-                    newMode:false,
-                    location:null,
-                    layoutWidthUnits:null,
-                    layoutHeightUnits:null,
-                    majorGridLine:null,
-                    recordLocation:null
-                })
+            if (this.state.isFavorites) {
+                this.addFavorite()
             } else {
-                const newMode = (this.state.formType==='Physical') ? NEW_MODE_PHYSICAL_STEP1 : NEW_MODE_CONTAINER
-                this.setState({
-                    newMode:newMode,
-                    location:null
-                })
+                if (this.state.newMode) {
+                    this.setState({
+                        newMode:false,
+                        location:null,
+                        layoutWidthUnits:null,
+                        layoutHeightUnits:null,
+                        majorGridLine:null,
+                        recordLocation:null
+                    })
+                } else {
+                    const newMode = (this.state.formType==='Physical') ? NEW_MODE_PHYSICAL_STEP1 : NEW_MODE_CONTAINER
+                    this.setState({
+                        newMode:newMode,
+                        location:null
+                    })
+                }
             }
+        }
+        
+        toggleFavoritesMode(isFavorites) {
+            this.setState({isFavorites:isFavorites})
         }
         
         onSaveNew(dbData, type) {
@@ -606,7 +625,7 @@ module.exports = function (Component) {
                     }
                 })
                 const locationPath = locationPath2.filter(container => { return container })
-                const favorites=app.state.favorites
+                const favorites=this.state.favorites
                 dataPanel = (
                         <div class="column is-7-desktop">
                           <DataPanel 
@@ -621,6 +640,7 @@ module.exports = function (Component) {
                             toggleNewMode={this.toggleNewMode.bind(this)}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
+                            toggleFavoritesMode={this.toggleFavoritesMode.bind(this)}
                             onDelete={this.onDelete.bind(this)}
                             onSaveEdit={this.onSaveEdit.bind(this)}
                             onSaveNew={this.onSaveNew.bind(this)}
@@ -634,9 +654,6 @@ module.exports = function (Component) {
                     </div>
                 )
                 var locationPathComponent=null
-                //todo: set newMode only after create type has been specified, ie physical or container
-                //todo: change constant name
-                //if (this.state.newMode===NEW_MODE_PHYSICAL_STEP1&&0) {
                 if (this.state.newMode===NEW_MODE_CONTAINER) {
                     rootLocation=null
                     locationPathComponent=(
@@ -655,8 +672,6 @@ module.exports = function (Component) {
                             onRecordLocation={this.onRecordLocation.bind(this)}
                         />
                     )
-                
-
                 } else {
                     locationPathComponent=(
                         <LocationPath

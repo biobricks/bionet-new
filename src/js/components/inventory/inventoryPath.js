@@ -224,9 +224,9 @@ module.exports = function (Component) {
             })
         }
         
-        toggleFullscreenMode(fullScreen) {
-            console.log('toggleFullscreenMode:',fullScreen)
-            this.setState({fullWidth:fullScreen})
+        toggleFullscreenMode(fullWidth) {
+            console.log('toggleFullscreenMode:',fullWidth)
+            this.setState({fullWidth:fullWidth})
         }
         
         toggleEditItemMode() {
@@ -329,11 +329,6 @@ module.exports = function (Component) {
             console.log('inventoryPath onToggleNewItem')
             this.setState({
                 toggleNewItem:!this.state.toggleNewItem
-            })
-        }
-        onToggleFullscreen(fullScreen) {
-            this.setState({
-                fullScreen:fullScreen
             })
         }
         onSelectItem(item) {
@@ -492,7 +487,7 @@ module.exports = function (Component) {
                                     width={this.state.editPanelWidth}
                                     height={this.state.editPanelHeight}
                                     zoom={zoom}
-                                    fullWidth={true}
+                                    fullWidth={fullWidth}
                                     editItem={this.state.toggleEditItem}
                                     newItem={this.state.toggleNewItem}
                                     onMount={this.onEditPanelMount.bind(this)}

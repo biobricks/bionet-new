@@ -1,5 +1,5 @@
 $selectedColor: #ff0000;
-$deSelectedColor: #000000;
+$deSelectedColor: rgba(0,0,0,0.2);
 $highlightedColor: #ff0000;
 .selectedDisplayObject {
     border: 3px solid $selectedColor;

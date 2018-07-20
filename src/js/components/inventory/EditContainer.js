@@ -782,8 +782,8 @@ export default class EditContainer extends Component {
                         {itemProperties}
                     </div>
 
-                    <div class="column is-9-desktop" style={{height:'100%'}}>
-                        <div id="EditContainerDiv" className="EditContainer" style={containerStyle} ref={node => this.container = node}>
+                    <div id="EditContainerDiv" class="column is-9-desktop" style={{height:'100%'}}>
+                        <div className="EditContainer" style={containerStyle} ref={node => this.container = node}>
                             <Grid
                                 state="editGrid"
                                 gridId="editGrid"

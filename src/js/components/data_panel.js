@@ -172,10 +172,10 @@ module.exports = function(Component) {
                           <i class="mdi mdi-content-save"></i>
                         </span>
                           <span 
-                            class="button is-small is-link"
+                            class="button is-small"
                             onClick={this.toggleFullscreenMode.bind(this)}
                           >
-                          {(this.state.fullScreen) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
+                          {(this.props.fullWidth) ? <i class="mdi mdi-arrow-collapse"></i> : <i class="mdi mdi-arrow-expand"></i>}
                           </span>
                       </div>
                     </div>                    
@@ -206,7 +206,7 @@ module.exports = function(Component) {
                             class="button is-small is-link"
                             onClick={this.toggleFullscreenMode.bind(this)}
                           >
-                          {(this.props.fullWidth) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
+                          {(this.props.fullWidth) ? <i class="mdi mdi-arrow-collapse"></i> : <i class="mdi mdi-arrow-expand"></i>}
                           </span>
                       </div>
                     </div>                    

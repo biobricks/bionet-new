@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { Redirect, Link } from 'react-router-dom';
 
 module.exports = function(Component) {
 

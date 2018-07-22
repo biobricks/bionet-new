@@ -51,10 +51,9 @@ module.exports = function (Component) {
         }
 
         componentWillReceiveProps(props) {
-          console.log("--- PROOOPS inventoryPath");
             if (!props.inventoryPath) return
             //if (!props.inventoryPath || props.id===this.state.id) return
-            const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
+          const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
             //if (this.state.newMode===NEW_MODE_PHYSICAL_STEP2) this.toggleEditMode()
             this.setState({
                 id: props.id,
@@ -366,14 +365,16 @@ module.exports = function (Component) {
         }
         
         render() {
-            if (!this.state.inventoryPath || !this.state.currentItem) return
-            console.log('inventoryPath render, id:',this.state.id, this.state.inventoryPath)
-            const currentItem=this.state.currentItem
-            
-            if (typeof this.state.inventoryPath === 'object' && this.state.inventoryPath.constructor.name === 'Error') {
-                console.log('inventoryPath error',typeof this.state.inventoryPath === 'object', this.state.inventoryPath)
+            console.log('inventoryPath render',this.props.id, this.props.inventoryPath)
+            if (!this.props.inventoryPath || !this.props.id) return
+            const inventoryPath=this.props.inventoryPath
+            const currentItem=app.actions.inventory.getItemFromInventoryPath(this.props.id)
+            if (!currentItem || !inventoryPath) return
+
+            if (typeof inventoryPath === 'object' && inventoryPath.constructor.name === 'Error') {
+                console.log('inventoryPath error',typeof inventoryPath === 'object', inventoryPath)
                 return (
-                    <h6 style="margin-top:15px;">{this.state.inventoryPath.message}</h6>
+                    <h6 style="margin-top:15px;">{inventoryPath.message}</h6>
                 )
             }
             
@@ -386,8 +387,6 @@ module.exports = function (Component) {
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
             const tableHeight =  window.innerHeight-this.state.containerSize-100
             
-            console.log('InventoryPath render 0a')
-
             var dataItems = {}
             if (this.state.editMode) {
                 dataItems=(<ContainerPropertiesForm
@@ -416,12 +415,11 @@ module.exports = function (Component) {
                 )
                 */
             }
-            console.log('InventoryPath render 0b')
 
             var dataPanel=null
             var navPanel=null
             var editPanel=null
-            const breadcrumbs = this.state.inventoryPath.map(container => {
+            const breadcrumbs = inventoryPath.map(container => {
                 return {
                     id:container.id,
                     name:container.name
@@ -431,9 +429,7 @@ module.exports = function (Component) {
                 app.actions.inventory.refreshInventoryPath(e.target.id)
             }
             const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
-            console.log('InventoryPath render 1')
             if (this.state.editMode) {
-                console.log('InventoryPath render 2')
                 var fullWidth=this.state.fullWidth
                 if (currentItem.type==='lab') fullWidth=true
                 const pathId={}
@@ -443,7 +439,7 @@ module.exports = function (Component) {
                     location=Object.assign(this.state.location,{})
                     pathId[location.id]=location.name
                 } else {
-                    const newPath=this.state.inventoryPath
+                    const newPath=this.props.inventoryPath
                     const id=this.state.id
                     newPath.map(container => {
                         pathId[container.id]=container.name
@@ -493,8 +489,7 @@ module.exports = function (Component) {
 
                 const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
                 const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
-                console.log('inventoryPath render, zoom:',zoom,this.state.layoutWidthUnits)
-                //onMount={this.onEditPanelMount.bind(this)}
+                //console.log('inventoryPath render, zoom:',zoom,this.state.layoutWidthUnits)
 
                 if (fullWidth) {
                     editPanel = (
@@ -526,7 +521,6 @@ module.exports = function (Component) {
                         </div>
                     )
                 } else {
-                    console.log('InventoryPath render 1b')
                     editPanel = (
                         <div class={'column '+editPanelClass}>
                           <MapPanel
@@ -562,14 +556,14 @@ module.exports = function (Component) {
                 
                 const width=this.props.width
                 const pathId={}
-                const newPath=this.state.inventoryPath
+                const newPath=this.props.inventoryPath
                 const containerId = (currentItem.type==='physical') ? currentItem.parent_id : currentItem.id
                 newPath.map(container => {
                     pathId[container.id]=container.name
                 })
                 var rootZoom=1.0
                 const initZoom=this.initZoom
-                console.log('inventoryPath, nav:',currentItem.name,currentItem.type,containerId)
+                //console.log('inventoryPath, nav:',currentItem.name,currentItem.type,containerId)
                 var panelWidth=this.state.mapPanelWidth
                 var panelHeight=this.state.mapPanelHeight
                 var zoomWidth = Math.min(200,this.state.mapPanelWidth)
@@ -615,10 +609,8 @@ module.exports = function (Component) {
                         const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                         if (containerLayout.layoutWidth >= containerLayout.layoutHeight) {
                             zoom = initZoom(panelWidth,containerLayout.layoutWidth)
-                            console.log('inventoryPath, nav: generating layoutW:',containerLayout, zoom)
                         } else {
                             zoom = initZoom(panelHeight-rootHeight-60,containerLayout.layoutHeight)
-                            console.log('inventoryPath, nav: generating layoutH:',containerLayout, zoom)
                         }
                         itemContainer=containerLayout
                         return containerLayout

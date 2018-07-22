@@ -133,12 +133,16 @@ module.exports = function (Component) {
         }
         
         render() {
-            console.log('inventoryPath render',this.state.inventoryPath)
+            console.log('inventory index.js render',this.state.inventoryPath)
             if (!app.state.global.user) {
+                console.log('inventory index.js not logged in',this.state.inventoryPath)
                 // todo: this message could be displayed for reasons other than not having a logged in user
+                return null
+                /*
                 return (
                     <div>You must be logged in to view this page.</div>
                 )
+                */
             }
 
             return (

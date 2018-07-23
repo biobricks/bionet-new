@@ -37,7 +37,8 @@ module.exports = function (Component) {
             this.setState({
               inventoryPath: {
                 virtual_id: props.match.params.virtual_id
-              }
+              },
+              err:null
             })
           }
 
@@ -52,21 +53,22 @@ module.exports = function (Component) {
         
         getInventoryPath(id) {
             console.log('inventory.actions.getInventoryPath main, id:',id)
-          // TODO can we standardize on: `const self = this` ?
-          //      module has no meaning in js or react anyway
-            const thisModule=this
+            const self=this
             if (id) {
                 app.actions.inventory.getInventoryPath(id, function(err, inventoryPath) {
                     //console.log('getInventoryPath2, id:',id)
                     if (err) {
-                        thisModule.setState({
+                        if (!self.state.err) app.actions.notify(err.message, 'error');
+                        self.setState({
                             id:id,
-                            inventoryPath:err
+                            err:err,
+                            inventoryPath:null
                         })
                         return
                     }
-                    thisModule.setState({
+                    self.setState({
                         id:id,
+                        err:null,
                         inventoryPath:inventoryPath
                     })
                 })
@@ -74,25 +76,29 @@ module.exports = function (Component) {
                 app.actions.inventory.getRootItem(function(err, rootId) {
                     if (err) {
                         console.log('getRootItem, error:',err)
-                        thisModule.setState({
+                        //app.actions.notify(err.message, 'error');
+                        self.setState({
                             id:rootId,
-                            inventoryPath:err
+                            err:err,
+                            inventoryPath:null
                         })
                         return
                     } else {
                         console.log('inventory.actions.getInventoryPath root, id:',id)
                         app.actions.inventory.getInventoryPath(rootId, function(err, inventoryPath){
                             if (err) {
-                                app.actions.notify(err.message, 'error');
-                                thisModule.setState({
+                                //app.actions.notify(err.message, 'error');
+                                self.setState({
                                     id:rootId,
-                                    inventoryPath:err
+                                    err:err,
+                                    inventoryPath:null
                                 })
                                 return
                             }
-                            //console.log('getInventoryPath3, rootid:',rootId, thisModule.state, thisModule.props, inventoryPath)
-                            thisModule.setState({
+                            //console.log('getInventoryPath3, rootid:',rootId, self.state, self.props, inventoryPath)
+                            self.setState({
                                 id:rootId,
+                                err:null,
                                 inventoryPath:inventoryPath
                             })
                         })
@@ -133,7 +139,7 @@ module.exports = function (Component) {
         }
         
         render() {
-            console.log('inventory index.js render',this.state.inventoryPath)
+            console.log('inventory index.js render',this.state)
             if (!app.state.global.user) {
                 console.log('inventory index.js not logged in',this.state.inventoryPath)
                 // todo: this message could be displayed for reasons other than not having a logged in user
@@ -143,6 +149,12 @@ module.exports = function (Component) {
                     <div>You must be logged in to view this page.</div>
                 )
                 */
+            }
+            
+            if (this.state.err) {
+                return (
+                    <div>Error:{this.state.err.message}</div>
+                )
             }
 
             return (

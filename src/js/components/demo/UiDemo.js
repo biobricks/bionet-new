@@ -69,6 +69,15 @@ module.exports = function(Component) {
                   Favorites
                 </Link>
                 <Link 
+                  to="/ui/workbench"
+                  class="panel-block"
+                >
+                  <span class="panel-icon">
+                    <i class="mdi mdi-stove"></i>
+                  </span>
+                  Work Bench
+                </Link>
+                <Link 
                   to="/ui/requests"
                   class="panel-block"
                 >

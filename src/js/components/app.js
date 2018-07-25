@@ -47,6 +47,7 @@ module.exports = function(Component) {
   const ResetPanelDemo   = require('./demo/ResetPanel.js')(Component);
   const ServerPanelDemo  = require('./demo/ServerPanel.js')(Component);
   const FavoritesDemo    = require('./demo/Favorites.js')(Component);
+  const WorkbenchDemo    = require('./demo/Workbench.js')(Component);
   const RequestsDemo     = require('./demo/Requests.js')(Component);
   const ManageUsersDemo  = require('./demo/ManageUsers.js')(Component);
   const TestComponent    = require('./demo/test.js')(Component);
@@ -78,6 +79,7 @@ module.exports = function(Component) {
                 <Route path="/ui/inventory/:id" component={InventoryDemo} />
                 <Route exact path="/ui" component={UiDemoIndex} />
                 <Route exact path="/ui/favorites" component={FavoritesDemo} />
+                <Route exact path="/ui/workbench" component={WorkbenchDemo} />
                 <Route exact path="/ui/requests" component={RequestsDemo} />
                 <Route exact path="/ui/lab" component={LabPanelDemo} />
                 <Route exact path="/ui/login" component={LoginPanelDemo} />

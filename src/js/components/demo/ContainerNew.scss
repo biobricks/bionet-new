@@ -1,0 +1,20 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+.ContainerNew {
+  form, pre { width: 100%; }
+  pre { background-color: white; }
+  .grid { 
+    display: grid;
+    min-height: 85vw;
+    width: 100%;
+    border: 1px solid #dbdbdb;
+    border-top: none;
+    @media (min-width: $breakpoint-desktop) {
+      min-height: 35vw;
+    }
+    .grid-cell {
+      border: 1px solid #dbdbdb;
+    }   
+  }
+}

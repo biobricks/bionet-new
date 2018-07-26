@@ -52,6 +52,7 @@ module.exports = function(Component) {
   const ManageUsersDemo  = require('./demo/ManageUsers.js')(Component);
   const TestComponent    = require('./demo/test.js')(Component);
   const ConfirmAccountPanelDemo = require('./demo/ConfirmAccountPanel.js')(Component);
+  const ContainerNewDemo    = require('./demo/ContainerNew.js')(Component);
 
   // just an example of dynamically loading js
   var DynamicLoading = require('./dynamic_loading.js')(Component);
@@ -88,6 +89,7 @@ module.exports = function(Component) {
                 <Route exact path="/ui/manage-users" component={ManageUsersDemo} />
                 <Route exact path="/ui/server-status" component={ServerPanelDemo} />
                 <Route exact path="/ui/account-confirmed" component={ConfirmAccountPanelDemo} />
+                <Route exact path="/ui/containers/new" component={ContainerNewDemo} />
 
                 <Route exact path="/signup" render={() => (
                   <Signup />

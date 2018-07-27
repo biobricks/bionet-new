@@ -23,7 +23,11 @@ $breakpoint-desktop: 1024px;
       border: 1px solid #dbdbdb;
     }
     .active.grid-cell {
-      background-color: whitesmoke;
+      border-color: #dbdbdb;
+      background-color: white;
+      .grid-cell {
+        border-color: #dbdbdb;
+      }
     }
     label {
       color: #dbdbdb;

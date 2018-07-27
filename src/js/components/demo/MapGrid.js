@@ -29,8 +29,8 @@ module.exports = function(Component) {
         'gridTemplateRows': ''
       };
       const record = this.props.record;
-      const recordColumns = record.layoutWidthUnits;
-      const recordRows = record.layoutHeightUnits;
+      const recordColumns = record.layoutWidthUnits || record.col;
+      const recordRows = record.layoutHeightUnits || record.row;
       const selectedRecord = this.props.selectedRecord;
       const hoveredRecord = this.props.hoveredRecord;
       for(let i = 0; i < recordColumns; i++){
@@ -63,45 +63,42 @@ module.exports = function(Component) {
         }
 
         // replace empty cells with positioned children
-        // for(let i = 0; i < record.children.length; i++){
-        //   let childRecord = record.children[i];
-        //   // get position of current child record based on its relationship with parent size
-        //   let childIndex = ((childRecord.row * recordColumns) - recordColumns) + childRecord.column - 1;
-        //   // replace empty with child
-        //   let classNames = childRecord && this.props.selectedRecord && this.props.hoveredRecord && childRecord.id === this.props.selectedRecord.id || 
-        //     childRecord.id === this.props.hoveredRecord.id ? "active grid-item" : "grid-item";
+        if(record && record.children){
+          for(let i = 0; i < record.children.length; i++){
+            let childRecord = record.children[i];
+            // get position of current child record based on its relationship with parent size
+            let childIndex = ((childRecord.row * recordColumns) - recordColumns) + childRecord.col - 1;
+            // replace empty with child
+            let classNames = "grid-item";
+            if(childRecord && this.props.selectedRecord && this.props.hoveredRecord && this.props.hoveredRecord.id){
+              let isSelected = childRecord.id === this.props.record.id;
+              let isHovered = childRecord.id === this.props.hoveredRecord.id;
+              if(isSelected || isHovered){
+                classNames = "active grid-item";
+              }  
+            }
 
-        //   childElements[childIndex] = (
-        //     <Link 
-        //       to={`/ui/lab-inventory/${childRecord.id}`} 
-        //       class={classNames}
-        //       id={`${childRecord.id}`}
-        //       onClick={this.props.selectRecord}
-        //       onMouseEnter={this.onRecordEnter}
-        //       onMouseLeave={this.onRecordLeave}                
-        //     >
-        //       <div 
-        //         class="grid-item-label"
-        //         id={`${childRecord.id}`}
-        //       >
-        //         {childRecord.name}
-        //       </div>
-        //     </Link>
-        //   );
-      
-        // }
+            childElements[childIndex] = (
+              <Link 
+                to={`/ui/inventory/${childRecord.id}`} 
+                class={classNames}
+                id={`${childRecord.id}`}
+                onClick={this.props.selectRecord}
+                onMouseEnter={this.onRecordEnter}
+                onMouseLeave={this.onRecordLeave}                
+              >
+                <div 
+                  class="grid-item-label"
+                  id={`${childRecord.id}`}
+                >
+                  {childRecord.name}
+                </div>
+              </Link>
+            );   
+          }
+        }
 
-        // replace with children by position
-        // childElements = record.children.map((child, index) => {
-        //   return (
-        //     <div class="grid-item">
-        //       {child.name}
-        //     </div>
-        //   );
-        // });
       }
-
-      // add emptys
 
       return (
         <div class="MapGrid">

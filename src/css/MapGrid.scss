@@ -18,7 +18,7 @@ $breakpoint-desktop: 1024px;
     .grid-item {      
       border: 1px solid #ccc;
       display: grid;
-      grid-template-rows: 1fr;
+      grid-template-rows: 40px;
       grid-template-columns: 1fr;
       overflow: hidden; 
       &.active { background-color: lightblue; }

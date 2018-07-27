@@ -33,12 +33,14 @@ module.exports = function(Component) {
               <MapGrid 
                 {...this.props}
                 record={this.props.selectedRecord}
+                setHoveredRecord={this.props.setHoveredRecord}
               />
             ) : null }
             {(!isContainer) ? (
               <MapGrid 
                 {...this.props}
                 record={this.props.selectedRecord}
+                setHoveredRecord={this.props.setHoveredRecord}
               />
             ) : null }              
           </div>

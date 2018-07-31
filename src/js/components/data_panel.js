@@ -9,13 +9,15 @@ module.exports = function(Component) {
   const PhysicalProfile = require('./physical_profile.js')(Component);
   const PhysicalNewForm = require('./physical_new_form.js')(Component);
   const PhysicalEditForm = require('./physical_edit_form.js')(Component);
-
+  const Favorites = require('./inventory/favorites.js')(Component);
+    
   return class DataPanel extends Component {
     
     constructor(props) {
       super(props);
         this.state={
-            fullScreen:false
+            fullScreen:false,
+            isFavorite:false
         }
       this.componentWillReceiveProps(props)
     }
@@ -47,6 +49,14 @@ module.exports = function(Component) {
       }
 
 
+    }
+      
+    toggleFavorite() {
+      const isFavorite = !this.state.isFavorite
+      if (this.props.toggleFavoritesMode) this.props.toggleFavoritesMode(isFavorite)
+      this.setState({
+        isFavorite: isFavorite
+      });
     }
     
     setFormType(e) {
@@ -104,11 +114,13 @@ module.exports = function(Component) {
       let isNewMode = this.props.newMode;
       let parentRecord = this.props.parentRecord;
       let selectedRecord = this.props.selectedRecord;
+      let isFavorite = this.state.isFavorite
       //let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;      
       let isContainer = this.props.selectedRecord.type !== 'physical'        
       if(this.state.virtualID) {
         isNewMode = true;
       }
+      let titleText = (isFavorite) ? 'Favorites' : this.props.selectedRecord.name
 
 
       console.log("----------", isNewMode, isContainer, this.state.formType)
@@ -122,7 +134,7 @@ module.exports = function(Component) {
                 <div class="column">
                   
                   {(isViewMode) ? (
-                    <span>{headingIcon} {this.props.selectedRecord.name}</span>
+                    <span>{headingIcon} {titleText}</span>
                   ) : null }
 
                   {(isNewMode && isContainer) ? (
@@ -140,6 +152,23 @@ module.exports = function(Component) {
                   {(isViewMode) ? (
                     <div class="toolbox is-pulled-right">
                       <div class="buttons has-addons">
+                      
+                        {(this.state.isFavorite) ? (
+                          <span 
+                            class="button is-small is-warning"
+                            onClick={this.toggleFavorite.bind(this)}
+                          >
+                            <i class="mdi mdi-star-outline"></i>
+                          </span>
+                        ) : (
+                          <span 
+                            class="button is-small"
+                            onClick={this.toggleFavorite.bind(this)}
+                          >
+                            <i class="mdi mdi-star-outline"></i>
+                          </span>
+                        )}
+                  
                         <span 
                           class="button is-small is-success"
                           onClick={this.props.toggleNewMode}
@@ -172,10 +201,10 @@ module.exports = function(Component) {
                           <i class="mdi mdi-content-save"></i>
                         </span>
                           <span 
-                            class="button is-small is-link"
+                            class="button is-small"
                             onClick={this.toggleFullscreenMode.bind(this)}
                           >
-                          {(this.state.fullScreen) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
+                          {(this.props.fullWidth) ? <i class="mdi mdi-arrow-collapse"></i> : <i class="mdi mdi-arrow-expand"></i>}
                           </span>
                       </div>
                     </div>                    
@@ -206,7 +235,7 @@ module.exports = function(Component) {
                             class="button is-small is-link"
                             onClick={this.toggleFullscreenMode.bind(this)}
                           >
-                          {(this.props.fullWidth) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
+                          {(this.props.fullWidth) ? <i class="mdi mdi-arrow-collapse"></i> : <i class="mdi mdi-arrow-expand"></i>}
                           </span>
                       </div>
                     </div>                    
@@ -217,20 +246,32 @@ module.exports = function(Component) {
             </div>
           </div>
 
-          <div class="panel-block">
+
+        {(!isFavorite) ? (
+            <div class="panel-block">
               <nav class="breadcrumb is-capitalized" aria-label="breadcrumbs">
                 <ul>
                     {breadcrumbs}
                 </ul>
               </nav>
-          </div>
+            </div>
+          ) : (
+            <div class="panel-block">
+            </div>
+          ) }
+    
           <div>
-            {(isViewMode && isContainer) ? (
+            {(isViewMode && isContainer && !isFavorite) ? (
               <ContainerProfile 
                 {...this.props}
               />
             ) : null }
-            {(isViewMode && !isContainer) ? (
+            {(isFavorite) ? (
+              <Favorites 
+                {...this.props}
+              />
+            ) : null }
+            {(isViewMode && !isContainer && !isFavorite) ? (
               <PhysicalProfile 
                 {...this.props}
               />

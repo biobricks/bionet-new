@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 module.exports = function(Component) {
 
   const DataPanel = require('./DataPanel.js')(Component);
+  const MapPanel = require('./MapPanel.js')(Component);
 
   return class LabInventory extends Component {
     
@@ -151,7 +152,11 @@ module.exports = function(Component) {
               />
             </div>
             <div class="column is-5-desktop">
-
+              <MapPanel
+                {...this.state}
+                selectedRecord={this.state.selectedRecord}
+                setHoveredRecord={this.setHoveredRecord}
+              />
             </div>
           </div>  
         </div>

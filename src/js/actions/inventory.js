@@ -296,16 +296,17 @@ module.exports = {
             })
             
             //console.log('mapping container:',size,items)
+                    //zoom:zoom,
             return (
                 {
                     name:container.name,
                     id:container.id,
                     items:items,
-                    zoom:zoom,
                     layoutWidth:size.cols*gridCell,
                     layoutHeight:size.rows*gridCell,
                     gridWidth:gridCell,
-                    gridHeight:gridCell
+                    gridHeight:gridCell,
+                    viewOrientation:container.viewOrientation
                 }
             );
         });
@@ -377,12 +378,13 @@ module.exports = {
         }
 
         //console.log('mapping container:',size,items)
+        //                zoom:zoom,
+
         return (
             {
                 name:container.name,
                 id:container.id,
                 items:items,
-                zoom:zoom,
                 layoutWidthUnits:size.cols,
                 layoutHeightUnits:size.rows,
                 layoutWidth:size.cols*gridCell,
@@ -390,7 +392,8 @@ module.exports = {
                 units:units,
                 majorGridLine:majorGridLine,
                 gridWidth:gridCell,
-                gridHeight:gridCell
+                gridHeight:gridCell,
+                viewOrientation:container.viewOrientation
             }
         )
     },

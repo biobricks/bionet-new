@@ -10,8 +10,7 @@ module.exports = function(Component) {
       super(props);
       this.state = {
         editMode: true,
-        lab: {},
-        fullScreen:false
+        lab: {}
       };
     }
       
@@ -80,19 +79,20 @@ module.exports = function(Component) {
                           <i class="mdi mdi-plus"></i>
                           </span>
       
-                          <span 
-                            class="button is-small is-link"
-                            onClick={this.toggleFullscreenMode.bind(this)}
-                          >
-                          {(this.props.fullWidth) ? <i className="fa fa-expand"></i> : <i className="fa fa-expand"></i>}
-                          </span>
-
                             <span 
                             class="button is-small is-success"
                             onClick={this.onSaveButtonClick.bind(this)}
                           >
                             <i class="mdi mdi-content-save"></i>
                           </span>
+
+                          <span 
+                            class="button is-small is-link"
+                            onClick={this.toggleFullscreenMode.bind(this)}
+                          >
+                          {(this.props.fullWidth) ? <i class="mdi mdi-arrow-collapse"></i> : <i className="mdi mdi-arrow-expand"></i>}
+                          </span>
+
                         </div>
                       </div>                    
                     </div>

@@ -28,81 +28,85 @@ module.exports = function(Component) {
         'gridTemplateColumns': '',
         'gridTemplateRows': ''
       };
-      for(let i = 0; i < this.props.record.columns; i++){
+      const record = this.props.record;
+      const recordColumns = record.layoutWidthUnits || record.col;
+      const recordRows = record.layoutHeightUnits || record.row;
+      const selectedRecord = this.props.selectedRecord;
+      const hoveredRecord = this.props.hoveredRecord;
+      for(let i = 0; i < recordColumns; i++){
         containerStyles.gridTemplateColumns += '1fr';
-        if(i !== (this.props.record.columns - 1)) {
+        if(i !== (recordColumns - 1)) {
           containerStyles.gridTemplateColumns += ' ';
         }
       }
-      for(let i = 0; i < this.props.record.rows; i++){
+      for(let i = 0; i < recordRows; i++){
         containerStyles.gridTemplateRows += '1fr';
-        if(i !== (this.props.record.rows - 1)) {
+        if(i !== (recordRows - 1)) {
           containerStyles.gridTemplateRows += ' ';
         }
       }
-      let record = this.props.record;
+
     
       let childElements = [];
-      if(record && record.children){
+      if(record && record.children && selectedRecord){
         
         // get total number of cells in grid
-        let cellCount = record.rows * record.columns;
+        let cellCount = recordRows * recordColumns;
 
         // fill childElements array with empty cells
         for(let i = 0; i < cellCount;i++){
           childElements.push(
             <div class="empty grid-item">
-              <div class="grid-item-label">empty</div>
+              <div class="grid-item-label"></div>
             </div>
           );  
         }
 
         // replace empty cells with positioned children
-        for(let i = 0; i < record.children.length; i++){
-          let childRecord = record.children[i];
-          // get position of current child record based on its relationship with parent size
-          let childIndex = ((childRecord.row * record.columns) - record.columns) + childRecord.column - 1;
-          // replace empty with child
-          let classNames = childRecord.id === this.props.selectedRecord.id || 
-            childRecord.id === this.props.hoveredRecord.id ? "active grid-item" : "grid-item";
+        if(record && record.children){
+          for(let i = 0; i < record.children.length; i++){
+            let childRecord = record.children[i];
+            // get position of current child record based on its relationship with parent size
+            let childIndex = ((childRecord.row * recordColumns) - recordColumns) + childRecord.col - 1;
+            // replace empty with child
+            let classNames = "grid-item";
+            if(childRecord && this.props.selectedRecord && this.props.hoveredRecord && this.props.hoveredRecord.id){
+              let isSelected = childRecord.id === this.props.record.id;
+              let isHovered = childRecord.id === this.props.hoveredRecord.id;
+              if(isSelected || isHovered){
+                classNames = "active grid-item";
+              }  
+            }
 
-          childElements[childIndex] = (
-            <Link 
-              to={`/ui/lab-inventory/${childRecord.id}`} 
-              class={classNames}
-              id={`${childRecord.id}`}
-              onClick={this.props.selectRecord}
-              onMouseEnter={this.onRecordEnter}
-              onMouseLeave={this.onRecordLeave}                
-            >
-              <div 
-                class="grid-item-label"
+            childElements[childIndex] = (
+              <Link 
+                to={`/ui/inventory/${childRecord.id}`} 
+                class={classNames}
                 id={`${childRecord.id}`}
+                onClick={this.props.selectRecord}
+                onMouseEnter={this.onRecordEnter}
+                onMouseLeave={this.onRecordLeave}                
               >
-                {childRecord.name}
-              </div>
-            </Link>
-          );
-      
+                <div 
+                  class="grid-item-label"
+                  id={`${childRecord.id}`}
+                >
+                  {childRecord.name}
+                </div>
+              </Link>
+            );   
+          }
         }
 
-        // replace with children by position
-        // childElements = record.children.map((child, index) => {
-        //   return (
-        //     <div class="grid-item">
-        //       {child.name}
-        //     </div>
-        //   );
-        // });
       }
-
-      // add emptys
 
       return (
         <div class="MapGrid">
-          <div class="grid-container" style={containerStyles}>
-            {childElements}
-          </div>
+          {(childElements) ? (
+            <div class="grid-container" style={containerStyles}>
+              {childElements}
+            </div>
+          ) : null }
         </div>
       )
     }

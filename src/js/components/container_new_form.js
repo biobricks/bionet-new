@@ -123,7 +123,7 @@ module.exports = function(Component) {
                             onChange={this.onViewOrientation.bind(this)}
                             checked={(this.state.viewOrientation==='top')}
                             />
-                        &nbsp;Top plan
+                        &nbsp;Top
                       </label>
                       <label class="radio">
                         <input

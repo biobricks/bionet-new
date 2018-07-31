@@ -5,7 +5,7 @@ module.exports = function(Component) {
 
   return class ContainerProfile extends Component {
 
-    constructor(props){
+    constructor(props) {
       super(props);
       this.onRecordEnter = this.onRecordEnter.bind(this);
       this.onRecordLeave = this.onRecordLeave.bind(this);

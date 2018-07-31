@@ -38,13 +38,21 @@ module.exports = function(Component) {
   const LabInventory = require('./lab_inventory.js')(Component);
 
   // UI/UX Demo Components
+  const UiDemoIndex      = require('./demo/UiDemo.js')(Component);
   const LabPanelDemo     = require('./demo/LabPanel.js')(Component);
   const LabInventoryDemo = require('./demo/LabInventory.js')(Component);
-  const InventoryDemo = require('./demo/Inventory.js')(Component);
+  const InventoryDemo    = require('./demo/Inventory.js')(Component);
   const LoginPanelDemo   = require('./demo/LoginPanel.js')(Component);
   const SignupPanelDemo  = require('./demo/SignupPanel.js')(Component);
   const ResetPanelDemo   = require('./demo/ResetPanel.js')(Component);
+  const ServerPanelDemo  = require('./demo/ServerPanel.js')(Component);
+  const FavoritesDemo    = require('./demo/Favorites.js')(Component);
+  const WorkbenchDemo    = require('./demo/Workbench.js')(Component);
+  const RequestsDemo     = require('./demo/Requests.js')(Component);
+  const ManageUsersDemo  = require('./demo/ManageUsers.js')(Component);
   const TestComponent    = require('./demo/test.js')(Component);
+  const ConfirmAccountPanelDemo = require('./demo/ConfirmAccountPanel.js')(Component);
+  const ContainerNewDemo    = require('./demo/ContainerNew.js')(Component);
 
   // just an example of dynamically loading js
   var DynamicLoading = require('./dynamic_loading.js')(Component);
@@ -70,11 +78,18 @@ module.exports = function(Component) {
                 <Route path="/ui/test/:itemId" component={TestComponent} />
                 <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
                 <Route path="/ui/inventory/:id" component={InventoryDemo} />
-                
+                <Route exact path="/ui" component={UiDemoIndex} />
+                <Route exact path="/ui/favorites" component={FavoritesDemo} />
+                <Route exact path="/ui/workbench" component={WorkbenchDemo} />
+                <Route exact path="/ui/requests" component={RequestsDemo} />
                 <Route exact path="/ui/lab" component={LabPanelDemo} />
                 <Route exact path="/ui/login" component={LoginPanelDemo} />
                 <Route exact path="/ui/signup" component={SignupPanelDemo} />
                 <Route exact path="/ui/password-reset" component={ResetPanelDemo} />
+                <Route exact path="/ui/manage-users" component={ManageUsersDemo} />
+                <Route exact path="/ui/server-status" component={ServerPanelDemo} />
+                <Route exact path="/ui/account-confirmed" component={ConfirmAccountPanelDemo} />
+                <Route exact path="/ui/containers/new" component={ContainerNewDemo} />
 
                 <Route exact path="/signup" render={() => (
                   <Signup />

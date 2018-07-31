@@ -2,8 +2,11 @@ import {h} from 'preact';
 import {Link} from 'react-router-dom';
 
 module.exports = function(Component) {
+    
+      const Workbench = require('./inventory/workbench')(Component)
 
   return class MapPanel extends Component {
+
     componentDidMount() {
         if (this.props.onMount) {
             const mapContainer = document.getElementById('map-panel-item')
@@ -28,6 +31,11 @@ module.exports = function(Component) {
             ) : (
               <span>{this.props.parentRecord.name}</span>
             )}
+            <div class="toolbox is-pulled-right">
+                <div class="buttons has-addons">
+                    <Workbench state="workbench" />
+                </div>
+            </div>
           </div>
           <div className="panel-block">
             <div id="map-panel-item" class="map-container">{this.props.children}</div>

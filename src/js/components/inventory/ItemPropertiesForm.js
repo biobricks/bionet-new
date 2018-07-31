@@ -8,6 +8,10 @@ from 'react';
 import PropTypes from 'prop-types'
 import ItemPropertiesFormCSS from './ItemPropertiesForm.scss'
 import ColorPicker from 'react-color-picker'
+//import ColorPicker from 'rc-color-picker'
+//var ColorPicker = require('rc-color-picker');
+//import ColorPicker from 'material-ui-rc-color-picker';
+//import 'material-ui-rc-color-picker/assets/index.css';
 
 export default class ItemPropertiesForm extends Component {
     static propTypes = {
@@ -74,14 +78,26 @@ export default class ItemPropertiesForm extends Component {
      onFontSize(e) {
         this.update({fontSize:e.target.value})
     }
+
+    /*
+        <ColorPicker color={this.state.color} onChange={this.onSetColor.bind(this)}>
+        <div>test</div>
+        </ColorPicker>
+    */
+
     render() {
         var colorPicker = null
         if (this.state.enableColorPicker) {
             colorPicker = (
-                <div style={{position:'relative',display:'inline-block',backgroundColor:'#ffffff'}}>
-                    <div style={{position:'fixed',zIndex:'11000'}}>
-                        <ColorPicker value={this.state.color} onDrag={this.onSetColor.bind(this)}/>
-                    </div>
+                <div style={{position:'relative',display:'inline-block',backgroundColor:'#ffffff',width:'200px',zIndex:'11000'}}>
+                    <ColorPicker
+                        value={this.state.color}
+                        onDrag={this.onSetColor.bind(this)}
+                        saturationWidth={150}
+                        saturationHeight={150}
+                        huewidth={150}
+                        hueHeight={150}
+                    />
                 </div>
             )
         }
@@ -89,9 +105,10 @@ export default class ItemPropertiesForm extends Component {
             <form className="pure-form" style={{textAlign:'left'}}>
                 <label>Name</label><input onChange={this.onName.bind(this)} type='text' value={this.state.name} style={{width:160}}/>
                 <br/>
-                <label>Color</label><span onClick={this.onSelectColor.bind(this)} style={{backgroundColor:this.state.color}}>{this.state.color}</span>
-                <br/>
+                <label>Color</label><span onClick={this.onSelectColor.bind(this)} style={{backgroundColor:this.state.color}}>{this.state.color}
                 {colorPicker}
+                </span>
+                <br/>
                 <label>Width</label><input onChange={this.onWidth.bind(this)} type='text' value={this.state.width} style={{width:80}}/>
                 <br/>
                 <label>Height</label><input onChange={this.onHeight.bind(this)} type='text' value={this.state.height} style={{width:80}}/>

@@ -100,6 +100,9 @@ export default class DragManager {
 
             this.update = fnUpdate;
             this.dragItem = item;
+            const id = item[this.keyProp]
+            console.log('workbench startDrag:',id)
+            this.dragStartFn(e,id);
             const pageX = isTouch ? e.targetTouches[0].pageX : e.pageX;
             const pageY = isTouch ? e.targetTouches[0].pageY : e.pageY;
 
@@ -107,7 +110,7 @@ export default class DragManager {
             this.initialMouseY = Math.trunc(pageY - (rect.top + window.pageYOffset));
             this.initialEventX = pageX;
             this.initialEventY = pageY;
-
+            
             document.addEventListener('mousemove', this.dragMove);
             document.addEventListener('mouseup', this.endDrag);
             document.addEventListener('touchmove', this.dragMove);
@@ -118,7 +121,6 @@ export default class DragManager {
             e.preventDefault();
         }
 
-        this.dragStartFn(e);
     }
 
     getStyle(x, y) {

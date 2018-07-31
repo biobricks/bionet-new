@@ -1,0 +1,36 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+.ContainerNew {
+  form, pre { width: 100%; }
+  pre, .grid { background-color: white; }
+  .grid-container { background-color: #dbdbdb; }
+  .grid { 
+    display: grid;
+    height: 85vw;
+    width: 100%;
+    max-width: 85vw;
+    border: 1px solid #bbb;
+    // -webkit-box-shadow: 1px 1px 1px 0px rgba(158,158,158,1);
+    // -moz-box-shadow: 1px 1px 1px 0px rgba(158,158,158,1);
+    // box-shadow: 1px 1px 1px 0px rgba(158,158,158,1); 
+    @media (min-width: $breakpoint-desktop) {
+      height: 30vw;
+      max-width: 30vw;
+      margin: 0 auto;
+    }
+    .grid-cell {
+      border: 1px solid #dbdbdb;
+    }
+    .active.grid-cell {
+      border-color: #dbdbdb;
+      background-color: white;
+      .grid-cell {
+        border-color: #dbdbdb;
+      }
+    }
+    label {
+      color: #dbdbdb;
+    }
+  }
+}

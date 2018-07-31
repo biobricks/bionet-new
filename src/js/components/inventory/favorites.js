@@ -1,61 +1,44 @@
-import {
-    h
-}
-from 'preact'
+import { h } from 'preact';
+import ashnazg from 'ashnazg';
+import { Redirect } from 'react-router-dom';
 
-module.exports = function (Component) {
+module.exports = function(Component) {
 
-    return class Favorites extends Component {
-        
-        constructor(props) {
-            super(props);
+  return class Favorites extends Component {
+
+    render() {
+        const favorites = this.props.favorites
+        if (!favorites) return null
+        //console.log('render favorites:',favorites)
+        const self=this
+        const selectFavorite = function(e) {
+            e.preventDefault();
+            if (self.props.selectRecord) self.props.selectRecord(e)
         }
-        
-        render() {
-            const favorites = this.props.favorites
-            //console.log('render favorites:',favorites)
-            const thisModule = this
-            const selectFavorite = function(e) {
-                e.preventDefault();
-                console.log('selectFavorite click:',thisModule.props)
-                if (thisModule.props.selectFunction) {
-                    const id=e.currentTarget.id
-                    thisModule.props.selectFunction(id)
-                }
-            }
-            
-            const Favorite=function(props) {
-                if (!props || !props.favorite) return null
-                const fav = props.favorite
-                if (!fav.material || !fav.favorite) return null
-                return (
-                    <a id={fav.material.id} className="panel-block is-active" onclick={selectFavorite}>{fav.material.name}</a>
-                )
-            }
-            
-            const favs=[]
-            if (favorites) {
-                for (var i=0; i<favorites.length; i++) {
-                    var favorite = favorites[i].favorite
-                    var material = favorites[i].material
-                    favs.push(<Favorite favorite={favorites[i]} />)
-                }
-            }
-            var itemName='itemx'
-            if (this.props.selectedItem) {
-                const id=this.props.selectedItem.id
-                if (id) {
-                    const item = app.actions.inventory.getItemFromInventoryPath(id)
-                    if (item && item.name) itemName = item.name
-                }
-            }
+
+        const favs = this.props.favorites.map( favorite => {
+            if (!favorite.material || !favorite.favorite) return null
             return (
-                <nav className="panel">
-                    <p className="panel-heading">Favorites</p>
-                    <a className="panel-block is-active" onclick={this.props.addFunction}>{"Add "+itemName+" to favorites"}</a>
-                    {favs}
-                </nav>
+                <a class="panel-block" id={favorite.material.id} onclick={selectFavorite}>
+                  <span class="panel-icon">
+                    <i class="mdi mdi-flask"></i>
+                  </span>
+                  {favorite.material.name}
+                </a>
             )
-        }
+        })
+        
+      return (
+        <div class="Favorites">
+          <div class="columns is-desktop">
+            <div class="column is-12-desktop">
+              <div class="panel has-background-white">
+                {favs}
+              </div>
+            </div>
+          </div>  
+        </div>
+      );
     }
+  }
 }

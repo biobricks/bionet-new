@@ -1,13 +1,16 @@
-$selectedColor: #ff0000;
-$deSelectedColor: #000000;
-$highlightedColor: #ff0000;
+$selectedColor: rgba(255,0,0,1.0);
+$deSelectedColor: rgba(0,0,0,0.2);
+$highlightedColor: rgba(255,0,0,1.0);
 .selectedDisplayObject {
+    color:#000000;
     border: 3px solid $selectedColor;
 }
 .deselectedDisplayObject {
+    color:#363636;
     border: 1px solid $deSelectedColor;
 }
 .highlightedDisplayObject {
+    color:#000000;
     border: 3px solid $highlightedColor;
 }
 .displayObject {
@@ -21,6 +24,7 @@ $highlightedColor: #ff0000;
     background-size:100% 100%;
 }
 span.itemTextStyle {
+  color:#363636;
   display: inline-block;
   text-align: center;
   white-space: nowrap;

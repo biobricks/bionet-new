@@ -115,9 +115,12 @@ export default class LocationPath extends Component {
             width:this.props.width+'px',
         }
         
+        const viewOrientation = (item.viewOrientation ==='side') ? 'side view' : 'top view'
+
         return (
             <div ref={node => this.container = node}>
                 <div className="LocationPath" style={containerStyle}>
+                    { (viewOrientation) ? <h5 class="LocationTitle">{item.name}, {viewOrientation}</h5> : null }
                     <Grid
                             state="navigateGrid"
                             gridId="navGrid"

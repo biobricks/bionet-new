@@ -39,7 +39,9 @@ module.exports = function (Component) {
                 toggleEditItem:false,
                 toggleNewItem:false,
                 currentItem:currentItem,
-                fullWidth:false
+                fullWidth:false,
+                isFavorites:false,
+                favorites:app.state.favorites
             }
 
           if(props.inventoryPath && props.inventoryPath.virtual_id) {
@@ -49,16 +51,19 @@ module.exports = function (Component) {
         }
 
         componentWillReceiveProps(props) {
-          console.log("--- PROOOPS inventoryPath");
             if (!props.inventoryPath) return
             //if (!props.inventoryPath || props.id===this.state.id) return
-            const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
+          const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
             //if (this.state.newMode===NEW_MODE_PHYSICAL_STEP2) this.toggleEditMode()
             this.setState({
                 id: props.id,
                 currentItem:currentItem,
                 inventoryPath: props.inventoryPath
             });
+        }
+        
+        componentDidMount() {
+            this.setState({favorites:app.state.favorites})
         }
         
         initZoom(panelWidth,layoutWidth) {
@@ -92,13 +97,22 @@ module.exports = function (Component) {
         }
         
         addFavorite() {
-            const path = this.props.inventoryPath
-            if (!path || path.length<1) return null
-            const item = path[path.length-1]
+            const item=this.state.currentItem
             if (!item) return
-            const id = item.id
-            app.actions.inventory.addFavorite(id, function() {
-                app.actions.notify("Item added to favorites", 'notice', 2000);
+            const self=this
+            app.actions.inventory.addFavorite(item, function(err) {
+                if (err) {
+                    app.actions.notify(err.message, 'error');
+                    return
+                }
+                else {
+                    app.actions.notify(item.name+" added to favorites", 'notice', 2000);
+                    app.actions.inventory.getFavorites( (err,favorites) => {
+                        self.setState({
+                            favorites:favorites
+                        })
+                    })
+                }
             })
         }
         
@@ -118,22 +132,30 @@ module.exports = function (Component) {
         }
         
         toggleNewMode() {
-            if (this.state.newMode) {
-                this.setState({
-                    newMode:false,
-                    location:null,
-                    layoutWidthUnits:null,
-                    layoutHeightUnits:null,
-                    majorGridLine:null,
-                    recordLocation:null
-                })
+            if (this.state.isFavorites) {
+                this.addFavorite()
             } else {
-                const newMode = (this.state.formType==='Physical') ? NEW_MODE_PHYSICAL_STEP1 : NEW_MODE_CONTAINER
-                this.setState({
-                    newMode:newMode,
-                    location:null
-                })
+                if (this.state.newMode) {
+                    this.setState({
+                        newMode:false,
+                        location:null,
+                        layoutWidthUnits:null,
+                        layoutHeightUnits:null,
+                        majorGridLine:null,
+                        recordLocation:null
+                    })
+                } else {
+                    const newMode = (this.state.formType==='Physical') ? NEW_MODE_PHYSICAL_STEP1 : NEW_MODE_CONTAINER
+                    this.setState({
+                        newMode:newMode,
+                        location:null
+                    })
+                }
             }
+        }
+        
+        toggleFavoritesMode(isFavorites) {
+            this.setState({isFavorites:isFavorites})
         }
         
         onSaveNew(dbData, type) {
@@ -224,9 +246,9 @@ module.exports = function (Component) {
             })
         }
         
-        toggleFullscreenMode(fullScreen) {
-            console.log('toggleFullscreenMode:',fullScreen)
-            this.setState({fullWidth:fullScreen})
+        toggleFullscreenMode(fullWidth) {
+            console.log('toggleFullscreenMode:',fullWidth)
+            this.setState({fullWidth:fullWidth})
         }
         
         toggleEditItemMode() {
@@ -238,14 +260,24 @@ module.exports = function (Component) {
             delete props.validation
             console.log('inventoryPath onSaveEdit:', props)
             app.actions.inventory.updateItem(props.id, function(err, item) {
-                props.layoutWidthUnits = props.xUnits,
-                props.layoutWidth = props.gridWidth*props.xUnits
-                props.layoutHeightUnits = props.yUnits,
-                props.layoutHeight = props.gridHeight*props.yUnits
+                props.xUnits = (props.xUnits) ? Number(props.xUnits) : 1
+                props.yUnits = (props.yUnits) ? Number(props.yUnits) : 1
                 const updatedItem = Object.assign(item, props)
+                /*
+                const gridWidth=(props.gridWidth) ? props.gridWidth : 40
+                const gridHeight=(props.gridHeight) ? props.gridHeight : 40
+                props.layoutWidthUnits = xUnits,
+                props.layoutWidth = gridWidth*xUnits
+                props.layoutHeightUnits = yUnits,
+                props.layoutHeight = gridHeight*yUnits
+                */
+                delete updatedItem.gridWidth
+                delete updatedItem.gridHeight
+                delete updatedItem.layoutWidth
+                delete updatedItem.layoutHeight
+                delete updatedItem.layoutWidthUnits
+                delete updatedItem.layoutHeightUnits
                 console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
-                delete updatedItem.xUnits
-                delete updatedItem.yUnits
                 app.actions.notify(item.name+" saved", 'notice', 2000);
                 return updatedItem
             })
@@ -321,11 +353,6 @@ module.exports = function (Component) {
                 toggleNewItem:!this.state.toggleNewItem
             })
         }
-        onToggleFullscreen(fullScreen) {
-            this.setState({
-                fullScreen:fullScreen
-            })
-        }
         onSelectItem(item) {
             this.setState({
                 selectedItem:item
@@ -338,13 +365,16 @@ module.exports = function (Component) {
         }
         
         render() {
-            if (!this.state.inventoryPath || !this.state.currentItem) return
-            console.log('inventoryPath render, id:',this.state.id, this.state.inventoryPath)
-            const currentItem=this.state.currentItem
-            
-            if (typeof this.state.inventoryPath === 'object' && this.state.inventoryPath.constructor.name === 'Error') {
+            console.log('inventoryPath render',this.props.id, this.props.inventoryPath)
+            if (!this.props.inventoryPath || !this.props.id) return
+            const inventoryPath=this.props.inventoryPath
+            const currentItem=app.actions.inventory.getItemFromInventoryPath(this.props.id)
+            if (!currentItem || !inventoryPath) return
+
+            if (typeof inventoryPath === 'object' && inventoryPath.constructor.name === 'Error') {
+                console.log('inventoryPath error',typeof inventoryPath === 'object', inventoryPath)
                 return (
-                    <h6 style="margin-top:15px;">{this.state.inventoryPath.message}</h6>
+                    <h6 style="margin-top:15px;">{inventoryPath.message}</h6>
                 )
             }
             
@@ -356,7 +386,7 @@ module.exports = function (Component) {
 
             const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null        
             const tableHeight =  window.innerHeight-this.state.containerSize-100
-
+            
             var dataItems = {}
             if (this.state.editMode) {
                 dataItems=(<ContainerPropertiesForm
@@ -389,7 +419,7 @@ module.exports = function (Component) {
             var dataPanel=null
             var navPanel=null
             var editPanel=null
-            const breadcrumbs = this.state.inventoryPath.map(container => {
+            const breadcrumbs = inventoryPath.map(container => {
                 return {
                     id:container.id,
                     name:container.name
@@ -399,7 +429,6 @@ module.exports = function (Component) {
                 app.actions.inventory.refreshInventoryPath(e.target.id)
             }
             const parentRecord=app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id)
-            
             if (this.state.editMode) {
                 var fullWidth=this.state.fullWidth
                 if (currentItem.type==='lab') fullWidth=true
@@ -410,7 +439,7 @@ module.exports = function (Component) {
                     location=Object.assign(this.state.location,{})
                     pathId[location.id]=location.name
                 } else {
-                    const newPath=this.state.inventoryPath
+                    const newPath=this.props.inventoryPath
                     const id=this.state.id
                     newPath.map(container => {
                         pathId[container.id]=container.name
@@ -460,8 +489,7 @@ module.exports = function (Component) {
 
                 const containerLayout = app.actions.inventory.initContainerProps(location,pathId,this.state.editPanelWidth,1)
                 const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth)
-                console.log('inventoryPath render, zoom:',zoom,this.state.layoutWidthUnits)
-                //onMount={this.onEditPanelMount.bind(this)}
+                //console.log('inventoryPath render, zoom:',zoom,this.state.layoutWidthUnits)
 
                 if (fullWidth) {
                     editPanel = (
@@ -482,7 +510,7 @@ module.exports = function (Component) {
                                     width={this.state.editPanelWidth}
                                     height={this.state.editPanelHeight}
                                     zoom={zoom}
-                                    fullWidth={true}
+                                    fullWidth={fullWidth}
                                     editItem={this.state.toggleEditItem}
                                     newItem={this.state.toggleNewItem}
                                     onMount={this.onEditPanelMount.bind(this)}
@@ -528,26 +556,28 @@ module.exports = function (Component) {
                 
                 const width=this.props.width
                 const pathId={}
-                const newPath=this.state.inventoryPath
+                const newPath=this.props.inventoryPath
                 const containerId = (currentItem.type==='physical') ? currentItem.parent_id : currentItem.id
                 newPath.map(container => {
                     pathId[container.id]=container.name
                 })
                 var rootZoom=1.0
                 const initZoom=this.initZoom
-                console.log('inventoryPath, nav:',currentItem.name,currentItem.type,containerId)
+                //console.log('inventoryPath, nav:',currentItem.name,currentItem.type,containerId)
                 var panelWidth=this.state.mapPanelWidth
                 var panelHeight=this.state.mapPanelHeight
                 var zoomWidth = Math.min(200,this.state.mapPanelWidth)
                 var zoomHeight = this.state.mapPanelHeight
                 var rootLocation=null
                 var rootContainer=null
+                var rootHeight=200
                 if (currentItem.type!=='lab') {
                     const rootPath2 = newPath.map(container => {
                         if (container.type==='lab') {
                             const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
                             rootZoom = initZoom(zoomWidth,containerLayout.layoutWidth)
-                            zoomHeight -= containerLayout.layoutHeight*rootZoom-20
+                            rootHeight = containerLayout.layoutHeight*rootZoom
+                            zoomHeight -= rootHeight+20
                             rootContainer=containerLayout
                             return containerLayout
                         }
@@ -572,22 +602,22 @@ module.exports = function (Component) {
                 }
                 
                 var newItem=null
-                if (this.state.newMode) {
-                    
-                }
-                
                 var zoom=1.0
                 var itemContainer=null
                 const locationPath2 = newPath.map(container => {
                     if (containerId===container.id) {
-                        console.log('inventoryPath, nav: generating layout:', zoomHeight, panelHeight, this.state.mapPanelHeight)
                         const containerLayout=app.actions.inventory.initContainerProps(container,pathId,width,1)
-                        zoom = initZoom(panelWidth,containerLayout.layoutWidth)
+                        if (containerLayout.layoutWidth >= containerLayout.layoutHeight) {
+                            zoom = initZoom(panelWidth,containerLayout.layoutWidth)
+                        } else {
+                            zoom = initZoom(panelHeight-rootHeight-60,containerLayout.layoutHeight)
+                        }
                         itemContainer=containerLayout
                         return containerLayout
                     }
                 })
                 const locationPath = locationPath2.filter(container => { return container })
+                const favorites=this.state.favorites
                 dataPanel = (
                         <div class="column is-7-desktop">
                           <DataPanel 
@@ -602,9 +632,11 @@ module.exports = function (Component) {
                             toggleNewMode={this.toggleNewMode.bind(this)}
                             toggleEditMode={this.toggleEditMode.bind(this)}
                             toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
+                            toggleFavoritesMode={this.toggleFavoritesMode.bind(this)}
                             onDelete={this.onDelete.bind(this)}
                             onSaveEdit={this.onSaveEdit.bind(this)}
                             onSaveNew={this.onSaveNew.bind(this)}
+                            favorites={favorites}
                             onRecordEnter={this.onRecordEnter.bind(this)}
                             onRecordLeave={this.onRecordLeave.bind(this)}
                             >
@@ -614,9 +646,6 @@ module.exports = function (Component) {
                     </div>
                 )
                 var locationPathComponent=null
-                //todo: set newMode only after create type has been specified, ie physical or container
-                //todo: change constant name
-                //if (this.state.newMode===NEW_MODE_PHYSICAL_STEP1&&0) {
                 if (this.state.newMode===NEW_MODE_CONTAINER) {
                     rootLocation=null
                     locationPathComponent=(
@@ -635,8 +664,6 @@ module.exports = function (Component) {
                             onRecordLocation={this.onRecordLocation.bind(this)}
                         />
                     )
-                
-
                 } else {
                     locationPathComponent=(
                         <LocationPath

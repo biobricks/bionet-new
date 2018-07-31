@@ -287,7 +287,7 @@ module.exports = function(Component) {
             <div class="column is-6-desktop">
               <div class="panel">
                 <div class="panel-heading">
-                  <i class="mdi mdi-dna"></i>&nbsp;&nbsp;Edit Virtual
+                  <i class="mdi mdi-dna"></i>&nbsp;Edit Virtual
                 </div>
                 <div class="panel-block">
                   <form onSubmit={this.save.bind(this)}>

@@ -295,10 +295,10 @@ module.exports = function(settings, users, acccounts, labDeviceServer, opts) {
           if(err) return cb(err);
           if(!doPrint) return cb(null, id);
 
-          var relativePath = path.relative(settings.labDevice.labelImageFilePath, imagePath);
+//          var relativePath = path.relative(settings.labDevice.labelImageFilePath, imagePath);
 
-          labDeviceServer.printLabel(relativePath);
-          console.log("relative path:", relativePath);
+          labDeviceServer.printLabel('qlPrinter', imagePath);
+
           cb(null, id);
         });
         console.log("saved with file", imagePath);

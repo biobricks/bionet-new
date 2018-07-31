@@ -1,9 +1,10 @@
 var Readable = require('stream').Readable;
-
+var path = require('path');
 var uuid = require('uuid').v4;
 var async = require('async');
 var through = require('through2');
 var rpc = require('rpc-multistream'); // rpc and stream multiplexing
+var Labeler = require('bionet-shipping-labeler');
 var validations = require('../common/validations.js');
 
 function del(curUser, db, dbName, key, cb) {
@@ -33,11 +34,58 @@ function del(curUser, db, dbName, key, cb) {
   });
 }
 
-module.exports = function(settings, users, accounts, db, index, mailer, p2p, pandadoc) { 
+
+module.exports = function(settings, users, accounts, db, index, mailer, labDeviceServer, p2p, pandadoc) { 
+
+  var labeler;
+  if(settings.shippingLabeler) {
+    labeler =  new Labeler(settings.shippingLabeler);
+  }
 
   return {
     secret: function(curUser, cb) {
       cb(null, "Sneeple are real!");
+    },
+
+    // TODO remove
+    testLabel: function(curUser, cb) {
+
+      var address = {
+        name: "Hu Man",
+        street1: "4799 Shattuck Ave",
+        street2: "Back room",
+        company: "Counter Culture Labs",
+        city: "Oakland",
+        state: "California",
+        zip: "94609",
+        country: "United States",
+        phone: "0123456789",
+        email: "test@example.com",
+        residential: false
+      };
+
+      var opts = {
+        local: true
+      }
+
+      labeler.buyLabel(address, settings.shippingLabeler.parcel, opts, function(err, shipment, filename) {
+        if(err) {
+          if(err.message && err.message.errors) {
+            return cb(new Error(err.message.errors.join("\n")));
+          }
+          return cb(err);
+        }
+
+        var uriPath = '/static/labels/' + filename;
+        var filepath = path.join(settings.shippingLabeler.outDir, filename);
+        console.log("PRRRINT", settings.shippingLabeler.outDir, filename);
+
+        labDeviceServer.printLabel('dymoPrinter', filepath, function(err) {
+          cb(err, uriPath);
+        });
+
+      });
+      
     },
 
     // TODO remove this when implementing private data

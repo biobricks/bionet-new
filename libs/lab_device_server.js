@@ -2,6 +2,7 @@
 var fs = require('fs');
 var path = require('path');
 var ssh2 = require('ssh2');
+var async = require('async');
 var buffersEqual = require('buffer-equal-constant-time');
 var rpc = require('rpc-multistream');
 
@@ -94,12 +95,12 @@ function Client(client, session, test) {
     }
   }.bind(this));
 
- 
-  this.printLabel = function(filename, cb) {
+  this.printLabel = function(labDeviceIndexOrType, filepath, cb) {
+
     if(!this.remote) return cb("could not print to client: rpc not yet initialized");
 
-    var filePath = path.join(settings.labDevice.labelImageFilePath, filename);
-    var labelStream = fs.createReadStream(filePath);
+//    var filePath = path.join(settings.labDevice.labelImageFilePath, filename);
+    var labelStream = fs.createReadStream(filepath);
     
     labelStream.on('error', function(err) {
       logError(err);
@@ -109,7 +110,7 @@ function Client(client, session, test) {
       cb();
     });
 
-    this.remote.print(labelStream, cb);
+    this.remote.print(labDeviceIndexOrType, labelStream, cb);
   };
 
 
@@ -221,18 +222,17 @@ var labDeviceServer = {
     });
   },
 
-  printLabel: function(filePath) {
+  printLabel: function(labDeviceIndexOrType, filePath, cb) {
+    if(!cb) cb = function(){};
+
     var key;
-    // ToDo only print to one printer
-    // ToDo proper callback
     for(key in clients) {
-      clients[key].printLabel(filePath, function(err) {
-        if(err) {
-          console.error("Printing failed for client", clients[key].name, filePath, err);
-          return;
-        }
-        console.log("Sent to printer on", clients[key].name, ":", filePath);
+      clients[key].printLabel(labDeviceIndexOrType, filePath, function(err) {
+        if(err) cb(err);
+
+        cb(null, "Sent to printer on", clients[key].name, ":", filePath);
       })
+      break;
     }
   }
 

@@ -152,7 +152,7 @@ server.listen(settings.port, settings.hostname)
 var rpcMethods = require('../rpc/public.js')(settings, users, accounts, db, index, mailer, p2p, pandadoc);
 
 // these functions only available to users in the 'user' group
-rpcMethods.user = require('../rpc/user.js')(settings, users, accounts, db, index, mailer, p2p, pandadoc);
+rpcMethods.user = require('../rpc/user.js')(settings, users, accounts, db, index, mailer, labDeviceServer, p2p, pandadoc);
 
 var login = require('../libs/login.js')(db, users, accounts);
 

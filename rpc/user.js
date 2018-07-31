@@ -88,6 +88,35 @@ module.exports = function(settings, users, accounts, db, index, mailer, labDevic
       
     },
 
+    printShippingLabel: function(curUser, address, cb) {
+
+      address.country = "United States";
+      address.residential = false;
+
+      var opts = {
+        local: true
+      }
+
+      labeler.buyLabel(address, settings.shippingLabeler.parcel, opts, function(err, shipment, filename) {
+        if(err) {
+          if(err.message && err.message.errors) {
+            return cb(new Error(err.message.errors.join("\n")));
+          }
+          return cb(err);
+        }
+
+        var uriPath = '/static/labels/' + filename;
+        var filepath = path.join(settings.shippingLabeler.outDir, filename);
+        console.log("PRRRINT", settings.shippingLabeler.outDir, filename);
+
+        labDeviceServer.printLabel('dymoPrinter', filepath, function(err) {
+          cb(err, uriPath);
+        });
+
+      });
+      
+    },
+
     // TODO remove this when implementing private data
     testStream: rpc.syncReadStream(function() {
 

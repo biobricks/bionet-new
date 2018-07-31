@@ -33,6 +33,7 @@ module.exports = function(Component) {
   var Footer = require('./footer.js')(Component);
   var Attributions = require('./attributions.js')(Component);
   var BarcodeRedirect = require('./barcode_redirect.js')(Component);
+  var PrintShippingLabel = require('./print_shipping_label.js')(Component);
   
   const LabPanel = require('./lab_panel.js')(Component);
   const LabInventory = require('./lab_inventory.js')(Component);
@@ -131,6 +132,8 @@ module.exports = function(Component) {
 
                 <Route path="/scan" component={Scan} />
                 <Route path="/print" component={Print} />
+
+                <Route path="/print-shipping-label" component={PrintShippingLabel} />
 
                 <Route path="/help/:topic" component={Help} />
 

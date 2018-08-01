@@ -12,13 +12,17 @@ module.exports = function(Component) {
       app.actions.inventory.initialize();
       this.state = {
         types: {},
-        inventoryPath: null
+        urlParams: {
+          id: ''
+        },
+        inventoryPath: [],
+        selectedRecord: {}
       };
       ashnazg.listen('global.user', this.loggedInUser.bind(this));
     }
 
     loggedInUser(loggedInUser) {
-      //console.log('logged in inventory: user', loggedInUser, app.remote, this.initialized)
+      console.log('logged in inventory: user', loggedInUser, app.remote, this.initialized)
       if (!loggedInUser) { return }
       this.initialized = true;
       app.actions.inventory.getInventoryTypes();
@@ -28,54 +32,37 @@ module.exports = function(Component) {
       this.getInventoryPath(id);
     }
 
-    getInventoryPath(id) {
+    getInventoryPath(id, callback) {
       if (id) {
-        app.actions.inventory.getInventoryPath(id, (err, inventoryPath) => {
-          //console.log('getInventoryPath2, id:',id)
-          if (err) {
-            this.setState({
-              id: id,
-              inventoryPath: err
-            });
-            return
+        console.log('getInventoryPath: Has ID - Getting Inventory Path');
+        app.actions.inventory.getInventoryPath(id, (error, inventoryPath) => {
+          if(error !== null){ 
+            callback(error, null); 
+          } else {
+            callback(null, inventoryPath);
           }
-          this.setState({
-            id: id,
-            inventoryPath: inventoryPath
-          });
         });
       } else {
-        app.actions.inventory.getRootItem((err, rootId) => {
-          if (err) {
-            console.log('getRootItem, error:',err);
-            this.setState({
-              id: rootId,
-              inventoryPath: err
-            });
-            return
+        console.log('getInventoryPath: Has No ID - Getting Root ID...');
+        app.actions.inventory.getRootItem((error, rootId) => {
+          if(error) { 
+            console.log(error);
           } else {
-            //console.log('inventory.actions.getInventoryPath root, id:',id)
-            app.actions.inventory.getInventoryPath(rootId, (err, inventoryPath) => {
-              if (err) {
-                app.actions.notify(err.message, 'error');
-                this.setState({
-                  id: rootId,
-                  inventoryPath: err
-                });
-                return
+            console.log(`getInventoryPath: Root ID is ${rootId} - Getting Inventory Path`);
+            app.actions.inventory.getInventoryPath(rootId, (error, inventoryPath) => {
+              if(error !== null){ 
+                callback(error, null); 
+              } else {
+                callback(null, inventoryPath);
               }
-              //console.log('getInventoryPath3, rootid:',rootId, thisModule.state, thisModule.props, inventoryPath)
-              this.setState({
-                id: rootId,
-                inventoryPath: inventoryPath
-              });
             });
           }
-        });
+        });        
       }
     }
 
     componentWillReceiveProps(props) {
+      console.log('componentWillReceiveProps fired');
       if (!props.inventoryPath) return
       //if (!props.inventoryPath || props.id===this.state.id) return
       const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id)
@@ -85,7 +72,52 @@ module.exports = function(Component) {
           currentItem:currentItem,
           inventoryPath: props.inventoryPath
       });
-  }
+    }
+
+    componentDidUpdate() {
+      //console.log('componentDidUpdate fired');
+      //console.log(this.state);
+      const idParam = this.props.match.params.id ? this.props.match.params.id : null;       
+      if(idParam && idParam !== this.state.selectedRecord.id){
+        this.getInventoryPath(idParam, (error, inventoryPath) => {
+          let selectedRecord = this.state.selectedRecord;
+          if(error){ 
+            console.log(error);
+          } else {
+            selectedRecord = inventoryPath[inventoryPath.length - 1];
+            console.group();
+            console.log('Selected Record:');
+            console.log(selectedRecord);
+            console.groupEnd();
+            this.setState({
+              inventoryPath,
+              selectedRecord
+            });
+          }
+        });
+      } else if (!idParam && this.state.inventoryPath.length === 0) {
+        this.getInventoryPath(idParam, (error, inventoryPath) => {
+          let selectedRecord = this.state.selectedRecord;
+          if(error){ 
+            console.log(error);
+          } else {
+            selectedRecord = inventoryPath[inventoryPath.length - 1];
+            console.group();
+            console.log('Selected Record:');
+            console.log(selectedRecord);
+            console.groupEnd();
+            this.setState({
+              inventoryPath,
+              selectedRecord
+            });
+          }
+        });        
+      }
+    }  
+
+    componentDidMount() {
+      console.log('componentDidMount fired');
+    }
 
     render() {
       const currentUser = app.state.global.user ? app.state.global.user.userData : null;
@@ -94,36 +126,7 @@ module.exports = function(Component) {
         <div class="Test">
           <div class="columns">
             <div class="column">
-              <div class="stringify">
-                <h3>State</h3>
-                <pre class="mt-1">
-                  {JSON.stringify(this.state, null, 2)}
-                </pre>
-              </div>
-            </div>
-            <div class="column">
-            <div class="stringify">
-                <h3>Selected Object</h3>
-                <pre class="mt-1">
-                  {selectedObject && (
-                    <div>{JSON.stringify(selectedObject, null, 2)}</div>
-                  )}  
-                </pre>
-              </div>
-              <div class="stringify mt-2">
-                <h3>Current User</h3>
-                <pre class="mt-1">
-                  {currentUser && (
-                    <div>{JSON.stringify(app.state.global.user.userData, null, 2)}</div>
-                  )}  
-                </pre>
-              </div>
-              <div class="stringify mt-2">
-                <h3>Props</h3>
-                <pre class="mt-1">
-                  {JSON.stringify(this.props, null, 2)}
-                </pre>
-              </div>
+              {JSON.stringify(this.state.inventoryPath)}
             </div>
           </div>
         </div>

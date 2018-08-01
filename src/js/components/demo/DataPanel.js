@@ -48,12 +48,11 @@ module.exports = function(Component) {
         const itemIsContainer = Object.keys(item).indexOf('children') > -1;
         return (
           <li>
-            <a 
+            <Link 
               to={`/ui/inventory/${item.id}`}
-              onClick={this.props.onClickLink}
             >
               {item.name}
-            </a>
+            </Link>
           </li>
         );
       });
@@ -177,7 +176,6 @@ module.exports = function(Component) {
             {(isViewMode && isContainer) ? (
               <ContainerProfile 
                 {...this.props}
-                onClickLink={this.props.onClickLink}
                 setHoveredRecord={this.props.setHoveredRecord}
               />
             ) : null }

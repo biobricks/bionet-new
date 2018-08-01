@@ -49,22 +49,23 @@ module.exports = function(Component) {
     }    
 
     getInventoryPath(id, callback) {
-      if (id) {
-        //console.log('getInventoryPath: Has ID - Getting Inventory Path');
-        app.actions.inventory.getInventoryPath(id, (error, inventoryPath) => {
-          if(error !== null){ 
-            callback(error, null); 
-          } else {
-            callback(null, inventoryPath);
-          }
-        });
-      } else {
-        //console.log('getInventoryPath: Has No ID - Getting Root ID...');
-        /* 
-          There is a short lag between the componentDidMount() lifecycle method and
-          the availability of the app.actions.
-        */ 
-        setTimeout(() => {
+          /* 
+            There is a short lag between the componentDidMount() lifecycle method and
+            the initialization of app.actions.
+            A 10ms delay in script execution makes calls to app.actions available. 
+          */ 
+      setTimeout(() => {      
+        if (id) {
+          //console.log('getInventoryPath: Has ID - Getting Inventory Path');
+          app.actions.inventory.getInventoryPath(id, (error, inventoryPath) => {
+            if(error !== null){ 
+              callback(error, null); 
+            } else {
+              callback(null, inventoryPath);
+            }
+          });
+        } else {
+          //console.log('getInventoryPath: Has No ID - Getting Root ID...');
           app.actions.inventory.getRootItem((error, rootId) => {
             if(error) { 
               console.log(error);
@@ -79,8 +80,8 @@ module.exports = function(Component) {
               });
             }
           });
-        }, 10);
-      }
+        }
+      }, 10);
     }
 
     setFormType(e) {

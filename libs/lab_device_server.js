@@ -97,7 +97,7 @@ function Client(client, session, test) {
 
   this.printLabel = function(labDeviceIndexOrType, filepath, cb) {
 
-    if(!this.remote) return cb("could not print to client: rpc not yet initialized");
+    if(!this.remote) return cb(new Error("could not print to client: rpc not yet initialized"));
 
 //    var filePath = path.join(settings.labDevice.labelImageFilePath, filename);
     var labelStream = fs.createReadStream(filepath);
@@ -106,9 +106,11 @@ function Client(client, session, test) {
       logError(err);
       cb(err);
     });
+/*
     labelStream.on('end', function() {
       cb();
     });
+*/
 
     this.remote.print(labDeviceIndexOrType, labelStream, cb);
   };
@@ -225,6 +227,8 @@ var labDeviceServer = {
   printLabel: function(labDeviceIndexOrType, filePath, cb) {
     if(!cb) cb = function(){};
 
+    if(!Object.keys(clients).length) return cb(new Error("No print servers currently connected"));
+
     var key;
     for(key in clients) {
       clients[key].printLabel(labDeviceIndexOrType, filePath, function(err) {
@@ -232,7 +236,7 @@ var labDeviceServer = {
 
         cb(null, "Sent to printer on", clients[key].name, ":", filePath);
       })
-      break;
+      return;
     }
   }
 

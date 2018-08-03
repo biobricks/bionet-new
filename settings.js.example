@@ -96,11 +96,6 @@ var settings = {
     // Log in, then click your app in the list, click settings
     // and fill out "Redirect URI"
     redirect_url: 'http://localhost:8000/pandadoc/callback',
-    approver: {
-      email: 'approver@example.com',
-      first_name: 'bionet',
-      last_name: 'approver'
-    },
     stanford: {
       email: 'stanford-tto@example.com',
       first_name: 'stanford',

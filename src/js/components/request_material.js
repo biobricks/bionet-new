@@ -37,11 +37,13 @@ module.exports = function(Component) {
           email: this.state.email,
           title: this.state.title,
           name: this.state.name,
-          orgName: this.state.orgName,
-          orgAddress: this.state.orgAddress,
+          company: this.state.company,
           ttoEmail: this.state.ttoEmail,
-          shippingAddress: this.state.shippingAddress,
-          shippingName: this.state.shippingName,
+          street1: this.state.street1,
+          street2: this.state.street2,
+          city: this.state.city,
+          zip: this.state.zip,
+          state: this.state.state,
           msg: this.state.message
         },
         function(err, data, requestID) {
@@ -148,6 +150,8 @@ module.exports = function(Component) {
             <div class="container post-hero-area">
               <div class="columns">
                 <div class="column is-6">
+
+
                   <div class="field">
                     <label class="label">Your title</label>
                     <div class="control">
@@ -170,39 +174,42 @@ module.exports = function(Component) {
                     </div>
                   </div>
                   <div class="field">
-                    <label class="label">Name of your institute</label>
+                    <label class="label">Name of your organization</label>
                     <div class="control">
-                      <input class="input" type="text" onChange={linkState(this, 'orgName')} />
+                      <input class="input" type="text" onChange={linkState(this, 'company')} />
                     </div>
                   </div>
                   <div class="field">
-                    <label class="label">Address of your institute</label>
+                    <label class="label">Street address (for shipping)</label>
                     <div class="control">
-                      <textarea class="textarea" onChange={linkState(this, 'orgAddress')}></textarea>
+                      <input class="input" type="text" onChange={linkState(this, 'street1')} />
                     </div>
                   </div>
                   <div class="field">
-                    <label class="label">Email of your institute's Tech Transfer Office</label>
-                    <div class="control has-icons-left">
-                      <input class="input" type="text" onChange={linkState(this, 'ttoEmail')} />
-                      <span class="icon is-small is-left">
-                        <i class="fa fa-envelope"></i>
-                      </span>
-                    </div>
-                    <p>A representative of your institute's tech transfer office will have to sign off on an Open Material Transfer Agreement (OpenMTA) before the biomaterial can be shipped</p>
-                  </div>
-                  <div class="field">
-                    <label class="label">Shipping address</label>
+                    <label class="label">Street address 2</label>
                     <div class="control">
-                      <textarea class="textarea" onChange={linkState(this, 'shippingAddress')}></textarea>
+                      <input class="input" type="text" onChange={linkState(this, 'street2')} />
                     </div>
                   </div>
                   <div class="field">
-                    <label class="label">Name of person to receive material</label>
+                    <label class="label">City</label>
                     <div class="control">
-                      <textarea class="textarea" onChange={linkState(this, 'shippingName')}></textarea>
+                      <input class="input" type="text" onChange={linkState(this, 'city')} />
                     </div>
                   </div>
+                  <div class="field">
+                    <label class="label">Zipcode</label>
+                    <div class="control">
+                      <input class="input" type="text" onChange={linkState(this, 'zip')} />
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">State (e.g. California)</label>
+                    <div class="control">
+                      <input class="input" type="text" onChange={linkState(this, 'state')} />
+                    </div>
+                  </div>
+
                   <div class="field">
                     <label class="label">Message for <span>{app.settings.lab}</span>?</label>
                     <div class="control">

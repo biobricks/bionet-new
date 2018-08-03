@@ -21,6 +21,7 @@ module.exports = function(Component) {
   var RequestMaterial = require('./request_material.js')(Component);
   var RequestList = require('./request_list.js')(Component);
   var Request = require('./request.js')(Component);
+  var RequestApprove = require('./request_approve.js')(Component);
   var RequestSent = require('./request_sent.js')(Component);
   var Inventory = require('./inventory/index.js')(Component);
   var Settings = require('./settings.js')(Component);
@@ -104,6 +105,7 @@ module.exports = function(Component) {
                   <Route path="/request-show/:id" component={Request} />
                   <Route path="/requests" component={RequestList} />
                   <Route path="/request-sent/:id" component={RequestSent} />
+                  <Route path="/request-approve/:id" component={RequestApprove} />
                 </Switch>
 
                 <Switch>

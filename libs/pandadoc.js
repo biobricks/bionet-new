@@ -166,7 +166,7 @@ function sendDocument(id, message, accessToken, cb) {
 
   "{\"id\":\"<doc_id_string>\",\"name\":\"Open Material Transfer Agreement\",\"status\":\"document.uploaded\",\"date_created\":\"2018-05-24T15:21:51.847167Z\",\"date_modified\":\"2018-05-24T15:21:51.847167Z\",\"uuid\":\"<uuid_string>\"}"
 */
-function createDocument(recipient, approver, stanford, formData, templateUUID, accessToken, cb) {
+function createDocument(recipient, stanford, formData, templateUUID, accessToken, cb) {
 
   // convert format from `key: value` to `[{name: key, value: value}]`
   var fields = {};
@@ -179,12 +179,11 @@ function createDocument(recipient, approver, stanford, formData, templateUUID, a
 
   recipient.role = 'recipient';
   stanford.role = 'stanford';
-  approver.role = 'approver';
 
   var data = {
     name: "Open Material Transfer Agreement",
     template_uuid: templateUUID,
-    recipients: [approver, recipient, stanford],
+    recipients: [recipient, stanford],
     fields: fields
   };
 
@@ -395,7 +394,7 @@ function PandaDoc(settings, router, login, userCookieAuth, opts) {
   this.createDocument = function(recipient, emailMsg, data, templateUUID, cb) {
     var accessToken = this.token.token.token.access_token;
 
-    createDocument(recipient, this.settings.pandadoc.approver, this.settings.pandadoc.stanford, data, templateUUID, accessToken, function(err, id) {
+    createDocument(recipient, this.settings.pandadoc.stanford, data, templateUUID, accessToken, function(err, id) {
       if(err) return cb(err);
       
       sendDocument(id, emailMsg, accessToken, function(err) {

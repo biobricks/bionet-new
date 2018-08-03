@@ -22,7 +22,7 @@ module.exports = function(Component) {
 
       this.statusText = [
         "Unknown",
-        "Waiting for bionet lawyer approval",
+        "Waiting for approval by bionet node operator",
         "Waiting for Stanford Tech Transfer Office signature",
         "Waiting for requesting institute's Tech Transfer Office signature",
         "Ready to ship"
@@ -30,7 +30,7 @@ module.exports = function(Component) {
 
       this.statusTextDone = [
         "Unknown",
-        "Approved by bionet lawyer",
+        "Approved",
         "Signed by Stanford Tech Transfer Office",
         "Signed by requesting institute's Tech Transfer Office",
         "Shipped"
@@ -147,6 +147,42 @@ module.exports = function(Component) {
       }.bind(this));      
     }
 
+    approve(e) {
+      e.preventDefault();
+      
+      app.actions.route('/request-approve/'+this.state.id);
+    }
+
+    buyShippingLabel(e) {
+      e.preventDefault();
+      
+      if(!confirm("This will spend real money. Are you sure?")) {
+        return;
+      }
+
+      app.remote.requestBuyShippingLabel(this.state.id, function(err, uriPath) {
+        if(err) return app.actions.notify(err, 'error');
+
+        app.actions.notify("Shipping label purchased!", 'success');
+
+        this.changeState({
+          shippingLabelURIPath: uriPath
+        });
+      }.bind(this));
+    }
+
+    printShippingLabel(e) {
+      e.preventDefault();
+
+      app.actions.notify("Sending to print server...");
+
+      app.remote.requestPrintShippingLabel(this.state.id, function(err) {
+        if(err) return app.actions.notify(err, 'error');
+
+        app.actions.notify("Label has been sent to print server!", 'success');
+      });
+    }
+
 	  render() {
 
       if(this.state.error) {
@@ -174,17 +210,27 @@ module.exports = function(Component) {
           actions.push((
               <li><a href="#" onclick={this.trashMe.bind(this)}>Move to trash</a></li>
           ));
+          
+          if(this.state.request && this.state.request.status === 'sent') {
+            actions.push((
+                <li><a href="#" onclick={this.unMarkAsSent.bind(this)}>Mark as not shipped</a></li>
+            ));
+          } else {
+            actions.push((
+                <li><a href="#" onclick={this.markAsSent.bind(this)}>Mark as shipped</a></li>
+            ));
+
+            if(this.state.request && this.state.request.status !== 'approved') {
+              actions.push((
+                  <li><a href="#" onclick={this.approve.bind(this)}>Approve this request</a></li>
+              ));
+            }
+          }
+          actions.push((
+              <li><a href="#" onclick={this.buyShippingLabel.bind(this)}>Buy shipping label</a></li>
+          ));
         }
 
-        if(this.state.request && this.state.request.status === 'sent') {
-          actions.push((
-             <li><a href="#" onclick={this.unMarkAsSent.bind(this)}>Mark as not shipped</a></li>
-          ));
-        } else {
-          actions.push((
-            <li><a href="#" onclick={this.markAsSent.bind(this)}>Mark as shipped</a></li>
-          ));
-        }
       }
 
       var status = (
@@ -197,6 +243,8 @@ module.exports = function(Component) {
         var statusNumber;
         if(this.state.request.status === 'sent') {
           statusNumber = 5;
+        } else if(this.state.request.status === 'approved') {
+          statusNumber = 2;
         } else {
           statusNumber = this.state.pandaStatus;
         }
@@ -217,22 +265,49 @@ module.exports = function(Component) {
           );
         }
 
+        var orgAddress = [
+          this.state.request.street1
+        ];
+        if(this.state.request.street2 && this.state.request.street2.trim()) {
+          orgAddress.push(this.state.request.street2);
+        }
+        orgAddress.push(this.state.request.city);
+        orgAddress.push(this.state.request.zip + ', ' + this.state.request.state);
+        orgAddress = orgAddress.join("\n");
 
         var date;
         if(this.state.request.time) {
           date = strftime('%m/%d/%Y', new Date(this.state.request.time));
         }
+
+        var shippingLabel;
+        if(this.state.request.shippingLabelURIPath) {
+          shippingLabel = (
+            <div>
+              <h3 style="padding: 15px 0">Shipping label</h3>
+              <a href={this.state.request.shippingLabelURIPath}>
+                <img src={this.state.request.shippingLabelURIPath} width="200" style="margin:10px"/>
+              </a>
+              <div class="field" style="margin-left:10px">
+                <div class="control">
+                  <input type="button" class="button is-link" value="Print shipping label" onClick={this.printShippingLabel.bind(this)} />
+                </div>
+              </div>
+            </div>
+          );
+        }
+
         request = (
           <div>
             <p>Requested material: {this.state.request.virtualName}</p>
             <ul>{actions}</ul>
             <p>Requested on: {date || '?'}</p>
             {status}
+            {shippingLabel}
             <p>Requested by: {this.state.request.name} - {this.state.request.email}</p>
-            <p>Requesting organization: {this.state.request.orgName}</p>
-            <p>Requesting organization address: {this.state.request.orgAddress}</p>
-            <p>Shipping receiver: {this.state.request.shippingName}</p>
-            <p>Shipping address: {this.state.request.shippingAddress}</p>
+            <p>Requesting organization: {this.state.request.company}</p>
+            <p>Requesting individual: {this.state.request.name}</p>
+            <p>Requesting shipping address: {orgAddress}</p>
             <p>Message from requester:</p>
             <pre>
               {this.state.request.msg}

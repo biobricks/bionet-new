@@ -88,6 +88,117 @@ module.exports = function(settings, users, accounts, db, index, mailer, labDevic
       
     },
 
+    requestSendMTA: function(curUser, requestID, materialDescription, cb) {
+
+      db.request.get(requestID, function(err, data) {
+        if(err) return cb(err);
+
+        var recipient = {
+          email: data.ttoEmail,
+          first_name: 'Tech Transfer Office',
+          last_name: 'Representative',
+          role: 'recipient'
+        };
+
+        var orgAddress = [
+          data.company,
+          data.street1
+        ];
+        if(data.street2 && data.street2.trim()) {
+          orgAddress.push(data.street2);
+        }
+        orgAddress.push(data.city);
+        orgAddress.push(data.zip + ', ' + data.state);
+        orgAddress = orgAddress.join("\n");
+
+        var pandaData = {
+          exhibit_b: false,
+          recipient_org_name: data.company,
+          recipient_org_address: orgAddress,
+          recipient_scientist_name: data.name,
+          recipient_scientist_title: data.title,
+          material_description: materialDescription || data.virtualName,
+          shipping_address_name: data.name,
+          shipping_address: orgAddress,
+          transmittal_fee: false,
+          transmittal_fee_amount: "0",
+          attribution: false,
+          notify_on_redistribute: false,
+          attachment_present: false
+        };
+
+        var emailMsg = "The researcher " + pandaData.recipient_scientist_title + " " + pandaData.recipient_scientist_name + " has ordered the biomaterial " + data.virtualName + " from Endy Lab at Stanford via the bionet. To complete this order, a signature from a representative of your institute's Tech Transfer Office (or equivalent) is required and the researcher has identified you as this representative. To approve this transfer, please sign the linked Material Transfer Agreement.";
+
+
+        pandadoc.createDocument(recipient, emailMsg, pandaData, settings.pandadoc.omta_template_uuid, function(err, pandadocID) {
+          if(err) return cb(err);
+
+          data.pandadocID = pandadocID;
+          data.status = 'approved';
+
+          db.request.put(requestID, data, function(err) {
+            if(err) return cb(err);
+
+            cb(null, pandadocID);
+
+          });
+        });
+      })
+    },
+
+    requestBuyShippingLabel: function(curUser, requestID, cb) {
+
+      db.request.get(requestID, function(err, data) {
+        if(err) return cb(err);
+
+        data.country = "United States";
+        data.residential = false;
+        
+        var opts = {
+          local: true
+        }
+        
+        labeler.buyLabel(data, settings.shippingLabeler.parcel, opts, function(err, shipment, filename) {
+          if(err) {
+            if(err.message && err.message.errors) {
+              return cb(new Error(err.message.errors.join("\n")));
+            }
+            return cb(err);
+          }
+          
+          var uriPath = '/static/labels/' + filename;
+
+          data.shippingLabelURIPath = uriPath;
+
+          db.request.put(requestID, data, function(err) {
+            if(err) return cb(err);
+
+            cb(null, uriPath);
+          });
+        });
+      });
+      
+    },
+
+    requestPrintShippingLabel: function(curUser, requestID, cb) {
+      db.request.get(requestID, function(err, data) {
+        if(err) return cb(err);
+        
+        if(!data.shippingLabelURIPath) {
+          return cb(new Error("This material request does not yet have a shipping label"));
+        }
+
+        var filename = path.basename(data.shippingLabelURIPath);
+        var filepath = path.join(settings.shippingLabeler.outDir, filename);
+        
+        labDeviceServer.printLabel('dymoPrinter', filepath, function(err) {
+          if(err) return cb(err);
+
+          cb(null, data.shippingLabelURIPath);
+        });
+      });
+    },
+
     printShippingLabel: function(curUser, address, cb) {
 
       address.country = "United States";
@@ -107,7 +218,6 @@ module.exports = function(settings, users, accounts, db, index, mailer, labDevic
 
         var uriPath = '/static/labels/' + filename;
         var filepath = path.join(settings.shippingLabeler.outDir, filename);
-        console.log("PRRRINT", settings.shippingLabeler.outDir, filename);
 
         labDeviceServer.printLabel('dymoPrinter', filepath, function(err) {
           cb(err, uriPath);

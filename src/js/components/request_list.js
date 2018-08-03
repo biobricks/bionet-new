@@ -111,6 +111,7 @@ module.exports = function(Component) {
 
       
       var requests = [];
+      var approvedRequests = [];
       var readyToShipRequests = [];
       var shippedRequests = [];
       var trashedRequests = [];
@@ -124,6 +125,8 @@ module.exports = function(Component) {
           readyToShipRequests.push(this.renderRequestItem(r, 'shipped'));
         } else if(r.value.status === 'sent') {
           shippedRequests.push(this.renderRequestItem(r, 'shipped'));
+        } else if(r.value.status === 'approved') {
+          approvedRequests.push(this.renderRequestItem(r, 'approved'))
         } else {
           requests.push(this.renderRequestItem(r, ''));
         }
@@ -134,7 +137,17 @@ module.exports = function(Component) {
         ))
       } else {
         requests = (
-            <p>No requests waiting for legal</p>
+            <p>No requests waiting for approval</p>
+        );
+      }
+
+      if(approvedRequests.length) {
+        approvedRequests = ((
+          <ul>{approvedRequests}</ul>
+        ))
+      } else {
+        approvedRequests = (
+            <p>No requests waiting for TTO signatures</p>
         );
       }
 
@@ -176,8 +189,11 @@ module.exports = function(Component) {
           <h2>Pending requests</h2>  
           {loading}
 
-          <h3>Waiting for legal</h3>
+          <h3>Waiting for approval</h3>
           {requests}
+
+          <h3>Waiting for TTO signatures</h3>
+          {approvedRequests}
 
           <h3>Ready to ship</h3>
           {readyToShipRequests}

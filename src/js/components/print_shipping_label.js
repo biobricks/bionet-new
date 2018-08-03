@@ -71,14 +71,16 @@ module.exports = function(Component) {
                       <input class="input" type="text" onChange={linkState(this, 'name')} />
                     </div>
                   </div>
+
+
                   <div class="field">
-                    <label class="label">Steet address</label>
+                    <label class="label">Street address</label>
                     <div class="control">
                       <input class="input" type="text" onChange={linkState(this, 'street1')} />
                     </div>
                   </div>
                   <div class="field">
-                    <label class="label">Steet address 2</label>
+                    <label class="label">Street address 2</label>
                     <div class="control">
                       <input class="input" type="text" onChange={linkState(this, 'street2')} />
                     </div>

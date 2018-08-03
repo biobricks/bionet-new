@@ -15,7 +15,7 @@ module.exports = function(Component) {
             <input 
               id="search-form-input"
               type="text" 
-              className="input is-info is-medium"
+              className="input is-medium"
               placeholder={this.props.status}
               autoComplete="off"
               name="search"

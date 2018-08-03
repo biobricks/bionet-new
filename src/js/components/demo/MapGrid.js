@@ -66,8 +66,11 @@ module.exports = function(Component) {
         if(record && record.children){
           for(let i = 0; i < record.children.length; i++){
             let childRecord = record.children[i];
+            // adjust for col and row count start at 0
+            //childRecord.row += 1;
+            //childRecord.col += 1;
             // get position of current child record based on its relationship with parent size
-            let childIndex = ((childRecord.row * recordColumns) - recordColumns) + childRecord.col - 1;
+            let childIndex = (((childRecord.row + 1) * recordColumns) - recordColumns) + (childRecord.col + 1) - 1;
             // replace empty with child
             let classNames = "grid-item";
             if(childRecord && this.props.selectedRecord && this.props.hoveredRecord && this.props.hoveredRecord.id){

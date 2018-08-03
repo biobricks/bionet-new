@@ -14,8 +14,6 @@ module.exports = function(Component) {
       this.initialized = false;
       app.actions.inventory.initialize();
       this.state = {
-        redirect: false,
-        redirectTo: '',
         inventoryPath: [],
         selectedRecord: {},
         editMode: false,
@@ -23,14 +21,14 @@ module.exports = function(Component) {
         formType: "",
         hoveredRecord: {}
       };
-      //console.log(app.actions.inventory);
+      console.log(app.actions.inventory);
       //ashnazg.listen('global.user', this.loggedInUser.bind(this));
       this.toggleEditMode = this.toggleEditMode.bind(this);
       this.toggleNewMode = this.toggleNewMode.bind(this);
       this.getInventoryPath = this.getInventoryPath.bind(this);
-      this.onClickLink = this.onClickLink.bind(this);
       this.setFormType = this.setFormType.bind(this);
       this.setHoveredRecord = this.setHoveredRecord.bind(this);
+      this.getSelectedRecord = this.getSelectedRecord.bind(this);
     }
 
     toggleEditMode() {
@@ -51,23 +49,39 @@ module.exports = function(Component) {
     }    
 
     getInventoryPath(id, callback) {
-      app.actions.inventory.getInventoryPath(id, (error, inventoryPath) => {
-        if(error !== null){ 
-          callback(error, null); 
+          /* 
+            There is a short lag between the componentDidMount() lifecycle method and
+            the initialization of app.actions.
+            A 10ms delay in script execution makes calls to app.actions available. 
+          */ 
+      setTimeout(() => {      
+        if (id) {
+          //console.log('getInventoryPath: Has ID - Getting Inventory Path');
+          app.actions.inventory.getInventoryPath(id, (error, inventoryPath) => {
+            if(error !== null){ 
+              callback(error, null); 
+            } else {
+              callback(null, inventoryPath);
+            }
+          });
         } else {
-          callback(null, inventoryPath);
+          //console.log('getInventoryPath: Has No ID - Getting Root ID...');
+          app.actions.inventory.getRootItem((error, rootId) => {
+            if(error) { 
+              console.log(error);
+            } else {
+              //console.log(`getInventoryPath: Root ID is ${rootId} - Getting Inventory Path`);
+              app.actions.inventory.getInventoryPath(rootId, (error, inventoryPath) => {
+                if(error !== null){ 
+                  callback(error, null); 
+                } else {
+                  callback(null, inventoryPath);
+                }
+              });
+            }
+          });
         }
-      });      
-    }
-
-    onClickLink(e){
-      e.preventDefault();
-      //console.log('on click link fired');
-      const redirectTo = e.target.getAttribute('to');
-      this.setState({
-        redirect: true,
-        redirectTo
-      });   
+      }, 10);
     }
 
     setFormType(e) {
@@ -97,11 +111,10 @@ module.exports = function(Component) {
       }
     }
 
-    componentDidUpdate() {
-      //console.log('componentDidUpdate fired');
-      //console.log(this.state);
+    getSelectedRecord(){
       const idParam = this.props.match.params.id ? this.props.match.params.id : null;       
-      if(idParam !== this.state.selectedRecord.id){
+      if(idParam && idParam !== this.state.selectedRecord.id){
+        //console.log('getSelectedRecord fired');
         this.getInventoryPath(idParam, (error, inventoryPath) => {
           let selectedRecord = this.state.selectedRecord;
           if(error){ 
@@ -119,23 +132,40 @@ module.exports = function(Component) {
             });
           }
         });
-      }
-      if(idParam === this.state.selectedRecord.id && this.state.redirect === true){
-        this.setState({
-          redirect: false,
-          redirectTo: ''
-        });
-      }      
+      } else if (!idParam && Object.keys(this.state.selectedRecord).length === 0 && this.state.inventoryPath.length === 0) {
+        //console.log('getSelectedRecord fired');
+        this.getInventoryPath(idParam, (error, inventoryPath) => {
+          let selectedRecord = this.state.selectedRecord;
+          if(error){ 
+            console.log(error);
+          } else {
+            selectedRecord = inventoryPath[inventoryPath.length - 1];
+            console.group();
+            console.log('Selected Record:');
+            console.log(selectedRecord);
+            console.groupEnd();
+            this.setState({
+              inventoryPath,
+              selectedRecord,
+              hoveredRecord: null
+            });
+          }
+        });        
+      }       
+    }
+    
+    componentDidUpdate() {
+      //console.log('componentDidUpdate fired');
+      this.getSelectedRecord();
+ 
+    }
+
+    componentDidMount() {
+      //console.log('componentDidMount fired');
+      this.getSelectedRecord();
     }
 
     render() {
-      if(this.state.redirect){ 
-        return (
-          <Redirect
-            to={this.state.redirectTo}
-          />
-        );
-      }
       return (
         <div class="Inventory">
           <div class="columns is-desktop">

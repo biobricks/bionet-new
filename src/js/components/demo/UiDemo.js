@@ -102,8 +102,17 @@ module.exports = function(Component) {
             <div class="column is-5-desktop">
               <div class="panel has-background-white">
                 <div class="panel-heading">
-                  <i class="mdi mdi-grid"></i>&nbsp;&nbsp;Grid Container
+                  <i class="mdi mdi-grid"></i>&nbsp;&nbsp;Inventory
                 </div>
+                <Link 
+                  to="/ui/inventory"
+                  class="panel-block"
+                >
+                  <span class="panel-icon">
+                    <i class="mdi mdi-grid"></i>
+                  </span>
+                  Inventory
+                </Link> 
                 <Link 
                   to="/ui/containers/new"
                   class="panel-block"

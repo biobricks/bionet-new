@@ -77,10 +77,12 @@ module.exports = function(Component) {
                 <Route exact path="/" component={Search} />
                 
                 
-                <Route path="/ui/test/:itemId" component={TestComponent} />
+                <Route path="/ui/test/:id" component={TestComponent} />
                 <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
                 <Route path="/ui/inventory/:id" component={InventoryDemo} />
                 <Route exact path="/ui" component={UiDemoIndex} />
+                <Route exact path="/ui/test" component={TestComponent} />
+                <Route exact path="/ui/inventory" component={InventoryDemo} />
                 <Route exact path="/ui/favorites" component={FavoritesDemo} />
                 <Route exact path="/ui/workbench" component={WorkbenchDemo} />
                 <Route exact path="/ui/requests" component={RequestsDemo} />

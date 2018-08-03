@@ -392,44 +392,54 @@ module.exports = function(Component) {
 
       return (
         <div class="Virtual panel">
-          <div class="panel-heading">
-            <span>{this.state.virtual ? this.state.virtual.name : "Loading"}</span>
-            {(this.state.virtual) ? (
-              <div class="toolbox is-pulled-right">
-                <div class="buttons has-addons">
-                  <Link 
-                    class="button is-small is-link"
-                    to={'/virtual/edit/' + this.state.virtual.id}
-                  >
-                    <i class="mdi mdi-pencil"></i>
-                  </Link>
-                  <a 
-                    href=""
-                    class="button is-small is-danger"
-                    onClick={this.delVirtual.bind(this)}
-                  >
-                    <i class="mdi mdi-delete-variant"></i>
-                  </a>
-                </div>
-              </div>   
-            ) : null }         
-          </div>
-          {(this.state.virtual && this.state.virtual.freegenes) ? (
+          <div class="columns">
+            <div class="column is-6-desktop">
+
+
+              <div class="panel-heading">
+                {(this.state.virtual) ? (
+                  <span><i class="mdi mdi-dna"></i>&nbsp;{this.state.virtual.name}</span>
+                ) : (
+                  <span><i class="mdi mdi-progress-download"></i>&nbsp;&nbsp;Loading</span>
+                )}
+                {(this.state.virtual) ? (
+                  <div class="toolbox is-pulled-right">
+                    <div class="buttons has-addons">
+                      <Link 
+                        class="button is-small is-link"
+                        to={'/virtual/edit/' + this.state.virtual.id}
+                      >
+                        <i class="mdi mdi-pencil"></i>
+                      </Link>
+                      <a 
+                        href=""
+                        class="button is-small is-danger"
+                        onClick={this.delVirtual.bind(this)}
+                      >
+                        <i class="mdi mdi-delete-variant"></i>
+                      </a>
+                    </div>
+                  </div>   
+                ) : null }         
+              </div>
+              {(this.state.virtual && this.state.virtual.freegenes) ? (
+                  <div class="panel-block">
+                  {status}
+                </div>            
+              ) : null }
+            
+              {virtual}
+            
               <div class="panel-block">
-              {status}
-            </div>            
-          ) : null }
-        
-          {virtual}
-        
-          <div class="panel-block">
-            <h5 onDblClick={this.makeRequestable.bind(this)}>Physical Instances</h5>
-          </div>
-          {physicals}
-          <div>
-            {loading}
-          </div>
-          {requestLink}
+                <h5 onDblClick={this.makeRequestable.bind(this)}>Physical Instances</h5>
+              </div>
+              {physicals}
+              <div>
+                {loading}
+              </div>
+              {requestLink}
+            </div>
+          </div>    
         </div>
       )
     }

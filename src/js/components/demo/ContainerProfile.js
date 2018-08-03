@@ -35,11 +35,10 @@ module.exports = function(Component) {
 
           let classNames = this.props.hoveredRecord && child.id === this.props.hoveredRecord.id ? "active panel-block" : "panel-block";
           return (
-            <a
+            <Link
               to={`/ui/inventory/${child.id}`}
               class={classNames}
               id={child.id}
-              onClick={this.props.onClickLink}
               onMouseEnter={this.onRecordEnter}
               onMouseLeave={this.onRecordLeave}
             >
@@ -51,7 +50,7 @@ module.exports = function(Component) {
                 )}  
               </span>
               {child.name} 
-            </a>
+            </Link>
           );
         });
       }

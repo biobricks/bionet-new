@@ -282,58 +282,68 @@ module.exports = function(Component) {
       }
       console.log("TERMS 2:", this.state.terms)
       return (
-        <div>
-          <form onSubmit={this.save.bind(this)}>
-            <div class="field">
-              <label class="label">Name</label>
-              <div class="control">
-                <input class="input" type="text" onInput={this.changeName.bind(this)} value={this.state.name} />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Description</label>
-              <div class="control">
-                <textarea class="input description" onInput={this.changeDesc.bind(this)} onChange={this.resizeTextarea.bind(this)} value={this.state.description}></textarea>
-              </div>
-            </div>
-            <div class="editor-container field">
-              <label class="label">Content</label>
-              <p class="help is-danger">{this.state.notice}</p>
-              <textarea id="editor"></textarea>
-            </div>
-            <div class="field">
-              <label class="label">Provenance</label>
-              <div class="control">
-                <input class="input" onInput={this.changeProv.bind(this)} value={this.state.provenance} />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Genotype</label>
-              <div class="control">
-                <input class="input" onInput={this.changeGenotype.bind(this)} value={this.state.genotype} />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Sequence</label>
-              <div class="control">
-                <textarea class="textarea" rows="5" onInput={this.changeSeq.bind(this)} value={this.state.sequence}></textarea>
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Terms and conditions</label>
-              <div class="control">
-                <select class="input" onInput={this.changeTerms.bind(this)} value={this.state.terms}>
+        <div class="edit-virtual">
+          <div class="columns">
+            <div class="column is-6-desktop">
+              <div class="panel">
+                <div class="panel-heading">
+                  <i class="mdi mdi-dna"></i>&nbsp;Edit Virtual
+                </div>
+                <div class="panel-block">
+                  <form onSubmit={this.save.bind(this)}>
+                    <div class="field">
+                      <label class="label">Name</label>
+                      <div class="control">
+                        <input class="input" type="text" onInput={this.changeName.bind(this)} value={this.state.name} />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Description</label>
+                      <div class="control">
+                        <textarea class="input description" onInput={this.changeDesc.bind(this)} onChange={this.resizeTextarea.bind(this)} value={this.state.description}></textarea>
+                      </div>
+                    </div>
+                    <div class="editor-container field">
+                      <label class="label">Content</label>
+                      <p class="help is-danger">{this.state.notice}</p>
+                      <textarea id="editor"></textarea>
+                    </div>
+                    <div class="field">
+                      <label class="label">Provenance</label>
+                      <div class="control">
+                        <input class="input" onInput={this.changeProv.bind(this)} value={this.state.provenance} />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Genotype</label>
+                      <div class="control">
+                        <input class="input" onInput={this.changeGenotype.bind(this)} value={this.state.genotype} />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Sequence</label>
+                      <div class="control">
+                        <textarea class="textarea" rows="5" onInput={this.changeSeq.bind(this)} value={this.state.sequence}></textarea>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Terms and conditions</label>
+                      <div class="control">
+                        <select class="input" onInput={this.changeTerms.bind(this)} value={this.state.terms}>
 
-                  <option value="openmta">OpenMTA</option>
-                  <option value="limbo">Limbo</option>
-                  <option value="ubmta">UBMTA</option>
-                  <option value="other">Other</option>
-                </select>
+                          <option value="openmta">OpenMTA</option>
+                          <option value="limbo">Limbo</option>
+                          <option value="ubmta">UBMTA</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    {formControls}
+                  </form>
+                </div>
               </div>
             </div>
-            {formControls}
-          </form>
-
+          </div>
         </div>
       )
     }

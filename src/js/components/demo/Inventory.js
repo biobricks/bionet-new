@@ -21,7 +21,7 @@ module.exports = function(Component) {
         formType: "",
         hoveredRecord: {}
       };
-      //console.log(app.actions.inventory);
+      console.log(app.actions.inventory);
       //ashnazg.listen('global.user', this.loggedInUser.bind(this));
       this.toggleEditMode = this.toggleEditMode.bind(this);
       this.toggleNewMode = this.toggleNewMode.bind(this);

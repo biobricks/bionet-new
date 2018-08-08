@@ -55,6 +55,8 @@ module.exports = function(Component) {
         return;
       }
 
+      app.actions.notify("Attempting to approve...");
+
       // this automatically changes request.status to 'approved'
       // and sends the MTA
       app.remote.requestSendMTA(this.state.id, this.state.description, function(err) {
@@ -70,7 +72,7 @@ module.exports = function(Component) {
           }
         });
           
-        app.actions.notify("Request approved! Redirecting...");
+        app.actions.notify("Request approved! Redirecting...", 'success');
 
         setTimeout(function() {
           app.actions.route('/request-show/' + this.state.id);

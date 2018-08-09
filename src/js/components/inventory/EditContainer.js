@@ -131,6 +131,7 @@ export default class EditContainer extends Component {
         if (item) {
             this.setState({
                 item:item,
+                editItemMode: true,
                 defaultName : item.name,
                 defaultWidth : item.width / this.gridWidth,
                 defaultHeight : item.height / this.gridHeight,
@@ -140,6 +141,7 @@ export default class EditContainer extends Component {
         } else {
             this.setState({
                 item:item,
+                editItemMode: true,
                 defaultName : '',
                 defaultWidth : 1,
                 defaultHeight : 1,
@@ -272,6 +274,8 @@ export default class EditContainer extends Component {
                 });
                 this.setState({
                     item:null,
+                    editItemMode:false,
+                    newItemMode:false,
                     defaultWidth:1,
                     defaultHeight:1,
                     defaultColor:'aqua',
@@ -660,14 +664,24 @@ export default class EditContainer extends Component {
                 updatedItems.push(newItem)
                 this.onUpdateItems(updatedItems)
                 this.selectItem(newItem)
+                app.actions.notify(newItem.name+" saved", 'notice', 2000);
+
             }.bind(this))
         } else {
+            const self=this
             app.actions.inventory.updateItem(this.selectedItem.id,function(err,item){
                 var updatedItem = Object.assign(item,selectedItem)
                 console.log('onSaveItemClick:',updatedItem)
+                app.actions.notify(self.selectedItem.name+" saved", 'notice', 2000);
                 return updatedItem
             })
         }
+        
+        this.setState({
+            editItemMode:false,
+            newItemMode:false
+        })
+        
     }
 
     render() {
@@ -679,9 +693,8 @@ export default class EditContainer extends Component {
         const name=this.state.defaultName
         const isEditMode=true
         if (this.props.fullWidth) {
-            //const isEditItemMode=this.state.editItemMode
-            //const isNewItemMode=this.state.newItemMode
-            const isEditItemMode=true
+            const isEditItemMode=this.state.editItemMode
+            const isNewItemMode=this.state.newItemMode
             var containerPropertiesForm=null
             var itemPropertiesForm = null
             containerPropertiesForm = (
@@ -730,6 +743,7 @@ export default class EditContainer extends Component {
                         </div>
                     )
             } else {
+                /*
                 itemPropertiesForm=(
                 <div style={{height:'120px'}}>
                     <div className="pure-form">
@@ -745,16 +759,9 @@ export default class EditContainer extends Component {
                     </div>
                 </div>
                 )
+                */
                 }
             }
-            /*
-                                  <span 
-                                    class="button is-small"
-                                    onClick={this.toggleEditItemMode.bind(this)}
-                                  >
-                                    <i class="mdi mdi-arrow-left-bold"></i>
-                                  </span>
-            */
             var itemProperties=null
             if (itemPropertiesForm) {
                 itemProperties = (

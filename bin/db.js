@@ -54,6 +54,7 @@ function usage(err) {
   f("  list db_name: List all rows from the specified database as JSON");
   f("  get db_name id: Get a row from the specified database in JSON format");
   f("  put db_name file.json: Run .put on the specified db with object in file.json");
+  f("  wipe db_name: Deletes all data from the specified database");
   f("  user: view users");
   f("    list: Print list of all users");
   f("    group: Add or remove a user from one or more groups");
@@ -254,10 +255,10 @@ function main() {
 
     var count = 0;
     var ins = fs.createReadStream(args[1], {encoding: 'utf8'});
-    var jstream = JSONStream.parse([{emitKey: true}]);
+    var jstream = JSONStream.parse([true]);
     jstream.pipe(through.obj(function(obj, enc, cb) {
       if(!obj.hasOwnProperty('key') || !obj.hasOwnProperty('value')) return cb();
-
+      
       curDB.put(obj.key, obj.value, function(err) {
         if(err) return cb(err);
         count++;
@@ -307,6 +308,27 @@ function main() {
     dbstream.pipe(through.obj(function(obj, enc, cb) {
       console.log(JSON.stringify(obj)+"\n");
       cb();
+    }, function() { 
+      process.exit(0);
+    }));
+
+  } else if(cmd.match(/^wipe/)) { // wipe
+
+    if(args.length !== 1) {
+      usage("Wrong number of arguments");
+    }
+
+    var dbs = getDBs(db);
+
+    var curDB = dbs[args[0]];
+    if(!curDB || typeof curDB !== 'object') {
+      fail("Invalid database name '"+args[0]+"'");
+    }
+
+    var dbstream = curDB.createReadStream();
+
+    dbstream.pipe(through.obj(function(obj, enc, cb) {
+      curDB.del(obj.key, cb)
     }, function() { 
       process.exit(0);
     }));

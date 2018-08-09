@@ -211,6 +211,16 @@ module.exports = function(Component) {
                   </div>
 
                   <div class="field">
+                    <label class="label">Email address of your organization's Tech Transfer Office (person who will sign the MTA)</label>
+                    <div class="control has-icons-left">
+                      <input class="input" type="text" onChange={linkState(this, 'ttoEmail')} />
+                      <span class="icon is-small is-left">
+                        <i class="fa fa-envelope"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="field">
                     <label class="label">Message for <span>{app.settings.lab}</span>?</label>
                     <div class="control">
                       <textarea class="textarea" onChange={linkState(this, 'message')}></textarea>

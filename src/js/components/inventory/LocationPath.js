@@ -119,7 +119,10 @@ export default class LocationPath extends Component {
 
         return (
             <div ref={node => this.container = node}>
-                <div className="LocationPath" style={containerStyle}>
+                <div
+                    className="LocationPath"
+                    style={containerStyle}
+                >
                     { (viewOrientation) ? <h5 class="LocationTitle">{item.name}, {viewOrientation}</h5> : null }
                     <Grid
                             state="navigateGrid"

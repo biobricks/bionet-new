@@ -22,6 +22,7 @@ module.exports = function (Component) {
     const NEW_MODE_PHYSICAL_STEP2 = 2
     const NEW_MODE_CONTAINER = 3
 
+
     return class InventoryPath extends Component {
         constructor(props) {
             super(props);
@@ -363,7 +364,9 @@ module.exports = function (Component) {
                 recordLocation:item
             })
         }
-        
+        onCopyWorkbench(e) {
+            console.log('onCopyWorkbench :',this.state.currentItem)
+        }
         render() {
             console.log('inventoryPath render',this.props.id, this.props.inventoryPath)
             if (!this.props.inventoryPath || !this.props.id) return
@@ -675,6 +678,7 @@ module.exports = function (Component) {
                             gridEnabled={true}
                             borderEnabled={false}
                             highlightedRecord={this.state.highlightedRecord}
+                            onCopyWorkbench={this.onCopyWorkbench}
                         />
                     )
                 }

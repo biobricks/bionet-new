@@ -60,6 +60,13 @@ module.exports = function (Component) {
                 this.getWorkbench()
             } catch(e) {}
         }
+        onDragEnd(e) {
+            const targetItem = app.actions.inventory.getLastPathItem()
+            console.log('Workbench onDragEnd:',targetItem)
+            app.actions.inventory.moveWorkbenchToContainer(targetItem.id,0,0,function(){
+                console.log('Workbench moved')
+            })
+        }
         
         render() {
             const totalItems = (this.state.workbench) ? this.state.workbench.length : 0
@@ -76,6 +83,7 @@ module.exports = function (Component) {
                     ondragover={this.dragOver}
                     draggable="true"
                     ondragstart={this.dragStart}
+                    ondragend={this.onDragEnd}
                 >{totalItems} {itemText} on bench</span>
             )
         }

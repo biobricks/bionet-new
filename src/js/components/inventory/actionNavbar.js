@@ -31,7 +31,6 @@ module.exports = function (Component) {
       let menuDef = [];
       const currentItem = app.actions.inventory.getLastPathItem();
       if (currentItem) {
-        const currentSelectionType = currentItem.type.toLowerCase();
         menuDef = app.state.inventory.types.all;
       }
       this.createType = app.actions.inventory.isInstanceContainerSelected();
@@ -300,7 +299,6 @@ module.exports = function (Component) {
     }
 
     render() {
-      const thisModule = this;
       const initMenu = function() {
         const menuDef = this.state.menuDef;
         if (!menuDef) {

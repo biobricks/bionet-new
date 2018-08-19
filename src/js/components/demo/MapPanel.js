@@ -9,8 +9,9 @@ module.exports = function(Component) {
 
 	  render() {
       let record = this.props.selectedRecord;
+      const isContainer = Object.keys(record).indexOf('virtual_id') === -1;
       //let isContainer = Object.keys(record).indexOf('children') > -1;
-      let isContainer = record.layoutHeightUnits && record.layoutWidthUnits && record.layoutHeightUnits > 1 && record.layoutWidthUnits > 1;    
+      //let isContainer = record.layoutHeightUnits && record.layoutWidthUnits && record.layoutHeightUnits > 1 && record.layoutWidthUnits > 1;    
       return (
         <div class="MapPanel panel has-background-white">
           

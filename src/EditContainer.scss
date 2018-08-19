@@ -1,0 +1,27 @@
+.pure-form {
+    text-align:left;
+    display:block;
+}
+.pure-form input, .pure-form label, .pure-form select, .pure-form span {
+    margin-right:10px;
+}
+
+.pure-form span {
+    font-weight:700;
+}
+
+label {
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+}
+
+.EditContainer {
+    padding:0;
+    margin:0;
+    overflow:auto;
+}
+.vertical-spacing {
+    margin-top:20px;
+}

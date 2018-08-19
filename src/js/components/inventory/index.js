@@ -3,7 +3,6 @@ import ashnazg from 'ashnazg';
 
 module.exports = function (Component) {
   
-  const ActionNavbar  = require('./actionNavbar')(Component);
   const InventoryPath = require('./inventoryPath')(Component);
 
   return class Inventory extends Component {

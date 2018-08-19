@@ -7,12 +7,7 @@ import ContainerPropertiesForm from './ContainerPropertiesForm';
 
 module.exports = function (Component) {
 
-  const StorageContainer = require('./storageContainer')(Component);
-  const EditPhysical = require('./editPhysical')(Component);
   const PrintLabel = require('../print')(Component);
-  const ScanLabel = require('../scan')(Component);
-  const EditTable = require('./editTable')(Component);
-  const Workbench = require('./workbench')(Component);
 
   const DataPanel = require('../data_panel.js')(Component);
   const MapPanel = require('../map_panel.js')(Component);
@@ -82,7 +77,7 @@ module.exports = function (Component) {
       if (!item) {
         return;
       }  
-      const id = item.id;
+
       const name = item.name;
       const callback = function(err, labelImageData, labelData) {
         item.label = labelData;
@@ -196,7 +191,6 @@ module.exports = function (Component) {
         
     onSaveNewPhysical(dbData) {
       const instances = dbData.instances;
-      const thisModule = this;
       const parentId = this.props.id;
       console.log('inventoryPath onSaveNew:', dbData, instances);
       delete dbData.instances;
@@ -452,13 +446,7 @@ module.exports = function (Component) {
         );
       }
 
-      let childItems = (currentItem) ? currentItem.children : null;
-      const attributes = app.actions.inventory.getAttributesForType(currentItem.type);
-
       const pathMaxHeight = "margin:0;padding:0;";
-
-      const selectedItemElements = (this.state.selectedItem) ? this.state.selectedItem.items : null;        
-      const tableHeight =  window.innerHeight - this.state.containerSize - 100;
 
       let dataItems = {};
       if (this.state.editMode) {
@@ -495,7 +483,6 @@ module.exports = function (Component) {
           fullWidth = true;
         }  
         const pathId = {};
-        let zoomIndex = 1;
         let location = null;
         if (this.state.location) {
           location = Object.assign(this.state.location,{});

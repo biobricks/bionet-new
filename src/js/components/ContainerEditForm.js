@@ -79,7 +79,7 @@ module.exports = function(Component) {
                 </div>
               </div>
               <div class="field is-horizontal">
-                <div class="field-label">
+                <div class="field-label is-normal is-narrow">
 
                 </div>
                 <div class="field-body">

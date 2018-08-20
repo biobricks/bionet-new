@@ -14,6 +14,9 @@ $breakpoint-desktop: 1024px;
       .field-body .control {
         text-align: left;
         padding-top: 6px;
+        .button {
+          border-radius: 0px;
+        }
       }
       .control {
         width: 100%;

@@ -12,6 +12,9 @@ $breakpoint-desktop: 1024px;
     }
     .field .control {
       width: 100%;
+      .button {
+        border-radius: 0px;
+      }      
     }
   }
 }

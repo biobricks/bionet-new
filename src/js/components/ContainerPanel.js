@@ -55,10 +55,12 @@ module.exports = function (Component) {
             <PanelToolbar {...this.props} />
           </div>
 
-          <Breadcrumbs 
-            selectedRecord={selectedRecord}
-            inventoryPath={inventoryPath}
-          />
+          {(this.props.mode === 'view') ? (
+            <Breadcrumbs 
+              selectedRecord={selectedRecord}
+              inventoryPath={inventoryPath}
+            />
+          ) : null }
 
           {(alertExists) ? (
             <Message

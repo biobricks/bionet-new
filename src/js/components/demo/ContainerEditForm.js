@@ -26,7 +26,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input  "
+                      class="input"
                       type="text" 
                       value={selectedRecord.name}
                     />
@@ -40,7 +40,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <textarea 
-                      class="textarea  " 
+                      class="textarea" 
                       value={selectedRecord.description}
                       rows="2"
                     >{selectedRecord.description}</textarea>

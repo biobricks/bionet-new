@@ -31,19 +31,17 @@ module.exports = function(Component) {
     }
 
     render() {
-
-      <li class="is-active">{this.props.selectedRecord.name}</li>
         
       let isViewMode = !this.props.editMode && !this.props.newMode;
       let isEditMode = this.props.editMode === true;
       let isNewMode = this.props.newMode === true;
-      let selectedRecord = this.props.selectedRecord;
+      let selectedRecord = this.props.formattedRecord;
       
-      //let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;
-      let isContainer = selectedRecord.layoutHeightUnits && selectedRecord.layoutWidthUnits && selectedRecord.layoutHeightUnits > 1 && selectedRecord.layoutWidthUnits > 1;
+      let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;
+      //let isContainer = selectedRecord.layoutHeightUnits && selectedRecord.layoutWidthUnits && selectedRecord.layoutHeightUnits > 1 && selectedRecord.layoutWidthUnits > 1;
 
 
-      let headingIcon = isContainer ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
+      let headingIcon = (isContainer) ? (<i class="mdi mdi-grid"></i>) : (<i class="mdi mdi-flask"></i>);
       const breadcrumbs = this.props.inventoryPath.map((item, index) => {
         const itemIsContainer = Object.keys(item).indexOf('children') > -1;
         return (
@@ -69,15 +67,15 @@ module.exports = function(Component) {
                   ) : null }
 
                   {(isNewMode && isContainer) ? (
-                    <span>New {this.state.formType || "Item"} In {this.props.selectedRecord.name}</span>
+                    <span>New {this.state.formType || "Item"} In {selectedRecord.name}</span>
                   ) : null }
 
                   {(isNewMode && !isContainer) ? (
-                    <span>New Instances Of {this.props.selectedRecord.name}</span>
+                    <span>New Instances Of {selectedRecord.name}</span>
                   ) : null }
 
                   {(isEditMode) ? (
-                    <span>Edit {this.props.selectedRecord.name}</span>
+                    <span>Edit {selectedRecord.name}</span>
                   ) : null }
 
                   {(isViewMode) ? (
@@ -175,7 +173,8 @@ module.exports = function(Component) {
           <div>
             {(isViewMode && isContainer) ? (
               <ContainerProfile 
-                {...this.props}
+                selectedRecord={this.props.selectedRecord}
+                formattedRecord={this.props.formattedRecord}
                 setHoveredRecord={this.props.setHoveredRecord}
               />
             ) : null }

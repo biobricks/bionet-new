@@ -43,6 +43,17 @@ $mdi-font-path: "../fonts/materialdesignicons";
 @import "MapGrid.scss";
 @import "UsersPanel.scss";
 
+@import "ContainerPropertiesForm.scss";
+@import "ContainerProfile.scss";
+@import "ContainerEditForm.scss";
+@import "ContainerDelete.scss";
+@import "EditContainer.scss";
+@import "Grid.scss";
+@import "LocationPath.scss";
+@import "SliderControl.scss";
+@import "Breadcrumbs.scss";
+@import "Message.scss";
+
 body {
     font-family: sans-serif;
 }

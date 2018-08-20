@@ -978,5 +978,31 @@ module.exports = {
         app.remote.delPhysical(id, function (err, id) {
             if (cb) cb(err, id)
         })
+    },
+
+    populateInventoryPath: function(id, cb) {
+        if(id){
+            app.actions.inventory.getInventoryPath(id, function(err, inventoryPath) {
+                if (err) {
+                  return cb(err, null); 
+                } else {
+                  return cb(null, inventoryPath);
+                }
+            });
+        } else {
+            app.actions.inventory.getRootItem(function(err, rootId) {
+                if (err) {
+                    return cb(err, null); 
+                } else {
+                    app.actions.inventory.getInventoryPath(rootId, function(err, inventoryPath) {
+                        if (err) {
+                            return cb(err, null); 
+                        } else {
+                            return cb(null, inventoryPath);
+                        }
+                    });
+                }                
+            });
+        }
     }
 }

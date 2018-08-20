@@ -24,14 +24,15 @@ module.exports = function(Component) {
     }
 
     render() {
-      let selectedRecord = this.props.selectedRecord;
+      let selectedRecord = this.props.formattedRecord;
       let parentRecord = this.props.parentRecord;
       let children;
+      //console.log(selectedRecord);
       if (this.props.selectedRecord.children) {
         children = this.props.selectedRecord.children.map((child, index) => {
-          
+          const isContainer = Object.keys(child).indexOf('virtual_id') === -1;
           //let isContainer = Object.keys(child).indexOf('children') > -1;
-          let isContainer = child.layoutHeightUnits && child.layoutWidthUnits && child.layoutHeightUnits > 1 && child.layoutWidthUnits > 1;
+          //let isContainer = child.layoutHeightUnits && child.layoutWidthUnits && child.layoutHeightUnits > 1 && child.layoutWidthUnits > 1;
 
           let classNames = this.props.hoveredRecord && child.id === this.props.hoveredRecord.id ? "active panel-block" : "panel-block";
           return (

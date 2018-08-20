@@ -1,0 +1,26 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+.ContainerDelete {
+  .panel-block form {
+    width: 100%;
+    .field:not(:last-child){
+      margin-bottom: .6rem;
+    }
+    .field {
+      .field-label.is-narrow label {
+        width: 150px;
+      }
+      .field-body .control {
+        text-align: left;
+        padding-top: 6px;
+        .button {
+          border-radius: 0px;
+        }
+      }
+      .control {
+        width: 100%;
+      }
+    }  
+  }
+}

@@ -1,0 +1,17 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+.ContainerEditForm.Restructured{
+  .panel-block form {
+    width: 100%;
+    .field:not(:last-child){
+      margin-bottom: .6rem;
+    }
+    .field .field-label.is-narrow label {
+      width: 150px;
+    }
+    .field .control {
+      width: 100%;
+    }
+  }
+}

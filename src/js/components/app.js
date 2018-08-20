@@ -56,6 +56,9 @@ module.exports = function(Component) {
   const ConfirmAccountPanelDemo = require('./demo/ConfirmAccountPanel.js')(Component);
   const ContainerNewDemo    = require('./demo/ContainerNew.js')(Component);
 
+  // Top Level Page Components Controlling Layout
+  const InventoryPage = require('./pages/Inventory.js')(Component);
+
   // just an example of dynamically loading js
   var DynamicLoading = require('./dynamic_loading.js')(Component);
 
@@ -79,10 +82,10 @@ module.exports = function(Component) {
                 
                 <Route path="/ui/test/:id" component={TestComponent} />
                 <Route path="/ui/lab-inventory/:itemId" component={LabInventoryDemo} />
-                <Route path="/ui/inventory/:id" component={InventoryDemo} />
+                <Route path="/ui/inventory/:id" component={InventoryPage} />
                 <Route exact path="/ui" component={UiDemoIndex} />
                 <Route exact path="/ui/test" component={TestComponent} />
-                <Route exact path="/ui/inventory" component={InventoryDemo} />
+                <Route exact path="/ui/inventory" component={InventoryPage} />
                 <Route exact path="/ui/favorites" component={FavoritesDemo} />
                 <Route exact path="/ui/workbench" component={WorkbenchDemo} />
                 <Route exact path="/ui/requests" component={RequestsDemo} />

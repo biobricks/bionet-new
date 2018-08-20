@@ -1,0 +1,17 @@
+.Breadcrumbs {
+  a {
+    padding: 0;
+    padding-right: 4px; 
+    }
+    .elipses {
+      padding: 0 6px;
+    }
+    li + li::before {
+      content: ' >>  ';
+      white-space: pre;      
+    }
+    li + li::after {
+      content: '';
+      white-space: pre;      
+    }
+}

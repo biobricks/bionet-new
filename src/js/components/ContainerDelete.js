@@ -49,7 +49,9 @@ module.exports = function(Component) {
               </div>
               
               <div class="field is-horizontal">
-                <div class="field-label is-normal is-narrow"></div>
+                <div class="field-label is-normal is-narrow">
+                <label class="label"></label>
+                </div>
                 <div class="field-body">
                   <div class="field">
                     <div class="control">

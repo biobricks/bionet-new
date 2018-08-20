@@ -18,6 +18,10 @@ module.exports = function (Component) {
       this.state = {};
     }
 
+    componentDidMount() {
+      console.log(this.props)
+    }
+
     render() {
       const inventoryPath = this.props.inventoryPath || [];
       const selectedRecord = this.props.selectedRecord || {};

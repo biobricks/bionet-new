@@ -72,12 +72,6 @@ module.exports = function(Component) {
                           >
                             <i class="mdi mdi-arrow-left-bold"></i>
                           </span>
-                          <span 
-                            class="button is-small is-link"
-                            onClick={this.toggleNewMode.bind(this)}
-                          >
-                          <i class="mdi mdi-plus"></i>
-                          </span>
       
                             <span 
                             class="button is-small is-success"

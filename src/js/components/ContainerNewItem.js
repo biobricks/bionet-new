@@ -3,6 +3,8 @@ import { timingSafeEqual } from 'crypto';
 
 module.exports = function(Component) {
 
+  const ContainerNewForm = require('./ContainerNewForm.js')(Component);
+
   return class ContainerNewItem extends Component {
 
     constructor(props) {
@@ -65,9 +67,9 @@ module.exports = function(Component) {
           </div>
 
           {(this.state.formType === 'container') ? (
-            <div class="panel-block">
-              Container New Form
-            </div>
+            <ContainerNewForm
+              {...this.props}
+            />
           ) : null }
 
           {(this.state.formType === 'physical') ? (

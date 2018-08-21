@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import ashnazg from 'ashnazg';
+import { Redirect } from 'react-router-dom';
 import util from '../../util.js';
 
 module.exports = function (Component) {
@@ -16,6 +17,8 @@ module.exports = function (Component) {
       super(props);
       app.actions.inventory.initialize();
       this.state = {
+        redirect: false,
+        redirectTo: '',
         mapFullScreen: false,
         dataFullScreen: false,
         mode: 'view',
@@ -35,6 +38,7 @@ module.exports = function (Component) {
       this.removeAlert = this.removeAlert.bind(this);
       this.toggleMapFullScreen = this.toggleMapFullScreen.bind(this);
       this.toggleDataFullScreen = this.toggleDataFullScreen.bind(this);
+      this.saveNewContainer = this.saveNewContainer.bind(this);
       this.saveContainer = this.saveContainer.bind(this);
       this.deleteContainer = this.deleteContainer.bind(this);
     }
@@ -115,6 +119,32 @@ module.exports = function (Component) {
       });
     }
 
+    saveNewContainer(container) {
+      app.actions.inventory.saveToInventory(container, null, null, function(error, newContainerId){
+        let alert;
+        if (error) {
+          alert = {
+            type: 'danger',
+            message: `There was a problem saving ${container.name}. If the problem persists, please contact your network administrator.`
+          };
+          app.actions.notify(alert.message + error.message, 'error');
+          this.setState({ error, alert });
+        } else {
+          alert = {
+            type: 'success',
+            message: `${container.name} was updated successfully.`
+          };
+          app.actions.notify(alert.message, 'notice', 2000);
+          this.setState({
+            redirect: true,
+            redirectTo: `/ui/inventory/${newContainerId}`,
+            error: {},
+            alert
+          });
+        }         
+      }.bind(this));
+    }
+
     saveContainer(container) {
       app.actions.inventory.updateItem(container.id, function(error, updatedItem) {
         let alert;
@@ -155,6 +185,8 @@ module.exports = function (Component) {
             message: `${container.name} was successfully removed.`
           };
           this.setState({
+            redirect: true,
+            redirectTo: `/ui/inventory/${parentContainer.id}`,            
             mode: 'view',
             error: {},
             alert
@@ -220,6 +252,8 @@ module.exports = function (Component) {
                   inventoryPath={this.state.inventoryPath}
                   mode={this.state.mode}
                   handleSetMode={this.handleSetMode}
+                  alert={this.state.alert}
+                  removeAlert={this.removeAlert}                  
                   toggleDataFullScreen={this.toggleDataFullScreen}
                 />
               ) : null }
@@ -232,10 +266,13 @@ module.exports = function (Component) {
                   handleSetMode={this.handleSetMode}
                   alert={this.state.alert}
                   removeAlert={this.removeAlert}
+                  saveNewContainer={this.saveNewContainer}
                   saveContainer={this.saveContainer}
                   deleteContainer={this.deleteContainer}
                   dataFullScreen={this.state.dataFullScreen}
                   toggleDataFullScreen={this.toggleDataFullScreen}
+                  redirect={this.state.redirect}
+                  redirectTo={this.state.redirectTo}
                 />
               ) : null }
 

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 module.exports = function(Component) {
 
@@ -49,6 +49,12 @@ module.exports = function(Component) {
         );
       });
 
+      if (this.props && this.props.redirect && this.props.redirectTo){
+        return (
+          <Redirect to={this.props.redirectTo}/>
+        );
+      }
+
       return (
         <div class="ContainerProfile Restructured">
           
@@ -86,6 +92,10 @@ module.exports = function(Component) {
           </div>
           
           {children}
+
+          <div class="panel-block"> 
+            <pre>{JSON.stringify(this.props, null, 2)}</pre>
+          </div>
 
         </div>
       )

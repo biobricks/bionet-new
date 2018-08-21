@@ -7,31 +7,30 @@ module.exports = function(Component) {
 
     constructor(props) {
       super(props);
-      this.state = {
-        redirect: false
-      };
+      this.state = {};
       this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
     handleFormSubmit(e) {
       e.preventDefault();
-      this.props.deleteContainer(this.props.selectedRecord);
-      this.setState({
-        redirect: true
-      });
+      const selectedRecord = this.props.selectedRecord;
+      const inventoryPath = this.props.inventoryPath;
+      const parentRecord = inventoryPath[inventoryPath.length - 2];
+      this.props.deleteContainer(selectedRecord, parentRecord);
     }
 
+    
     render() {
 
       const selectedRecord = this.props.selectedRecord;
       const inventoryPath = this.props.inventoryPath;
-      const parentRecord = inventoryPath[inventoryPath.length - 2];
 
-      if (this.state.redirect) {
+      if (this.props && this.props.redirect && this.props.redirectTo){
         return (
-          <Redirect to={`/ui/inventory/${parentRecord.id}`}/>
+          <Redirect to={this.props.redirectTo}/>
         );
       }
+
       return (
         <div class="ContainerDelete">
           <div class="panel-block">

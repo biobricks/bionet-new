@@ -18,10 +18,6 @@ module.exports = function (Component) {
       this.state = {};
     }
 
-    componentDidMount() {
-      console.log(this.props)
-    }
-
     render() {
       const inventoryPath = this.props.inventoryPath || [];
       const selectedRecord = this.props.selectedRecord || {};
@@ -76,12 +72,15 @@ module.exports = function (Component) {
           {(this.props.mode === 'view') ? (
             <ContainerProfile
               selectedRecord={selectedRecord}
+              redirect={this.props.redirect}
+              redirectTo={this.props.redirectTo}              
             />
           ) : null }
 
           {(this.props.mode === 'new') ? (
             <ContainerNewItem
               selectedRecord={selectedRecord}
+              saveNewContainer={this.props.saveNewContainer}
               saveContainer={this.props.saveContainer}
               handleSetMode={this.props.handleSetMode}
             />
@@ -102,6 +101,8 @@ module.exports = function (Component) {
               deleteContainer={this.props.deleteContainer}
               handleSetMode={this.props.handleSetMode}
               inventoryPath={inventoryPath}
+              redirect={this.props.redirect}
+              redirectTo={this.props.redirectTo}
             />
           ) : null }          
 

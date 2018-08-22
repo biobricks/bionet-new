@@ -149,8 +149,8 @@ export default class Grid extends Component {
 
     let sortedIndex = {};
     let rect = (this.container) ? this.container.getBoundingClientRect() : {};
-    const gridWidth = Math.round(this.props.gridWidth * this.props.zoom);
-    const gridHeight = Math.round(this.props.gridHeight * this.props.zoom);
+    const gridWidth = (this.props.gridWidth * this.props.zoom);
+    const gridHeight = (this.props.gridHeight * this.props.zoom);
     let gridItems = null;
     if (this.props.items) {
       const dragManager = new DragManager(
@@ -213,10 +213,12 @@ export default class Grid extends Component {
       gridStyle.border = '1px solid #dbdbdb';
     }
     if (this.props.gridEnabled) {
-      const gridMajorXAxis = gridWidth * this.props.majorGridLine;
-      const gridMajorYAxis = gridHeight * this.props.majorGridLine;
-      const gridMinorXAxis = gridWidth;
-      const gridMinorYAxis = gridHeight;
+        const gw=(gridWidth)
+        const gh=(gridHeight)
+      const gridMajorXAxis = gw * this.props.majorGridLine;
+      const gridMajorYAxis = gh * this.props.majorGridLine;
+      const gridMinorXAxis = gw;
+      const gridMinorYAxis = gh;
 
       // todo: add grid line color to props
       //const gridColorMajorAxis = 'rgba(54,54,54,.25)';

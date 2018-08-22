@@ -303,6 +303,7 @@ module.exports = function (Component) {
       }  
       delete props.validation;
       console.log('inventoryPath onSaveEdit:', props);
+      const self=this
       app.actions.inventory.updateItem(props.id, function(err, item) {
         props.xUnits = (props.xUnits) ? Number(props.xUnits) : 1;
         props.yUnits = (props.yUnits) ? Number(props.yUnits) : 1;
@@ -315,6 +316,7 @@ module.exports = function (Component) {
         delete updatedItem.layoutHeightUnits
         console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
         app.actions.notify(item.name+" saved", 'notice', 2000);
+        self.toggleEditMode()
         return updatedItem;
       });
     }

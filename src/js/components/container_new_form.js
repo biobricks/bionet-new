@@ -166,15 +166,19 @@ module.exports = function(Component) {
                   <div class="column">   
                     <span style={{display:'inline-block'}}>  
                         <input 
-                          type="number" 
-                          style={{display:'inline-block',width:'40px'}}
+                          type="number"
+                          min="1"
+                          max="1000"
+                          style={{display:'inline-block',width:'80px'}}
                           onChange={this.onYUnits.bind(this)}
                           value={this.state.yUnits}
                         />
                         <label style={{display:'inline-block',fontSize:'1rem',fontWeight:700,marginLeft:'20px'}}>Columns</label>
                         <input 
                           type="number" 
-                          style={{display:'inline-block',width:'40px',marginLeft:'20px'}}
+                          min="1"
+                          max="1000"
+                          style={{display:'inline-block',width:'80px',marginLeft:'20px'}}
                           onChange={this.onXUnits.bind(this)}
                           value={this.state.xUnits}
                         />

@@ -298,6 +298,7 @@ export default class EditContainer extends Component {
     let updatedItems = [];
     if (items) {
       updatedItems = items.filter(function (item) {
+        if (!item.id) return false
         return !item.id.startsWith('_new_');
       });
       return updatedItems;

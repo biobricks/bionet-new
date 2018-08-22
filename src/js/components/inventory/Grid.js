@@ -78,8 +78,8 @@ export default class Grid extends Component {
       const layoutTop = rect.top
       const clientX = isTouch ? e.targetTouches[0].pageX : e.pageX;
       const clientY = isTouch ? e.targetTouches[0].pageY : e.pageY;
-      const gridWidth = (this.props.gridWidth * this.props.zoom);
-      const gridHeight = (this.props.gridHeight * this.props.zoom);
+      const gridWidth = Math.round(this.props.gridWidth * this.props.zoom);
+      const gridHeight = Math.round(this.props.gridHeight * this.props.zoom);
       const id = 0;
       const item = {
         url: 'test',
@@ -149,8 +149,8 @@ export default class Grid extends Component {
 
     let sortedIndex = {};
     let rect = (this.container) ? this.container.getBoundingClientRect() : {};
-    const gridWidth = (this.props.gridWidth * this.props.zoom);
-    const gridHeight = (this.props.gridHeight * this.props.zoom);
+    const gridWidth = Math.round(this.props.gridWidth * this.props.zoom);
+    const gridHeight = Math.round(this.props.gridHeight * this.props.zoom);
     let gridItems = null;
     if (this.props.items) {
       const dragManager = new DragManager(
@@ -219,6 +219,8 @@ export default class Grid extends Component {
       const gridMinorYAxis = gridHeight;
 
       // todo: add grid line color to props
+      //const gridColorMajorAxis = 'rgba(54,54,54,.25)';
+      //const gridColorMinorAxis = 'rgba(54,54,54,.125)';
       const gridColorMajorAxis = 'rgba(54,54,54,.25)';
       const gridColorMinorAxis = 'rgba(54,54,54,.125)';
       const backgroundImage = "linear-gradient(" + gridColorMajorAxis + " 1px, transparent 1px),linear-gradient(90deg, " + gridColorMajorAxis + " 1px, transparent 1px),linear-gradient(" + gridColorMinorAxis + " 1px, transparent 1px),linear-gradient(90deg, " + gridColorMinorAxis + " 1px, transparent 1px)";

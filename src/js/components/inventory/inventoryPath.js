@@ -789,6 +789,14 @@ module.exports = function (Component) {
             </div>
           );
         } else {
+            /*
+                <div id="inventory_tiles" class="tile">
+                  <div class="tile is-vertical">
+                    <div id="inventory_path" class="tile is-vertical" style={pathMaxHeight}>
+                    </div>
+                  </div>
+                </div>
+            */
           navPanel = (
             <div class="column is-5-desktop">
               <MapPanel
@@ -797,14 +805,8 @@ module.exports = function (Component) {
                 parentRecord={{}}
                 onMount={this.onNavPanelMount.bind(this)}
               >
-                <div id="inventory_tiles" class="tile">
-                  <div class="tile is-vertical">
-                    <div id="inventory_path" class="tile is-vertical" style={pathMaxHeight}>
                       {rootLocation}
                       {locationPathComponent}
-                    </div>
-                  </div>
-                </div>
               </MapPanel>
             </div>
           );

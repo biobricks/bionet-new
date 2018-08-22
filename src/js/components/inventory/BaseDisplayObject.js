@@ -64,8 +64,8 @@ export default class BaseDisplayObject extends Component {
             const gridWidth = this.props.gridWidth
             const gridHeight = this.props.gridHeight
             const layout = new LayoutManager(options, this.props.layoutWidth, this.props.layoutHeight, gridWidth, gridHeight);
-            const col = this.props.item.col
-            const row = this.props.item.row
+            const col = Math.round(this.props.item.col)
+            const row = Math.round(this.props.item.row)
 
             const style = layout.getStyle(this.props.index, row, col,
                 this.props.animation,

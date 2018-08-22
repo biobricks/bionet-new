@@ -20,8 +20,8 @@ export default class LayoutManager {
         this.layoutHeight = height;
         //console.log('layout manager update:',width,height)
         this.zoom = options.zoom;
-        this.itemWidth = Math.trunc(options.itemWidth * this.zoom);
-        this.itemHeight = Math.trunc(options.itemHeight * this.zoom);
+        this.itemWidth = Math.round(options.itemWidth * this.zoom);
+        this.itemHeight = Math.round(options.itemHeight * this.zoom);
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
         this.columns = Math.floor(this.layoutWidth / this.itemWidth);
@@ -47,8 +47,8 @@ export default class LayoutManager {
         const margin = this.horizontalMargin;
         const width = this.itemWidth;
         return {
-            x: ((col * this.gridWidth) + (col * margin)),
-            y: ((this.gridHeight + this.verticalMargin) * row)
+            x: Math.round((col * this.gridWidth) + (col * margin)),
+            y: Math.round((this.gridHeight + this.verticalMargin) * row)
         };
     }
 

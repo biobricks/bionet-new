@@ -280,6 +280,8 @@ module.exports = {
                 const height=(item.height) ? item.height*gridCell : itemRows * gridCell
                 const fontSize=(item.fontSize) ? item.fontSize.toString() : '0.3'
                 const color=(item.color) ? item.color : 'rgba(0,255,255,0.4)'
+                const xUnits=(item.xUnits) ? item.xUnits : 1
+                const yUnits=(item.yUnits) ? item.yUnits : 1
                 return({
                     id:item.id,
                     key:key,
@@ -290,6 +292,8 @@ module.exports = {
                     row:item.parent_y-1,
                     width:width,
                     height:height,
+                    xUnits:xUnits,
+                    yUnits:yUnits,
                     color:color,
                     fontSize:fontSize,
                 })
@@ -360,6 +364,8 @@ module.exports = {
                 const name=item.name
                 const width=(item.width) ? item.width*gridScale : itemCols * gridCell
                 const height=(item.height) ? item.height*gridScale : itemRows * gridCell
+                const xUnits=(item.xUnits) ? item.xUnits : 1
+                const yUnits=(item.yUnits) ? item.yUnits : 1
                 return({
                     id:item.id,
                     key:key,
@@ -371,6 +377,8 @@ module.exports = {
                     row:(item.parent_y-1)*gridScale,
                     width:width,
                     height:height,
+                    xUnits:xUnits,
+                    yUnits:yUnits,
                     color:color,
                     fontSize:fontSize,
                 })

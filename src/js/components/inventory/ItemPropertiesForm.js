@@ -18,6 +18,8 @@ export default class ItemPropertiesForm extends Component {
         name:PropTypes.string,
         width: PropTypes.number,
         height: PropTypes.number,
+        xUnits:PropTypes.number,
+        yUnits:PropTypes.number,
         color: PropTypes.string,
         fontSize: PropTypes.string,
         onChange: PropTypes.func.isRequired
@@ -28,6 +30,8 @@ export default class ItemPropertiesForm extends Component {
         height:1,
         color:'aqua',
         fontSize:'0.3',
+        yUnits:1,
+        xUnits:1,
         onChange:()=>{}
     }
     constructor(props, context) {
@@ -39,6 +43,8 @@ export default class ItemPropertiesForm extends Component {
             height:props.height,
             color:props.color,
             fontSize:props.fontSize,
+            yUnits:props.yUnits,
+            xUnits:props.xUnits,
             enableColorPicker:false
         }
         this.onSetColor=this.onSetColor.bind(this)
@@ -49,6 +55,8 @@ export default class ItemPropertiesForm extends Component {
             width:props.width,
             height:props.height,
             color:props.color,
+            yUnits:props.yUnits,
+            xUnits:props.xUnits,
             fontSize:props.fontSize
         })
     }
@@ -65,6 +73,12 @@ export default class ItemPropertiesForm extends Component {
     }
     onHeight(e) {
         this.update({height:Number(e.target.value)})
+    }
+    onyUnits(e) {
+        this.update({yUnits:Number(e.target.value)})
+    }
+    onxUnits(e) {
+        this.update({xUnits:Number(e.target.value)})
     }
     onColor(e) {
         this.update({color:e.target.value})
@@ -112,6 +126,10 @@ export default class ItemPropertiesForm extends Component {
                 <label>Width</label><input onChange={this.onWidth.bind(this)} type='number' value={this.state.width} style={{width:80}}/>
                 <br/>
                 <label>Height</label><input onChange={this.onHeight.bind(this)} type='number' value={this.state.height} style={{width:80}}/>
+                <br/>
+                <label>Rows</label><input onChange={this.onyUnits.bind(this)} type='number' value={this.state.yUnits} style={{width:80}}/>
+                <br/>
+                <label>Columns</label><input onChange={this.onxUnits.bind(this)} type='number' value={this.state.xUnits} style={{width:80}}/>
                 <br/>
                 <label>Font Size</label><input onChange={this.onFontSize.bind(this)} type='text' value={this.state.fontSize} style={{width:80}}/>
             </form>

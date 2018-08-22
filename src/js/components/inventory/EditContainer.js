@@ -533,6 +533,30 @@ export default class EditContainer extends Component {
         defaultHeight: props.height
       });
     }
+    if (props.xUnits) {
+      this.updateSelection({
+          layoutWidthUnits:props.xUnits,
+          xUnits:props.xUnits
+      })
+      this.setState({
+        defaultxUnits: props.xUnits
+      });
+    }
+    if (props.yUnits) {
+      this.updateSelection({
+          layoutHeightUnits:props.yUnits,
+          yUnits:props.yUnits
+      })
+      this.setState({
+        defaultyUnits: props.yUnits
+      });
+    }
+    if (props.height) {
+      this.updateSelection({height:props.height*this.gridHeight})
+      this.setState({
+        defaultHeight: props.height
+      });
+    }
     if (props.color) {
       this.updateSelection({color:props.color})
       this.setState({
@@ -678,12 +702,14 @@ export default class EditContainer extends Component {
       if (item) {
         if (isEditItemMode || isNewItemMode) {
           itemPropertiesForm = (
-            <div style={{height:'120px'}}>
+            <div>
               <ItemPropertiesForm
                 name={this.state.defaultName}
                 width={this.state.defaultWidth}
                 height={this.state.defaultHeight}
                 color={item.color}
+                yUnits={item.yUnits}
+                xUnits={item.xUnits}
                 fontSize={item.fontSize}
                 onChange={this.onUpdateItemProperties.bind(this)}
               />
@@ -691,13 +717,17 @@ export default class EditContainer extends Component {
           );
         } else {
           itemPropertiesForm = (
-            <div style={{height: '120px'}}>
+            <div>
               <div className="pure-form">
                 <label>Name:</label><span>{this.state.defaultName}</span>
                 <br/>
                 <label>Width:</label><span>{this.state.defaultWidth}</span>
                 <br/>
                 <label>Height:</label><span>{this.state.defaultHeight}</span>
+                <br/>
+                <label>Rows:</label><span>{this.state.defaultRows}</span>
+                <br/>
+                <label>Columns:</label><span>{this.state.defaultColumns}</span>
                 <br/>
                 <label>Color</label><span style={{backgroundColor:this.state.defaultColor}}>{this.state.defaultColor}</span>
                 <br/>

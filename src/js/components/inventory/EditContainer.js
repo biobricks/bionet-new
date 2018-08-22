@@ -135,6 +135,10 @@ export default class EditContainer extends Component {
         defaultName: '',
         defaultWidth: 1,
         defaultHeight: 1,
+        defaultxUnits: 1,
+        layoutWidthUnits:1,
+        layoutHeightUnits:1,
+        defaultyUnits: 1,
         defaultColor: '',
         defaultFontSize: ''
       });
@@ -345,8 +349,8 @@ export default class EditContainer extends Component {
     item.yUnits = 1;
     item.majorGridLine = 1;
     item.newItem = true;
-    item.layoutWidthUnits = this.state.layoutWidthUnits;
-    item.layoutHeightUnits = this.state.layoutHeightUnits;
+    item.layoutWidthUnits = 1;
+    item.layoutHeightUnits = 1;
 
     // filter out prior new items
     let updatedItems = this.unselectNewItem(this.state.items);
@@ -600,6 +604,8 @@ export default class EditContainer extends Component {
     item.fontSize = this.state.defaultFontSize;
     item.xUnits = 1;
     item.yUnits = 1;
+    item.layoutWidthUnits = 1;
+    item.layoutHeightUnits = 1;
     item.majorGridLine = 1;
     item.newItem = true;
     this.setState({

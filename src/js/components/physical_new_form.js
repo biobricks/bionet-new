@@ -153,6 +153,7 @@ module.exports = function(Component) {
     }
     onSetColor(color, c) {
         this.update({color:color})
+        this.setState({enableColorPicker:false})
     }
     onSave() {
         console.log('PhysicalNew onSave:',this.state)

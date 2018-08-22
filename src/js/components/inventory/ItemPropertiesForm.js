@@ -88,6 +88,7 @@ export default class ItemPropertiesForm extends Component {
     }
     onSetColor(color, c) {
         this.update({color:color})
+        this.setState({enableColorPicker:false})
     }
      onFontSize(e) {
         this.update({fontSize:e.target.value})

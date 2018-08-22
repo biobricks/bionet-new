@@ -12,7 +12,6 @@ module.exports = function (Component) {
     }
 
     handleRemoveAlertClick(e) {
-      console.log('click')
       this.props.removeAlert();
     }
 

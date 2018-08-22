@@ -17,8 +17,6 @@ module.exports = function (Component) {
       super(props);
       app.actions.inventory.initialize();
       this.state = {
-        redirect: false,
-        redirectTo: '',
         mapFullScreen: false,
         dataFullScreen: false,
         mode: 'view',
@@ -72,12 +70,13 @@ module.exports = function (Component) {
               this.setState({ error });
             } else {
               this.setState({
-                error: {},
+                //error: {},
                 inventoryPath,
-                alert: {
-                  type: '',
-                  message: ''
-                }                
+                mode: 'view'
+                // alert: {
+                //   type: '',
+                //   message: ''
+                // }                
               });
             }
           }.bind(this));
@@ -253,7 +252,11 @@ module.exports = function (Component) {
                   mode={this.state.mode}
                   handleSetMode={this.handleSetMode}
                   alert={this.state.alert}
-                  removeAlert={this.removeAlert}                  
+                  removeAlert={this.removeAlert}
+                  saveNewContainer={this.saveNewContainer}
+                  saveContainer={this.saveContainer}
+                  deleteContainer={this.deleteContainer}
+                  dataFullScreen={this.state.dataFullScreen}
                   toggleDataFullScreen={this.toggleDataFullScreen}
                 />
               ) : null }
@@ -271,8 +274,6 @@ module.exports = function (Component) {
                   deleteContainer={this.deleteContainer}
                   dataFullScreen={this.state.dataFullScreen}
                   toggleDataFullScreen={this.toggleDataFullScreen}
-                  redirect={this.state.redirect}
-                  redirectTo={this.state.redirectTo}
                 />
               ) : null }
 

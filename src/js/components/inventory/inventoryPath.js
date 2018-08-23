@@ -314,6 +314,7 @@ module.exports = function (Component) {
         delete updatedItem.layoutHeight
         delete updatedItem.layoutWidthUnits
         delete updatedItem.layoutHeightUnits
+        delete updatedItem.children
         console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
         app.actions.notify(item.name+" saved", 'notice', 2000);
         self.toggleEditMode()

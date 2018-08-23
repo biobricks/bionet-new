@@ -250,6 +250,9 @@ export default class EditContainer extends Component {
     if (!id) {
       return;
     }  
+    if (id.indexOf('_new_') >= 0) {
+        return
+    }
     const name = item.name;
     const parentId = item.parent_id;
     console.log('deleting item 1:', id, name, parentId, item);

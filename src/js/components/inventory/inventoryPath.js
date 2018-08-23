@@ -803,7 +803,7 @@ module.exports = function (Component) {
               <MapPanel
                 {...this.state}
                 selectedRecord={currentItem}
-                parentRecord={{}}
+                parentRecord={parentRecord}
                 onMount={this.onNavPanelMount.bind(this)}
               >
                       {rootLocation}

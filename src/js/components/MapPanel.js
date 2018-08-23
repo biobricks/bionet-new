@@ -3,6 +3,8 @@ import ashnazg from 'ashnazg';
 
 module.exports = function (Component) {
 
+  const MapGrid = require('./MapGrid')(Component);
+
   return class MapPanel extends Component {
 
     constructor(props) {
@@ -53,8 +55,9 @@ module.exports = function (Component) {
               </div>
             </div>  
           </div>
-          <div class="panel-block">
-            {selectedRecord && `${selectedRecord.name} Map` || 'Loading...'}
+          <MapGrid {...this.props}/>
+          <div class="panel-block p-0">
+            <pre>{JSON.stringify(this.props, null, 2)}</pre>
           </div>
         </div>
       );

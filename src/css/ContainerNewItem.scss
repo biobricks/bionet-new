@@ -9,7 +9,10 @@ $breakpoint-desktop: 1024px;
     }
     .field {
       .field-label.is-narrow label {
-        width: 150px;
+        width: 175px;
+      }
+      .field-label.is-narrow label.mt-1 {
+        margin-top: 7px;
       }
       .field-body .control {
         text-align: left;
@@ -23,9 +26,6 @@ $breakpoint-desktop: 1024px;
             margin-right: 8px !important;
           }
         }
-      }
-      .control {
-        width: 100%;
       }
     }  
   }

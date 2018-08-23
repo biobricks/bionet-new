@@ -224,43 +224,43 @@ module.exports = function (Component) {
             });
           }
         }
-        console.log(
-          'inventoryPath onSaveNew: list', 
-          rows,
-          cols,
-          emptyCellArray, 
-          childCells, 
-          containerLayout
-        );
+      }
+    console.log(
+      'inventoryPath onSaveNew: list', 
+      rows,
+      cols,
+      emptyCellArray, 
+      childCells, 
+      containerLayout
+    );
 
-        app.actions.inventory.saveVirtual(dbData, function(err, virtual_id) {
+    app.actions.inventory.saveVirtual(dbData, function(err, virtual_id) {
+      if (err) {
+        app.actions.notify(err.message, 'error');
+        return;
+      }
+      console.log('onSaveNew saveVirtual result, ', virtual_id);
+      dbData.id = virtual_id;
+      app.actions.notify(dbData.name + " created", 'notice', 2000);
+      app.actions.inventory.generatePhysicals(
+        virtual_id, 
+        dbData.name, 
+        instances, 
+        parentId, 
+        emptyCellArray, 
+        dbData.color, 
+        function(err, physicals) {
           if (err) {
             app.actions.notify(err.message, 'error');
             return;
           }
-          console.log('onSaveNew saveVirtual result, ', virtual_id);
-          dbData.id = virtual_id;
-          app.actions.notify(dbData.name + " created", 'notice', 2000);
-          app.actions.inventory.generatePhysicals(
-            virtual_id, 
-            dbData.name, 
-            instances, 
-            parentId, 
-            emptyCellArray, 
-            dbData.color, 
-            function(err, physicals) {
-              if (err) {
-                app.actions.notify(err.message, 'error');
-                return;
-              }
-              const mergedPhysicals = (children && children.length && children.length>0 ) ? physicals.concat(children) : physicals;
-              currentItem.children = mergedPhysicals;
-              app.actions.notify("New physical saved", 'notice', 2000);
-              app.actions.inventory.refreshInventoryPath(currentItem.id);
-            }
-          );
-        });
-      }
+          const mergedPhysicals = (children && children.length && children.length>0 ) ? physicals.concat(children) : physicals;
+          currentItem.children = mergedPhysicals;
+          app.actions.notify("New physical saved", 'notice', 2000);
+          app.actions.inventory.refreshInventoryPath(currentItem.id);
+        }
+      );
+    });
     }
         
     onAssignNew(data) {

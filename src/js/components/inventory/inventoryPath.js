@@ -315,6 +315,7 @@ module.exports = function (Component) {
         delete updatedItem.layoutWidthUnits
         delete updatedItem.layoutHeightUnits
         delete updatedItem.children
+        delete updatedItem.subdivisions
         console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
         app.actions.notify(item.name+" saved", 'notice', 2000);
         self.toggleEditMode()
@@ -334,6 +335,7 @@ module.exports = function (Component) {
       const name = item.name;
       const parentId = item.parent_id;
       console.log('deleting item 1:', id, name, parentId, item);
+      const self=this
       app.actions.prompt.display('Do you wish to delete ' + name + '?', null, function(accept) {
         if (accept) {
           app.actions.inventory.delPhysical(id, function(err,id2) {
@@ -341,6 +343,10 @@ module.exports = function (Component) {
               app.actions.notify(err.message, 'error');
               return;
             }
+            self.setState({
+                editMode: false,
+                newMode: false
+            })
             app.actions.notify(name + " deleted", 'notice', 2000);
           });
           app.actions.inventory.refreshInventoryPath(parentId);

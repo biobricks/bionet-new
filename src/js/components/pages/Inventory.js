@@ -145,7 +145,8 @@ module.exports = function (Component) {
     }
 
     saveContainer(container) {
-      app.actions.inventory.updateItem(container.id, function(error, updatedItem) {
+      let inventoryPath = this.state.inventoryPath;
+      app.actions.inventory.updateRecord(container, function(error) {
         let alert;
         if (error) {
           app.actions.notify(error.message, 'error');
@@ -159,10 +160,20 @@ module.exports = function (Component) {
             type: 'success',
             message: `${container.name} was updated successfully.`
           };
+          
+          inventoryPath[inventoryPath.length - 1] = container;
+          
+          console.log('container:');
+          console.log(container);
+
+          console.log('inventoryPath:');
+          console.log(inventoryPath);
+
           this.setState({
             mode: 'view',
             error: {},
-            alert
+            alert,
+            inventoryPath
           });
         } 
       }.bind(this));

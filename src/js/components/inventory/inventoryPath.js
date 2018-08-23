@@ -360,7 +360,12 @@ module.exports = function (Component) {
       }  
       const currentItem = this.state.currentItem;
       if (currentItem.type === 'physical') {
-        console.log('inventoryPath onChangeItemProperties physical:', props);
+        const updatedItem = Object.assign(currentItem, props)
+        this.setState({
+            currentItem:updatedItem
+        })
+        app.state.PhysicalEditForm=updatedItem
+        console.log('inventoryPath onChangeItemProperties physical:', props, updatedItem);
       } else {
         console.log('inventoryPath onChangeItemProperties container:', props);
         if (props.xUnits) {

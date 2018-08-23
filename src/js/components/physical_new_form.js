@@ -7,15 +7,32 @@ module.exports = function(Component) {
       
     constructor(props, context) {
         super(props, context)
-        this.state={
+        this.componentWillReceiveProps(props)
+    }
+      
+    componentWillReceiveProps(props) {
+        var maxInstances=1000
+        const parentRecord=props.parentRecord
+        if (parentRecord) {
+            const rows = (parentRecord.layoutHeightUnits) ? parentRecord.layoutHeightUnits : parentRecord.xUnits;
+            const cols = (parentRecord.layoutWidthUnits) ? parentRecord.layoutWidthUnits : parentRecord.yUnits;
+            if (rows>1 || cols>1) {
+                const childCells = app.actions.inventory.getChildInstances(parentRecord)
+                const emptyCellArray = app.actions.inventory.getEmptyCells(childCells, rows, cols)
+                maxInstances=emptyCellArray.length
+            }
+        }
+        console.log('physical_new_form:',parentRecord,maxInstances)
+        this.setState({
             name:'',
             description:'',
             instances:1,
+            maxInstances:maxInstances,
             enableColorPicker:false,
             color:'aqua',
             isAvailable:true,
             freeGenes:false
-        }
+        })
     }
     onSelectColor(e) {
         this.setState({enableColorPicker:!this.state.enableColorPicker})
@@ -125,7 +142,9 @@ module.exports = function(Component) {
         this.update({name:e.target.value})
     }
     onInstances(e) {
-        this.update({instances:e.target.value})
+        var value=Number(e.target.value)
+        value=(value>this.state.maxInstances) ? this.state.maxInstances : value
+        this.update({instances:value})
     }
     onDescription(e) {
         this.update({description:e.target.value})
@@ -294,7 +313,7 @@ module.exports = function(Component) {
                       class="input is-small"
                       type="number" 
                       min="1"
-                      max="1000"
+                      max="{this.state.maxInstances}"
                       step="1"
                       onChange={this.onInstances.bind(this)}
                       value={this.state.instances} 

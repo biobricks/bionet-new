@@ -195,7 +195,9 @@ module.exports = function (Component) {
       console.log('inventoryPath onSaveNew:', dbData, instances);
       delete dbData.instances;
       const currentItem = this.state.currentItem;
+      const childCells = app.actions.inventory.getChildInstances(currentItem)
       let children = (currentItem) ? currentItem.children : null;
+      /*
       let childCells = {};
       if (children) {
         for (let i = 0; i < children.length; i++) {
@@ -204,6 +206,8 @@ module.exports = function (Component) {
           childCells[index] = child.id;
         }
       }
+      */
+        
       const containerLayout = app.actions.inventory.initContainerProps(
         currentItem,
         currentItem.id,
@@ -213,18 +217,8 @@ module.exports = function (Component) {
       );
       const rows = containerLayout.layoutHeightUnits;
       const cols = containerLayout.layoutWidthUnits;
-      const emptyCellArray = [];
-      for (let row = 1; row <= rows; row++) {
-        for (let col = 1; col <= cols; col++) {
-          let index = col + ',' + row;
-          if (!childCells[index]) {
-            emptyCellArray.push({
-              parent_y: row,
-              parent_x: col
-            });
-          }
-        }
-      }
+      const emptyCellArray = app.actions.inventory.getEmptyCells(childCells, rows, cols)
+        
     console.log(
       'inventoryPath onSaveNew: list', 
       rows,

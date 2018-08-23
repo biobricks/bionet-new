@@ -31,6 +31,35 @@ module.exports = {
         return null
     },
     
+    getChildInstances: function(item) {
+      let children = (item) ? item.children : null;
+      let childCells = {};
+      if (children) {
+        for (let i = 0; i < children.length; i++) {
+          let child = children[i];
+          let index = child.parent_x + ',' + child.parent_y;
+          childCells[index] = child.id;
+        }
+      }
+      return childCells
+    },
+    
+    getEmptyCells: function(childCells,rows, cols) {
+      const emptyCellArray = [];
+      for (let row = 1; row <= rows; row++) {
+        for (let col = 1; col <= cols; col++) {
+          let index = col + ',' + row;
+          if (!childCells[index]) {
+            emptyCellArray.push({
+              parent_y: row,
+              parent_x: col
+            });
+          }
+        }
+      }
+      return emptyCellArray
+    },
+    
     getLastPathItem: function() {
         if (!app.state.inventory.path || !app.state.inventory.path.length>0) return null
         const path = app.state.inventory.path

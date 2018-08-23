@@ -479,8 +479,9 @@ module.exports = function (Component) {
         app.actions.inventory.refreshInventoryPath(e.target.id);
       };
       const parentRecord = app.actions.inventory.getItemFromInventoryPath(currentItem.parent_id);
+      const isPhysical = (currentItem && currentItem.type==='physical') ? true : false
       if (this.state.editMode) {
-        let fullWidth = this.state.fullWidth;
+        let fullWidth = this.state.fullWidth && !isPhysical;
         if (currentItem.type === 'lab') {
           fullWidth = true;
         }  
@@ -553,7 +554,6 @@ module.exports = function (Component) {
           1
         );
         const zoom = this.initZoom(this.state.editPanelWidth,containerLayout.layoutWidth);
-
         if (fullWidth) {
           editPanel = (
             <div class={'column '+editPanelClass}>

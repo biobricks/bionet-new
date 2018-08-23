@@ -16,7 +16,7 @@ $breakpoint-desktop: 1024px;
       min-height: 80vh;
     }    
     .grid-item {      
-      border: 1px solid #ccc;
+      border: 1px solid #bbb;
       display: grid;
       grid-template-rows: 40px;
       grid-template-columns: 1fr;
@@ -31,6 +31,7 @@ $breakpoint-desktop: 1024px;
       }
     }
     .empty.grid-item {
+      border: 1px solid #ededed;
       .grid-item-label {
         color: #ddd !important;
       }  

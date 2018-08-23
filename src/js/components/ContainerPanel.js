@@ -71,9 +71,7 @@ module.exports = function (Component) {
 
           {(this.props.mode === 'view') ? (
             <ContainerProfile
-              selectedRecord={selectedRecord}
-              redirect={this.props.redirect}
-              redirectTo={this.props.redirectTo}              
+              selectedRecord={selectedRecord}            
             />
           ) : null }
 
@@ -86,7 +84,7 @@ module.exports = function (Component) {
             />
           ) : null }
 
-          {(this.props.mode === 'edit') ? (
+          {(selectedRecord && this.props.mode === 'edit') ? (
             <ContainerEditForm
               selectedRecord={selectedRecord}
               saveContainer={this.props.saveContainer}
@@ -101,8 +99,6 @@ module.exports = function (Component) {
               deleteContainer={this.props.deleteContainer}
               handleSetMode={this.props.handleSetMode}
               inventoryPath={inventoryPath}
-              redirect={this.props.redirect}
-              redirectTo={this.props.redirectTo}
             />
           ) : null }          
 

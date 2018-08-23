@@ -7,7 +7,10 @@ module.exports = function(Component) {
 
     constructor(props) {
       super(props);
-      this.state = {};
+      this.state = {
+        redirect: false,
+        redirectTo: ''
+      };
       this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
@@ -17,17 +20,20 @@ module.exports = function(Component) {
       const inventoryPath = this.props.inventoryPath;
       const parentRecord = inventoryPath[inventoryPath.length - 2];
       this.props.deleteContainer(selectedRecord, parentRecord);
+      this.setState({
+        redirect: true,
+        redirectTo: `/ui/inventory/${parentRecord.id}`
+      });
     }
 
     
     render() {
 
       const selectedRecord = this.props.selectedRecord;
-      const inventoryPath = this.props.inventoryPath;
 
-      if (this.props && this.props.redirect && this.props.redirectTo){
+      if (this.state.redirect && this.state.redirectTo){
         return (
-          <Redirect to={this.props.redirectTo}/>
+          <Redirect to={this.state.redirectTo}/>
         );
       }
 

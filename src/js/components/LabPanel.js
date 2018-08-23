@@ -47,6 +47,8 @@ module.exports = function (Component) {
           {(this.props.mode === 'view') ? (
             <LabProfile
               selectedRecord={selectedRecord}
+              redirect={this.props.redirect}
+              redirectTo={this.props.redirectTo}   
             />
           ) : null }
 

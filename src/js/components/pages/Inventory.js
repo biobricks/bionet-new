@@ -17,8 +17,6 @@ module.exports = function (Component) {
       super(props);
       app.actions.inventory.initialize();
       this.state = {
-        redirect: false,
-        redirectTo: '',
         mapFullScreen: false,
         dataFullScreen: false,
         mode: 'view',
@@ -60,7 +58,7 @@ module.exports = function (Component) {
       this.setState(newState);
     }    
 
-    getInventoryPath() {
+    getInventoryPath() {   
       util.whenConnected(function(){
         const idParam = (this.props) ? this.props.match.params.id : null;
         const selectedRecord = this.state.inventoryPath.length > 0 ? this.state.inventoryPath[this.state.inventoryPath.length - 1] : null;
@@ -72,12 +70,8 @@ module.exports = function (Component) {
               this.setState({ error });
             } else {
               this.setState({
-                error: {},
                 inventoryPath,
-                alert: {
-                  type: '',
-                  message: ''
-                }                
+                mode: 'view'               
               });
             }
           }.bind(this));
@@ -87,12 +81,9 @@ module.exports = function (Component) {
 
     handleSetMode(e) {
       const mode = e.target.getAttribute('mode');
+      this.removeAlert();
       this.setState({
-        mode,
-        alert: {
-          type: '',
-          message: ''
-        }
+        mode
       });
     }
 
@@ -146,7 +137,8 @@ module.exports = function (Component) {
     }
 
     saveContainer(container) {
-      app.actions.inventory.updateItem(container.id, function(error, updatedItem) {
+      let inventoryPath = this.state.inventoryPath;
+      app.actions.inventory.updateRecord(container, function(error) {
         let alert;
         if (error) {
           app.actions.notify(error.message, 'error');
@@ -160,10 +152,14 @@ module.exports = function (Component) {
             type: 'success',
             message: `${container.name} was updated successfully.`
           };
+          
+          inventoryPath[inventoryPath.length - 1] = container;
+
           this.setState({
             mode: 'view',
             error: {},
-            alert
+            alert,
+            inventoryPath
           });
         } 
       }.bind(this));
@@ -196,13 +192,13 @@ module.exports = function (Component) {
     }
 
     componentDidUpdate() {
-      this.getInventoryPath();
+      this.getInventoryPath();        
     }
 
     componentDidMount() {
       this.getInventoryPath();
     }
-        
+
     render() {
       const selectedRecord = this.state.inventoryPath.length > 0 ? this.state.inventoryPath[this.state.inventoryPath.length - 1] : null;
       
@@ -253,7 +249,11 @@ module.exports = function (Component) {
                   mode={this.state.mode}
                   handleSetMode={this.handleSetMode}
                   alert={this.state.alert}
-                  removeAlert={this.removeAlert}                  
+                  removeAlert={this.removeAlert}
+                  saveNewContainer={this.saveNewContainer}
+                  saveContainer={this.saveContainer}
+                  deleteContainer={this.deleteContainer}
+                  dataFullScreen={this.state.dataFullScreen}
                   toggleDataFullScreen={this.toggleDataFullScreen}
                 />
               ) : null }
@@ -271,8 +271,6 @@ module.exports = function (Component) {
                   deleteContainer={this.deleteContainer}
                   dataFullScreen={this.state.dataFullScreen}
                   toggleDataFullScreen={this.toggleDataFullScreen}
-                  redirect={this.state.redirect}
-                  redirectTo={this.state.redirectTo}
                 />
               ) : null }
 

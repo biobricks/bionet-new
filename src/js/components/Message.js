@@ -12,8 +12,11 @@ module.exports = function (Component) {
     }
 
     handleRemoveAlertClick(e) {
-      console.log('click')
       this.props.removeAlert();
+    }
+
+    componentDidMount() {
+      setTimeout(this.props.removeAlert, 2500);
     }
 
     render() {

@@ -98,14 +98,14 @@ module.exports = {
                 return
             }
             if (cb) {
-                const updatedItem = cb(null,item)
+                const updatedItem = cb(null, item)
                 app.remote.savePhysical(updatedItem, null, null, function (err, id) {
                     if (err) {
+                        console.log('Save Physical Error: ');
                         console.log(err)
                         return
                     }
-                    const currentItem = app.actions.inventory.getLastPathItem()
-                    //app.actions.inventory.refreshInventoryPath(currentItem.id)
+                    const currentItem = app.actions.inventory.getLastPathItem();
                 })
             }
         })
@@ -1012,5 +1012,35 @@ module.exports = {
                 }                
             });
         }
+    },
+
+    updateRecord: function(record, cb) {
+        
+        // check if record object is present and not empty
+        if(!record || Object.keys(record).length === 0){
+            let errorResponse = new Error('Record Object Parameter Not Provided');
+            return cb(errorResponse, null);
+        }
+
+        app.remote.get(record.id, function(error, item) {
+            // if error then it's id not found error
+            if (error) {
+                let errorResponse = new Error(`Record ${record.id} Not Found In Database`);
+                return cb(errorResponse, null);
+            } else {      
+                // if no error proceed with update
+                app.remote.savePhysical(record, null, null, function (error, id) {
+                    if (error) {
+                        console.log('Save Physical Error: ');
+                        console.log(error)
+                        return cb(error, null);
+                    } else {
+                        console.log('Save Physical Succeeded: ');
+                        console.log(id);
+                        return cb(null, id);
+                    }
+                });
+            }
+        })
     }
 }

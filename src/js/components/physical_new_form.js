@@ -294,6 +294,8 @@ module.exports = function(Component) {
                       class="input is-small"
                       type="number" 
                       min="1"
+                      max="1000"
+                      step="1"
                       onChange={this.onInstances.bind(this)}
                       value={this.state.instances} 
                     />

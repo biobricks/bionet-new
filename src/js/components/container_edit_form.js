@@ -54,16 +54,20 @@ module.exports = function(Component) {
         this.update({description:e.target.value})
     }
     onXUnits(e) {
-        this.update({xUnits:Number(e.target.value)})
+        const value=Math.trunc(Number(e.target.value))
+        this.update({xUnits:value})
     }
     onYUnits(e) {
-        this.update({yUnits:Number(e.target.value)})
+        const value=Math.trunc(Number(e.target.value))
+        this.update({yUnits:value})
     }
     onWidth(e) {
-        this.update({width:Number(e.target.value)})
+        const value=Math.trunc(Number(e.target.value))
+        this.update({width:value})
     }
     onHeight(e) {
-        this.update({height:Number(e.target.value)})
+        const value=Math.trunc(Number(e.target.value))
+        this.update({height:value})
     }
     onMajorGridLine(e) {
         this.update({majorGridLine:Number(e.target.value)})
@@ -168,15 +172,17 @@ module.exports = function(Component) {
                           type="number" 
                           min="1"
                           max="1000"
+                          step="1"
                           style={{display:'inline-block',width:'80px'}}
                           onChange={this.onYUnits.bind(this)}
                           value={this.state.yUnits}
                         />
-                        <label style={{display:'inline-block',fontSize:'1rem',fontWeight:700,marginLeft:'20px'}}>Columns</label>
+                        <label style={{display:'inline-block',fontSize:'1rem',fontWeight:700,marginLeft:'20px'}}>Columns2</label>
                         <input 
                           type="number" 
                           min="1"
                           max="1000"
+                          step="1"
                           style={{display:'inline-block',width:'80px',marginLeft:'20px'}}
                           onChange={this.onXUnits.bind(this)}
                           value={this.state.xUnits}

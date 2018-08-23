@@ -15,6 +15,10 @@ module.exports = function (Component) {
       this.props.removeAlert();
     }
 
+    componentDidMount() {
+      setTimeout(this.props.removeAlert, 2500);
+    }
+
     render() {
       
       const messageClass = this.props.alert && this.props.alert.type && this.props.alert.type === 'danger' ? 'message is-danger' : 'message is-success';

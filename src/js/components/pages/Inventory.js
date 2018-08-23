@@ -58,7 +58,7 @@ module.exports = function (Component) {
       this.setState(newState);
     }    
 
-    getInventoryPath() {
+    getInventoryPath() {   
       util.whenConnected(function(){
         const idParam = (this.props) ? this.props.match.params.id : null;
         const selectedRecord = this.state.inventoryPath.length > 0 ? this.state.inventoryPath[this.state.inventoryPath.length - 1] : null;
@@ -70,13 +70,8 @@ module.exports = function (Component) {
               this.setState({ error });
             } else {
               this.setState({
-                //error: {},
                 inventoryPath,
-                mode: 'view'
-                // alert: {
-                //   type: '',
-                //   message: ''
-                // }                
+                mode: 'view'               
               });
             }
           }.bind(this));
@@ -86,12 +81,9 @@ module.exports = function (Component) {
 
     handleSetMode(e) {
       const mode = e.target.getAttribute('mode');
+      this.removeAlert();
       this.setState({
-        mode,
-        alert: {
-          type: '',
-          message: ''
-        }
+        mode
       });
     }
 
@@ -162,12 +154,6 @@ module.exports = function (Component) {
           };
           
           inventoryPath[inventoryPath.length - 1] = container;
-          
-          console.log('container:');
-          console.log(container);
-
-          console.log('inventoryPath:');
-          console.log(inventoryPath);
 
           this.setState({
             mode: 'view',
@@ -206,13 +192,13 @@ module.exports = function (Component) {
     }
 
     componentDidUpdate() {
-      this.getInventoryPath();
+      this.getInventoryPath();        
     }
 
     componentDidMount() {
       this.getInventoryPath();
     }
-        
+
     render() {
       const selectedRecord = this.state.inventoryPath.length > 0 ? this.state.inventoryPath[this.state.inventoryPath.length - 1] : null;
       

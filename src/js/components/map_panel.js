@@ -23,13 +23,14 @@ module.exports = function(Component) {
       let record = this.props.selectedRecord;
       let isContainer = this.props.selectedRecord.type !== 'physical'
       //let isContainer = Object.keys(record).indexOf('children') > -1;
+      //<span>{this.props.parentRecord.name}</span>
       return (
         <div id="map-panel" class="MapPanel panel has-background-white">
           <div className="panel-heading">
             {(isContainer) ? (
               <span>{this.props.selectedRecord.name}{this.props.header}</span>
             ) : (
-              <span>{this.props.parentRecord.name}</span>
+              <span>{this.props.selectedRecord.name}</span>
             )}
             <div class="toolbox is-pulled-right">
                 <div class="buttons has-addons">

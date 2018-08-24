@@ -100,6 +100,9 @@ module.exports = function(Component) {
               </div>
             </form> 
           </div>
+          <div class="panel-block">
+            <pre>{JSON.stringify(this.props, null, 2)}</pre>
+          </div>
         </div>
       )
     }

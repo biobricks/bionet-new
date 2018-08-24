@@ -2,24 +2,24 @@ $breakpoint-tablet: 768px;
 $breakpoint-desktop: 1024px;
 
 .MapGrid {
-  // width: 100%;
-  // height: auto;
+  width: 100%;
+  height: auto;
   // border: 1px solid #dbdbdb;
   // border-top: none;
+  background-color: #dbdbdb;
   .grid-container {
     display: grid;
-    width: 100%;
     // border: 1px solid #ccc;
+    // margin: 0 auto;
+    width: 100%;
     border-top: none;
     min-height: 40vh;
     @media (min-width: $breakpoint-tablet) {
       min-height: 80vh;
     }    
-    .grid-item {      
+    .grid-item {
+      background-color: white;
       border: 1px solid #bbb;
-      display: grid;
-      grid-template-rows: 40px;
-      grid-template-columns: 1fr;
       overflow: hidden; 
       &.active { background-color: lightblue; }
       &:hover { background-color: whitesmoke; }
@@ -28,6 +28,14 @@ $breakpoint-desktop: 1024px;
         align-self: center;
         text-align: center;
         color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        padding: 3px;
+      }
+      .grid-item {
+        border: 1px solid #bbb;
+        height: auto;
+        width: auto;
       }
     }
     .empty.grid-item {

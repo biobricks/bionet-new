@@ -66,24 +66,35 @@ module.exports = function (Component) {
           let child = selectedRecord.children[i];
           let childIndex =  ((child.parent_y * gridContainerWidth) - gridContainerWidth) + child.parent_x - 1;
           let childStyles = {
+            'color': child.textColor ? child.textColor : '#333333',
             'backgroundColor': child.color || '#FFFFFF',
             'fontSize': child.font ? `${child.font}px` : '12px',
             'lineHeight': child.font ? `${child.font + 2}px` : '14px',
             'display': 'grid',
-            //'gridTemplateColumns': `repeat(${child.xUnits}, 1fr)`, // for grandchildren
-            //'gridTemplateRows': `repeat(${child.yUnits}, 1fr)` // for grandchildren
+            'alignSelf': 'stretch',
+            'justifySelf': 'stretch',
+            // 'gridTemplateColumns': `repeat(${child.xUnits}, 1fr)`, // for grandchildren
+            // 'gridTemplateRows': `repeat(${child.yUnits}, 1fr)` // for grandchildren
             'gridTemplateColumns': '1fr',
             'gridTemplateRows': '1fr'
           };
+          
+          // add empty cells to child inner grid
+          // let grandChildren = [];
+          // let childrenLength = child.xUnits * child.yUnits;
+          // for(let j = 0; j < childrenLength; j++){
+          //   grandChildren.push(
+          //     <div class="empty grid-item"></div>
+          //   );
+          // }
+
           let childEl = (
             <Link
               to={`/ui/inventory/${child.id}`} 
               class="grid-item" 
               style={childStyles}
             >
-              <div class="grid-item-label">
-                {child.name}
-              </div>
+              <div class="grid-item-label">{child.name}</div>
             </Link>
           );
           gridContainerChildren[childIndex] = childEl;

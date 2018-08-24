@@ -56,9 +56,6 @@ module.exports = function (Component) {
             </div>  
           </div>
           <MapGrid {...this.props}/>
-          <div class="panel-block p-0">
-            <pre>{JSON.stringify(this.props, null, 2)}</pre>
-          </div>
         </div>
       );
     }

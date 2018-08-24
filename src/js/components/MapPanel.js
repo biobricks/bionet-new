@@ -10,6 +10,37 @@ module.exports = function (Component) {
     constructor(props) {
       super(props);
       this.state = {};
+      this.onRecordMouseEnter = this.onRecordMouseEnter.bind(this);
+      this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);     
+    }
+
+    onRecordMouseEnter(e) {
+      const hoveredRecordId = e.target.getAttribute('id');
+      const type = this.props && this.props.type || null;
+      let selectedRecord;
+      switch (type) {
+        case 'physical':
+          selectedRecord = this.props.inventoryPath[this.props.inventoryPath.length - 2];
+          break;
+        case 'virtual':
+          selectedRecord = this.props.inventoryPath[0];
+          break;
+        default:
+          selectedRecord = this.props.inventoryPath[this.props.inventoryPath.length - 1];    
+      }
+      let hoveredRecord = null;
+      for(let i = 0; i < selectedRecord.children.length; i++){
+        if (selectedRecord.children[i].id === hoveredRecordId){
+          hoveredRecord = selectedRecord.children[i];
+        }
+      }
+      this.props.updateHoveredRecord(hoveredRecord);
+    }
+
+    onRecordMouseLeave(e) {
+      const id = e.target.getAttribute('id');
+      console.log(`On Mouse Leave: ${id}`);
+      this.props.updateHoveredRecord(null);
     }
 
     render() {
@@ -55,7 +86,18 @@ module.exports = function (Component) {
               </div>
             </div>  
           </div>
-          <MapGrid {...this.props}/>
+          <div class="panel-block">
+            {(Object.keys(this.props.hoveredRecord).length > 0) ? (
+              <small>{this.props.hoveredRecord.name} - {this.props.hoveredRecord.description || 'No description provided.'}</small>
+            ) : (
+              <small>&nbsp;</small>
+            )}
+          </div>
+          <MapGrid 
+            {...this.props}
+            onRecordMouseEnter={this.onRecordMouseEnter}
+            onRecordMouseLeave={this.onRecordMouseLeave}
+          />
         </div>
       );
     }

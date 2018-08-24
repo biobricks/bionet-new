@@ -26,6 +26,8 @@ module.exports = function (Component) {
           message: ''
         },
         inventoryPath: [],
+        hoveredRecordId: '',
+        hoveredRecord: {},
         user: {}
       };
       ashnazg.listen('global.user', this.loggedInUser.bind(this));
@@ -39,6 +41,7 @@ module.exports = function (Component) {
       this.saveNewContainer = this.saveNewContainer.bind(this);
       this.saveContainer = this.saveContainer.bind(this);
       this.deleteContainer = this.deleteContainer.bind(this);
+      this.updateHoveredRecord = this.updateHoveredRecord.bind(this);     
     }
 
     loggedInUser(loggedInUser) {
@@ -191,6 +194,20 @@ module.exports = function (Component) {
       }.bind(this));      
     }
 
+    updateHoveredRecord(record) {
+      if(!record) {
+        this.setState({
+          hoveredRecordId: '',
+          hoveredRecord: {}
+        });
+      } else {
+        this.setState({
+          hoveredRecordId: record.id,
+          hoveredRecord: record
+        });
+      }
+    }
+
     componentDidUpdate() {
       this.getInventoryPath();        
     }
@@ -254,7 +271,7 @@ module.exports = function (Component) {
                   saveContainer={this.saveContainer}
                   deleteContainer={this.deleteContainer}
                   dataFullScreen={this.state.dataFullScreen}
-                  toggleDataFullScreen={this.toggleDataFullScreen}
+                  toggleDataFullScreen={this.toggleDataFullScreen}                  
                 />
               ) : null }
 
@@ -281,7 +298,7 @@ module.exports = function (Component) {
                   mode={this.state.mode}
                   handleSetMode={this.handleSetMode}
                   dataFullScreen={this.state.dataFullScreen}
-                  toggleDataFullScreen={this.toggleDataFullScreen}
+                  toggleDataFullScreen={this.toggleDataFullScreen}                
                 />
               ) : null }
 
@@ -292,7 +309,7 @@ module.exports = function (Component) {
                   mode={this.state.mode}
                   handleSetMode={this.handleSetMode}
                   dataFullScreen={this.state.dataFullScreen}
-                  toggleDataFullScreen={this.toggleDataFullScreen}
+                  toggleDataFullScreen={this.toggleDataFullScreen}                 
                 />
               ) : null }
 
@@ -305,6 +322,11 @@ module.exports = function (Component) {
                 type={type}
                 mapFullScreen={this.state.mapFullScreen}
                 toggleMapFullScreen={this.toggleMapFullScreen}
+                onRecordMouseEnter={this.onRecordMouseEnter}
+                onRecordMouseLeave={this.onRecordMouseLeave}
+                hoveredRecordId={this.state.hoveredRecordId}
+                hoveredRecord={this.state.hoveredRecord}
+                updateHoveredRecord={this.updateHoveredRecord}           
               />
             </div>
           </div>

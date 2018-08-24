@@ -90,9 +90,12 @@ module.exports = function (Component) {
 
           let childEl = (
             <Link
-              to={`/ui/inventory/${child.id}`} 
+              to={`/ui/inventory/${child.id}`}
+              id={child.id}
               class="grid-item" 
               style={childStyles}
+              onMouseEnter={this.props.onRecordMouseEnter}
+              onMouseLeave={this.props.onRecordMouseLeave}
             >
               <div class="grid-item-label">{child.name}</div>
             </Link>

@@ -361,14 +361,6 @@ module.exports = {
         else {
             cols=(container.xUnits) ? Number(container.xUnits*gridScale) : 1
             rows=(container.yUnits) ? Number(container.yUnits*gridScale) : 1
-            if (!cols || cols===gridScale) {
-                itemCols=rows
-                cols=rows
-            }
-            if (!rows || rows===gridScale) {
-                itemRows=cols
-                rows=cols
-            }
         }
 
         var size= {

@@ -177,7 +177,7 @@ module.exports = function(Component) {
                           onChange={this.onYUnits.bind(this)}
                           value={this.state.yUnits}
                         />
-                        <label style={{display:'inline-block',fontSize:'1rem',fontWeight:700,marginLeft:'20px'}}>Columns2</label>
+                        <label style={{display:'inline-block',fontSize:'1rem',fontWeight:700,marginLeft:'20px'}}>Columns</label>
                         <input 
                           type="number" 
                           min="1"

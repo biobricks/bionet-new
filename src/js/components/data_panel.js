@@ -114,7 +114,7 @@ module.exports = function(Component) {
       let isNewMode = this.props.newMode;
       let parentRecord = this.props.parentRecord;
       let selectedRecord = this.props.selectedRecord;
-      let isFavorite = this.state.isFavorite
+      let isFavorite = this.props.showFavorites
       //let isContainer = Object.keys(selectedRecord).indexOf('children') > -1;      
       let isContainer = this.props.selectedRecord.type !== 'physical'        
       if(this.state.virtualID) {

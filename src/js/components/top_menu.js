@@ -39,6 +39,14 @@ module.exports = function(Component) {
         }
 
         optionalNavItems.push((
+          <Link to='/inventory/favorites' class="navbar-item">
+            <span class="icon">
+              <i class="fa fa-lg fa-star" aria-hidden="true"></i>
+            </span>
+          </Link>
+        ));
+
+        optionalNavItems.push((
           <Link to='/settings' class="navbar-item">
             <span class="icon">
               <i class="fa fa-lg fa-cog" aria-hidden="true"></i>

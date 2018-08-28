@@ -9,7 +9,7 @@ module.exports = function(Component) {
     render() {
         const favorites = this.props.favorites
         if (!favorites) return null
-        //console.log('render favorites:',favorites)
+        console.log('render favorites:',favorites)
         const self=this
         const selectFavorite = function(e) {
             e.preventDefault();

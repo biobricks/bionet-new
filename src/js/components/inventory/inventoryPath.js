@@ -55,6 +55,8 @@ module.exports = function (Component) {
         currentItem: currentItem,
         inventoryPath: props.inventoryPath
       });
+      console.log('inventoryPath props:',props.showFavorites)
+      //this.toggleFavoritesMode(props.showFavorites)
     }
         
     componentDidMount() {
@@ -162,6 +164,7 @@ module.exports = function (Component) {
     }
         
     toggleFavoritesMode(isFavorites) {
+        console.log('toggleFavoritesMode:',isFavorites)
       this.setState({
         isFavorites: isFavorites
       });
@@ -706,6 +709,7 @@ module.exports = function (Component) {
               toggleEditMode={this.toggleEditMode.bind(this)}
               toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
               toggleFavoritesMode={this.toggleFavoritesMode.bind(this)}
+              showFavorites={this.props.showFavorites}
               onDelete={this.onDelete.bind(this)}
               onSaveEdit={this.onSaveEdit.bind(this)}
               onSaveNew={this.onSaveNew.bind(this)}

@@ -13,6 +13,7 @@ module.exports = function (Component) {
       app.actions.inventory.initialize();
       this.state = {
         types: {},
+        showFavorites:false,
         inventoryPath: null
       };
       if(props.match.params.virtual_id) {
@@ -25,6 +26,7 @@ module.exports = function (Component) {
         
     componentWillReceiveProps(props) {
       const id = (props.match) ? props.match.params.id : null;
+        
       if (id !== this.state.id || app.state.inventory.forceRefresh) {
         this.getInventoryPath(id);
       }  
@@ -44,8 +46,15 @@ module.exports = function (Component) {
       });
     }
         
-    getInventoryPath(id) {
+    getInventoryPath(idp) {
+      var id=idp
       const self = this;
+      if (id==='favorites') {
+        this.setState({
+            showFavorites:!this.state.showFavorites
+        })
+        id=this.state.id
+      }
       if (id) {
         app.actions.inventory.getInventoryPath(id, function(err, inventoryPath) {
           if (err) {
@@ -98,6 +107,7 @@ module.exports = function (Component) {
         
     shouldComponentUpdate(nextProps, nextState) {
       const idProp = (nextProps.match) ? nextProps.match.params.id : null;
+      if (idProp==='favorites') return true
       const idState = nextState.id;
       if (app.state.inventory.forceRefresh) {
         app.state.inventory.forceRefresh = false;
@@ -128,6 +138,7 @@ module.exports = function (Component) {
     }
         
     render() {
+      //console.log('render:',this.props,this.state)
       if (!app.state.global.user) {
         console.log('inventory index.js not logged in', this.state.inventoryPath);
         // todo: this message could be displayed for reasons other than not having a logged in user
@@ -146,7 +157,7 @@ module.exports = function (Component) {
       }
 
       return (
-        <InventoryPath state="inventoryPath" id={this.state.id} inventoryPath={this.state.inventoryPath}/>
+        <InventoryPath state="inventoryPath" id={this.state.id} inventoryPath={this.state.inventoryPath} showFavorites={this.state.showFavorites}/>
       );
     }
   }

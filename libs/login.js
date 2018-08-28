@@ -2,7 +2,7 @@
 module.exports = function(db, users, accounts) {
 
   return function(loginData, cb) {
-    console.log("login attempt:", loginData);
+
     creds = {
       username: loginData.username,
       password: loginData.password
@@ -16,13 +16,10 @@ module.exports = function(db, users, accounts) {
       users.get(id, function(err, user) {
         if(err) return cb(err);
 
-        console.log("USER:", user);
-        
         db.ensureUserData(users, user, accounts, function(err, user) {
           if(err) return cb(err);            
           
           // TODO don't hard-code group
-          console.log("ID:", id);
           cb(null, id, {user: user, group: 'user'});
         });
       });

@@ -28,7 +28,10 @@ module.exports = function (Component) {
         inventoryPath: [],
         hoveredRecordId: '',
         hoveredRecord: {},
-        user: {}
+        user: {},
+        containerForm: {
+
+        }
       };
       ashnazg.listen('global.user', this.loggedInUser.bind(this));
       this.loggedInUser = this.loggedInUser.bind(this);
@@ -217,8 +220,10 @@ module.exports = function (Component) {
     }
 
     render() {
-      const selectedRecord = this.state.inventoryPath.length > 0 ? this.state.inventoryPath[this.state.inventoryPath.length - 1] : null;
-      
+      let inventoryPath = this.state.inventoryPath;
+      let selectedRecord = inventoryPath.length > 0 ? inventoryPath[inventoryPath.length - 1] : {};
+      let parentRecord = inventoryPath.length > 1 ? inventoryPath[0] : {};
+
       let column1Class, column2Class;
       if (this.state.dataFullScreen) {
         column1Class = "column is-12";
@@ -237,8 +242,8 @@ module.exports = function (Component) {
         this.props.match.params && 
         this.props.match.params.id && 
         this.props.match.params.id[0] === 'v';
-      const isPhysical = !isVirtual && selectedRecord && Object.keys(selectedRecord).indexOf('virtual_id') > -1;
-      const isLab = !isVirtual && !isPhysical && selectedRecord && Object.keys(selectedRecord).indexOf('parent_id') === -1;
+      const isPhysical = !isVirtual && Object.keys(selectedRecord).indexOf('virtual_id') > -1;
+      const isLab = !isVirtual && !isPhysical && Object.keys(selectedRecord).indexOf('parent_id') === -1;
       const isContainer = !isVirtual && !isPhysical && !isLab; 
 
       let type;
@@ -318,8 +323,10 @@ module.exports = function (Component) {
             <div class={column2Class}>
               <MapPanel
                 selectedRecord={selectedRecord}
+                parentRecord={parentRecord}
                 inventoryPath={this.state.inventoryPath}
                 type={type}
+                mode={this.state.mode}
                 mapFullScreen={this.state.mapFullScreen}
                 toggleMapFullScreen={this.toggleMapFullScreen}
                 onRecordMouseEnter={this.onRecordMouseEnter}
@@ -330,6 +337,7 @@ module.exports = function (Component) {
               />
             </div>
           </div>
+
         </div>
       );
     }

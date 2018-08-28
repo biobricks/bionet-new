@@ -7,14 +7,26 @@ $breakpoint-desktop: 1024px;
     .field:not(:last-child){
       margin-bottom: .6rem;
     }
-    .field .field-label.is-narrow label {
-      width: 150px;
-    }
-    .field .control {
-      width: 100%;
-      .button {
-        border-radius: 0px;
-      }      
-    }
+    .field {
+      .field-label.is-narrow label {
+        width: 175px;
+      }
+      .field-label.is-narrow label.mt-1 {
+        margin-top: 4px;
+      }
+      .field-body .control {
+        text-align: left;
+        padding-top: 6px;
+        .button {
+          border-radius: 0px;
+        }
+        label.radio {
+          margin-right: 16px;
+          input[type="radio"] {
+            margin-right: 8px !important;
+          }
+        }
+      }
+    }  
   }
 }

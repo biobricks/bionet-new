@@ -1057,8 +1057,8 @@ module.exports = {
                         return cb(error, null);
                     } else {
                         console.log('Save Physical Succeeded: ');
-                        console.log(id);
-                        return cb(null, id);
+                        console.log(record);
+                        return cb(null, record);
                     }
                 });
             }

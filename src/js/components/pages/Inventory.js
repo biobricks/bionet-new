@@ -26,12 +26,10 @@ module.exports = function (Component) {
           message: ''
         },
         inventoryPath: [],
+        selectedRecord: {},       
         hoveredRecordId: '',
         hoveredRecord: {},
         user: {},
-        containerForm: {
-
-        }
       };
       ashnazg.listen('global.user', this.loggedInUser.bind(this));
       this.loggedInUser = this.loggedInUser.bind(this);
@@ -51,10 +49,14 @@ module.exports = function (Component) {
       if (loggedInUser) { 
         app.actions.inventory.getInventoryTypes();
         app.actions.inventory.getFavorites();
-        app.actions.inventory.getWorkbenchContainer();        
-        this.setStateKey('user', loggedInUser); 
+        app.actions.inventory.getWorkbenchContainer();
+        this.setState({
+          user: loggedInUser
+        });
       } else {
-        this.setStateKey('user', {});
+        this.setState({
+          user: {}
+        });
       }
     }
 
@@ -67,21 +69,52 @@ module.exports = function (Component) {
     getInventoryPath() {   
       util.whenConnected(function(){
         const idParam = (this.props) ? this.props.match.params.id : null;
-        const selectedRecord = this.state.inventoryPath.length > 0 ? this.state.inventoryPath[this.state.inventoryPath.length - 1] : null;
-        const idMatchesSelectedRecord = selectedRecord && selectedRecord.id === idParam;
-        if (!selectedRecord || !idMatchesSelectedRecord) {
-          app.actions.inventory.populateInventoryPath(idParam, function(error, inventoryPath) {
-            if (error) {
-              app.actions.notify(error.message, 'error');
-              this.setState({ error });
-            } else {
-              this.setState({
-                inventoryPath,
-                mode: 'view'               
-              });
+        app.actions.inventory.populateInventoryPath(idParam, function(error, inventoryPath) {
+          if (error) {
+            app.actions.notify(error.message, 'error');
+            this.setState({ error });
+          } else {
+            console.log('Inventory.getInventoryPath:');
+            console.log(inventoryPath);
+            // remove unwanted fields
+            for(let i = 0; i < inventoryPath.length; i++){
+              let inventoryRecord = inventoryPath[i];
+              inventoryRecord.subdivisions = [];
+              inventoryPath[i] = inventoryRecord;
             }
-          }.bind(this));
-        }  
+            // if the record has a type attribute, use it for state
+            // else determine it from the conditionals and add it
+            const selectedRecord = inventoryPath.length > 0 ? inventoryPath[inventoryPath.length - 1] : {};
+            const isVirtual = 
+              this.props && 
+              this.props.match && 
+              this.props.match.params && 
+              this.props.match.params.id && 
+              this.props.match.params.id[0] === 'v';
+            const isPhysical = !isVirtual && Object.keys(selectedRecord).indexOf('virtual_id') > -1;
+            const isLab = !isVirtual && !isPhysical && Object.keys(selectedRecord).indexOf('parent_id') === -1;
+            const isContainer = !isVirtual && !isPhysical && !isLab; 
+            
+            let selectedRecordType;
+            if (Object.keys(selectedRecord).indexOf('type') > -1) {
+              selectedRecord['type'] = selectedRecord.type;
+            } else if (isVirtual) { 
+              selectedRecord['type'] = 'virtual'; 
+            } else if (isPhysical) {
+              selectedRecord['type'] = 'physical';
+            } else if (isLab) {
+              selectedRecord['type'] = 'lab';
+            } else if (isContainer) {
+              selectedRecord['type'] = 'container';
+            }         
+
+            this.setState({
+              inventoryPath,
+              selectedRecord,
+              mode: 'view'               
+            });
+          }
+        }.bind(this));
       }.bind(this));
     }
 
@@ -211,18 +244,33 @@ module.exports = function (Component) {
       }
     }
 
-    componentDidUpdate() {
-      this.getInventoryPath();        
+    componentDidUpdate() { 
+      util.whenConnected(function(){
+        const idParam = (this.props) ? this.props.match.params.id : null;
+        const selectedRecordExists = Object.keys(this.state.selectedRecord).length > 0;
+        const idMatchesSelectedRecord = idParam && selectedRecordExists && this.state.selectedRecord.id === idParam;
+        if (!selectedRecordExists || !idMatchesSelectedRecord) {
+          this.getInventoryPath(); 
+        }  
+      }.bind(this));         
     }
 
     componentDidMount() {
-      this.getInventoryPath();
+      util.whenConnected(function(){
+        const idParam = (this.props) ? this.props.match.params.id : null;
+        const selectedRecordExists = Object.keys(this.state.selectedRecord).length > 0;
+        const idMatchesSelectedRecord = idParam && selectedRecordExists && selectedRecord.id === idParam;
+        if (!selectedRecordExists || !idMatchesSelectedRecord) {
+          this.getInventoryPath(); 
+        }  
+      }.bind(this));    
     }
 
     render() {
-      let inventoryPath = this.state.inventoryPath;
-      let selectedRecord = inventoryPath.length > 0 ? inventoryPath[inventoryPath.length - 1] : {};
-      let parentRecord = inventoryPath.length > 1 ? inventoryPath[0] : {};
+      const inventoryPath = this.state.inventoryPath;
+      const selectedRecord = this.state.selectedRecord;
+      const selectedRecordExists = Object.keys(selectedRecord).length > 0;
+      const parentRecord = inventoryPath.length > 1 ? inventoryPath[0] : {};
 
       let column1Class, column2Class;
       if (this.state.dataFullScreen) {
@@ -234,110 +282,91 @@ module.exports = function (Component) {
       } else {
         column1Class = "column is-7-desktop";
         column2Class = "column is-5-desktop";
-      }
-
-      const isVirtual = 
-        this.props && 
-        this.props.match && 
-        this.props.match.params && 
-        this.props.match.params.id && 
-        this.props.match.params.id[0] === 'v';
-      const isPhysical = !isVirtual && Object.keys(selectedRecord).indexOf('virtual_id') > -1;
-      const isLab = !isVirtual && !isPhysical && Object.keys(selectedRecord).indexOf('parent_id') === -1;
-      const isContainer = !isVirtual && !isPhysical && !isLab; 
-
-      let type;
-      if (isVirtual) { 
-        type = 'virtual'; 
-      } else if (isPhysical) {
-        type = 'physical';
-      } else if (isLab) {
-        type = 'lab';
-      } else if (isContainer) {
-        type = 'container';
-      }      
+      }    
 
       return (
         <div class="InventoryPage">
           
-          <div class="columns is-desktop">
-            
-            <div class={column1Class}>
+          {(selectedRecordExists) ? (
+          
+            <div class="columns is-desktop">
               
-              {(isLab) ? (
-                <LabPanel
-                  selectedRecord={selectedRecord}
-                  inventoryPath={this.state.inventoryPath}
-                  mode={this.state.mode}
-                  handleSetMode={this.handleSetMode}
-                  alert={this.state.alert}
-                  removeAlert={this.removeAlert}
-                  saveNewContainer={this.saveNewContainer}
-                  saveContainer={this.saveContainer}
-                  deleteContainer={this.deleteContainer}
-                  dataFullScreen={this.state.dataFullScreen}
-                  toggleDataFullScreen={this.toggleDataFullScreen}                  
-                />
-              ) : null }
+              <div class={column1Class}>
+                
+                {(this.state.selectedRecord.type === 'lab') ? (
+                  <LabPanel
+                    selectedRecord={selectedRecord}
+                    inventoryPath={this.state.inventoryPath}
+                    mode={this.state.mode}
+                    handleSetMode={this.handleSetMode}
+                    alert={this.state.alert}
+                    removeAlert={this.removeAlert}
+                    saveNewContainer={this.saveNewContainer}
+                    saveContainer={this.saveContainer}
+                    deleteContainer={this.deleteContainer}
+                    dataFullScreen={this.state.dataFullScreen}
+                    toggleDataFullScreen={this.toggleDataFullScreen}                  
+                  />
+                ) : null }
 
-              {(isContainer) ? (
-                <ContainerPanel
-                  selectedRecord={selectedRecord}
-                  inventoryPath={this.state.inventoryPath}
-                  mode={this.state.mode}
-                  handleSetMode={this.handleSetMode}
-                  alert={this.state.alert}
-                  removeAlert={this.removeAlert}
-                  saveNewContainer={this.saveNewContainer}
-                  saveContainer={this.saveContainer}
-                  deleteContainer={this.deleteContainer}
-                  dataFullScreen={this.state.dataFullScreen}
-                  toggleDataFullScreen={this.toggleDataFullScreen}
-                />
-              ) : null }
+                {(this.state.selectedRecord.type === 'container') ? (
+                  <ContainerPanel
+                    selectedRecord={selectedRecord}
+                    inventoryPath={this.state.inventoryPath}
+                    mode={this.state.mode}
+                    handleSetMode={this.handleSetMode}
+                    alert={this.state.alert}
+                    removeAlert={this.removeAlert}
+                    saveNewContainer={this.saveNewContainer}
+                    saveContainer={this.saveContainer}
+                    deleteContainer={this.deleteContainer}
+                    dataFullScreen={this.state.dataFullScreen}
+                    toggleDataFullScreen={this.toggleDataFullScreen}
+                  />
+                ) : null }
 
-              {(isPhysical) ? (
-                <PhysicalPanel
-                  selectedRecord={selectedRecord}
-                  inventoryPath={this.state.inventoryPath}
-                  mode={this.state.mode}
-                  handleSetMode={this.handleSetMode}
-                  dataFullScreen={this.state.dataFullScreen}
-                  toggleDataFullScreen={this.toggleDataFullScreen}                
-                />
-              ) : null }
+                {(this.state.selectedRecord.type === 'physical') ? (
+                  <PhysicalPanel
+                    selectedRecord={selectedRecord}
+                    inventoryPath={this.state.inventoryPath}
+                    mode={this.state.mode}
+                    handleSetMode={this.handleSetMode}
+                    dataFullScreen={this.state.dataFullScreen}
+                    toggleDataFullScreen={this.toggleDataFullScreen}                
+                  />
+                ) : null }
 
-              {(isVirtual) ? (
-                <VirtualPanel
-                  selectedRecord={selectedRecord}
-                  inventoryPath={this.state.inventoryPath}
-                  mode={this.state.mode}
-                  handleSetMode={this.handleSetMode}
-                  dataFullScreen={this.state.dataFullScreen}
-                  toggleDataFullScreen={this.toggleDataFullScreen}                 
-                />
-              ) : null }
+                {(this.state.selectedRecord.type === 'virtual') ? (
+                  <VirtualPanel
+                    selectedRecord={selectedRecord}
+                    inventoryPath={this.state.inventoryPath}
+                    mode={this.state.mode}
+                    handleSetMode={this.handleSetMode}
+                    dataFullScreen={this.state.dataFullScreen}
+                    toggleDataFullScreen={this.toggleDataFullScreen}                 
+                  />
+                ) : null }
 
+              </div>
+
+              <div class={column2Class}>
+                <MapPanel
+                  selectedRecord={selectedRecord}
+                  parentRecord={parentRecord}
+                  inventoryPath={this.state.inventoryPath}
+                  type={this.state.selectedRecord.type}
+                  mode={this.state.mode}
+                  mapFullScreen={this.state.mapFullScreen}
+                  toggleMapFullScreen={this.toggleMapFullScreen}
+                  onRecordMouseEnter={this.onRecordMouseEnter}
+                  onRecordMouseLeave={this.onRecordMouseLeave}
+                  hoveredRecordId={this.state.hoveredRecordId}
+                  hoveredRecord={this.state.hoveredRecord}
+                  updateHoveredRecord={this.updateHoveredRecord}           
+                />
+              </div>
             </div>
-
-            <div class={column2Class}>
-              <MapPanel
-                selectedRecord={selectedRecord}
-                parentRecord={parentRecord}
-                inventoryPath={this.state.inventoryPath}
-                type={type}
-                mode={this.state.mode}
-                mapFullScreen={this.state.mapFullScreen}
-                toggleMapFullScreen={this.toggleMapFullScreen}
-                onRecordMouseEnter={this.onRecordMouseEnter}
-                onRecordMouseLeave={this.onRecordMouseLeave}
-                hoveredRecordId={this.state.hoveredRecordId}
-                hoveredRecord={this.state.hoveredRecord}
-                updateHoveredRecord={this.updateHoveredRecord}           
-              />
-            </div>
-          </div>
-
+          ) : null }
         </div>
       );
     }

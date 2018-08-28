@@ -9,7 +9,15 @@ module.exports = function(Component) {
       this.state = {
         form: {
           name: this.props.selectedRecord.name || '',
-          description: this.props.selectedRecord.description || ''
+          description: this.props.selectedRecord.description || '',
+          fontSize: this.props.selectedRecord.fontSize || 12,
+          color: this.props.selectedRecord.color && this.props.selectedRecord.color !== 'aqua' ? this.props.selectedRecord.color : '#00ffff',
+          xUnits: this.props.selectedRecord.xUnits,
+          yUnits: this.props.selectedRecord.yUnits,
+          parent_x: this.props.selectedRecord.parent_x || 1,
+          parent_y: this.props.selectedRecord.parent_y || 1,
+          parent_x_span: this.props.selectedRecord.parent_x_span || 1,
+          parent_y_span: this.props.selectedRecord.parent_y_span || 1,
         }
       };
       this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -20,13 +28,33 @@ module.exports = function(Component) {
       e.preventDefault();
       const form = this.state.form;
       let container = this.props.selectedRecord;
-      container.name = form.name;
-      container.description = form.description;
+      for(let i = 0; i < Object.keys(this.state.form).length; i++ ){
+        let formKey = Object.keys(this.state.form)[i];
+        let formValue;
+        if (
+          formKey === 'name' || 
+          formKey === 'description' || 
+          formKey === 'color' 
+        ) {
+          formValue = form[formKey];
+        } else {
+          formValue = parseInt(form[formKey]);
+        }
+        container[formKey] = formValue;
+      }
       this.props.saveContainer(container);
       this.setState({
         form: {
-          name: '',
-          description: ''
+          name: this.props.selectedRecord.name || '',
+          description: this.props.selectedRecord.description || '',
+          fontSize: this.props.selectedRecord.fontSize || 12,
+          color: this.props.selectedRecord.color && this.props.selectedRecord.color !== 'aqua' ? this.props.selectedRecord.color : '#00ffff',
+          xUnits: this.props.selectedRecord.xUnits,
+          yUnits: this.props.selectedRecord.yUnits,
+          parent_x: this.props.selectedRecord.parent_x || 1,
+          parent_y: this.props.selectedRecord.parent_y || 1,
+          parent_x_span: this.props.selectedRecord.parent_x_span || 1,
+          parent_y_span: this.props.selectedRecord.parent_y_span || 1,
         }
       });
     }
@@ -43,7 +71,7 @@ module.exports = function(Component) {
     render() {
 
       const selectedRecord = this.props.selectedRecord;
-
+    
       return (
         <div class="ContainerEditForm Restructured">
           <div class="panel-block">
@@ -124,7 +152,7 @@ module.exports = function(Component) {
                         name="color"
                         min="1"
                         step="1"
-                        value={this.state.form.color || "#00FFFF"}
+                        value={this.state.form.color}
                         onInput={this.updateFormField}
                       />
                     </div>

@@ -108,10 +108,6 @@ module.exports = function (Component) {
             onRecordMouseEnter={this.onRecordMouseEnter}
             onRecordMouseLeave={this.onRecordMouseLeave}
           />
-
-          <div class="panel-block">
-            <pre>{JSON.stringify(type, null, 2)}</pre>
-          </div>
         
         </div>
       );

@@ -342,7 +342,7 @@ export default class EditContainer extends Component {
     item.id = id;
     item.key = id;
     item.sort = id;
-    item.name = 'New Item';
+    item.name = '';
     item.width = this.gridWidth;
     item.height = this.gridHeight;
     item.color = 'rgba(255,0,0,0.2)';
@@ -600,7 +600,7 @@ export default class EditContainer extends Component {
     item.id = id;
     item.key = id;
     item.sort = id;
-    item.name = 'New Item NM';
+    item.name = '';
     item.width = this.gridWidth;
     item.height = this.gridHeight;
     item.color = 'rgba(255,0,0,0.2)';
@@ -613,7 +613,7 @@ export default class EditContainer extends Component {
     item.newItem = true;
     this.setState({
       item: item,
-      defaultName: 'New Item',
+      defaultName: '',
       editItemMode: false,
       newItemMode: true
     });

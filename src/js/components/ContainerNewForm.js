@@ -14,16 +14,6 @@ module.exports = function(Component) {
     //   majorGridLine: 1,
     //   viewOrientation:'top'
     // }
-
-    // static propTypes = {
-    //   name: PropTypes.string,
-    //   description: PropTypes.string,
-    //   xUnits: PropTypes.number,
-    //   yUnits: PropTypes.number,
-    //   color: PropTypes.string,
-    //   majorGridLine: PropTypes.number,
-    //   viewOrientatoin: PropTypes.string
-    // }
     
     constructor(props) {
       super(props);
@@ -60,58 +50,13 @@ module.exports = function(Component) {
       });
     }
 
-    // update(newProps) {
-    //     const newState = Object.assign(this.state, newProps)
-    //     this.setState(newState)
-    //     if (this.props.onChange) this.props.onChange(newProps)
-    //     //todo: ashnagz doesn't seem to be setting state correctly
-    //     const gridItemSize=40
-    //     app.state.ContainerNewForm={
-    //         name: this.state.name,
-    //         description: this.state.description,
-    //         xUnits: this.state.xUnits,
-    //         yUnits: this.state.yUnits,
-    //         color:this.state.color,
-    //         majorGridLine: this.state.majorGridLine
-    //     }
-    //     /*
-    //     app.setState({
-    //         ContainerNewForm:this.state
-    //     })
-    //     */
-    // }
-    // onName(e) {
-    //     this.update({name:e.target.value})
-    // }
-    // onViewOrientation(e) {
-    //     this.update({viewOrientation:e.target.value})
-    // }
-    // onDescription(e) {
-    //     this.update({description:e.target.value})
-    // }
-    // onXUnits(e) {
-    //     this.update({xUnits:Number(e.target.value)})
-    // }
-    // onYUnits(e) {
-    //     this.update({yUnits:Number(e.target.value)})
-    // }
-    // onMajorGridLine(e) {
-    //     this.update({majorGridLine:Number(e.target.value)})
-    // }
-    // onViewOrientation(e) {
-    //     this.update({viewOrientation:e.target.value})
-    // }
-    // onColor(e) {
-    //     this.update({color:e.target.value})
-    // }
-
 
     render() {
 
       return (
         <div class="ContainerNewForm Restructured">
           <div class="panel-block">
-          <form onSubmit={this.handleFormSubmit}>
+            <form onSubmit={this.handleFormSubmit}>
               
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-narrow">
@@ -274,7 +219,7 @@ module.exports = function(Component) {
                         Column
                       </a>
                     </div>
-                    <div class="control">
+                    <div class="control is-expanded">
                       <input 
                         class="input"
                         type="number" 

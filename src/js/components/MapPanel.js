@@ -44,9 +44,10 @@ module.exports = function (Component) {
     }
 
     render() {
-      const inventoryPath = this.props && this.props.inventoryPath || [];
-      let selectedRecord = this.props && this.props.selectedRecord || null;
-      const type = this.props && this.props.type || null;
+      const inventoryPath = this.props.inventoryPath || [];
+      let selectedRecord = this.props.selectedRecord || null;
+      let type = this.props.type || null;
+      const mode = this.props.mode || null;
       let headingIcon;
       switch (type) {
         case 'lab':
@@ -54,6 +55,13 @@ module.exports = function (Component) {
           break;
         case 'container':
           headingIcon = 'mdi mdi-grid';
+          // if new mode change selected record to parent
+          if (mode && mode === 'edit') {
+            selectedRecord = this.props.parentRecord;
+            if (selectedRecord.id === inventoryPath[0].id){
+              type = 'lab';
+            }
+          }
           break;
         case 'physical':
           headingIcon = 'mdi mdi-grid';
@@ -95,9 +103,12 @@ module.exports = function (Component) {
           </div>
           <MapGrid 
             {...this.props}
+            type={type}
+            selectedRecord={selectedRecord}
             onRecordMouseEnter={this.onRecordMouseEnter}
             onRecordMouseLeave={this.onRecordMouseLeave}
           />
+        
         </div>
       );
     }

@@ -28,7 +28,7 @@ module.exports = function(Component) {
         'gridTemplateColumns': '',
         'gridTemplateRows': ''
       };
-      const record = this.props.record;
+      const record = this.props.record; 
       const recordColumns = record.layoutWidthUnits || record.col;
       const recordRows = record.layoutHeightUnits || record.row;
       const selectedRecord = this.props.selectedRecord;
@@ -80,7 +80,7 @@ module.exports = function(Component) {
                 classNames = "active grid-item";
               }  
             }
-
+            console.log(this.props.mode)
             childElements[childIndex] = (
               <Link 
                 to={`/ui/inventory/${childRecord.id}`} 

@@ -53,7 +53,7 @@ module.exports = function(Component) {
       
     toggleFavorite() {
       const isFavorite = !this.state.isFavorite
-      if (this.props.toggleFavoritesMode) this.props.toggleFavoritesMode(isFavorite)
+      if (this.props.toggleFavorite) this.props.toggleFavorite(isFavorite)
       this.setState({
         isFavorite: isFavorite
       });
@@ -153,7 +153,7 @@ module.exports = function(Component) {
                     <div class="toolbox is-pulled-right">
                       <div class="buttons has-addons">
                       
-                        {(this.state.isFavorite) ? (
+                        {(this.props.isFavorite) ? (
                           <span 
                             class="button is-small is-warning"
                             onClick={this.toggleFavorite.bind(this)}

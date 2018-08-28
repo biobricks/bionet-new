@@ -36,7 +36,6 @@ module.exports = function (Component) {
         toggleNewItem: false,
         currentItem: currentItem,
         fullWidth: false,
-        isFavorites: false,
         favorites: app.state.favorites
       }
       if(props.inventoryPath && props.inventoryPath.virtual_id) {
@@ -55,8 +54,6 @@ module.exports = function (Component) {
         currentItem: currentItem,
         inventoryPath: props.inventoryPath
       });
-      console.log('inventoryPath props:',props.showFavorites)
-      //this.toggleFavoritesMode(props.showFavorites)
     }
         
     componentDidMount() {
@@ -101,26 +98,54 @@ module.exports = function (Component) {
         }
       });
     }
+      
+    getFavorite() {
+        const favorites=this.state.favorites
+        const id=this.state.id
+        console.log('isFavorite:',favorites,id)
+        if (!favorites ||!id) return false
+        for (var i=0; i<this.state.favorites.length; i++) {
+            const favorite=this.state.favorites[i].favorite
+            if (favorite.material_id===id) return favorite
+        }
+        return null
+    }
         
-    addFavorite() {
+    toggleFavorite() {
       const item = this.state.currentItem;
       if (!item) {
         return;
       }  
+      const favorite=this.getFavorite()
       const self = this;
-      app.actions.inventory.addFavorite(item, function(err) {
-        if (err) {
-          app.actions.notify(err.message, 'error');
-          return;
-        } else {
-          app.actions.notify(item.name + " added to favorites", 'notice', 2000);
-          app.actions.inventory.getFavorites((err,favorites) => {
-            self.setState({
-              favorites: favorites
-            });
+      if (!favorite) {
+          app.actions.inventory.addFavorite(item, function(err) {
+            if (err) {
+              app.actions.notify(err.message, 'error');
+              return;
+            } else {
+              app.actions.notify(item.name + " added to favorites", 'notice', 2000);
+              app.actions.inventory.getFavorites((err,favorites) => {
+                self.setState({
+                  favorites: favorites
+                });
+              });
+            }
           });
+        } else {
+            if (favorite.id) {
+                app.actions.inventory.delPhysical(favorite.id, function(err) {
+                    app.actions.inventory.getFavorites((err,favorites) => {
+                        app.actions.notify(item.name + " removed from favorites", 'notice', 2000);
+                        if (!err) {
+                            self.setState({
+                                favorites: favorites
+                            });
+                        }
+                    });
+                })
+            }
         }
-      });
     }
         
     navigateParent(e) {
@@ -141,9 +166,6 @@ module.exports = function (Component) {
     }
         
     toggleNewMode() {
-      if (this.state.isFavorites) {
-        this.addFavorite();
-      } else {
         if (this.state.newMode) {
           this.setState({
             newMode: false,
@@ -160,14 +182,6 @@ module.exports = function (Component) {
             location: null
           });
         }
-      }
-    }
-        
-    toggleFavoritesMode(isFavorites) {
-        console.log('toggleFavoritesMode:',isFavorites)
-      this.setState({
-        isFavorites: isFavorites
-      });
     }
         
     onSaveNew(dbData, type) {
@@ -694,6 +708,7 @@ module.exports = function (Component) {
           return container; 
         });
         const favorites = this.state.favorites;
+        const isFavorite=this.getFavorite() ? true : false
         dataPanel = (
           <div class="column is-7-desktop">
             <DataPanel 
@@ -708,7 +723,8 @@ module.exports = function (Component) {
               toggleNewMode={this.toggleNewMode.bind(this)}
               toggleEditMode={this.toggleEditMode.bind(this)}
               toggleFullscreenMode={this.toggleFullscreenMode.bind(this)}
-              toggleFavoritesMode={this.toggleFavoritesMode.bind(this)}
+              isFavorite={isFavorite}
+              toggleFavorite={this.toggleFavorite.bind(this)}
               showFavorites={this.props.showFavorites}
               onDelete={this.onDelete.bind(this)}
               onSaveEdit={this.onSaveEdit.bind(this)}

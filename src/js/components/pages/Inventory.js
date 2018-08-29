@@ -26,7 +26,8 @@ module.exports = function (Component) {
           message: ''
         },
         inventoryPath: [],
-        selectedRecord: {},       
+        selectedRecord: {},
+        parentRecord: {},       
         hoveredRecordId: '',
         hoveredRecord: {},
         user: {},
@@ -42,7 +43,8 @@ module.exports = function (Component) {
       this.saveNewContainer = this.saveNewContainer.bind(this);
       this.saveContainer = this.saveContainer.bind(this);
       this.deleteContainer = this.deleteContainer.bind(this);
-      this.updateHoveredRecord = this.updateHoveredRecord.bind(this);     
+      this.updateHoveredRecord = this.updateHoveredRecord.bind(this); 
+      this.updateSelectedRecord = this.updateSelectedRecord.bind(this);    
     }
 
     loggedInUser(loggedInUser) {
@@ -74,8 +76,8 @@ module.exports = function (Component) {
             app.actions.notify(error.message, 'error');
             this.setState({ error });
           } else {
-            console.log('Inventory.getInventoryPath:');
-            console.log(inventoryPath);
+            // console.log('Inventory.getInventoryPath:');
+            // console.log(inventoryPath);
             // remove unwanted fields
             for(let i = 0; i < inventoryPath.length; i++){
               let inventoryRecord = inventoryPath[i];
@@ -84,6 +86,7 @@ module.exports = function (Component) {
             }
             // if the record has a type attribute, use it for state
             // else determine it from the conditionals and add it
+            const parentRecord = inventoryPath.length > 0 ? inventoryPath[inventoryPath.length - 2] : {};
             const selectedRecord = inventoryPath.length > 0 ? inventoryPath[inventoryPath.length - 1] : {};
             const isVirtual = 
               this.props && 
@@ -95,7 +98,6 @@ module.exports = function (Component) {
             const isLab = !isVirtual && !isPhysical && Object.keys(selectedRecord).indexOf('parent_id') === -1;
             const isContainer = !isVirtual && !isPhysical && !isLab; 
             
-            let selectedRecordType;
             if (Object.keys(selectedRecord).indexOf('type') > -1) {
               selectedRecord['type'] = selectedRecord.type;
             } else if (isVirtual) { 
@@ -108,9 +110,12 @@ module.exports = function (Component) {
               selectedRecord['type'] = 'container';
             }         
 
+            //console.log('Inventory.getInventoryPath parentRecord: ', parentRecord);
+
             this.setState({
               inventoryPath,
               selectedRecord,
+              parentRecord,
               mode: 'view'               
             });
           }
@@ -162,7 +167,7 @@ module.exports = function (Component) {
         } else {
           alert = {
             type: 'success',
-            message: `${container.name} was updated successfully.`
+            message: `${container.name} was created successfully.`
           };
           app.actions.notify(alert.message, 'notice', 2000);
           this.setState({
@@ -244,6 +249,36 @@ module.exports = function (Component) {
       }
     }
 
+    updateSelectedRecord(selectedRecord) {
+      if(!selectedRecord) {
+        this.setState({
+          selectedRecord: this.state.inventoryPath[this.state.inventoryPath.length - 1],
+          parentRecord: this.state.inventoryPath[this.state.inventoryPath.length - 2] || {}
+        });
+      } else {
+        let parentRecord = this.state.parentRecord || this.state.inventoryPath[this.state.inventoryPath.length - 2] || null;
+        if (Object.keys(parentRecord).length > 0) {
+          if (Object.keys(parentRecord).indexOf('children') === -1){
+            parentRecord['children'] = 0;
+          }
+          for(let i = 0; i < parentRecord.children.length; i++){
+            let child = parentRecord.children[i];
+            if (String(child.id) === String(selectedRecord.id)) {
+              parentRecord.children[i] = selectedRecord;
+            }
+          }
+        }
+        let inventoryPath = this.state.inventoryPath;
+        inventoryPath[inventoryPath.length - 1] = selectedRecord;
+        inventoryPath[inventoryPath.length - 2] = parentRecord;
+        this.setState({
+          selectedRecord,
+          parentRecord,
+          inventoryPath
+        });
+      }
+    }
+
     componentDidUpdate() { 
       util.whenConnected(function(){
         const idParam = (this.props) ? this.props.match.params.id : null;
@@ -259,7 +294,7 @@ module.exports = function (Component) {
       util.whenConnected(function(){
         const idParam = (this.props) ? this.props.match.params.id : null;
         const selectedRecordExists = Object.keys(this.state.selectedRecord).length > 0;
-        const idMatchesSelectedRecord = idParam && selectedRecordExists && selectedRecord.id === idParam;
+        const idMatchesSelectedRecord = idParam && selectedRecordExists && this.state.selectedRecord.id === idParam;
         if (!selectedRecordExists || !idMatchesSelectedRecord) {
           this.getInventoryPath(); 
         }  
@@ -270,7 +305,7 @@ module.exports = function (Component) {
       const inventoryPath = this.state.inventoryPath;
       const selectedRecord = this.state.selectedRecord;
       const selectedRecordExists = Object.keys(selectedRecord).length > 0;
-      const parentRecord = inventoryPath.length > 1 ? inventoryPath[0] : {};
+      const parentRecord = this.state.parentRecord;
 
       let column1Class, column2Class;
       if (this.state.dataFullScreen) {
@@ -322,6 +357,7 @@ module.exports = function (Component) {
                     deleteContainer={this.deleteContainer}
                     dataFullScreen={this.state.dataFullScreen}
                     toggleDataFullScreen={this.toggleDataFullScreen}
+                    updateSelectedRecord={this.updateSelectedRecord}
                   />
                 ) : null }
 

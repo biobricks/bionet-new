@@ -60,12 +60,28 @@ module.exports = function(Component) {
     }
 
     updateFormField(e) {
-      let fieldName = e.target.getAttribute('name');
+      let container = this.props.selectedRecord;
+      const fieldName = e.target.getAttribute('name');
       let form = this.state.form;
       form[fieldName] = e.target.value;
       this.setState({
         form
       });
+      for(let i = 0; i < Object.keys(this.state.form).length; i++ ){
+        let formKey = Object.keys(this.state.form)[i];
+        let formValue;
+        if (
+          formKey === 'name' || 
+          formKey === 'description' || 
+          formKey === 'color' 
+        ) {
+          formValue = form[formKey];
+        } else {
+          formValue = parseInt(form[formKey]);
+        }
+        container[formKey] = formValue;
+      }
+      this.props.updateSelectedRecord(container);
     }
 
     render() {
@@ -320,9 +336,7 @@ module.exports = function(Component) {
               </div>
             </form> 
           </div>
-          <div class="panel-block">
-            <pre>{JSON.stringify(this.props, null, 2)}</pre>
-          </div>
+
         </div>
       )
     }

@@ -14,10 +14,10 @@ module.exports = function (Component) {
     render() {
 
       // default selected record - may change depending on container/physical/virtual
-      let selectedRecord = this.props && this.props.selectedRecord || null;
+      let selectedRecord = this.props.selectedRecord || null;
       
       // selected record type - lab/container/physical/virtual - defaults to container
-      const type = this.props && this.props.type || 'container';
+      const type = this.props.selectedRecord.type || 'container';
       
 
       // inner width and height have different attribute names according to type
@@ -65,6 +65,7 @@ module.exports = function (Component) {
         for(let i = 0; i < selectedRecord.children.length; i++){
           let child = selectedRecord.children[i];
           let childIndex =  ((child.parent_y * gridContainerWidth) - gridContainerWidth) + child.parent_x - 1;
+
           let childStyles = {
             'color': child.textColor ? child.textColor : '#333333',
             'backgroundColor': child.color || '#FFFFFF',
@@ -97,7 +98,15 @@ module.exports = function (Component) {
               onMouseEnter={this.props.onRecordMouseEnter}
               onMouseLeave={this.props.onRecordMouseLeave}
             >
-              <div class="grid-item-label">{child.name}</div>
+              <div 
+                class="grid-item-label"
+                style={
+                  {
+                    'fontSize': `${child.fontSize}px` || '12px',
+                    'line-height': `${child.fontSize + 2}px` || '14px',
+                  }
+                }
+              >{child.name}</div>
             </Link>
           );
           gridContainerChildren[childIndex] = childEl;

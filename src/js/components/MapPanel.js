@@ -10,68 +10,88 @@ module.exports = function (Component) {
     constructor(props) {
       super(props);
       this.state = {};
-      this.onRecordMouseEnter = this.onRecordMouseEnter.bind(this);
-      this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);     
+      // this.onRecordMouseEnter = this.onRecordMouseEnter.bind(this);
+      // this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);     
     }
 
-    onRecordMouseEnter(e) {
-      const hoveredRecordId = e.target.getAttribute('id');
-      const type = this.props && this.props.type || null;
-      let selectedRecord;
-      switch (type) {
-        case 'physical':
-          selectedRecord = this.props.inventoryPath[this.props.inventoryPath.length - 2];
-          break;
-        case 'virtual':
-          selectedRecord = this.props.inventoryPath[0];
-          break;
-        default:
-          selectedRecord = this.props.inventoryPath[this.props.inventoryPath.length - 1];    
-      }
-      let hoveredRecord = null;
-      for(let i = 0; i < selectedRecord.children.length; i++){
-        if (selectedRecord.children[i].id === hoveredRecordId){
-          hoveredRecord = selectedRecord.children[i];
-        }
-      }
-      this.props.updateHoveredRecord(hoveredRecord);
-    }
+    getHeadingIcon() {
 
-    onRecordMouseLeave(e) {
-      const id = e.target.getAttribute('id');
-      console.log(`On Mouse Leave: ${id}`);
-      this.props.updateHoveredRecord(null);
     }
+    // onRecordMouseEnter(e) {
+    //   const hoveredRecordId = e.target.getAttribute('id');
+    //   const type = this.props && this.props.type || null;
+    //   let selectedRecord;
+    //   switch (type) {
+    //     case 'physical':
+    //       selectedRecord = this.props.inventoryPath[this.props.inventoryPath.length - 2];
+    //       break;
+    //     case 'virtual':
+    //       selectedRecord = this.props.inventoryPath[0];
+    //       break;
+    //     default:
+    //       selectedRecord = this.props.inventoryPath[this.props.inventoryPath.length - 1];    
+    //   }
+    //   let hoveredRecord = null;
+    //   for(let i = 0; i < selectedRecord.children.length; i++){
+    //     if (selectedRecord.children[i].id === hoveredRecordId){
+    //       hoveredRecord = selectedRecord.children[i];
+    //     }
+    //   }
+    //   this.props.updateHoveredRecord(hoveredRecord);
+    // }
+
+    // onRecordMouseLeave(e) {
+    //   const id = e.target.getAttribute('id');
+    //   console.log(`On Mouse Leave: ${id}`);
+    //   this.props.updateHoveredRecord(null);
+    // }
 
     render() {
       const inventoryPath = this.props.inventoryPath || [];
-      let selectedRecord = this.props.selectedRecord || null;
-      let type = this.props.type || null;
-      const mode = this.props.mode || null;
-      let headingIcon;
+      let selectedRecord = this.props.selectedRecord || {};
+      const selectedRecordExists = Object.keys(this.props.selectedRecord).length > 0;
+      let type = this.props.selectedRecord.type || 'container';
+      const mode = this.props.mode || 'view';
+      const parentRecord = this.props.parentRecord || {};
+      
+      // console.log(`MapPanel.render type: ${type}`);
+      // console.log(`MapPanel.render parentRecord:`, parentRecord);
+      
+      let mapRecord;
       switch (type) {
+        case 'lab':
+          mapRecord = selectedRecord;
+          break;
+        case 'container':
+          if (mode === 'edit') {
+            mapRecord = parentRecord;
+          } else {
+            mapRecord = selectedRecord;
+          }
+          break;
+        case 'physical':
+          mapRecord = parentRecord;
+          break;
+        case 'virtual':
+          mapRecord = inventoryPath[0];
+          break;
+        default:
+          mapRecord = selectedRecord;      
+      }
+      
+      let headingIcon;
+      switch (mapRecord.type) {
         case 'lab':
           headingIcon = 'mdi mdi-home-outline';
           break;
         case 'container':
           headingIcon = 'mdi mdi-grid';
-          // if new mode change selected record to parent
-          if (mode && mode === 'edit') {
-            selectedRecord = this.props.parentRecord;
-            if (selectedRecord.id === inventoryPath[0].id){
-              type = 'lab';
-            }
-          }
           break;
         case 'physical':
           headingIcon = 'mdi mdi-grid';
-          // if physical change selected record to parent
-          selectedRecord = inventoryPath[inventoryPath.length - 2];
           break;
         case 'virtual':
           headingIcon = 'mdi mdi-home-outline';
-          // if virtual change selected record to lab
-          selectedRecord = inventoryPath[0];
           break;
         default:
           headingIcon = 'mdi mdi-grid';
@@ -81,7 +101,7 @@ module.exports = function (Component) {
         <div class="panel">
           <div class="panel-heading">
             <i class={headingIcon}/>&nbsp;
-            {selectedRecord && selectedRecord.name || 'Loading...'}
+            {selectedRecordExists && mapRecord.name || 'Loading...'}
             <div class="PanelToolbar toolbox pull-right">
               <div class="buttons has-addons">
                 <span 
@@ -92,23 +112,17 @@ module.exports = function (Component) {
                   <i class={mapExpandIcon}></i>
                 </span>
               </div>
-            </div>  
+            </div>
           </div>
-          <div class="panel-block">
-            {(Object.keys(this.props.hoveredRecord).length > 0) ? (
-              <small>{this.props.hoveredRecord.name} - {this.props.hoveredRecord.description || 'No description provided.'}</small>
-            ) : (
-              <small>&nbsp;</small>
-            )}
-          </div>
+
           <MapGrid 
-            {...this.props}
             type={type}
-            selectedRecord={selectedRecord}
-            onRecordMouseEnter={this.onRecordMouseEnter}
-            onRecordMouseLeave={this.onRecordMouseLeave}
+            selectedRecord={ mapRecord }
+            //selectedRecord={selectedRecord}
+            // onRecordMouseEnter={this.onRecordMouseEnter}
+            // onRecordMouseLeave={this.onRecordMouseLeave}
           />
-        
+
         </div>
       );
     }

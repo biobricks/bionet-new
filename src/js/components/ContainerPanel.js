@@ -89,6 +89,7 @@ module.exports = function (Component) {
               selectedRecord={selectedRecord}
               saveContainer={this.props.saveContainer}
               handleSetMode={this.props.handleSetMode}
+              updateSelectedRecord={this.props.updateSelectedRecord}
             />
           ) : null }
 

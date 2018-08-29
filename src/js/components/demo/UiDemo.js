@@ -13,7 +13,7 @@ module.exports = function(Component) {
             <div class="column is-7-desktop">
               <div class="panel has-background-white">
                 <div class="panel-heading">
-                  <i class="mdi mdi-code-tags"></i> UI Demo
+                  <i class="mdi mdi-book-open-page-variant"></i>&nbsp;Pages
                 </div>
                 <Link 
                   to="/ui/login"
@@ -100,9 +100,10 @@ module.exports = function(Component) {
             </div>
           
             <div class="column is-5-desktop">
+              
               <div class="panel has-background-white">
                 <div class="panel-heading">
-                  <i class="mdi mdi-grid"></i>&nbsp;&nbsp;Inventory
+                  <i class="mdi mdi-grid"></i>&nbsp;Inventory
                 </div>
                 <Link 
                   to="/ui/inventory"
@@ -122,7 +123,23 @@ module.exports = function(Component) {
                   </span>
                   New Container
                 </Link>                
-              </div>  
+              </div>
+
+              <div class="panel has-background-white">
+                <div class="panel-heading">
+                  <i class="mdi mdi-recycle"></i>&nbsp;Partials
+                </div>
+                <Link 
+                  to="/ui/alert"
+                  class="panel-block"
+                >
+                  <span class="panel-icon">
+                    <i class="mdi mdi-grid"></i>
+                  </span>
+                  Alert Message
+                </Link>               
+              </div>
+
             </div>
           </div>  
         </div>

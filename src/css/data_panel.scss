@@ -42,7 +42,11 @@ $breakpoint-desktop: 1024px;
       padding: 0 6px;
     }
     li {
-          color: blue
+      color: blue;
+      &:hover {
+        color: #333;
+        cursor: pointer;
+      }
     }
     li + li::before {
       content: ' >> ';

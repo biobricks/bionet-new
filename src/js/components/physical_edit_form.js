@@ -113,7 +113,8 @@ module.exports = function(Component) {
                     <input 
                       class="input"
                       type="text"
-                      name="name" 
+                      name="name"
+                      placeholder="Physical Name"
                       onChange={this.onName.bind(this)}
                       value={this.state.name}
                     />
@@ -130,6 +131,7 @@ module.exports = function(Component) {
                       class="textarea"
                       name="description" 
                       value={this.state.description}
+                      placeholder="A short description of the Physical."
                       onChange={this.onDescription.bind(this)}
                       rows="2"
                     >{this.state.description}</textarea>
@@ -196,6 +198,7 @@ module.exports = function(Component) {
                       class="input"
                       type="text"
                       name="provenance"
+                      placeholder="Provenance"
                       onChange={this.onProvenance.bind(this)}
                       value={this.state.provenance}
                     />
@@ -225,6 +228,7 @@ module.exports = function(Component) {
                       class="input"
                       type="text" 
                       name="genotype"
+                      placeholder="Genotype"
                       onChange={this.onGenotype.bind(this)}
                       value={this.state.genotype}
                     />
@@ -240,6 +244,7 @@ module.exports = function(Component) {
                     <textarea 
                       class="textarea" 
                       name="sequence"
+                      placeholder="SEQUENCE"
                       value={this.state.sequence}
                       onChange={this.onSequence.bind(this)}
                       rows="3"

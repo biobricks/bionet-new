@@ -27,7 +27,15 @@ module.exports = function(Component) {
       let selectedRecord = this.props.selectedRecord;
       let parentRecord = this.props.parentRecord;
       let children=null
-      if (this.props.selectedRecord.children) {
+      if (!this.props.selectedRecord.children || !this.props.selectedRecord.children.length) {
+          children=(
+              <div>
+                <br/>
+                <h6>Container is currently empty.</h6>
+              </div>
+              )
+      }
+      else if (this.props.selectedRecord.children) {
             children = this.props.selectedRecord.children.map((child, index) => {
             //let isContainer = Object.keys(child).indexOf('children') > -1;
             let isContainer = child.type !== 'physical'

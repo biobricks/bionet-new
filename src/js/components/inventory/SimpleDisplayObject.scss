@@ -34,7 +34,12 @@ span.itemTextStyle {
 .gridItem{
   background-size: 100%;
   background-color:#000;
+}
+.gridItemMove {
   cursor: move;
+}
+.gridItemNav {
+  cursor: default;
 }
 //  top:12px;
 

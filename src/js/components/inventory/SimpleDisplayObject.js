@@ -20,6 +20,7 @@ export default class SimpleDisplayObject extends React.Component {
             height:itemHeight+'px',
             background:'linear-gradient('+this.props.item.color+','+this.props.item.color+')'
         };
+        const cursorClass=(!this.props.isNav) ? 'gridItemNav' : 'gridItemMove'
 
         var fontSize = (this.props.item.fontSize) ? Number(this.props.item.fontSize)*this.props.gridHeight : 0.3*this.props.gridHeight
         fontSize = Math.min(18,fontSize)
@@ -38,7 +39,7 @@ export default class SimpleDisplayObject extends React.Component {
         }
         //console.log('rendering Sample Display',this.props.item.height, itemHeight)
         return (
-            <div style={itemStyle} className={"gridItem tooltip displayObject "+highlightedClass} data-tooltip={this.props.item.name} ref={node => this.props.setDragNode(node)}>
+            <div style={itemStyle} className={"gridItem tooltip displayObject cursorClass"+highlightedClass} data-tooltip={this.props.item.name} ref={node => this.props.setDragNode(node)}>
                 <span className="itemTextStyle" style={itemTextStyle}>{label}</span>
             </div>
         )

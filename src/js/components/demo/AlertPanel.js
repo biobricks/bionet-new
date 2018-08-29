@@ -11,7 +11,7 @@ module.exports = function(Component) {
             <h3>{this.props.heading || 'Alert Panel (props.heading)'}</h3>
           </div>
           <div class="panel-block">
-            <div class="has-text-centered" style={{'margin': '0 auto'}} dangerouslySetInnerHTML={{__html: this.props.message || 'Alert Panel Message. (props.message)'}}>
+            <div class="has-text-centered" style={{'margin': '0 auto'}} dangerouslySetInnerHTML={{__html: this.props.message || 'Alert Panel Message. Accepts HTML. (props.message)'}}>
 
             </div>
           </div>

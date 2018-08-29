@@ -258,6 +258,7 @@ export default class EditContainer extends Component {
     console.log('deleting item 1:', id, name, parentId, item);
     app.actions.prompt.display('Do you wish to delete ' + name + '?', null, function(accept) {
       if (accept) {
+        this.closeEditItemMode()
         app.actions.inventory.delPhysical(id, function(err, id2) {
           if (err) {
             app.actions.notify(err.message, 'error');
@@ -587,6 +588,13 @@ export default class EditContainer extends Component {
 
   toggleEditMode() {}
 
+  closeEditItemMode(){
+    this.setState({
+      editItemMode: false,
+      newItemMode: false
+    });
+  }
+
   toggleEditItemMode(){
     this.setState({
       editItemMode: !this.state.editItemMode,
@@ -633,6 +641,7 @@ export default class EditContainer extends Component {
     if (!this.selectedItem) {
       return;
     }  
+    this.closeEditItemMode()
     let selectedItem = this.selectedItem;
     const newMode = selectedItem.newItem;
     console.log('onSaveItemClick newMode:', newMode, selectedItem);
@@ -681,7 +690,8 @@ export default class EditContainer extends Component {
     };
     const name = this.state.defaultName;
     if (this.props.fullWidth) {
-      const isEditItemMode = true;
+      const isEditItemMode = this.state.editItemMode
+      const isNewItemMode = this.state.newItemMode
       let containerPropertiesForm = null;
       let itemPropertiesForm = null;
       containerPropertiesForm = (
@@ -725,6 +735,7 @@ export default class EditContainer extends Component {
             </div>
           );
         } else {
+            /*
           itemPropertiesForm = (
             <div>
               <div className="pure-form">
@@ -744,6 +755,7 @@ export default class EditContainer extends Component {
               </div>
             </div>
           );
+          */
         }
       }
 
@@ -782,7 +794,7 @@ export default class EditContainer extends Component {
                           <div class="buttons has-addons">
                             <span 
                               class="button is-small is-link"
-                              onClick={this.toggleEditItemMode.bind(this)}
+                              onClick={this.closeEditItemMode.bind(this)}
                             >
                               <i class="mdi mdi-pencil"></i>
                             </span>

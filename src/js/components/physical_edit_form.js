@@ -20,16 +20,16 @@ module.exports = function(Component) {
         const item=props.selectedRecord
         if (item) {
             this.setState({
+                freeGenesStage:item.freeGenesStage,
+                color:item.color,
                 name:item.name,
                 description:item.description,
                 genotype:item.genotype,
                 license:item.license,
                 freeGenes:item.freeGenes,
-                freeGenesStage:item.freeGenesStage,
                 sequence:item.sequence,
                 provenance:item.provenance,
                 isAvailable:item.isAvailable,
-                color:item.color
             })
         }
     }

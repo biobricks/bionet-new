@@ -48,12 +48,40 @@ module.exports = function (Component) {
       if (!props.inventoryPath) {
         return;
       }
-      const currentItem = app.actions.inventory.getItemFromInventoryPath(props.id);
+        
+      const id = props.id
+      const currentItem = app.actions.inventory.getItemFromInventoryPath(id);
+      var isPhysical=null
+      var virtualId=null
+      if (currentItem) {
+        isPhysical = currentItem.type === 'physical'
+        virtualId = currentItem.virtual_id
+      }
+      console.log('inventoryPath: props:',isPhysical,virtualId)
+      
+      const self=this
       this.setState({
-        id: props.id,
+        id: id,
         currentItem: currentItem,
+        isPhysical:isPhysical,
         inventoryPath: props.inventoryPath
       });
+      if (isPhysical && virtualId) {
+        console.log('inventoryPath: before getVirtual:',virtualId)
+        app.actions.inventory.getItem(virtualId, function(err,virtualData){
+            console.log('inventoryPath:getVirtual:',virtualData)
+            if (err) {
+                console.log('inventoryPath:getVirtual error:',err)
+                return
+            }
+            delete virtualData.id
+            const mergedItem = Object.assign(currentItem, virtualData)
+            self.setState({
+                currentItem: mergedItem,
+                virtualData: virtualData
+            });
+        })
+      }
     }
         
     componentDidMount() {
@@ -315,23 +343,63 @@ module.exports = function (Component) {
       delete props.validation;
       console.log('inventoryPath onSaveEdit:', props);
       const self=this
-      app.actions.inventory.updateItem(props.id, function(err, item) {
-        props.xUnits = (props.xUnits) ? Number(props.xUnits) : 1;
-        props.yUnits = (props.yUnits) ? Number(props.yUnits) : 1;
-        const updatedItem = Object.assign(item, props);
-        delete updatedItem.gridWidth
-        delete updatedItem.gridHeight
-        delete updatedItem.layoutWidth
-        delete updatedItem.layoutHeight
-        delete updatedItem.layoutWidthUnits
-        delete updatedItem.layoutHeightUnits
-        delete updatedItem.children
-        delete updatedItem.subdivisions
-        console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
-        app.actions.notify(item.name+" saved", 'notice', 2000);
+      if (this.state.isPhysical) {
         self.toggleEditMode()
-        return updatedItem;
-      });
+        console.log('inventoryPath onSaveEdit saving physical:');
+        app.actions.inventory.updateItem(props.id, function(err, item) {
+            const physicalProps = {
+                freeGenesStage:props.freeGenesStage,
+                color:props.color
+            }
+            const updatedItem = Object.assign(item, physicalProps);
+            self.setState({
+                currentItem:updatedItem
+            })
+            return updatedItem;
+        })
+        const virtualId=this.state.currentItem.virtual_id
+        app.actions.inventory.getItem(virtualId, function(err, virtualData) {
+            if (err) {
+                console.log('inSaveEdit getvirtual error:',err)
+                return
+            }
+            const virtualProps = {
+                name:props.name,
+                description:props.description,
+                genotype:props.genotype,
+                license:props.license,
+                freeGenes:props.freeGenes,
+                sequence:props.sequence,
+                provenance:props.provenance,
+                isAvailable:props.isAvailable,
+            }
+            const updatedVirtual = Object.assign(virtualData, virtualProps);
+            self.setState({
+                virtualData:updatedVirtual
+            })
+            app.actions.inventory.saveVirtual(updatedVirtual, function( err, virtualId ) {
+                console.log('onSaveEdit, save virtual:',err,virtualId)
+            })
+        })
+      } else {
+          app.actions.inventory.updateItem(props.id, function(err, item) {
+            props.xUnits = (props.xUnits) ? Number(props.xUnits) : 1;
+            props.yUnits = (props.yUnits) ? Number(props.yUnits) : 1;
+            const updatedItem = Object.assign(item, props);
+            delete updatedItem.gridWidth
+            delete updatedItem.gridHeight
+            delete updatedItem.layoutWidth
+            delete updatedItem.layoutHeight
+            delete updatedItem.layoutWidthUnits
+            delete updatedItem.layoutHeightUnits
+            delete updatedItem.children
+            delete updatedItem.subdivisions
+            console.log('inventoryPath onSaveEdit updateItem', updatedItem, item, props)
+            app.actions.notify(item.name+" saved", 'notice', 2000);
+            self.toggleEditMode()
+            return updatedItem;
+          });
+      }
     }
 
     onDelete() {

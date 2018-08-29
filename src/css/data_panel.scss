@@ -41,8 +41,11 @@ $breakpoint-desktop: 1024px;
     .elipses {
       padding: 0 6px;
     }
+    li {
+          color: blue
+    }
     li + li::before {
-      content: ' >>  ';
+      content: ' >> ';
       white-space: pre;      
     }
     li + li::after {

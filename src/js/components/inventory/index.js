@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import ashnazg from 'ashnazg';
+import { Link } from 'react-router-dom';
 
 module.exports = function (Component) {
   
@@ -142,12 +143,12 @@ module.exports = function (Component) {
       if (!app.state.global.user) {
         console.log('inventory index.js not logged in', this.state.inventoryPath);
         // todo: this message could be displayed for reasons other than not having a logged in user
-        return null;
-        /*
-          return (
-            <div>You must be logged in to view this page.</div>
-          );
-        */
+        return (
+            <div>
+                <div>You must be logged in to view this page.</div>
+                <Link to="/login/"><button class="button is-link mt-1">Login</button></Link>
+            </div>
+        );
       }
 
       if (this.state.err) {

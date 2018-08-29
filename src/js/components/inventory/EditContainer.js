@@ -239,6 +239,7 @@ export default class EditContainer extends Component {
       const items = this.unselectNewItem(this.state.items);
       this.selectItem(source, items);
     }
+    this.showEditItemMode()
     this.dragId = null;
   }
     
@@ -587,6 +588,13 @@ export default class EditContainer extends Component {
   }
 
   toggleEditMode() {}
+
+  showEditItemMode(){
+    this.setState({
+      editItemMode: true,
+      newItemMode: false
+    });
+  }
 
   closeEditItemMode(){
     this.setState({

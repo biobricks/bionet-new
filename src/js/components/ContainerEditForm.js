@@ -178,7 +178,7 @@ module.exports = function(Component) {
 
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-narrow">
-                  <label class="label mt-1">Internal Dimensions</label>
+                  <label class="label mt-1">Dimensions</label>
                 </div>
                 <div class="field-body">        
                   <div class="field is-expanded">
@@ -215,98 +215,6 @@ module.exports = function(Component) {
                         min="1"
                         step="1"
                         value={this.state.form.xUnits}
-                        onInput={this.updateFormField}
-                      />
-                    </div>
-                  </div>  
-                </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-narrow">
-                  <label class="label mt-1">Position</label>
-                </div>
-                <div class="field-body">        
-                  <div class="field is-expanded">
-                    <div class="field has-addons">
-                      <div class="control">
-                        <a class="button is-static">
-                          Row
-                        </a>
-                      </div>                      
-                      <div class="control is-expanded">
-                        <input 
-                          class="input"
-                          type="number" 
-                          name="parent_y"
-                          min="1"
-                          step="1"
-                          value={this.state.form.parent_y}
-                          onInput={this.updateFormField}
-                        />
-                      </div>
-                    </div>
-                  </div>  
-                  <div class="field has-addons">
-                    <div class="control">
-                      <a class="button is-static">
-                        Column
-                      </a>
-                    </div>
-                    <div class="control is-expanded">
-                      <input 
-                        class="input"
-                        type="number" 
-                        name="parent_x"
-                        min="1"
-                        step="1"
-                        value={this.state.form.parent_x}
-                        onInput={this.updateFormField}
-                      />
-                    </div>
-                  </div>  
-                </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-narrow">
-                  <label class="label mt-1">External Dimensions</label>
-                </div>
-                <div class="field-body">        
-                  <div class="field is-expanded">
-                    <div class="field has-addons">
-                      <div class="control">
-                        <a class="button is-static">
-                          Rows
-                        </a>
-                      </div>                      
-                      <div class="control is-expanded">
-                        <input 
-                          class="input"
-                          type="number" 
-                          name="parent_y_span"
-                          min="1"
-                          step="1"
-                          value={this.state.form.parent_y_span}
-                          onInput={this.updateFormField}
-                        />
-                      </div>
-                    </div>
-                  </div>  
-                  <div class="field has-addons">
-                    <div class="control">
-                      <a class="button is-static">
-                        Columns
-                      </a>
-                    </div>                    
-                    <div class="control is-expanded">
-                      <input 
-                        class="input"
-                        type="number" 
-                        name="parent_x_span"
-                        min="1"
-                        step="1"
-                        value={this.state.form.parent_x_span}
                         onInput={this.updateFormField}
                       />
                     </div>

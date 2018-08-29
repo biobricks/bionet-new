@@ -63,11 +63,7 @@ module.exports = function (Component) {
           mapRecord = selectedRecord;
           break;
         case 'container':
-          if (mode === 'edit') {
-            mapRecord = parentRecord;
-          } else {
-            mapRecord = selectedRecord;
-          }
+          mapRecord = selectedRecord;
           break;
         case 'physical':
           mapRecord = parentRecord;

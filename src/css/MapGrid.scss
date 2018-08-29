@@ -32,17 +32,14 @@ $breakpoint-desktop: 1024px;
         overflow: hidden;
         padding: 3px;
       }
-      .grid-item {
-        border: 1px solid #bbb;
-        height: auto;
-        width: auto;
+      .empty.grid-item-label {
+        font-size: 1.6vmin;
+        color: #ccc;
       }
     }
     .empty.grid-item {
       border: 1px solid #ededed;
-      .grid-item-label {
-        color: #ddd !important;
-      }  
+      overflow: hidden;
     }    
   }
 }

@@ -347,6 +347,7 @@ module.exports = function (Component) {
                 {(this.state.selectedRecord.type === 'container') ? (
                   <ContainerPanel
                     selectedRecord={selectedRecord}
+                    parentRecord={parentRecord}
                     inventoryPath={this.state.inventoryPath}
                     mode={this.state.mode}
                     handleSetMode={this.handleSetMode}

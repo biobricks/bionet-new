@@ -87,6 +87,7 @@ module.exports = function (Component) {
           {(selectedRecord && this.props.mode === 'edit') ? (
             <ContainerEditForm
               selectedRecord={selectedRecord}
+              parentRecord={this.props.parentRecord}
               saveContainer={this.props.saveContainer}
               handleSetMode={this.props.handleSetMode}
               updateSelectedRecord={this.props.updateSelectedRecord}

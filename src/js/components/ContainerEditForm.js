@@ -143,6 +143,7 @@ module.exports = function(Component) {
                           type="number" 
                           name="fontSize"
                           min="8"
+                          max="36"
                           step="1"
                           value={this.state.form.fontSize}
                           onInput={this.updateFormField}
@@ -166,9 +167,55 @@ module.exports = function(Component) {
                         class="input"
                         type="color" 
                         name="color"
-                        min="1"
-                        step="1"
                         value={this.state.form.color}
+                        onInput={this.updateFormField}
+                      />
+                    </div>
+                  </div>  
+                </div>
+              </div>
+
+              <div class="field is-horizontal">
+                <div class="field-label is-normal is-narrow">
+                  <label class="label mt-1">Position</label>
+                </div>
+                <div class="field-body">        
+                  <div class="field is-expanded">
+                    <div class="field has-addons">
+                      <div class="control">
+                        <a class="button is-static">
+                          Row
+                        </a>
+                      </div>                      
+                      <div class="control is-expanded">
+                        <input 
+                          class="input"
+                          type="number" 
+                          name="parent_y"
+                          min="1"
+                          max={this.props.parentRecord.layoutHeightUnits || this.props.parentRecord.yUnits}
+                          step="1"
+                          value={this.state.form.parent_y}
+                          onInput={this.updateFormField}
+                        />
+                      </div>
+                    </div>
+                  </div>  
+                  <div class="field has-addons">
+                    <div class="control">
+                      <a class="button is-static">
+                        Column
+                      </a>
+                    </div>
+                    <div class="control is-expanded">
+                      <input 
+                        class="input"
+                        type="number" 
+                        name="parent_x"
+                        min="1"
+                        max={this.props.parentRecord.layoutWidthUnits || this.props.parentRecord.xUnits}
+                        step="1"
+                        value={this.state.form.parent_x}
                         onInput={this.updateFormField}
                       />
                     </div>

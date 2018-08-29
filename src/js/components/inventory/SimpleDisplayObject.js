@@ -39,7 +39,7 @@ export default class SimpleDisplayObject extends React.Component {
         }
         //console.log('rendering Sample Display',this.props.item.height, itemHeight)
         return (
-            <div style={itemStyle} className={"gridItem tooltip displayObject cursorClass"+highlightedClass} data-tooltip={this.props.item.name} ref={node => this.props.setDragNode(node)}>
+            <div style={itemStyle} className={"gridItem tooltip displayObject "+highlightedClass+" "+cursorClass} data-tooltip={this.props.item.name} ref={node => this.props.setDragNode(node)}>
                 <span className="itemTextStyle" style={itemTextStyle}>{label}</span>
             </div>
         )

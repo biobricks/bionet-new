@@ -24,6 +24,10 @@ module.exports = function (Component) {
             }.bind(this))
         }
         
+        onClick() {
+           app.state.history.push('/workbench') 
+        }
+        
         drop(e) {
             console.log('workbench moveItem drop')
             e.preventDefault();
@@ -84,6 +88,7 @@ module.exports = function (Component) {
                     draggable="true"
                     ondragstart={this.dragStart}
                     ondragend={this.onDragEnd}
+                    onclick={this.onClick}
                 >{totalItems} {itemText} on bench</span>
             )
         }

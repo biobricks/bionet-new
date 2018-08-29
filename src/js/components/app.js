@@ -54,7 +54,8 @@ module.exports = function(Component) {
   const ManageUsersDemo  = require('./demo/ManageUsers.js')(Component);
   const TestComponent    = require('./demo/test.js')(Component);
   const ConfirmAccountPanelDemo = require('./demo/ConfirmAccountPanel.js')(Component);
-  const ContainerNewDemo    = require('./demo/ContainerNew.js')(Component);
+  const ContainerNewDemo = require('./demo/ContainerNew.js')(Component);
+  const AlertPanelDemo   = require('./demo/AlertPanel.js')(Component);
 
   // Top Level Page Components Controlling Layout
   const InventoryPage = require('./pages/Inventory.js')(Component);
@@ -97,6 +98,7 @@ module.exports = function(Component) {
                 <Route exact path="/ui/server-status" component={ServerPanelDemo} />
                 <Route exact path="/ui/account-confirmed" component={ConfirmAccountPanelDemo} />
                 <Route exact path="/ui/containers/new" component={ContainerNewDemo} />
+                <Route exact path="/ui/alert" component={AlertPanelDemo} />
 
                 <Route exact path="/signup" render={() => (
                   <Signup />

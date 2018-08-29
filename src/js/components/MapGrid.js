@@ -54,10 +54,47 @@ module.exports = function (Component) {
       const gridCellCount = gridContainerWidth * gridContainerHeight;
 
       // add empty cells to gridContainerChildren array
-      for(let i = 0; i < gridCellCount; i++){
-        gridContainerChildren.push(
-          <div class="empty grid-item"></div>
-        );
+      // for(let i = 0; i < gridCellCount; i++){
+        
+      //   let emptyChildStyles = {
+      //     'display': 'grid',
+      //     'alignSelf': 'stretch',
+      //     'justifySelf': 'stretch',
+      //     'gridTemplateColumns': '1fr',
+      //     'gridTemplateRows': '1fr'
+      //   };
+      //   gridContainerChildren.push(
+      //     <div 
+      //       class="empty grid-item"
+      //       style={emptyChildStyles}
+      //     >
+      //       <div class="grid-item-label">
+      //         empty
+      //       </div>
+      //     </div>
+      //   );
+      // }
+
+      // add empty cells to gridContainerChildren array
+      for(let rowNo = 1; rowNo <= gridContainerHeight; rowNo++){
+        for(let colNo = 1; colNo <= gridContainerWidth; colNo++){
+          let emptyChildStyles = {
+            'display': 'grid',
+            'alignSelf': 'stretch',
+            'justifySelf': 'stretch',
+            'gridTemplateColumns': '1fr',
+            'gridTemplateRows': '1fr'
+          };
+          gridContainerChildren.push(
+            <div 
+              class="empty grid-item"
+              style={emptyChildStyles}
+              row={rowNo}
+              col={colNo}
+            >
+            </div>
+          );
+        }  
       }
 
       // replace empty cells in the gridContainerChildren array with children
@@ -74,20 +111,11 @@ module.exports = function (Component) {
             'display': 'grid',
             'alignSelf': 'stretch',
             'justifySelf': 'stretch',
-            // 'gridTemplateColumns': `repeat(${child.xUnits}, 1fr)`, // for grandchildren
-            // 'gridTemplateRows': `repeat(${child.yUnits}, 1fr)` // for grandchildren
             'gridTemplateColumns': '1fr',
             'gridTemplateRows': '1fr'
           };
           
-          // add empty cells to child inner grid
-          // let grandChildren = [];
-          // let childrenLength = child.xUnits * child.yUnits;
-          // for(let j = 0; j < childrenLength; j++){
-          //   grandChildren.push(
-          //     <div class="empty grid-item"></div>
-          //   );
-          // }
+
 
           let childEl = (
             <Link

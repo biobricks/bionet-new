@@ -91,61 +91,95 @@ export default class ContainerPropertiesForm extends Component {
   render() {
     return (
       <form className="pure-form">
-        <label>Name</label>
-        <input 
-          onChange={this.onName.bind(this)} 
-          type='text' 
-          name='name'
-          placeholder='Name'
-          value={this.state.name} 
-          style={{width:160}}
-        />
-        <br/>
-        <label>Width</label>
-        <input 
-          onChange={this.onWidth.bind(this)} 
-          type='number'
-          name='width'
-          min='1'
-          step='1' 
-          value={this.state.width} 
-          style={{width:80}}
-        />
-        <br/>
-        <label>Height</label>
-        <input 
-          onChange={this.onHeight.bind(this)} 
-          type='number'
-          name='height'
-          min='1'
-          step='1' 
-          value={this.state.height} 
-          style={{width:80}}
-        />
-        <br/>
-        <label>Units</label>
-        <select 
-          value={this.state.units} 
-          name="units"
-          onChange={this.onUnits.bind(this)} 
-          style={{paddingTop:'4px'}}
-        >
-          <option value="m">m</option>
-          <option value="cm">cm</option>
-          <option value="mm">mm</option>
-          <option value="ft">ft</option>
-          <option value="in">in</option>
-        </select>
-        <br/>
-        <label>Grid Line</label>
-        <input 
-          onChange={this.onMajorGridLine.bind(this)} 
-          type='number'
-          min='1'
-          step='1' 
-          value={this.state.majorGridLine} 
-          style={{width:80}}
-        />
+        
+        <div class="field is-horizontal">
+          <div class="field-label is-normal is-narrow">
+            <label class="label">Name</label>
+          </div>
+          <div class="field-body">
+              <input 
+                class="input"
+                type="text" 
+                name="name"
+                value={this.state.name}
+                placeholder="Name"
+                onChange={this.onName.bind(this)}
+              />
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal is-narrow">
+            <label class="label">Width</label>
+          </div>
+          <div class="field-body">
+              <input 
+                class="input"
+                type="number" 
+                name="width"
+                min='1'
+                step='1'                 
+                value={this.state.width}
+                onChange={this.onWidth.bind(this)}
+              />
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal is-narrow">
+            <label class="label">Height</label>
+          </div>
+          <div class="field-body">
+              <input 
+                class="input"
+                type="number" 
+                name="height"
+                min='1'
+                step='1'                 
+                value={this.state.height}
+                onChange={this.onHeight.bind(this)}
+              />
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal is-narrow">
+            <label class="label">Units</label>
+          </div>
+          <div class="field-body">
+            <div class="select">  
+              <select 
+                value={this.state.units} 
+                name="units"
+                onChange={this.onUnits.bind(this)}
+              >
+                <option value="m">m</option>
+                <option value="cm">cm</option>
+                <option value="mm">mm</option>
+                <option value="ft">ft</option>
+                <option value="in">in</option>
+              </select>
+            </div>  
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal is-narrow">
+            <label class="label">Grid Line</label>
+          </div>
+          <div class="field-body">
+              <input 
+                class="input"
+                type="number" 
+                name="majorGridLine"
+                min='1'
+                step='1'                 
+                value={this.state.majorGridLine}
+                onChange={this.onMajorGridLine.bind(this)}
+              />
+          </div>
+        </div>
+
       </form>
     )
   }

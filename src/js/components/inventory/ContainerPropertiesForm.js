@@ -103,7 +103,7 @@ export default class ContainerPropertiesForm extends Component {
                 name="name"
                 value={this.state.name}
                 placeholder="Name"
-                onChange={this.onName.bind(this)}
+                onInput={this.onName.bind(this)}
               />
           </div>
         </div>
@@ -120,7 +120,7 @@ export default class ContainerPropertiesForm extends Component {
                 min='1'
                 step='1'                 
                 value={this.state.width}
-                onChange={this.onWidth.bind(this)}
+                onInput={this.onWidth.bind(this)}
               />
           </div>
         </div>
@@ -137,7 +137,7 @@ export default class ContainerPropertiesForm extends Component {
                 min='1'
                 step='1'                 
                 value={this.state.height}
-                onChange={this.onHeight.bind(this)}
+                onInput={this.onHeight.bind(this)}
               />
           </div>
         </div>
@@ -151,7 +151,7 @@ export default class ContainerPropertiesForm extends Component {
               <select 
                 value={this.state.units} 
                 name="units"
-                onChange={this.onUnits.bind(this)}
+                onInput={this.onUnits.bind(this)}
               >
                 <option value="m">m</option>
                 <option value="cm">cm</option>
@@ -175,7 +175,7 @@ export default class ContainerPropertiesForm extends Component {
                 min='1'
                 step='1'                 
                 value={this.state.majorGridLine}
-                onChange={this.onMajorGridLine.bind(this)}
+                onInput={this.onMajorGridLine.bind(this)}
               />
           </div>
         </div>

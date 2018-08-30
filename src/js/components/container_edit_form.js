@@ -174,6 +174,7 @@ module.exports = function(Component) {
                     <span style={{display:'inline-block'}}>  
                         <input 
                           type="number" 
+                          class="input"
                           min="1"
                           max="1000"
                           step="1"
@@ -183,7 +184,8 @@ module.exports = function(Component) {
                         />
                         <label style={{display:'inline-block',fontSize:'1rem',fontWeight:700,marginLeft:'20px'}}>Columns</label>
                         <input 
-                          type="number" 
+                          type="number"
+                          class="input" 
                           min="1"
                           max="1000"
                           step="1"
@@ -203,7 +205,7 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input  "
+                      class="input"
                       type="number"
                       onChange={this.onMajorGridLine.bind(this)}
                       value={this.state.majorGridLine}

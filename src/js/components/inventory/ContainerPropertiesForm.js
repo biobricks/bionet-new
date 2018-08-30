@@ -95,6 +95,8 @@ export default class ContainerPropertiesForm extends Component {
         <input 
           onChange={this.onName.bind(this)} 
           type='text' 
+          name='name'
+          placeholder='Name'
           value={this.state.name} 
           style={{width:160}}
         />
@@ -102,7 +104,10 @@ export default class ContainerPropertiesForm extends Component {
         <label>Width</label>
         <input 
           onChange={this.onWidth.bind(this)} 
-          type='number' 
+          type='number'
+          name='width'
+          min='1'
+          step='1' 
           value={this.state.width} 
           style={{width:80}}
         />
@@ -110,7 +115,10 @@ export default class ContainerPropertiesForm extends Component {
         <label>Height</label>
         <input 
           onChange={this.onHeight.bind(this)} 
-          type='number' 
+          type='number'
+          name='height'
+          min='1'
+          step='1' 
           value={this.state.height} 
           style={{width:80}}
         />
@@ -118,6 +126,7 @@ export default class ContainerPropertiesForm extends Component {
         <label>Units</label>
         <select 
           value={this.state.units} 
+          name="units"
           onChange={this.onUnits.bind(this)} 
           style={{paddingTop:'4px'}}
         >
@@ -131,7 +140,9 @@ export default class ContainerPropertiesForm extends Component {
         <label>Grid Line</label>
         <input 
           onChange={this.onMajorGridLine.bind(this)} 
-          type='text' 
+          type='number'
+          min='1'
+          step='1' 
           value={this.state.majorGridLine} 
           style={{width:80}}
         />

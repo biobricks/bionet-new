@@ -99,7 +99,9 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input  "
+                      class="input"
+                      name="name"
+                      placeholder="Container Name"
                       type="text"
                       onChange={this.onName.bind(this)}
                       value={this.state.name}
@@ -147,7 +149,9 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <textarea 
-                      class="textarea  " 
+                      class="textarea"
+                      name="description"
+                      placeholder="A short description of the Container." 
                       value={this.state.description}
                       onChange={this.onDescription.bind(this)}
                       rows="2"
@@ -167,6 +171,7 @@ module.exports = function(Component) {
                     <span style={{display:'inline-block'}}>  
                         <input 
                           type="number"
+                          class="input"
                           min="1"
                           max="1000"
                           step="1"
@@ -176,7 +181,8 @@ module.exports = function(Component) {
                         />
                         <label style={{display:'inline-block',fontSize:'1rem',fontWeight:700,marginLeft:'20px'}}>Columns</label>
                         <input 
-                          type="number" 
+                          type="number"
+                          class="input" 
                           min="1"
                           max="1000"
                           step="1"
@@ -196,8 +202,12 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input  "
+                      class="input"
                       type="number"
+                      name="gridLine"
+                      min="1"
+                      max="10"
+                      step="1"
                       onChange={this.onMajorGridLine.bind(this)}
                       value={this.state.majorGridLine}
                     />

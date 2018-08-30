@@ -43,6 +43,7 @@ export default class ItemPropertiesForm extends Component {
       enableColorPicker : false
     }
     this.onSetColor = this.onSetColor.bind(this);
+    this.onFormInput = this.onFormInput.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -66,28 +67,13 @@ export default class ItemPropertiesForm extends Component {
     }  
   }
 
-  onName(e) {
-    this.update({ name: e.target.value });
-  }
-
-  onDescription(e) {
-    this.update({ description: e.target.value });
-  }
-
-  onWidth(e) {
-    this.update({ width: Number(e.target.value) });
-  }
-
-  onHeight(e) {
-    this.update({ height: Number(e.target.value) });
-  }
-
-  onyUnits(e) {
-    this.update({ yUnits: Number(e.target.value) });
-  }
-
-  onxUnits(e) {
-    this.update({ xUnits: Number(e.target.value) });
+  onFormInput(e) {
+    const inputType = e.target.type;
+    const inputName = e.target.name;
+    let inputValue = inputType === 'number' ? Number(e.target.value) : e.target.value;
+    let update = {};
+    update[inputName] = inputValue;
+    this.update(update);
   }
 
   onColor(e) {
@@ -143,7 +129,7 @@ export default class ItemPropertiesForm extends Component {
                 name="name"
                 value={this.state.name}
                 placeholder="New Container Name"
-                onChange={this.onName.bind(this)}
+                onInput={this.onFormInput}
               />
           </div>
         </div>
@@ -170,10 +156,11 @@ export default class ItemPropertiesForm extends Component {
           <div class="field-body">
             <textarea 
               class="textarea"
-              name="description" 
+              name="description"
+              type="text" 
               value={this.state.description}
               placeholder="A short description of the Container."
-              onChange={this.onDescription.bind(this)}
+              onInput={this.onFormInput}
               rows="2"
             >{this.state.description}</textarea>
           </div>
@@ -191,7 +178,7 @@ export default class ItemPropertiesForm extends Component {
                 min="1"
                 step="1"
                 value={this.state.width}
-                onChange={this.onWidth.bind(this)}
+                onInput={this.onFormInput}
               />
           </div>
         </div>
@@ -208,7 +195,7 @@ export default class ItemPropertiesForm extends Component {
                 min="1"
                 step="1"
                 value={this.state.height}
-                onChange={this.onHeight.bind(this)}
+                onInput={this.onFormInput}
               />
           </div>
         </div> 
@@ -225,7 +212,7 @@ export default class ItemPropertiesForm extends Component {
                 min="1"
                 step="1"
                 value={this.state.yUnits}
-                onChange={this.onyUnits.bind(this)}
+                onInput={this.onFormInput}
               />
           </div>
         </div>
@@ -242,7 +229,7 @@ export default class ItemPropertiesForm extends Component {
                 min="1"
                 step="1"
                 value={this.state.xUnits}
-                onChange={this.onxUnits.bind(this)}
+                onInput={this.onFormInput}
               />
           </div>
         </div>                        
@@ -260,7 +247,7 @@ export default class ItemPropertiesForm extends Component {
                 name="fontSize"
                 value={this.state.fontSize}
                 placeholder="New Container Name"
-                onChange={this.onFontSize.bind(this)}
+                onInput={this.onFontSize.bind(this)}
               />
           </div>
         </div>

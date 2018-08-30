@@ -102,7 +102,7 @@ export default class ContainerPropertiesForm extends Component {
         <label>Width</label>
         <input 
           onChange={this.onWidth.bind(this)} 
-          type='text' 
+          type='number' 
           value={this.state.width} 
           style={{width:80}}
         />
@@ -110,7 +110,7 @@ export default class ContainerPropertiesForm extends Component {
         <label>Height</label>
         <input 
           onChange={this.onHeight.bind(this)} 
-          type='text' 
+          type='number' 
           value={this.state.height} 
           style={{width:80}}
         />

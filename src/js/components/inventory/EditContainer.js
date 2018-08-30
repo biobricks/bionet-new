@@ -8,8 +8,12 @@ import SliderControl from './SliderControl';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 
-export default class EditContainer extends Component {
-
+//export default class EditContainer extends Component {
+module.exports = function (Component) {
+    
+  const ContainerEditForm = require('../container_edit_form.js')(Component);
+    
+  return class PhysicalEditForm extends Component {
   static defaultProps = {
     items: [],
     container: {},
@@ -124,6 +128,7 @@ export default class EditContainer extends Component {
       this.setState({
         item: item,
         defaultName: item.name,
+        defaultDescription: item.description,
         defaultWidth: item.width / this.gridWidth,
         defaultHeight: item.height / this.gridHeight,
         defaultColor: item.color,
@@ -133,6 +138,7 @@ export default class EditContainer extends Component {
       this.setState({
         item: item,
         defaultName: '',
+        defaultDescription:'',
         defaultWidth: 1,
         defaultHeight: 1,
         defaultxUnits: 1,
@@ -530,6 +536,12 @@ export default class EditContainer extends Component {
         defaultName: props.name
       });
     }
+    if (props.description) {
+      this.updateSelection({description:props.description})
+      this.setState({
+        defaultDescription: props.description
+      });
+    }
     if (props.width) {
       this.updateSelection({width:props.width*this.gridWidth})
       this.setState({
@@ -630,6 +642,7 @@ export default class EditContainer extends Component {
     this.setState({
       item: item,
       defaultName: '',
+      defaultDescription: '',
       editItemMode: false,
       newItemMode: true
     });
@@ -702,6 +715,16 @@ export default class EditContainer extends Component {
       const isNewItemMode = this.state.newItemMode
       let containerPropertiesForm = null;
       let itemPropertiesForm = null;
+        /*
+          <ContainerPropertiesForm
+            name={this.state.layoutName}
+            width={this.state.layoutWidthUnits}
+            height={this.state.layoutHeightUnits}
+            majorGridLine={this.state.majorGridLine}
+            units={this.state.units}
+            onChange={this.onUpdateContainerProperties.bind(this)}
+          />
+        */
       containerPropertiesForm = (
         <div>
           <ContainerPropertiesForm
@@ -728,10 +751,19 @@ export default class EditContainer extends Component {
       console.log('EditContainer render item:', item, this.state, this.props);
       if (item) {
         if (isEditItemMode || isNewItemMode) {
+            /*
+            itemPropertiesForm=(
+                <ContainerEditForm
+                    selectedRecord={item}
+                    onChange={this.onUpdateItemProperties.bind(this)}
+                />
+            )
+            */
           itemPropertiesForm = (
             <div>
               <ItemPropertiesForm
                 name={this.state.defaultName}
+                description={this.state.defaultDescription}
                 width={this.state.defaultWidth}
                 height={this.state.defaultHeight}
                 color={item.color}
@@ -887,4 +919,5 @@ export default class EditContainer extends Component {
       </div>
     );
   }
+}
 }

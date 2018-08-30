@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { Link } from 'react-router-dom';
 import ashnazg from 'ashnazg';
 import LocationPath from './LocationPath';
-import EditContainer from './EditContainer';
+//import EditContainer from './EditContainer';
 import ContainerPropertiesForm from './ContainerPropertiesForm';
 
 module.exports = function (Component) {
@@ -12,6 +12,7 @@ module.exports = function (Component) {
   const DataPanel = require('../data_panel.js')(Component);
   const MapPanel = require('../map_panel.js')(Component);
   const LabPanel = require('../lab_panel.js')(Component);
+  const EditContainer = require('./EditContainer')(Component);
   
   const NEW_MODE_PHYSICAL_STEP1 = 1;
   const NEW_MODE_PHYSICAL_STEP2 = 2;
@@ -446,6 +447,10 @@ module.exports = function (Component) {
         app.state.PhysicalEditForm=updatedItem
         console.log('inventoryPath onChangeItemProperties physical:', props, updatedItem);
       } else {
+        const updatedItem = Object.assign(currentItem, props)
+        this.setState({
+            currentItem:updatedItem
+        })
         console.log('inventoryPath onChangeItemProperties container:', props);
         if (props.xUnits) {
           this.setState({

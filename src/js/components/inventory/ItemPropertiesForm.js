@@ -8,10 +8,6 @@ from 'react';
 import PropTypes from 'prop-types'
 import ItemPropertiesFormCSS from './ItemPropertiesForm.scss'
 import ColorPicker from 'react-color-picker'
-//import ColorPicker from 'rc-color-picker'
-//var ColorPicker = require('rc-color-picker');
-//import ColorPicker from 'material-ui-rc-color-picker';
-//import 'material-ui-rc-color-picker/assets/index.css';
 
 export default class ItemPropertiesForm extends Component {
     static propTypes = {
@@ -39,6 +35,7 @@ export default class ItemPropertiesForm extends Component {
         
         this.state = {
             name:props.name,
+            description:props.description,
             width:props.width,
             height:props.height,
             color:props.color,
@@ -52,6 +49,7 @@ export default class ItemPropertiesForm extends Component {
     componentWillReceiveProps(props) {
         this.setState({
             name:props.name,
+            description:props.description,
             width:props.width,
             height:props.height,
             color:props.color,
@@ -67,6 +65,9 @@ export default class ItemPropertiesForm extends Component {
     }
     onName(e) {
         this.update({name:e.target.value})
+    }
+    onDescription(e) {
+        this.update({description:e.target.value})
     }
     onWidth(e) {
         this.update({width:Number(e.target.value)})
@@ -123,6 +124,14 @@ export default class ItemPropertiesForm extends Component {
                 <label>Color</label><span onClick={this.onSelectColor.bind(this)} style={{backgroundColor:this.state.color}}>{this.state.color}
                 {colorPicker}
                 </span>
+                <br/>
+                <label>Description</label>
+                    <textarea 
+                      class="textarea  " 
+                      value={this.state.description}
+                      onChange={this.onDescription.bind(this)}
+                      rows="2"
+                    >{this.state.description}</textarea>
                 <br/>
                 <label>Width</label><input onChange={this.onWidth.bind(this)} type='number' value={this.state.width} style={{width:80}}/>
                 <br/>

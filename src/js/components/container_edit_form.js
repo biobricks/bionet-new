@@ -102,8 +102,10 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <input 
-                      class="input  "
+                      class="input"
                       type="text"
+                      name="name"
+                      placeholder="Container Name"
                       onChange={this.onName.bind(this)}
                       value={this.state.name}
                     />
@@ -150,7 +152,9 @@ module.exports = function(Component) {
                   </div>
                   <div class="column">   
                     <textarea 
-                      class="textarea  " 
+                      class="textarea"
+                      name="description"
+                      placeholder="A short description of the Container." 
                       value={this.state.description}
                       onChange={this.onDescription.bind(this)}
                       rows="2"

@@ -55,10 +55,12 @@ module.exports = function(Component) {
 
     // begin suggestion existing virtuals when name input field is focused
     nameFocus(e) {
+
       this.suggestVirtual(e);
     }
 
     suggestVirtual(e) {
+      return; // temporarily disabled
       this.update({name:e.target.value})
 
       var query = e.target.value.trim();

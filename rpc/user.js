@@ -357,12 +357,19 @@ module.exports = function(settings, users, accounts, db, index, mailer, labDevic
     },
 
     delVirtual: function(curUser, id, cb) {
+      console.log("GOT HERE 1:", id)
       db.instancesOfVirtual(id, function(err, physicals) {
+        console.log("GOT HERE 2a:", id)
         if(err) return cb(err);
 
+        console.log("GOT HERE 2b:", id)
+
         if(physicals && physicals.length) {
+          console.log("GOT HERE 2c:", id)
           return cb(new Error("You must delete all physical instances before deleting a virtual"));
         }
+
+        console.log("GOT HERE 3:", id)
 
         // TODO undelete
         db.virtual.del(id, cb);

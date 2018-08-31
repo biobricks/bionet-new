@@ -4,17 +4,19 @@ import xtend from 'xtend'
 
 module.exports = {
 
-  delete: function(id, opts, cb) {
+  del: function(id, opts, cb) {
     if(typeof opts === 'function') {
       cb = opts;
       opts = {}
     }
 
     opts = xtend({
-      withVirtuals: false // TODO not yet implemented
+      withPhysicals: false // TODO not yet implemented
     }, opts || {});
  
-    app.remote.delVirtual(id, cb);
+    app.remote.delVirtual(id, function(err) {
+      cb(err);
+    });
   }
 
 }

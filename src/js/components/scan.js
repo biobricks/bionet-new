@@ -109,6 +109,8 @@ module.exports = function(Component) {
 
     decodeQrCode(self, cb) {
       var scanCanvas = document.getElementById('scanCanvas');
+      if(!scanCanvas) return;
+
       var data = self.scanCtx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
       this.qr.callback = cb;
       this.qr.decode(data);
@@ -170,14 +172,12 @@ module.exports = function(Component) {
     }
 
 
-    keyboardScan(e) {
-      e.preventDefault();
+    keyboardScan(code) {
 
-      var code = this.state.code.replace(/[^\d]+/g, '');
+      var code = code.replace(/[^\d]+/g, '');
       console.log("code:", code);
 
       if(code.length <= 0) {
-        document.getElementById('keyboardInput').value = '';
         // TODO better error handling
         app.actions.notify("Invalid barcode...", 'warning', 1500);
         return;
@@ -187,15 +187,59 @@ module.exports = function(Component) {
 
     // prevent text input field from loosing focus
     initKeyboardCapture() {
-      var ki = document.getElementById('keyboardInput');
-      ki.focus(true);
+
+      this.keydownListener = this.keydown.bind(this)
+      this.keypressListener = this.keypress.bind(this)
+      document.addEventListener('keypress', this.keypressListener)
+      document.addEventListener('keydown', this.keydownListener)
     }
 
-    onInputBlur(e) {
-      // firefox needs the setTimeout
-      setTimeout(function() {
-        e.target.focus(true);
-      }, 1);
+    stopKeyboardCapture() {
+      if(this.keypressListener) {
+        document.removeEventListener('keypress', this.keypressListener);
+      }
+      if(this.keydownListener) {
+        document.removeEventListener('keydown', this.keydownListener);
+      }
+    }
+
+    componentWillUnmount() {
+      this.stopKeyboardCapture();
+    }
+
+    keydown(e) {
+      // enter pressed
+      if(e.keyCode === 13) {
+        e.preventDefault();
+        if(!this.state.code) return;
+
+        this.keyboardScan(this.state.code);
+
+        this.setState({
+          code: ''
+        })
+        return;
+      }
+    }
+
+    keypress(e) {
+      if(e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
+        return;
+      }
+
+      // don't handle unprintable chars
+      if(e.charCode < 32 || e.charCode > 126) {
+        return;
+      }
+
+      e.preventDefault();
+      var c = String.fromCharCode(e.charCode);
+
+      if(!c) return;
+
+      this.setState({
+        code: (this.state.code || '') + c
+      })
     }
 
 
@@ -263,13 +307,6 @@ module.exports = function(Component) {
               <div id="debug"></div>
               <div class="canvas-layers"></div>
               <div class="canvas-box"></div>
-            </div>
-            
-            <div class="col s5 m5 l5">
-              <form class="keyboard-form" onsubmit={this.keyboardScan.bind(this)}>
-                <input id="keyboardInput" type="text" autocomplete="off" oninput={linkState(this, 'code')} onblur={this.onInputBlur} autofocus />
-                <input type="submit" />
-              </form>
             </div>
           </div>      
         </div>

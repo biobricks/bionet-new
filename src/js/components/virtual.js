@@ -39,18 +39,22 @@ module.exports = function(Component) {
       return strftime('%b %o %Y', new Date(unixEpochTime * 1000));
     }
 
-    delVirtual() {
+    delVirtual(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
       if(!this.state.id) {
         app.actions.notify("Cannot delete: Unknown virtual", 'error');
         return;
       }
-      app.actions.virtual.delete(this.state.id, function(err) {
+
+      app.actions.virtual.del(this.state.id, function(err) {
         if(err) {
           app.actions.notify(err, 'error');
           return;
         }
-        // TODO go back instead?
-        app.actions.route('/');
+
+        window.history.back();
         app.actions.notify("Deleted virtual");
         return;
       });

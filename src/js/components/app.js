@@ -43,7 +43,6 @@ module.exports = function(Component) {
   const UiDemoIndex      = require('./demo/UiDemo.js')(Component);
   const LabPanelDemo     = require('./demo/LabPanel.js')(Component);
   const LabInventoryDemo = require('./demo/LabInventory.js')(Component);
-  const InventoryDemo    = require('./demo/Inventory.js')(Component);
   const LoginPanelDemo   = require('./demo/LoginPanel.js')(Component);
   const SignupPanelDemo  = require('./demo/SignupPanel.js')(Component);
   const ResetPanelDemo   = require('./demo/ResetPanel.js')(Component);

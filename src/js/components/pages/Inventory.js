@@ -138,13 +138,16 @@ module.exports = function (Component) {
             } else if (isContainer) {
               // create/set the attribute 'type' to a container
               selectedRecord['type'] = 'container';
-            }         
+            }
+
+
             // set state
             //  inventoryPath was updated
             //  selectedRecord was updated
             //  mode should be reset to 'view'
             this.setState({
               inventoryPath,
+              parentRecord,
               selectedRecord,
               mode: 'view'               
             });

@@ -157,7 +157,7 @@ module.exports = function (Component) {
                 >
                   <i class={mapExpandIcon}></i>
                 </span>
-                {(mode === 'insert this later') ? (  
+                {(mode === 'edit') ? (  
                   <span 
                     class="button is-small is-secondary"
                     onClick={this.toggleParentVisible}

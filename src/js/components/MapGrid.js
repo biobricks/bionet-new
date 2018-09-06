@@ -72,8 +72,8 @@ module.exports = function (Component) {
               col={colNo}
               pos={positionCounter}
               onDragOver={this.props.onCellDragOver}
-              onDrop={this.props.parentVisible ? null : this.props.onCellDrop}
-              draggable={this.props.parentVisible ? false : true}
+              onDrop={this.props.mode === 'edit' && !this.props.parentVisible ? this.props.onCellDrop : null}
+              draggable={false}
             ></div>
           );
           positionCounter++;

@@ -177,6 +177,7 @@ module.exports = function (Component) {
             onCellDragOver={this.onCellDragOver}
             onCellDragEnd={this.onCellDragEnd}
             onCellDrop={this.onCellDrop}
+            parentVisible={this.state.parentVisible}
             //selectedRecord={selectedRecord}
             // onRecordMouseEnter={this.onRecordMouseEnter}
             // onRecordMouseLeave={this.onRecordMouseLeave}

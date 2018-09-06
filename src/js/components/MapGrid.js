@@ -72,8 +72,8 @@ module.exports = function (Component) {
               col={colNo}
               pos={positionCounter}
               onDragOver={this.props.onCellDragOver}
-              onDrop={this.props.onCellDrop}
-              draggable="true"
+              onDrop={this.props.parentVisible ? null : this.props.onCellDrop}
+              draggable={this.props.parentVisible ? false : true}
             ></div>
           );
           positionCounter++;
@@ -111,11 +111,11 @@ module.exports = function (Component) {
               style={childStyles}
               onMouseEnter={this.props.onRecordMouseEnter}
               onMouseLeave={this.props.onRecordMouseLeave}
-              draggable="true"
+              draggable={this.props.parentVisible ? false : true}
               onDragStart={this.props.onCellDragStart}
               onDragOver={this.props.onCellDragOver}
               onDragEnd={this.props.onCellDragEnd}
-              onDrop={this.props.onCellDrop}
+              onDrop={this.props.parentVisible ? null : this.props.onCellDrop}
             >
               <div 
                 class="grid-item-label"

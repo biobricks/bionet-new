@@ -40,6 +40,7 @@ module.exports = function (Component) {
       this.removeAlert = this.removeAlert.bind(this);
       this.toggleMapFullScreen = this.toggleMapFullScreen.bind(this);
       this.toggleDataFullScreen = this.toggleDataFullScreen.bind(this);
+      this.moveItem = this.moveItem.bind(this);
       //this.saveNewContainer = this.saveNewContainer.bind(this);
       this.saveContainer = this.saveContainer.bind(this);
       this.deleteContainer = this.deleteContainer.bind(this);
@@ -192,6 +193,62 @@ module.exports = function (Component) {
       });
     }
 
+    // move a physical or container
+    // requires updating the record, it's parent and the inventory path in state
+    moveItem(record) {
+      
+      // set state variables to assist in human readability
+      let inventoryPath = this.state.inventoryPath;
+      let selectedRecord = this.state.selectedRecord;
+
+      // the app actions save callback function
+      app.actions.inventory.updateRecord(record, function(error) {
+        let alert;
+        if (error) {
+          // notify with error
+          app.actions.notify(error.message, 'error');
+          // set alert message object to error
+          alert = {
+            type: 'danger',
+            message: `There was a problem updating ${record.name}. If the problem persists, please contact your network administrator.`
+          };
+          // set the error and alert to state
+          this.setState({ error, alert });
+        } else {
+          // set alert message object to success
+          // alert = {
+          //   type: 'success',
+          //   message: `${record.name} was updated successfully.`
+          // };
+          
+          // the record exists in the selectedRecord.children array
+          // get the index
+          let recordIndex;
+          for(let i = 0; i < selectedRecord.children.length; i++) {
+            let child = selectedRecord.children[i];
+            if (String(record.id) === String(child.id)) {
+              recordIndex = i;
+            }  
+          }
+
+          // update selectedRecord.children
+          selectedRecord.children[recordIndex] = record;
+
+          // update inventoryPath
+          inventoryPath[inventoryPath.length - 1] = selectedRecord;
+          
+          // update state
+          this.setState({
+            error: {},
+            alert: {},
+            inventoryPath,
+            selectedRecord
+          });                      
+
+        } 
+      }.bind(this));
+    } 
+
     // save container form - todo
     // saveNewContainer(container) {
     //   app.actions.inventory.saveToInventory(container, null, null, function(error, newContainerId){
@@ -316,6 +373,7 @@ module.exports = function (Component) {
 
     // set selected and parent records
     updateSelectedRecord(selectedRecord) {
+      console.log('this.updateSelectedRecord', selectedRecord);
       // if no record provided
       if(!selectedRecord) {
         // set selected and parent records according to inventory path position
@@ -483,7 +541,8 @@ module.exports = function (Component) {
                   hoveredRecordId={this.state.hoveredRecordId}
                   hoveredRecord={this.state.hoveredRecord}
                   updateHoveredRecord={this.updateHoveredRecord}
-                  saveContainer={this.saveContainer}        
+                  saveContainer={this.saveContainer}
+                  moveItem={this.moveItem}
                 />
               </div>
             </div>

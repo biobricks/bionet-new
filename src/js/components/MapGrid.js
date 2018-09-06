@@ -54,28 +54,7 @@ module.exports = function (Component) {
       const gridCellCount = gridContainerWidth * gridContainerHeight;
 
       // add empty cells to gridContainerChildren array
-      // for(let i = 0; i < gridCellCount; i++){
-        
-      //   let emptyChildStyles = {
-      //     'display': 'grid',
-      //     'alignSelf': 'stretch',
-      //     'justifySelf': 'stretch',
-      //     'gridTemplateColumns': '1fr',
-      //     'gridTemplateRows': '1fr'
-      //   };
-      //   gridContainerChildren.push(
-      //     <div 
-      //       class="empty grid-item"
-      //       style={emptyChildStyles}
-      //     >
-      //       <div class="grid-item-label">
-      //         empty
-      //       </div>
-      //     </div>
-      //   );
-      // }
-
-      // add empty cells to gridContainerChildren array
+      let positionCounter = 1;
       for(let rowNo = 1; rowNo <= gridContainerHeight; rowNo++){
         for(let colNo = 1; colNo <= gridContainerWidth; colNo++){
           let emptyChildStyles = {
@@ -91,9 +70,13 @@ module.exports = function (Component) {
               style={emptyChildStyles}
               row={rowNo}
               col={colNo}
-            >
-            </div>
+              pos={positionCounter}
+              onDragOver={this.props.onCellDragOver}
+              onDrop={this.props.onCellDrop}
+              draggable="true"
+            ></div>
           );
+          positionCounter++;
         }  
       }
 
@@ -121,10 +104,18 @@ module.exports = function (Component) {
             <Link
               to={`/ui/inventory/${child.id}`}
               id={child.id}
-              class="grid-item" 
+              class="grid-item"
+              pos={childIndex}
+              row={child.parent_y}
+              col={child.parent_x} 
               style={childStyles}
               onMouseEnter={this.props.onRecordMouseEnter}
               onMouseLeave={this.props.onRecordMouseLeave}
+              draggable="true"
+              onDragStart={this.props.onCellDragStart}
+              onDragOver={this.props.onCellDragOver}
+              onDragEnd={this.props.onCellDragEnd}
+              onDrop={this.props.onCellDrop}
             >
               <div 
                 class="grid-item-label"

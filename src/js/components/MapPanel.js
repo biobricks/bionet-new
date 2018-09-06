@@ -15,12 +15,55 @@ module.exports = function (Component) {
       // this.onRecordMouseEnter = this.onRecordMouseEnter.bind(this);
       // this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);  
       this.toggleParentVisible = this.toggleParentVisible.bind(this);   
+      this.onCellDragStart = this.onCellDragStart.bind(this);
+      this.onCellDragOver = this.onCellDragOver.bind(this);
+      this.onCellDragEnd = this.onCellDragEnd.bind(this);
+      this.onCellDrop = this.onCellDrop.bind(this);
     }
 
     toggleParentVisible() {
       this.setState({
         parentVisible: !this.state.parentVisible
       });
+    }
+
+    onCellDragStart(e) {
+      //console.log('onCellDragStart');
+      let selectedRecord = this.props.selectedRecord;
+      let children = selectedRecord.children || [];
+      let draggedCell;
+      
+      for(let i = 0; i < children.length; i++){
+        let child = children[i];
+        if(String(child.id) === String(e.target.id)){
+          draggedCell = child;
+        }
+      }
+      //console.log('draggedCell: ', draggedCell);
+      e.dataTransfer.setData("draggedCell", JSON.stringify(draggedCell));
+    }
+
+    onCellDragOver(e) {
+      e.preventDefault();
+    }
+
+    onCellDragEnd(e) {
+      //console.log('onCellDragEnd');  
+    }
+
+    onCellDrop(e) {
+      //console.log('onCellDrop');
+      const draggedCell = JSON.parse(e.dataTransfer.getData("draggedCell"));
+      const targetCellRow = Number(e.target.getAttribute('row'));
+      const targetCellColumn = Number(e.target.getAttribute('col'));
+      const targetCellPosition = Number(e.target.getAttribute('pos'));
+      //console.log(`Cell ${draggedCell.name} dragged and dropped to ${targetCellColumn}, ${targetCellRow}`);
+      //console.log(`Replacing ${draggedCell.parent_x},${draggedCell.parent_y} with ${targetCellColumn}, ${targetCellRow} - grid index ${targetCellPosition - 1}`);
+      // a child of the selected record has been dragged and dropped
+      // need to replace the parent_x and parent_y attributes of the child
+      draggedCell.parent_x = targetCellColumn;
+      draggedCell.parent_y = targetCellRow;
+      this.props.moveItem(draggedCell);
     }
 
     // onRecordMouseEnter(e) {
@@ -114,21 +157,26 @@ module.exports = function (Component) {
                 >
                   <i class={mapExpandIcon}></i>
                 </span>
-              
+                {(mode === 'insert this later') ? (  
                   <span 
                     class="button is-small is-secondary"
                     onClick={this.toggleParentVisible}
                   >
                     <i class={this.state.parentVisible ? 'mdi mdi-24px mdi-menu-down-outline' : 'mdi mdi-24px mdi-menu-up-outline'}></i>
                   </span>
-           
+                ) : null }
               </div>
             </div>
           </div>
 
           <MapGrid 
+            {...this.props}
             type={type}
             selectedRecord={ mapRecord }
+            onCellDragStart={this.onCellDragStart}
+            onCellDragOver={this.onCellDragOver}
+            onCellDragEnd={this.onCellDragEnd}
+            onCellDrop={this.onCellDrop}
             //selectedRecord={selectedRecord}
             // onRecordMouseEnter={this.onRecordMouseEnter}
             // onRecordMouseLeave={this.onRecordMouseLeave}

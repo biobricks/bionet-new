@@ -429,10 +429,8 @@ module.exports = function (Component) {
 
     handleSetNewLocation(e) {
       e.preventDefault();
-      console.log('handleSetNewLocation');
       let newItemY = e.target.getAttribute('row');
       let newItemX = e.target.getAttribute('col');
-      console.log(`${newItemX},${newItemY}`);
       this.setState({
         newItemY,
         newItemX

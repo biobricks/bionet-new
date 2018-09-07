@@ -106,7 +106,7 @@ module.exports = function(Component) {
                       type="text" 
                       name="name"
                       value={this.state.form.name}
-                      placeholder="Container Name"
+                      placeholder={this.props.layoutHeightUnits === 0 ? "Container Name" : "Lab Name"}
                       onInput={this.updateFormField}
                     />
                 </div>
@@ -121,7 +121,7 @@ module.exports = function(Component) {
                     class="textarea" 
                     name="description"
                     value={this.state.form.description}
-                    placeholder="A short description of the container."
+                    placeholder={this.props.layoutHeightUnits === 0 ? "A short description of the container." : "A short description of the Lab."}
                     rows="1"
                     onInput={this.updateFormField}
                   >{selectedRecord.description}</textarea>

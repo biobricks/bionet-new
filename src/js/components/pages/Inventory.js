@@ -267,7 +267,7 @@ module.exports = function (Component) {
         if (error) {
           alert = {
             type: 'danger',
-            message: `There was a problem saving ${newContainer.name}. If the problem persists, please contact your network administrator.`
+            message: `Error saving ${newContainer.name}:\n${error.message}`
           };
           //app.actions.notify(alert.message + error.message, 'error');
           this.setState({ error, alert });
@@ -304,7 +304,7 @@ module.exports = function (Component) {
           // set alert message object to error
           alert = {
             type: 'danger',
-            message: `There was a problem updating ${container.name}. If the problem persists, please contact your network administrator.`
+            message: `Error updating ${container.name}.\n${error.message}`
           };
           // set the error and alert to state
           this.setState({ error, alert });
@@ -345,7 +345,7 @@ module.exports = function (Component) {
           // set alert message object to error
           alert = {
             type: 'danger',
-            message: `There was a problem removing ${container.name}. If the problem persists, please contact your network administrator.`
+            message: `Error removing ${container.name}:\n${error.message}`
           };
           // update state
           this.setState({ error, alert });

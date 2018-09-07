@@ -260,7 +260,6 @@ module.exports = function (Component) {
     saveNewContainer(container, labelImageData=null, doPrint=null) {
       let newContainer = container;
       let selectedRecord = this.state.selectedRecord;
-      console.log('Inventory.saveNewContainer', selectedRecord);
       newContainer['children'] = [];
       newContainer['parent_id'] = selectedRecord.id;
       app.actions.inventory.saveNewRecord(newContainer, null, null, function(error, savedContainer){
@@ -278,14 +277,15 @@ module.exports = function (Component) {
             message: `${savedContainer.name} was created successfully.`
           };
           selectedRecord.children.push(savedContainer);
-          app.actions.notify(alert.message, 'notice', 2000);
           this.setState({
             redirect: true,
             redirectTo: `/ui/inventory/${savedContainer.id}`,
             error: {},
             alert,
             mode: 'view',
-            selectedRecord
+            selectedRecord,
+            newItemX: 0,
+            newItemY: 0
           });
         }         
       }.bind(this));

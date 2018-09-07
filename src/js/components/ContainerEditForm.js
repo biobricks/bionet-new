@@ -12,8 +12,10 @@ module.exports = function(Component) {
           description: this.props.selectedRecord.description || '',
           fontSize: this.props.selectedRecord.fontSize || 12,
           color: this.props.selectedRecord.color && this.props.selectedRecord.color !== 'aqua' ? this.props.selectedRecord.color : '#00ffff',
-          xUnits: this.props.selectedRecord.xUnits,
-          yUnits: this.props.selectedRecord.yUnits,
+          xUnits: this.props.selectedRecord.xUnits || 0,
+          yUnits: this.props.selectedRecord.yUnits || 0,
+          layoutWidthUnits: this.props.selectedRecord.layoutWidthUnits || 0,
+          layoutHeightUnits: this.props.selectedRecord.layoutHeightUnits || 0,
           parent_x: this.props.selectedRecord.parent_x || 1,
           parent_y: this.props.selectedRecord.parent_y || 1,
           parent_x_span: this.props.selectedRecord.parent_x_span || 1,
@@ -239,15 +241,27 @@ module.exports = function(Component) {
                         </a>
                       </div>                      
                       <div class="control is-expanded">
-                        <input 
-                          class="input"
-                          type="number" 
-                          name="yUnits"
-                          min="1"
-                          step="1"
-                          value={this.state.form.yUnits}
-                          onInput={this.updateFormField}
-                        />
+                        {(this.props.selectedRecord.layoutHeightUnits === 0) ? (
+                          <input 
+                            class="input"
+                            type="number" 
+                            name="yUnits"
+                            min="1"
+                            step="1"
+                            value={this.state.form.yUnits}
+                            onInput={this.updateFormField}
+                          />
+                        ) : (
+                          <input 
+                            class="input"
+                            type="number" 
+                            name="layoutHeightUnits"
+                            min="1"
+                            step="1"
+                            value={this.state.form.layoutHeightUnits}
+                            onInput={this.updateFormField}
+                          />
+                        )} 
                       </div>
                     </div>
                   </div>  
@@ -258,15 +272,27 @@ module.exports = function(Component) {
                       </a>
                     </div>                    
                     <div class="control is-expanded">
-                      <input 
-                        class="input"
-                        type="number" 
-                        name="xUnits"
-                        min="1"
-                        step="1"
-                        value={this.state.form.xUnits}
-                        onInput={this.updateFormField}
-                      />
+                      {(this.props.selectedRecord.layoutWidthUnits === 0) ? (
+                        <input 
+                          class="input"
+                          type="number" 
+                          name="xUnits"
+                          min="1"
+                          step="1"
+                          value={this.state.form.xUnits}
+                          onInput={this.updateFormField}
+                        />
+                      ) : (
+                        <input 
+                          class="input"
+                          type="number" 
+                          name="layoutWidthUnits"
+                          min="1"
+                          step="1"
+                          value={this.state.form.layoutWidthUnits}
+                          onInput={this.updateFormField}
+                        />
+                      )}
                     </div>
                   </div>  
                 </div>

@@ -493,24 +493,8 @@ module.exports = function (Component) {
             <div class="columns is-desktop">
               
               <div class={column1Class}>
-                
-                {(this.state.selectedRecord.type === 'lab') ? (
-                  <LabPanel
-                    selectedRecord={selectedRecord}
-                    inventoryPath={this.state.inventoryPath}
-                    mode={this.state.mode}
-                    handleSetMode={this.handleSetMode}
-                    alert={this.state.alert}
-                    removeAlert={this.removeAlert}
-                    saveNewContainer={this.saveNewContainer}
-                    saveContainer={this.saveContainer}
-                    deleteContainer={this.deleteContainer}
-                    dataFullScreen={this.state.dataFullScreen}
-                    toggleDataFullScreen={this.toggleDataFullScreen}                  
-                  />
-                ) : null }
 
-                {(this.state.selectedRecord.type === 'container') ? (
+                {(this.state.selectedRecord.type === 'lab' || this.state.selectedRecord.type === 'container') ? (
                   <ContainerPanel
                     selectedRecord={selectedRecord}
                     parentRecord={parentRecord}

@@ -85,7 +85,7 @@ module.exports = function (Component) {
           // if error getting inventory path
           if (error) {
             // notify the user of the error
-            app.actions.notify(error.message, 'error');
+            //app.actions.notify(error.message, 'error');
             // set the error state object
             this.setState({ error });
           } else {
@@ -213,7 +213,7 @@ module.exports = function (Component) {
         let alert;
         if (error) {
           // notify with error
-          app.actions.notify(error.message, 'error');
+          //app.actions.notify(error.message, 'error');
           // set alert message object to error
           alert = {
             type: 'danger',
@@ -269,7 +269,7 @@ module.exports = function (Component) {
             type: 'danger',
             message: `There was a problem saving ${newContainer.name}. If the problem persists, please contact your network administrator.`
           };
-          app.actions.notify(alert.message + error.message, 'error');
+          //app.actions.notify(alert.message + error.message, 'error');
           this.setState({ error, alert });
         } else {
           alert = {
@@ -300,7 +300,7 @@ module.exports = function (Component) {
         let alert;
         if (error) {
           // notify with error
-          app.actions.notify(error.message, 'error');
+          //app.actions.notify(error.message, 'error');
           // set alert message object to error
           alert = {
             type: 'danger',
@@ -341,7 +341,7 @@ module.exports = function (Component) {
       app.actions.inventory.delPhysical(container.id, function(error, idRemoved) {
         if (error) {
           // notify with error
-          app.actions.notify(error.message, 'error');
+          //app.actions.notify(error.message, 'error');
           // set alert message object to error
           alert = {
             type: 'danger',
@@ -351,7 +351,7 @@ module.exports = function (Component) {
           this.setState({ error, alert });
         } else {
           // notify that delete was successful
-          app.actions.notify(name + " deleted", 'notice', 2000);
+          //app.actions.notify(name + " deleted", 'notice', 2000);
           // set alert message object to success
           alert = {
             type: 'success',

@@ -41,6 +41,12 @@ $breakpoint-desktop: 1024px;
       border: 1px solid #ededed;
       overflow: hidden;
       &:hover { background-color: white; }
+    } 
+    .selected.empty.grid-item {
+      border: 1px solid #ededed;
+      background-color: rgba(255,0,0,0.3);
+      overflow: hidden;
+      &:hover { background-color: rgba(255,0,0,0.3); }
     }    
   }
 }

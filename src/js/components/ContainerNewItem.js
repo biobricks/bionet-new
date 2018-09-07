@@ -66,10 +66,18 @@ module.exports = function(Component) {
             </form> 
           </div>
 
-          {(this.state.formType === 'container') ? (
+          {(this.state.formType === 'container' && this.props.newItemX > 0) ? (
             <ContainerNewForm
               {...this.props}
+              newItemX={this.props.newItemX}
+              newItemY={this.props.newItemY}
             />
+          ) : null }
+
+          {(this.state.formType === 'container' && this.props.newItemX === 0) ? (
+            <div class="panel-block">
+              <p>Please select an empty location for the new container.</p>
+            </div>
           ) : null }
 
           {(this.state.formType === 'physical') ? (

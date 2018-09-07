@@ -1063,5 +1063,23 @@ module.exports = {
                 });
             }
         })
-    }
+    },
+
+    saveNewRecord: function(record, labelImageData, doPrint, cb) {
+        app.remote.savePhysical(record, labelImageData, doPrint, function (err, id) {
+            if (err) {
+                return cb(err, null);
+            } else {
+                app.actions.inventory.getInventoryPath(id, function(err, inventoryPath) {
+                    if (err) {
+                        return cb(err, null); 
+                    } else {
+                        return cb(null, inventoryPath[inventoryPath.length - 1]);
+                    }
+                });                
+            }
+  
+        })
+    },
+
 }

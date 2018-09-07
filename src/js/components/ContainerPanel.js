@@ -78,9 +78,14 @@ module.exports = function (Component) {
           {(this.props.mode === 'new') ? (
             <ContainerNewItem
               selectedRecord={selectedRecord}
+              parentRecord={this.props.parentRecord}
               saveNewContainer={this.props.saveNewContainer}
               saveContainer={this.props.saveContainer}
               handleSetMode={this.props.handleSetMode}
+              newItemName={this.props.newItemName}
+              newItemX={this.props.newItemX}
+              newItemY={this.props.newItemY}
+              handleSetNewLocation={this.props.handleSetNewLocation}
             />
           ) : null }
 

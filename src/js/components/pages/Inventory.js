@@ -31,6 +31,9 @@ module.exports = function (Component) {
         hoveredRecordId: '',
         hoveredRecord: {},
         user: {},
+        newItemName: '',
+        newItemX: 0,
+        newItemY: 0
       };
       ashnazg.listen('global.user', this.loggedInUser.bind(this));
       // Bindings
@@ -41,11 +44,12 @@ module.exports = function (Component) {
       this.toggleMapFullScreen = this.toggleMapFullScreen.bind(this);
       this.toggleDataFullScreen = this.toggleDataFullScreen.bind(this);
       this.moveItem = this.moveItem.bind(this);
-      //this.saveNewContainer = this.saveNewContainer.bind(this);
+      this.saveNewContainer = this.saveNewContainer.bind(this);
       this.saveContainer = this.saveContainer.bind(this);
       this.deleteContainer = this.deleteContainer.bind(this);
       this.updateHoveredRecord = this.updateHoveredRecord.bind(this); 
-      this.updateSelectedRecord = this.updateSelectedRecord.bind(this);    
+      this.updateSelectedRecord = this.updateSelectedRecord.bind(this);
+      this.handleSetNewLocation = this.handleSetNewLocation.bind(this);    
     }
 
     // load user info
@@ -252,36 +256,42 @@ module.exports = function (Component) {
       }.bind(this));
     } 
 
-    // save container form - todo
-    // saveNewContainer(container) {
-    //   app.actions.inventory.saveToInventory(container, null, null, function(error, newContainerId){
-    //     let alert;
-    //     if (error) {
-    //       alert = {
-    //         type: 'danger',
-    //         message: `There was a problem saving ${container.name}. If the problem persists, please contact your network administrator.`
-    //       };
-    //       app.actions.notify(alert.message + error.message, 'error');
-    //       this.setState({ error, alert });
-    //     } else {
-    //       alert = {
-    //         type: 'success',
-    //         message: `${container.name} was created successfully.`
-    //       };
-    //       app.actions.notify(alert.message, 'notice', 2000);
-    //       this.setState({
-    //         redirect: true,
-    //         redirectTo: `/ui/inventory/${newContainerId}`,
-    //         error: {},
-    //         alert
-    //       });
-    //     }         
-    //   }.bind(this));
-    // }
+    // save new container
+    saveNewContainer(container, labelImageData=null, doPrint=null) {
+      let newContainer = container;
+      let selectedRecord = this.state.selectedRecord;
+      console.log('Inventory.saveNewContainer', selectedRecord);
+      newContainer['children'] = [];
+      newContainer['parent_id'] = selectedRecord.id;
+      app.actions.inventory.saveNewRecord(newContainer, null, null, function(error, savedContainer){
+        let alert;
+        if (error) {
+          alert = {
+            type: 'danger',
+            message: `There was a problem saving ${newContainer.name}. If the problem persists, please contact your network administrator.`
+          };
+          app.actions.notify(alert.message + error.message, 'error');
+          this.setState({ error, alert });
+        } else {
+          alert = {
+            type: 'success',
+            message: `${savedContainer.name} was created successfully.`
+          };
+          selectedRecord.children.push(savedContainer);
+          app.actions.notify(alert.message, 'notice', 2000);
+          this.setState({
+            redirect: true,
+            redirectTo: `/ui/inventory/${savedContainer.id}`,
+            error: {},
+            alert,
+            mode: 'view',
+            selectedRecord
+          });
+        }         
+      }.bind(this));
+    }
 
     // save changes to existing container
-    // @param container object - Read to save container object
-    // @param changeToView boolean - optional view
     saveContainer(container, changeToView=false) {
       // set state inventory path to variable to assist in human readability
       let inventoryPath = this.state.inventoryPath;
@@ -376,7 +386,7 @@ module.exports = function (Component) {
 
     // set selected and parent records
     updateSelectedRecord(selectedRecord) {
-      console.log('this.updateSelectedRecord', selectedRecord);
+      // console.log('this.updateSelectedRecord', selectedRecord);
       // if no record provided
       if(!selectedRecord) {
         // set selected and parent records according to inventory path position
@@ -415,6 +425,18 @@ module.exports = function (Component) {
           inventoryPath
         });
       }
+    }
+
+    handleSetNewLocation(e) {
+      e.preventDefault();
+      console.log('handleSetNewLocation');
+      let newItemY = e.target.getAttribute('row');
+      let newItemX = e.target.getAttribute('col');
+      console.log(`${newItemX},${newItemY}`);
+      this.setState({
+        newItemY,
+        newItemX
+      });
     }
 
     // fired on first mount and every state change after
@@ -503,6 +525,10 @@ module.exports = function (Component) {
                     dataFullScreen={this.state.dataFullScreen}
                     toggleDataFullScreen={this.toggleDataFullScreen}
                     updateSelectedRecord={this.updateSelectedRecord}
+                    handleSetNewLocation={this.handleSetNewLocation}
+                    newItemName={this.state.newItemName}
+                    newItemX={this.state.newItemX}
+                    newItemY={this.state.newItemY}
                   />
                 ) : null }
 
@@ -546,6 +572,10 @@ module.exports = function (Component) {
                   updateHoveredRecord={this.updateHoveredRecord}
                   saveContainer={this.saveContainer}
                   moveItem={this.moveItem}
+                  handleSetNewLocation={this.handleSetNewLocation}
+                  newItemName={this.state.newItemName}
+                  newItemX={this.state.newItemX}
+                  newItemY={this.state.newItemY}
                 />
               </div>
             </div>

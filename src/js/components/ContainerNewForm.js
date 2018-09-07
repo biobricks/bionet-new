@@ -4,37 +4,27 @@ import PropTypes from 'prop-types';
 module.exports = function(Component) {
 
   return class ContainerNewForm extends Component {
-
-    // static defaultProps = {
-    //   name: '',
-    //   description: '',
-    //   xUnits: 1,
-    //   yUnits: 1,
-    //   color:'aqua',
-    //   majorGridLine: 1,
-    //   viewOrientation:'top'
-    // }
     
     constructor(props) {
       super(props);
       this.state = {
         form: {
-          name: '',
+          name: this.props.newItemName || '',
           description: '',
+          fontSize: 12,
+          color: '#00FFFF',
           xUnits: 1,
           yUnits: 1,
-          fontSize: 16,
-          color: '#00FFFF',
-          majorGridLine: 1,
           viewOrientation: 'top',
           parent_id: '',
-          parent_x: 0,
-          parent_y: 0,
+          parent_x: this.props.newItemX,
+          parent_y: this.props.newItemY,
           parent_x_span: 1,
           parent_y_span: 1
         }
       };
       this.updateFormField = this.updateFormField.bind(this);
+      this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
     updateFormField(e) {
@@ -50,6 +40,42 @@ module.exports = function(Component) {
       });
     }
 
+    handleFormSubmit(e) {
+      e.preventDefault();
+      const form = this.state.form;
+      let container = this.state.form;
+      for(let i = 0; i < Object.keys(form).length; i++){
+        let formKey = Object.keys(form)[i];
+        let formValue;
+        if (
+          formKey === 'name' || 
+          formKey === 'description' || 
+          formKey === 'color' 
+        ) {
+          formValue = form[formKey];
+        } else {
+          formValue = parseInt(form[formKey]);
+        }
+        container[formKey] = formValue;
+      }
+      this.props.saveNewContainer(container);
+      this.setState({
+        form: {
+          name: '',
+          description: '',
+          fontSize: 12,
+          color: '#00FFFF',
+          xUnits: 1,
+          yUnits: 1,
+          viewOrientation: 'top',
+          parent_id: '',
+          parent_x: 0,
+          parent_y: 0,
+          parent_x_span: 1,
+          parent_y_span: 1
+        }
+      });     
+    }
 
     render() {
 
@@ -181,98 +207,6 @@ module.exports = function(Component) {
                         min="1"
                         step="1"
                         value={this.state.form.xUnits}
-                        onInput={this.updateFormField}
-                      />
-                    </div>
-                  </div>  
-                </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-narrow">
-                  <label class="label mt-1">Position</label>
-                </div>
-                <div class="field-body">        
-                  <div class="field is-expanded">
-                    <div class="field has-addons">
-                      <div class="control">
-                        <a class="button is-static">
-                          Row
-                        </a>
-                      </div>                      
-                      <div class="control is-expanded">
-                        <input 
-                          class="input"
-                          type="number" 
-                          name="parent_y"
-                          min="1"
-                          step="1"
-                          value={this.state.form.parent_y}
-                          onInput={this.updateFormField}
-                        />
-                      </div>
-                    </div>
-                  </div>  
-                  <div class="field has-addons">
-                    <div class="control">
-                      <a class="button is-static">
-                        Column
-                      </a>
-                    </div>
-                    <div class="control is-expanded">
-                      <input 
-                        class="input"
-                        type="number" 
-                        name="parent_x"
-                        min="1"
-                        step="1"
-                        value={this.state.form.parent_x}
-                        onInput={this.updateFormField}
-                      />
-                    </div>
-                  </div>  
-                </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-narrow">
-                  <label class="label mt-1">External Dimensions</label>
-                </div>
-                <div class="field-body">        
-                  <div class="field is-expanded">
-                    <div class="field has-addons">
-                      <div class="control">
-                        <a class="button is-static">
-                          Rows
-                        </a>
-                      </div>                      
-                      <div class="control is-expanded">
-                        <input 
-                          class="input"
-                          type="number" 
-                          name="parent_y_span"
-                          min="1"
-                          step="1"
-                          value={this.state.form.parent_y_span}
-                          onInput={this.updateFormField}
-                        />
-                      </div>
-                    </div>
-                  </div>  
-                  <div class="field has-addons">
-                    <div class="control">
-                      <a class="button is-static">
-                        Columns
-                      </a>
-                    </div>                    
-                    <div class="control is-expanded">
-                      <input 
-                        class="input"
-                        type="number" 
-                        name="parent_x_span"
-                        min="1"
-                        step="1"
-                        value={this.state.form.parent_x_span}
                         onInput={this.updateFormField}
                       />
                     </div>

@@ -64,16 +64,18 @@ module.exports = function (Component) {
             'gridTemplateColumns': '1fr',
             'gridTemplateRows': '1fr'
           };
+          let isSelectedNewLocation = this.props.mode === 'new' && rowNo === Number(this.props.newItemY) && colNo === Number(this.props.newItemX);
           gridContainerChildren.push(
             <div 
-              class="empty grid-item"
+              class={isSelectedNewLocation ? 'selected empty grid-item' : 'empty grid-item'}
               style={emptyChildStyles}
               row={rowNo}
               col={colNo}
               pos={positionCounter}
               onDragOver={this.props.onCellDragOver}
-              onDrop={this.props.mode === 'edit' && !this.props.parentVisible ? this.props.onCellDrop : null}
+              onDrop={!this.props.parentVisible ? this.props.onCellDrop : null}
               draggable={false}
+              onClick={this.props.mode === 'new' ? this.props.handleSetNewLocation : null }
             ></div>
           );
           positionCounter++;

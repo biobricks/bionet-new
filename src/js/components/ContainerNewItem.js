@@ -4,6 +4,7 @@ import { timingSafeEqual } from 'crypto';
 module.exports = function(Component) {
 
   const ContainerNewForm = require('./ContainerNewForm.js')(Component);
+  const PhysicalNewForm = require('./PhysicalNewForm.js')(Component);
 
   return class ContainerNewItem extends Component {
 
@@ -80,9 +81,17 @@ module.exports = function(Component) {
             </div>
           ) : null }
 
-          {(this.state.formType === 'physical') ? (
+          {(this.state.formType === 'physical' && this.props.newItemX > 0) ? (
+            <PhysicalNewForm
+              {...this.props}
+              newItemX={this.props.newItemX}
+              newItemY={this.props.newItemY}
+            />
+          ) : null }
+
+          {(this.state.formType === 'physical' && this.props.newItemX === 0) ? (
             <div class="panel-block">
-              Physical New Form
+              <p>Please select an empty location for the new physical.</p>
             </div>
           ) : null }
 

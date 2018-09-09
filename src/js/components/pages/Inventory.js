@@ -27,7 +27,8 @@ module.exports = function (Component) {
         },
         inventoryPath: [],
         selectedRecord: {},
-        parentRecord: {},       
+        parentRecord: {},
+        virtualRecord: {},     
         hoveredRecordId: '',
         hoveredRecord: {},
         user: {},
@@ -144,17 +145,37 @@ module.exports = function (Component) {
               selectedRecord['type'] = 'container';
             }
 
-
-            // set state
-            //  inventoryPath was updated
-            //  selectedRecord was updated
-            //  mode should be reset to 'view'
-            this.setState({
-              inventoryPath,
-              parentRecord,
-              selectedRecord,
-              mode: 'view'               
-            });
+            if (isPhysical) {
+              app.remote.get(selectedRecord.virtual_id, function(error, virtual) {
+                if (error) {
+                  console.log(error);
+                } else {
+                  // set state
+                  //  inventoryPath was updated
+                  //  selectedRecord was updated
+                  //  mode should be reset to 'view'
+                  this.setState({
+                    inventoryPath,
+                    parentRecord,
+                    selectedRecord,
+                    virtualRecord: virtual,
+                    mode: 'view'               
+                  });
+                }
+              }.bind(this));
+            } else {
+              // set state
+              //  inventoryPath was updated
+              //  selectedRecord was updated
+              //  mode should be reset to 'view'
+              this.setState({
+                inventoryPath,
+                parentRecord,
+                selectedRecord,
+                virtualRecord: {},
+                mode: 'view'               
+              });              
+            }  
           }
         }.bind(this)); 
         // the 'this' context was bound to the method in the constructor but can be passed down
@@ -518,6 +539,7 @@ module.exports = function (Component) {
                   <PhysicalPanel
                     selectedRecord={selectedRecord}
                     inventoryPath={this.state.inventoryPath}
+                    virtualRecord={this.state.virtualRecord}
                     mode={this.state.mode}
                     handleSetMode={this.handleSetMode}
                     dataFullScreen={this.state.dataFullScreen}

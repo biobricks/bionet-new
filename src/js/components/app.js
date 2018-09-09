@@ -15,7 +15,6 @@ module.exports = function(Component) {
   var PasswordCompleteReset = require('./password_complete_reset.js')(Component);
   var Search = require('./search.js')(Component);
   var Help = require('./help.js')(Component);
-  var Count = require('./count.js')(Component);
   var Virtual = require('./virtual.js')(Component);
   var EditVirtual = require('./edit_virtual.js')(Component);
   var RequestMaterial = require('./request_material.js')(Component);
@@ -35,9 +34,7 @@ module.exports = function(Component) {
   var Attributions = require('./attributions.js')(Component);
   var BarcodeRedirect = require('./barcode_redirect.js')(Component);
   var PrintShippingLabel = require('./print_shipping_label.js')(Component);
-  
-  const LabPanel = require('./lab_panel.js')(Component);
-  const LabInventory = require('./lab_inventory.js')(Component);
+
 
 
   // Top Level Page Components Controlling Layout

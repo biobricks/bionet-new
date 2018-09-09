@@ -757,25 +757,25 @@ module.exports = {
       })
     },
     
-    getAttributesForType: function(type) {
-        const dataTypes = app.settings.dataTypes
-        const attributes = []
-        for (var i = 0; i < dataTypes.length; i++) {
-          const dataType = dataTypes[i]
-          if (type === dataType.name) {
-            var fields = dataType.fields
-            if (fields === undefined) return attributes
-            Object.keys(fields).forEach(function (key, index) {
-              attributes.push({
-                name: key,
-                value: fields[key]
-              })
-            })
-            break
-          }
-        }
-        return attributes
-    },
+    // getAttributesForType: function(type) {
+    //     const dataTypes = app.settings.dataTypes
+    //     const attributes = []
+    //     for (var i = 0; i < dataTypes.length; i++) {
+    //       const dataType = dataTypes[i]
+    //       if (type === dataType.name) {
+    //         var fields = dataType.fields
+    //         if (fields === undefined) return attributes
+    //         Object.keys(fields).forEach(function (key, index) {
+    //           attributes.push({
+    //             name: key,
+    //             value: fields[key]
+    //           })
+    //         })
+    //         break
+    //       }
+    //     }
+    //     return attributes
+    // },
 
     generatePhysicals: function (virtualId, seriesName, instances, container_id, emptyCellArray, color, cb) {
         if (instances===0) {

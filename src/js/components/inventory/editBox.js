@@ -35,7 +35,7 @@ module.exports = function (Component) {
             
             this.setState({
                 id:item.id,
-                attributes:app.actions.inventory.getAttributesForType(item.type),
+                //attributes:app.actions.inventory.getAttributesForType(item.type),
                 title:titlePrefix+item.type,
                 active:active,
                 tabular:tabular

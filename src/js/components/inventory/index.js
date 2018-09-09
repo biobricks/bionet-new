@@ -125,7 +125,7 @@ module.exports = function (Component) {
         return;
       }
       this.initialized = true;
-      app.actions.inventory.getInventoryTypes();
+      //app.actions.inventory.getInventoryTypes();
       app.actions.inventory.getFavorites();
       app.actions.inventory.getWorkbenchContainer();
       const id = (this.props.match) ? this.props.match.params.id : null;

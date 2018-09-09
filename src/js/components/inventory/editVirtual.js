@@ -44,7 +44,7 @@ module.exports = function (Component) {
                 id:item.id,
                 physicals:item.children,
                 mergedPhysicals:[],
-                attributes:app.actions.inventory.getAttributesForType(item.type),
+                attributes:app.actions.inventory.getAttributesForType(item.type) || [],
                 title:titlePrefix,
                 active:active
             })

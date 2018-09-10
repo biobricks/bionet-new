@@ -55,7 +55,7 @@ module.exports = function (Component) {
             <PanelToolbar {...this.props} />
           </div>
 
-          {(this.props.mode === 'view') ? (
+          {(this.props.mode === 'view' && !alertExists) ? (
             <Breadcrumbs 
               selectedRecord={selectedRecord}
               inventoryPath={inventoryPath}

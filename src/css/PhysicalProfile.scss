@@ -1,0 +1,24 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+.PhysicalProfile.Restructured {
+  .panel-block form {
+    width: 100%;
+    .field:not(:last-child){
+      margin-bottom: .6rem;
+    }
+    .field .field-label.is-narrow label {
+      width: 150px;
+    }
+    .field .field-body {
+      padding-top: 0;
+      @media (min-width: $breakpoint-tablet) {
+        padding-top: 0.375em;
+      }
+      .stage img {
+        height: 100px;
+        width: auto;
+      }
+    }
+  }
+}

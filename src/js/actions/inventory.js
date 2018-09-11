@@ -1082,4 +1082,23 @@ module.exports = {
         })
     },
 
+    saveNewVirtual: function(virtual, cb) {
+
+        app.remote.saveVirtual(virtual, function (err, virtualId) {
+            if (err) {
+                return cb(err, null);
+            } else {
+                app.remote.get(virtualId, function(err, virtual) {
+                    if (err) {
+                        return cb(err, null); 
+                    } else {
+                        return cb(null, virtual);
+                    }
+                });
+            }
+            //generatePhysicals(virtualId, virtualObj.name, physicalInstances, container_id, well_id)
+        });
+
+    }
+
 }

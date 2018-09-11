@@ -9,6 +9,7 @@ module.exports = function (Component) {
   const Message = require('./Message.js')(Component);
   const PhysicalProfile = require('./PhysicalProfile.js')(Component);
   const PhysicalEditForm = require('./PhysicalEditForm.js')(Component);
+  const PhysicalDelete = require('./PhysicalDelete.js')(Component);
   
   return class PhysicalPanel extends Component {
 
@@ -93,9 +94,12 @@ module.exports = function (Component) {
           ) : null }
 
           {(this.props.mode === 'delete') ? (
-            <div class="panel-block">
-              Physical Delete Confirm
-            </div>
+            <PhysicalDelete
+              selectedRecord={selectedRecord}
+              deletePhysical={this.props.deletePhysical}
+              handleSetMode={this.props.handleSetMode}
+              inventoryPath={inventoryPath}
+            />
           ) : null }   
 
         </div>

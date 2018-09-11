@@ -48,6 +48,7 @@ module.exports = function (Component) {
       this.saveNewContainer = this.saveNewContainer.bind(this);
       this.saveContainer = this.saveContainer.bind(this);
       this.deleteContainer = this.deleteContainer.bind(this);
+      this.deletePhysical = this.deletePhysical.bind(this);
       this.updateHoveredRecord = this.updateHoveredRecord.bind(this); 
       this.updateSelectedRecord = this.updateSelectedRecord.bind(this);
       this.handleSetNewLocation = this.handleSetNewLocation.bind(this);  
@@ -462,6 +463,40 @@ module.exports = function (Component) {
       }.bind(this));      
     }
 
+    // delete a physical
+    deletePhysical(physical, parentContainer) {
+      // the app actions delete callback function
+      app.actions.inventory.delPhysical(physical.id, function(error, idRemoved) {
+        if (error) {
+          // notify with error
+          //app.actions.notify(error.message, 'error');
+          // set alert message object to error
+          alert = {
+            type: 'danger',
+            message: `Error removing ${physical.name}:\n${error.message}`
+          };
+          // update state
+          this.setState({ error, alert });
+        } else {
+          // notify that delete was successful
+          //app.actions.notify(name + " deleted", 'notice', 2000);
+          // set alert message object to success
+          alert = {
+            type: 'success',
+            message: `${physical.name} was successfully removed.`
+          };
+          // set state 
+          this.setState({
+            redirect: true,
+            redirectTo: `/ui/inventory/${parentContainer.id}`,            
+            mode: 'view',
+            error: {},
+            alert
+          });
+        }
+      }.bind(this));      
+    }
+
     // set the hover record
     updateHoveredRecord(record) {
       if(!record) {
@@ -619,7 +654,8 @@ module.exports = function (Component) {
                     dataFullScreen={this.state.dataFullScreen}
                     toggleDataFullScreen={this.toggleDataFullScreen}
                     updateSelectedRecord={this.updateSelectedRecord} 
-                    savePhysical={this.savePhysical}            
+                    savePhysical={this.savePhysical}  
+                    deletePhysical={this.deletePhysical}          
                   />
                 ) : null }
 

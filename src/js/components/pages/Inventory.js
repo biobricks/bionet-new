@@ -346,6 +346,7 @@ module.exports = function (Component) {
       // let parentRecord = this.state.parentRecord;
       // physical['virtual_id'] = virtualRecord.id;
       // physical['parent_id'] = parentRecord.id;
+      let inventoryPath = this.state.inventoryPath;
       app.actions.inventory.updateRecord(physical, function(error) {
         let alert;
         if (error) {
@@ -615,6 +616,8 @@ module.exports = function (Component) {
                     virtualRecord={this.state.virtualRecord}
                     mode={this.state.mode}
                     handleSetMode={this.handleSetMode}
+                    alert={this.state.alert}
+                    removeAlert={this.removeAlert}                    
                     dataFullScreen={this.state.dataFullScreen}
                     toggleDataFullScreen={this.toggleDataFullScreen}
                     updateSelectedRecord={this.updateSelectedRecord} 

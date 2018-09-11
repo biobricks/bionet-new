@@ -81,103 +81,130 @@ module.exports = function (Component) {
       util.whenConnected(function(){
         // get id param from the url if it exists, else set to null
         const idParam = (this.props) ? this.props.match.params.id : null;
-        // get the inventory path
-        app.actions.inventory.populateInventoryPath(idParam, function(error, inventoryPath) {
-          // if error getting inventory path
-          if (error) {
-            // notify the user of the error
-            //app.actions.notify(error.message, 'error');
-            // set the error state object
-            this.setState({ error });
-          } else {
-            // empty unwanted subdivisions field from each item in the inventory path
-            for(let i = 0; i < inventoryPath.length; i++){
-              let inventoryRecord = inventoryPath[i];
-              inventoryRecord.subdivisions = [];
-              inventoryPath[i] = inventoryRecord;
-            }
-            // if the inventory path length is greater than 1, set the parent record to the second to last array item
-            // else set the parent record to the default empty object
-            const parentRecord = inventoryPath.length > 1 ? inventoryPath[inventoryPath.length - 2] : {};
-            // if the inventory path length is greater than 0, set the selected record to the last item in the array
-            const selectedRecord = inventoryPath.length > 0 ? inventoryPath[inventoryPath.length - 1] : {};
-            
-            // need to determine record type
-            
-            // each virtual, when viewed, has a id param starting with a 'v'
-            // this can be used to determine if the selected record is a virtual
-            const isVirtual = 
-              this.props && 
-              this.props.match && 
-              this.props.match.params && 
-              this.props.match.params.id && 
-              this.props.match.params.id[0] === 'v';
-            // if the selected record is not a virtual, it is either the lab, a container or a physical
-            // physicals have a 'virtual_id' state attribute, look for it to determine if 
-            // the selected record is a physical 
-            const isPhysical = !isVirtual && Object.keys(selectedRecord).indexOf('virtual_id') > -1;
-            // if the selected record is not a virtual or physical, it is the lab or a container
-            // the lab does not have a 'parent_id' attribute, so we will check for it to 
-            // determine if the selected record is the lab
-            const isLab = !isVirtual && !isPhysical && Object.keys(selectedRecord).indexOf('parent_id') === -1;
-            // if the selected record is not a virtual, a physical or a lab, then it's a container
-            const isContainer = !isVirtual && !isPhysical && !isLab; 
-            
-            // if the type attribute exists
-            if (Object.keys(selectedRecord).indexOf('type') > -1) {
-              // create/set the attribute 'type' to the existing value
-              selectedRecord['type'] = selectedRecord.type;
-            // else if the selected record is a virtual
-            } else if (isVirtual) { 
-              // create/set the attribute 'type' to a virtual
-              selectedRecord['type'] = 'virtual'; 
-            // else if the selected record is a physical
-            } else if (isPhysical) {
-              // create/set the attribute 'type' to a physical
-              selectedRecord['type'] = 'physical';
-            // else if the selected record is a lab
-            } else if (isLab) {
-              // create/set the attribute 'type' to a lab
-              selectedRecord['type'] = 'lab';
-            // else if the selected record is a container
-            } else if (isContainer) {
-              // create/set the attribute 'type' to a container
-              selectedRecord['type'] = 'container';
-            }
-
-            if (isPhysical) {
-              app.remote.get(selectedRecord.virtual_id, function(error, virtual) {
-                if (error) {
-                  console.log(error);
-                } else {
-                  // set state
-                  //  inventoryPath was updated
-                  //  selectedRecord was updated
-                  //  mode should be reset to 'view'
-                  this.setState({
-                    inventoryPath,
-                    parentRecord,
-                    selectedRecord,
-                    virtualRecord: virtual,
-                    mode: 'view'               
-                  });
-                }
-              }.bind(this));
+        // each virtual, when viewed, has a id param starting with a 'v'
+        // this can be used to determine if the selected record is a virtual
+        const isVirtual = 
+          this.props && 
+          this.props.match && 
+          this.props.match.params && 
+          this.props.match.params.id && 
+          this.props.match.params.id[0] === 'v';
+        
+        
+        // if the selected record is a virtual
+        if (isVirtual) {
+          console.log('is virtual')
+          app.remote.get(idParam, function(error, virtual) {
+            if (error) {
+              console.log(error);
             } else {
+              virtual['type'] = 'virtual';
               // set state
               //  inventoryPath was updated
               //  selectedRecord was updated
               //  mode should be reset to 'view'
               this.setState({
-                inventoryPath,
-                parentRecord,
-                selectedRecord,
-                virtualRecord: {},
-                mode: 'view'               
-              });              
-            }  
-          }
-        }.bind(this)); 
+                inventoryPath: [],
+                parentRecord: {},
+                selectedRecord: virtual,
+                virtualRecord: virtual,
+                mode: 'view'
+              });
+            }
+          }.bind(this));
+        // else if the selected record is not a virtual  
+        } else {
+
+          // get the inventory path - only works with a physical id
+          app.actions.inventory.populateInventoryPath(idParam, function(error, inventoryPath) {
+            // if error getting inventory path
+            if (error) {
+              // notify the user of the error
+              //app.actions.notify(error.message, 'error');
+              // set the error state object
+              this.setState({ error });
+            } else {
+              // empty unwanted subdivisions field from each item in the inventory path
+              for(let i = 0; i < inventoryPath.length; i++){
+                let inventoryRecord = inventoryPath[i];
+                inventoryRecord.subdivisions = [];
+                inventoryPath[i] = inventoryRecord;
+              }
+              // if the inventory path length is greater than 1, set the parent record to the second to last array item
+              // else set the parent record to the default empty object
+              const parentRecord = inventoryPath.length > 1 ? inventoryPath[inventoryPath.length - 2] : {};
+              // if the inventory path length is greater than 0, set the selected record to the last item in the array
+              const selectedRecord = inventoryPath.length > 0 ? inventoryPath[inventoryPath.length - 1] : {};
+              
+              // need to determine record type
+              
+              // if the selected record is not a virtual, it is either the lab, a container or a physical
+              // physicals have a 'virtual_id' state attribute, look for it to determine if 
+              // the selected record is a physical 
+              const isPhysical = !isVirtual && Object.keys(selectedRecord).indexOf('virtual_id') > -1;
+              // if the selected record is not a virtual or physical, it is the lab or a container
+              // the lab does not have a 'parent_id' attribute, so we will check for it to 
+              // determine if the selected record is the lab
+              const isLab = !isVirtual && !isPhysical && Object.keys(selectedRecord).indexOf('parent_id') === -1;
+              // if the selected record is not a virtual, a physical or a lab, then it's a container
+              const isContainer = !isVirtual && !isPhysical && !isLab; 
+              
+              // if the type attribute exists
+              if (Object.keys(selectedRecord).indexOf('type') > -1) {
+                // create/set the attribute 'type' to the existing value
+                selectedRecord['type'] = selectedRecord.type;
+              // else if the selected record is a virtual
+              } else if (isVirtual) { 
+                // create/set the attribute 'type' to a virtual
+                selectedRecord['type'] = 'virtual'; 
+              // else if the selected record is a physical
+              } else if (isPhysical) {
+                // create/set the attribute 'type' to a physical
+                selectedRecord['type'] = 'physical';
+              // else if the selected record is a lab
+              } else if (isLab) {
+                // create/set the attribute 'type' to a lab
+                selectedRecord['type'] = 'lab';
+              // else if the selected record is a container
+              } else if (isContainer) {
+                // create/set the attribute 'type' to a container
+                selectedRecord['type'] = 'container';
+              }
+
+              if (isPhysical) {
+                app.remote.get(selectedRecord.virtual_id, function(error, virtual) {
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    // set state
+                    //  inventoryPath was updated
+                    //  selectedRecord was updated
+                    //  mode should be reset to 'view'
+                    this.setState({
+                      inventoryPath,
+                      parentRecord,
+                      selectedRecord,
+                      virtualRecord: virtual,
+                      mode: 'view'               
+                    });
+                  }
+                }.bind(this));
+              } else {
+                // set state
+                //  inventoryPath was updated
+                //  selectedRecord was updated
+                //  mode should be reset to 'view'
+                this.setState({
+                  inventoryPath,
+                  parentRecord,
+                  selectedRecord,
+                  virtualRecord: {},
+                  mode: 'view'               
+                });              
+              }  
+            }
+          }.bind(this)); 
+        }
         // the 'this' context was bound to the method in the constructor but can be passed down
         // through each callback function by appending .bind(this) to the function 
       }.bind(this));
@@ -476,7 +503,7 @@ module.exports = function (Component) {
         const idParam = (this.props.match.params.id) ? this.props.match.params.id : null;
         const selectedRecordExists = Object.keys(this.state.selectedRecord).length > 0;
         const idMatchesSelectedRecord = idParam && selectedRecordExists && this.state.selectedRecord.id === idParam;
-        if (!selectedRecordExists || !idMatchesSelectedRecord) {
+        if (idParam && idParam.length > 0 && !selectedRecordExists || !idMatchesSelectedRecord) {
           this.getInventoryPath(); 
         }  
       }.bind(this));    
@@ -548,39 +575,36 @@ module.exports = function (Component) {
                 ) : null }
 
                 {(this.state.selectedRecord.type === 'virtual') ? (
-                  <VirtualPanel
-                    selectedRecord={selectedRecord}
-                    inventoryPath={this.state.inventoryPath}
-                    mode={this.state.mode}
-                    handleSetMode={this.handleSetMode}
-                    dataFullScreen={this.state.dataFullScreen}
-                    toggleDataFullScreen={this.toggleDataFullScreen}                 
-                  />
+                  <div class="panel-block">
+                    Virtual Panel
+                  </div>
                 ) : null }
 
               </div>
 
               <div class={column2Class}>
-                <MapPanel
-                  selectedRecord={selectedRecord}
-                  parentRecord={parentRecord}
-                  inventoryPath={this.state.inventoryPath}
-                  type={this.state.selectedRecord.type}
-                  mode={this.state.mode}
-                  mapFullScreen={this.state.mapFullScreen}
-                  toggleMapFullScreen={this.toggleMapFullScreen}
-                  onRecordMouseEnter={this.onRecordMouseEnter}
-                  onRecordMouseLeave={this.onRecordMouseLeave}
-                  hoveredRecordId={this.state.hoveredRecordId}
-                  hoveredRecord={this.state.hoveredRecord}
-                  updateHoveredRecord={this.updateHoveredRecord}
-                  saveContainer={this.saveContainer}
-                  moveItem={this.moveItem}
-                  handleSetNewLocation={this.handleSetNewLocation}
-                  newItemName={this.state.newItemName}
-                  newItemX={this.state.newItemX}
-                  newItemY={this.state.newItemY}
-                />
+                {(this.state.selectedRecord.type !== 'virtual') ? (
+                  <MapPanel
+                    selectedRecord={selectedRecord}
+                    parentRecord={parentRecord}
+                    inventoryPath={this.state.inventoryPath}
+                    type={this.state.selectedRecord.type}
+                    mode={this.state.mode}
+                    mapFullScreen={this.state.mapFullScreen}
+                    toggleMapFullScreen={this.toggleMapFullScreen}
+                    onRecordMouseEnter={this.onRecordMouseEnter}
+                    onRecordMouseLeave={this.onRecordMouseLeave}
+                    hoveredRecordId={this.state.hoveredRecordId}
+                    hoveredRecord={this.state.hoveredRecord}
+                    updateHoveredRecord={this.updateHoveredRecord}
+                    saveContainer={this.saveContainer}
+                    moveItem={this.moveItem}
+                    handleSetNewLocation={this.handleSetNewLocation}
+                    newItemName={this.state.newItemName}
+                    newItemX={this.state.newItemX}
+                    newItemY={this.state.newItemY}
+                  />
+                ) : null }  
               </div>
             </div>
           ) : null }

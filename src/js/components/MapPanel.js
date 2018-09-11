@@ -119,7 +119,7 @@ module.exports = function (Component) {
           mapRecord = parentRecord;
           break;
         case 'virtual':
-          mapRecord = inventoryPath[0];
+          mapRecord = null;
           break;
         default:
           mapRecord = selectedRecord;      
@@ -136,12 +136,10 @@ module.exports = function (Component) {
         case 'physical':
           headingIcon = 'mdi mdi-grid';
           break;
-        case 'virtual':
-          headingIcon = 'mdi mdi-home-outline';
-          break;
         default:
           headingIcon = 'mdi mdi-grid';
       }
+
       const mapExpandIcon = this.props.mapFullScreen ? 'mdi mdi-arrow-collapse' : 'mdi mdi-arrow-expand';
       return (
         <div class="panel">

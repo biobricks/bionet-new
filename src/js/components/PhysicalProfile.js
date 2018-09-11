@@ -52,6 +52,20 @@ module.exports = function(Component) {
                   {selectedRecord.description || virtualRecord.description || 'No description provided.'}
                 </div>
               </div>
+            </form>
+          </div>
+          <div class="panel-block">
+            <form>              
+              <div class="field is-horizontal">
+                <div class="field-label is-normal is-narrow">
+                  <label class="label">Instance Of</label>
+                </div>
+                <div class="field-body">
+                  <Link to={`/ui/inventory/${virtualRecord.id}`}>
+                    {virtualRecord.name}
+                  </Link>
+                </div>
+              </div>
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-narrow">
                   <label class="label">Is Available?</label>

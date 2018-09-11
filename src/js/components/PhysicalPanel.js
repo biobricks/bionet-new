@@ -8,7 +8,7 @@ module.exports = function (Component) {
   const PanelToolbar = require('./PanelToolbar.js')(Component);
   const Message = require('./Message.js')(Component);
   const PhysicalProfile = require('./PhysicalProfile.js')(Component);
-  const VirtualProfile = require('./VirtualProfile.js')(Component);
+  const PhysicalEditForm = require('./PhysicalEditForm.js')(Component);
   
   return class PhysicalPanel extends Component {
 
@@ -50,7 +50,7 @@ module.exports = function (Component) {
         <div class="PhysicalPanel panel">
 
           <div class="panel-heading">
-            <i class="mdi mdi-grid"/>&nbsp;
+            <i class="mdi mdi-flask"/>&nbsp;
             {panelTitle}
             <PanelToolbar {...this.props} />
           </div>
@@ -83,9 +83,10 @@ module.exports = function (Component) {
           ) : null }
 
           {(this.props.mode === 'edit') ? (
-            <div class="panel-block">
-              Physical Edit
-            </div>
+            <PhysicalEditForm
+              selectedRecord={selectedRecord} 
+              virtualRecord={virtualRecord}
+            />
           ) : null }
 
           {(this.props.mode === 'delete') ? (
@@ -93,14 +94,6 @@ module.exports = function (Component) {
               Physical Delete Confirm
             </div>
           ) : null }   
-
-          <div class="panel-block">
-            <pre>{JSON.stringify(this.props.selectedRecord, null, 2)}</pre>
-          </div>
-
-          <div class="panel-block">
-            <pre>{JSON.stringify(this.props.virtualRecord, null, 2)}</pre>
-          </div>
 
         </div>
       );

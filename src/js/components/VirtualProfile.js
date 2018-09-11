@@ -1,9 +1,10 @@
 import { h } from 'preact';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 module.exports = function(Component) {
 
-  return class VirtualProfile extends Component {
+  return class PhysicalProfile extends Component {
 
     constructor(props) {
       super(props);
@@ -27,14 +28,12 @@ module.exports = function(Component) {
 
       const selectedRecord = this.props && this.props.selectedRecord;
       const virtualRecord = this.props && this.props.virtualRecord;
+      const freeGeneStages = ['Not Submitted', 'Submitted', 'Optimizing', 'Synthesizing', 'Cloning', 'Sequencing', 'Shipping', 'Delivered'];
+      const freeGeneStage = virtualRecord.freeGenes ? freeGeneStages[virtualRecord.freeGenesStage] : freeGeneStages[0];
 
       return (
         <div class="PhysicalProfile Restructured">
           
-          <div class="panel-heading">
-            Instance Of {virtualRecord.name}
-          </div>
-
           <div class="panel-block">
             <form>
               <div class="field is-horizontal">
@@ -52,7 +51,7 @@ module.exports = function(Component) {
                 <div class="field-body">
                   {selectedRecord.description || virtualRecord.description || 'No description provided.'}
                 </div>
-              </div>
+              </div>        
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-narrow">
                   <label class="label">Is Available?</label>
@@ -63,6 +62,28 @@ module.exports = function(Component) {
                   ) : null}
                 </div>
               </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal is-narrow">
+                  <label class="label">Submitted To Free Genes?</label>
+                </div>
+                <div class="field-body">
+                  {virtualRecord.freeGenes ? (
+                    <i class="mdi mdi-18px mdi-check has-text-success" />
+                  ) : (
+                    <i class="mdi mdi-18px mdi-close has-text-danger" />
+                  )}
+                </div>
+              </div>
+              {(virtualRecord.freeGenes) ? (
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal is-narrow">
+                    <label class="label">Free Genes Stage</label>
+                  </div>
+                  <div class="field-body">
+                    {virtualRecord.freeGenesStage} - {freeGeneStage}
+                  </div>
+                </div>                
+              ) : null}
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-narrow">
                   <label class="label">Provenance</label>
@@ -87,6 +108,22 @@ module.exports = function(Component) {
                   {virtualRecord.sequence || 'No sequence provided.'}
                 </div>
               </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal is-narrow">
+                  <label class="label">Created</label>
+                </div>
+                <div class="field-body">
+                  {moment.unix(selectedRecord.created.time).format("MMM Do, YYYY")} by {selectedRecord.created.user}
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal is-narrow">
+                  <label class="label">Updated</label>
+                </div>
+                <div class="field-body">
+                  {moment.unix(selectedRecord.updated.time).format("MMM Do, YYYY")} by {selectedRecord.updated.user}
+                </div>
+              </div>              
             </form>   
           </div>
 

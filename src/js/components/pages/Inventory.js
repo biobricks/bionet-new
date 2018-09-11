@@ -105,8 +105,6 @@ module.exports = function (Component) {
               //  selectedRecord was updated
               //  mode should be reset to 'view'
               this.setState({
-                inventoryPath: [],
-                parentRecord: {},
                 selectedRecord: virtual,
                 virtualRecord: virtual,
                 mode: 'view'
@@ -626,9 +624,19 @@ module.exports = function (Component) {
                 ) : null }
 
                 {(this.state.selectedRecord.type === 'virtual') ? (
-                  <div class="panel-block">
-                    Virtual Panel
-                  </div>
+                  <VirtualPanel
+                    selectedRecord={selectedRecord}
+                    inventoryPath={this.state.inventoryPath}
+                    virtualRecord={this.state.virtualRecord}
+                    mode={this.state.mode}
+                    handleSetMode={this.handleSetMode}
+                    alert={this.state.alert}
+                    removeAlert={this.removeAlert}                    
+                    dataFullScreen={this.state.dataFullScreen}
+                    toggleDataFullScreen={this.toggleDataFullScreen}
+                    updateSelectedRecord={this.updateSelectedRecord} 
+                    savePhysical={this.savePhysical}                       
+                  />
                 ) : null }
 
               </div>

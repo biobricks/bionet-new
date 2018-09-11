@@ -3,8 +3,8 @@ import ashnazg from 'ashnazg';
 
 module.exports = function (Component) {
 
-  const Breadcrumbs = require('./Breadcrumbs.js')(Component);
   const PanelToolbar = require('./PanelToolbar.js')(Component);
+  const VirtualProfile = require('./VirtualProfile.js')(Component);
   
   return class VirtualPanel extends Component {
 
@@ -16,6 +16,10 @@ module.exports = function (Component) {
     render() {
       const inventoryPath = this.props.inventoryPath || [];
       const selectedRecord = this.props.selectedRecord || {};
+      const virtualRecord = this.props.virtualRecord || {};
+      const alertTypeExists = this.props.alert && this.props.alert.type && this.props.alert.type.length > 0;
+      const alertMessageExists = this.props.alert && this.props.alert.message && this.props.alert.message.length > 0;
+      const alertExists = alertTypeExists && alertMessageExists;
       return (
         <div class="VirtualPanel panel">
           
@@ -25,15 +29,11 @@ module.exports = function (Component) {
             <PanelToolbar {...this.props} />
           </div>
 
-          <Breadcrumbs 
-            selectedRecord={selectedRecord}
-            inventoryPath={inventoryPath}
-          />
-
           {(this.props.mode === 'view') ? (
-            <div class="panel-block">
-              Virtual Profile
-            </div>
+            <VirtualProfile
+              selectedRecord={selectedRecord}
+              virtualRecord={virtualRecord}
+            />
           ) : null }
 
           {(this.props.mode === 'new') ? (

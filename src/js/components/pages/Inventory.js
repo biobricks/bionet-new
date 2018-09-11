@@ -50,7 +50,8 @@ module.exports = function (Component) {
       this.deleteContainer = this.deleteContainer.bind(this);
       this.updateHoveredRecord = this.updateHoveredRecord.bind(this); 
       this.updateSelectedRecord = this.updateSelectedRecord.bind(this);
-      this.handleSetNewLocation = this.handleSetNewLocation.bind(this);    
+      this.handleSetNewLocation = this.handleSetNewLocation.bind(this);  
+      this.savePhysical = this.savePhysical.bind(this);  
     }
 
     // load user info
@@ -339,6 +340,51 @@ module.exports = function (Component) {
       }.bind(this));
     }
 
+    // save updated physical
+    savePhysical(physical, changeToView=false) {
+      // let virtualRecord = this.state.virtualRecord;
+      // let parentRecord = this.state.parentRecord;
+      // physical['virtual_id'] = virtualRecord.id;
+      // physical['parent_id'] = parentRecord.id;
+      app.actions.inventory.updateRecord(physical, function(error) {
+        let alert;
+        if (error) {
+          // notify with error
+          //app.actions.notify(error.message, 'error');
+          // set alert message object to error
+          alert = {
+            type: 'danger',
+            message: `Error updating ${physical.name}.\n${error.message}`
+          };
+          // set the error and alert to state
+          this.setState({ error, alert });
+        } else {
+          // set alert message object to success
+          alert = {
+            type: 'success',
+            message: `${physical.name} was updated successfully.`
+          };
+          // replace the previous container in the inventory path with the updated container
+          inventoryPath[inventoryPath.length - 1] = physical;
+          // update state
+          if (changeToView) {
+            this.setState({
+              mode: 'view',
+              error: {},
+              alert,
+              inventoryPath
+            });
+          } else {
+            this.setState({
+              error: {},
+              alert,
+              inventoryPath
+            });            
+          }
+        } 
+      }.bind(this));
+    }
+
     // save changes to existing container
     saveContainer(container, changeToView=false) {
       // set state inventory path to variable to assist in human readability
@@ -570,7 +616,9 @@ module.exports = function (Component) {
                     mode={this.state.mode}
                     handleSetMode={this.handleSetMode}
                     dataFullScreen={this.state.dataFullScreen}
-                    toggleDataFullScreen={this.toggleDataFullScreen}                
+                    toggleDataFullScreen={this.toggleDataFullScreen}
+                    updateSelectedRecord={this.updateSelectedRecord} 
+                    savePhysical={this.savePhysical}            
                   />
                 ) : null }
 

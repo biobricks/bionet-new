@@ -86,6 +86,9 @@ module.exports = function (Component) {
             <PhysicalEditForm
               selectedRecord={selectedRecord} 
               virtualRecord={virtualRecord}
+              handleSetMode={this.props.handleSetMode}
+              updateSelectedRecord={this.props.updateSelectedRecord}
+              savePhysical={this.props.savePhysical}
             />
           ) : null }
 

@@ -12,10 +12,6 @@ module.exports = function(Component) {
           description: this.props.selectedRecord.description || '',
           fontSize: this.props.selectedRecord.fontSize || 12,
           color: this.props.selectedRecord.color && this.props.selectedRecord.color !== 'aqua' ? this.props.selectedRecord.color : '#00ffff',
-          xUnits: this.props.selectedRecord.xUnits || 0,
-          yUnits: this.props.selectedRecord.yUnits || 0,
-          layoutWidthUnits: this.props.selectedRecord.layoutWidthUnits || 0,
-          layoutHeightUnits: this.props.selectedRecord.layoutHeightUnits || 0,
           parent_x: this.props.selectedRecord.parent_x || 1,
           parent_y: this.props.selectedRecord.parent_y || 1,
           parent_x_span: this.props.selectedRecord.parent_x_span || 1,
@@ -29,7 +25,7 @@ module.exports = function(Component) {
     handleFormSubmit(e) {
       e.preventDefault();
       const form = this.state.form;
-      let container = this.props.selectedRecord;
+      let physical = this.props.selectedRecord;
       for(let i = 0; i < Object.keys(this.state.form).length; i++ ){
         let formKey = Object.keys(this.state.form)[i];
         let formValue;
@@ -42,17 +38,15 @@ module.exports = function(Component) {
         } else {
           formValue = parseInt(form[formKey]);
         }
-        container[formKey] = formValue;
+        physical[formKey] = formValue;
       }
-      this.props.saveContainer(container, true);
+      this.props.savePhysical(physical, true);
       this.setState({
         form: {
           name: this.props.selectedRecord.name || '',
           description: this.props.selectedRecord.description || '',
           fontSize: this.props.selectedRecord.fontSize || 12,
           color: this.props.selectedRecord.color && this.props.selectedRecord.color !== 'aqua' ? this.props.selectedRecord.color : '#00ffff',
-          xUnits: this.props.selectedRecord.xUnits,
-          yUnits: this.props.selectedRecord.yUnits,
           parent_x: this.props.selectedRecord.parent_x || 1,
           parent_y: this.props.selectedRecord.parent_y || 1,
           parent_x_span: this.props.selectedRecord.parent_x_span || 1,
@@ -62,7 +56,7 @@ module.exports = function(Component) {
     }
 
     updateFormField(e) {
-      let container = this.props.selectedRecord;
+      let physical = this.props.selectedRecord;
       const fieldName = e.target.getAttribute('name');
       let form = this.state.form;
       form[fieldName] = e.target.value;
@@ -81,9 +75,9 @@ module.exports = function(Component) {
         } else {
           formValue = parseInt(form[formKey]);
         }
-        container[formKey] = formValue;
+        physical[formKey] = formValue;
       }
-      this.props.updateSelectedRecord(container);
+      this.props.updateSelectedRecord(physical);
     }
 
     render() {

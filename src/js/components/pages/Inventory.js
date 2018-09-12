@@ -28,6 +28,7 @@ module.exports = function (Component) {
         inventoryPath: [],
         selectedRecord: {},
         parentRecord: {},
+        parentVisible: false,
         virtualRecord: {},     
         hoveredRecordId: '',
         hoveredRecord: {},
@@ -39,6 +40,7 @@ module.exports = function (Component) {
       ashnazg.listen('global.user', this.loggedInUser.bind(this));
       // Bindings
       this.loggedInUser = this.loggedInUser.bind(this);
+      this.toggleParentVisible = this.toggleParentVisible.bind(this);
       this.getInventoryPath = this.getInventoryPath.bind(this);
       this.handleSetMode = this.handleSetMode.bind(this);
       this.removeAlert = this.removeAlert.bind(this);
@@ -77,6 +79,12 @@ module.exports = function (Component) {
       }
     }
 
+    toggleParentVisible() {
+      this.setState({
+        parentVisible: !this.state.parentVisible
+      });
+    }
+
     // set the inventory path, selected record and parent record
     getInventoryPath() {
       // app.actions requires an active connection
@@ -108,7 +116,8 @@ module.exports = function (Component) {
               this.setState({
                 selectedRecord: virtual,
                 virtualRecord: virtual,
-                mode: 'view'
+                mode: 'view',
+                parentVisible: false
               });
             }
           }.bind(this));
@@ -185,7 +194,8 @@ module.exports = function (Component) {
                       parentRecord,
                       selectedRecord,
                       virtualRecord: virtual,
-                      mode: 'view'               
+                      mode: 'view',
+                      parentVisible: false              
                     });
                   }
                 }.bind(this));
@@ -199,7 +209,8 @@ module.exports = function (Component) {
                   parentRecord,
                   selectedRecord,
                   virtualRecord: {},
-                  mode: 'view'               
+                  mode: 'view',
+                  parentVisible: false  
                 });              
               }  
             }
@@ -678,10 +689,12 @@ module.exports = function (Component) {
               </div>
 
               <div class={column2Class}>
-                {(this.state.selectedRecord.type !== 'virtual') ? (
+     
                   <MapPanel
                     selectedRecord={selectedRecord}
                     parentRecord={parentRecord}
+                    parentVisible={this.state.parentVisible}
+                    toggleParentVisible={this.toggleParentVisible}
                     inventoryPath={this.state.inventoryPath}
                     type={this.state.selectedRecord.type}
                     mode={this.state.mode}
@@ -699,7 +712,7 @@ module.exports = function (Component) {
                     newItemX={this.state.newItemX}
                     newItemY={this.state.newItemY}
                   />
-                ) : null }  
+                
               </div>
             </div>
           ) : null }

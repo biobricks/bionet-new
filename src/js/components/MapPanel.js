@@ -9,22 +9,13 @@ module.exports = function (Component) {
 
     constructor(props) {
       super(props);
-      this.state = {
-        parentVisible: false
-      };
+      this.state = {};
       // this.onRecordMouseEnter = this.onRecordMouseEnter.bind(this);
-      // this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);  
-      this.toggleParentVisible = this.toggleParentVisible.bind(this);   
+      // this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);     
       this.onCellDragStart = this.onCellDragStart.bind(this);
       this.onCellDragOver = this.onCellDragOver.bind(this);
       this.onCellDragEnd = this.onCellDragEnd.bind(this);
       this.onCellDrop = this.onCellDrop.bind(this);
-    }
-
-    toggleParentVisible() {
-      this.setState({
-        parentVisible: !this.state.parentVisible
-      });
     }
 
     onCellDragStart(e) {
@@ -113,16 +104,16 @@ module.exports = function (Component) {
           mapRecord = selectedRecord;
           break;
         case 'container':
-          mapRecord = this.state.parentVisible ? parentRecord : selectedRecord;
+          mapRecord = this.props.parentVisible ? parentRecord : selectedRecord;
           break;
         case 'physical':
           mapRecord = parentRecord;
           break;
         case 'virtual':
-          mapRecord = null;
+          mapRecord = parentRecord;
           break;
         default:
-          mapRecord = selectedRecord;      
+          mapRecord = selectedRecord;
       }
       
       let headingIcon;
@@ -143,44 +134,46 @@ module.exports = function (Component) {
       const mapExpandIcon = this.props.mapFullScreen ? 'mdi mdi-arrow-collapse' : 'mdi mdi-arrow-expand';
       return (
         <div class="panel">
-          <div class="panel-heading">
-            <i class={headingIcon}/>&nbsp;
-            {selectedRecordExists && mapRecord.name || 'Loading...'}
-            <div class="PanelToolbar toolbox pull-right">
-              <div class="buttons has-addons">
-                <span 
-                  class="button is-small is-primary"
-                  mode="new"
-                  onClick={this.props.toggleMapFullScreen}
-                >
-                  <i class={mapExpandIcon}></i>
-                </span>
-                {(mode === 'edit') ? (  
+          {(Object.keys(mapRecord).length > 0) ? ( 
+            <div class="panel-heading">
+              <i class={headingIcon}/>&nbsp;
+              {selectedRecordExists && mapRecord.name || 'Loading...'}
+              <div class="PanelToolbar toolbox pull-right">
+                <div class="buttons has-addons">
                   <span 
-                    class="button is-small is-secondary"
-                    onClick={this.toggleParentVisible}
+                    class="button is-small is-primary"
+                    mode="new"
+                    onClick={this.props.toggleMapFullScreen}
                   >
-                    <i class={this.state.parentVisible ? 'mdi mdi-24px mdi-menu-down-outline' : 'mdi mdi-24px mdi-menu-up-outline'}></i>
+                    <i class={mapExpandIcon}></i>
                   </span>
-                ) : null }
+                  {(mode === 'edit' && selectedRecord.type === 'container') ? (  
+                    <span 
+                      class="button is-small is-secondary"
+                      onClick={this.props.toggleParentVisible}
+                    >
+                      <i class={this.props.parentVisible ? 'mdi mdi-24px mdi-menu-down-outline' : 'mdi mdi-24px mdi-menu-up-outline'}></i>
+                    </span>
+                  ) : null }
+                </div>
               </div>
             </div>
-          </div>
-
-          <MapGrid 
-            {...this.props}
-            type={type}
-            selectedRecord={ mapRecord }
-            onCellDragStart={this.onCellDragStart}
-            onCellDragOver={this.onCellDragOver}
-            onCellDragEnd={this.onCellDragEnd}
-            onCellDrop={this.onCellDrop}
-            parentVisible={this.state.parentVisible}
-            //selectedRecord={selectedRecord}
-            // onRecordMouseEnter={this.onRecordMouseEnter}
-            // onRecordMouseLeave={this.onRecordMouseLeave}
-          />
-
+          ) : null }
+          {(Object.keys(mapRecord).length > 0) ? (       
+            <MapGrid 
+              {...this.props}
+              type={type}
+              selectedRecord={ mapRecord }
+              onCellDragStart={this.onCellDragStart}
+              onCellDragOver={this.onCellDragOver}
+              onCellDragEnd={this.onCellDragEnd}
+              onCellDrop={this.onCellDrop}
+              parentVisible={this.props.parentVisible}
+              //selectedRecord={selectedRecord}
+              // onRecordMouseEnter={this.onRecordMouseEnter}
+              // onRecordMouseLeave={this.onRecordMouseLeave}
+            />
+          ) : null }
         </div>
       );
     }

@@ -103,10 +103,13 @@ module.exports = function (Component) {
         
         // if the selected record is a virtual
         if (isVirtual) {
-          console.log('is virtual')
           app.remote.get(idParam, function(error, virtual) {
             if (error) {
-              console.log(error);
+              let alert = {
+                type: 'danger',
+                message: `Error finding record in database:\n${error.message}`
+              };
+              this.setState({ error, alert });
             } else {
               virtual['type'] = 'virtual';
               // set state
@@ -128,10 +131,11 @@ module.exports = function (Component) {
           app.actions.inventory.populateInventoryPath(idParam, function(error, inventoryPath) {
             // if error getting inventory path
             if (error) {
-              // notify the user of the error
-              //app.actions.notify(error.message, 'error');
-              // set the error state object
-              this.setState({ error });
+              let alert = {
+                type: 'danger',
+                message: `Error finding records in database:\n${error.message}`
+              };
+              this.setState({ error, alert });
             } else {
               // empty unwanted subdivisions field from each item in the inventory path
               for(let i = 0; i < inventoryPath.length; i++){
@@ -183,7 +187,11 @@ module.exports = function (Component) {
               if (isPhysical) {
                 app.remote.get(selectedRecord.virtual_id, function(error, virtual) {
                   if (error) {
-                    console.log(error);
+                    let alert = {
+                      type: 'danger',
+                      message: `Error finding record in database:\n${error.message}`
+                    };
+                    this.setState({ error, alert });                    
                   } else {
                     // set state
                     //  inventoryPath was updated
@@ -315,7 +323,7 @@ module.exports = function (Component) {
       }.bind(this));
     } 
 
-    // save new container
+    // create container
     saveNewContainer(container, labelImageData=null, doPrint=null) {
       let newContainer = container;
       let selectedRecord = this.state.selectedRecord;
@@ -350,7 +358,86 @@ module.exports = function (Component) {
       }.bind(this));
     }
 
-    // save updated physical
+    // update container
+    saveContainer(container, changeToView=false) {
+      // set state inventory path to variable to assist in human readability
+      let inventoryPath = this.state.inventoryPath;
+      // the app actions save callback function
+      app.actions.inventory.updateRecord(container, function(error) {
+        let alert;
+        if (error) {
+          // notify with error
+          //app.actions.notify(error.message, 'error');
+          // set alert message object to error
+          alert = {
+            type: 'danger',
+            message: `Error updating ${container.name}.\n${error.message}`
+          };
+          // set the error and alert to state
+          this.setState({ error, alert });
+        } else {
+          // set alert message object to success
+          alert = {
+            type: 'success',
+            message: `${container.name} was updated successfully.`
+          };
+          // replace the previous container in the inventory path with the updated container
+          inventoryPath[inventoryPath.length - 1] = container;
+          // update state
+          if (changeToView) {
+            this.setState({
+              mode: 'view',
+              error: {},
+              alert,
+              inventoryPath
+            });
+          } else {
+            this.setState({
+              error: {},
+              alert,
+              inventoryPath
+            });            
+          }
+        } 
+      }.bind(this));
+    }
+ 
+
+    // delete container
+    deleteContainer(container, parentContainer) {
+      // the app actions delete callback function
+      app.actions.inventory.delPhysical(container.id, function(error, idRemoved) {
+        if (error) {
+          // notify with error
+          //app.actions.notify(error.message, 'error');
+          // set alert message object to error
+          alert = {
+            type: 'danger',
+            message: `Error removing ${container.name}:\n${error.message}`
+          };
+          // update state
+          this.setState({ error, alert });
+        } else {
+          // notify that delete was successful
+          //app.actions.notify(name + " deleted", 'notice', 2000);
+          // set alert message object to success
+          alert = {
+            type: 'success',
+            message: `${container.name} was successfully removed.`
+          };
+          // set state 
+          this.setState({
+            redirect: true,
+            redirectTo: `/ui/inventory/${parentContainer.id}`,            
+            mode: 'view',
+            error: {},
+            alert
+          });
+        }
+      }.bind(this));      
+    }
+
+    // update physical
     savePhysical(physical, changeToView=false) {
       // let virtualRecord = this.state.virtualRecord;
       // let parentRecord = this.state.parentRecord;
@@ -394,87 +481,9 @@ module.exports = function (Component) {
           }
         } 
       }.bind(this));
-    }
+    } 
 
-    // save changes to existing container
-    saveContainer(container, changeToView=false) {
-      // set state inventory path to variable to assist in human readability
-      let inventoryPath = this.state.inventoryPath;
-      // the app actions save callback function
-      app.actions.inventory.updateRecord(container, function(error) {
-        let alert;
-        if (error) {
-          // notify with error
-          //app.actions.notify(error.message, 'error');
-          // set alert message object to error
-          alert = {
-            type: 'danger',
-            message: `Error updating ${container.name}.\n${error.message}`
-          };
-          // set the error and alert to state
-          this.setState({ error, alert });
-        } else {
-          // set alert message object to success
-          alert = {
-            type: 'success',
-            message: `${container.name} was updated successfully.`
-          };
-          // replace the previous container in the inventory path with the updated container
-          inventoryPath[inventoryPath.length - 1] = container;
-          // update state
-          if (changeToView) {
-            this.setState({
-              mode: 'view',
-              error: {},
-              alert,
-              inventoryPath
-            });
-          } else {
-            this.setState({
-              error: {},
-              alert,
-              inventoryPath
-            });            
-          }
-        } 
-      }.bind(this));
-    }  
-
-    // delete a container
-    deleteContainer(container, parentContainer) {
-      // the app actions delete callback function
-      app.actions.inventory.delPhysical(container.id, function(error, idRemoved) {
-        if (error) {
-          // notify with error
-          //app.actions.notify(error.message, 'error');
-          // set alert message object to error
-          alert = {
-            type: 'danger',
-            message: `Error removing ${container.name}:\n${error.message}`
-          };
-          // update state
-          this.setState({ error, alert });
-        } else {
-          // notify that delete was successful
-          //app.actions.notify(name + " deleted", 'notice', 2000);
-          // set alert message object to success
-          alert = {
-            type: 'success',
-            message: `${container.name} was successfully removed.`
-          };
-          // set state 
-          this.setState({
-            redirect: true,
-            redirectTo: `/ui/inventory/${parentContainer.id}`,            
-            mode: 'view',
-            error: {},
-            alert
-          });
-        }
-      }.bind(this));      
-    }
-
-    // delete a physical
+    // delete physical
     deletePhysical(physical, parentContainer) {
       // the app actions delete callback function
       app.actions.inventory.delPhysical(physical.id, function(error, idRemoved) {

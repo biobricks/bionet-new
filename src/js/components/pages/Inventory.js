@@ -55,6 +55,7 @@ module.exports = function (Component) {
       this.updateSelectedRecord = this.updateSelectedRecord.bind(this);
       this.handleSetNewLocation = this.handleSetNewLocation.bind(this);  
       this.savePhysical = this.savePhysical.bind(this);  
+      this.saveVirtual = this.saveVirtual.bind(this);
     }
 
     // load user info
@@ -517,6 +518,38 @@ module.exports = function (Component) {
       }.bind(this));      
     }
 
+    // update virtual
+    saveVirtual(virtual, changeToView=false) {
+      app.actions.inventory.saveVirtualRecord(virtual, function(error) {
+        let alert;
+        if (error) {
+          alert = {
+            type: 'danger',
+            message: `Error updating ${virtual.name}.\n${error.message}`
+          };
+          this.setState({ error, alert });
+        } else {
+          alert = {
+            type: 'success',
+            message: `${virtual.name} was updated successfully.`
+          };
+          // update state
+          if (changeToView) {
+            this.setState({
+              mode: 'view',
+              error: {},
+              alert
+            });
+          } else {
+            this.setState({
+              error: {},
+              alert
+            });            
+          }
+        } 
+      }.bind(this));
+    }
+
     // set the hover record
     updateHoveredRecord(record) {
       if(!record) {
@@ -691,7 +724,7 @@ module.exports = function (Component) {
                     dataFullScreen={this.state.dataFullScreen}
                     toggleDataFullScreen={this.toggleDataFullScreen}
                     updateSelectedRecord={this.updateSelectedRecord} 
-                    savePhysical={this.savePhysical}                       
+                    saveVirtual={this.saveVirtual}                       
                   />
                 ) : null }
 

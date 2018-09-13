@@ -4,7 +4,9 @@ import ashnazg from 'ashnazg';
 module.exports = function (Component) {
 
   const PanelToolbar = require('./PanelToolbar.js')(Component);
+  const Message = require('./Message.js')(Component);
   const VirtualProfile = require('./VirtualProfile.js')(Component);
+  const VirtualEditForm = require('./VirtualEditForm.js')(Component);
   
   return class VirtualPanel extends Component {
 
@@ -29,6 +31,13 @@ module.exports = function (Component) {
             <PanelToolbar {...this.props} />
           </div>
 
+          {(alertExists) ? (
+            <Message
+              alert={this.props.alert}
+              removeAlert={this.props.removeAlert}
+            />         
+          ) : null }
+
           {(this.props.mode === 'view') ? (
             <VirtualProfile
               selectedRecord={selectedRecord}
@@ -43,9 +52,12 @@ module.exports = function (Component) {
           ) : null }
 
           {(this.props.mode === 'edit') ? (
-            <div class="panel-block">
-              Virtual Edit
-            </div>
+            <VirtualEditForm
+              selectedRecord={selectedRecord}
+              virtualRecord={virtualRecord}
+              handleSetMode={this.props.handleSetMode}
+              saveVirtual={this.props.saveVirtual}
+            />
           ) : null }
 
           {(this.props.mode === 'delete') ? (

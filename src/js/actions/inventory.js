@@ -1082,7 +1082,7 @@ module.exports = {
         })
     },
 
-    saveNewVirtual: function(virtual, cb) {
+    saveVirtualRecord: function(virtual, cb) {
 
         app.remote.saveVirtual(virtual, function (err, virtualId) {
             if (err) {

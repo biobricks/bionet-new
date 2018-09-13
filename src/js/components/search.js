@@ -288,7 +288,7 @@ module.exports = function(Component) {
 	  render() {
       return (
       <section className="columns is-desktop is-gapless">  
-        <div className="column is-5-desktop">
+        <div className="column is-8-desktop">
         	<div className="search-container">
     	      <div className="columns">
     	        <div className="column">

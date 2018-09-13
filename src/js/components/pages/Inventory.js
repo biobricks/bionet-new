@@ -117,12 +117,23 @@ module.exports = function (Component) {
               //  inventoryPath was updated
               //  selectedRecord was updated
               //  mode should be reset to 'view'
-              this.setState({
-                selectedRecord: virtual,
-                virtualRecord: virtual,
-                mode: 'view',
-                parentVisible: false
-              });
+              app.remote.instancesOfVirtual(virtual.id, function(error, children) {
+                if (error) {
+                  let alert = {
+                    type: 'danger',
+                    message: `Error finding physical instances in database:\n${error.message}`
+                  };
+                  this.setState({ error, alert });
+                } else {
+                  virtual['children'] = children;
+                  this.setState({
+                    selectedRecord: virtual,
+                    virtualRecord: virtual,
+                    mode: 'view',
+                    parentVisible: false
+                  });
+                }  
+              }.bind(this));  
             }
           }.bind(this));
         // else if the selected record is not a virtual  

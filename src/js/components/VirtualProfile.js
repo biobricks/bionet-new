@@ -31,6 +31,21 @@ module.exports = function(Component) {
       const freeGeneStages = ['Not Submitted', 'Submitted', 'Optimizing', 'Synthesizing', 'Cloning', 'Sequencing', 'Shipping', 'Delivered'];
       const freeGeneStage = virtualRecord.freeGenes ? freeGeneStages[virtualRecord.freeGenesStage] : freeGeneStages[0];
 
+      const children = selectedRecord && selectedRecord.children && selectedRecord.children.map((child, index) => {
+        return (
+          <Link
+            to={`/ui/inventory/${child.id}`}
+            class="panel-block"
+            id={child.id}
+          >
+            <span class="panel-icon">
+              <i class="mdi mdi-flask"></i>
+            </span>
+            {child.name} 
+          </Link>          
+        );
+      });
+
       return (
         <div class="PhysicalProfile Restructured">
           
@@ -126,6 +141,20 @@ module.exports = function(Component) {
               </div>              
             </form>   
           </div>
+
+          <div class="panel-block">                      
+            <div class="columns">
+              <div class="column">
+                {(selectedRecord.children && selectedRecord.children.length > 0) ? (
+                  <h5>Physical Instances</h5>
+                ) : (
+                  <h5>No Physical Instances</h5>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {children}
 
         </div>
       )

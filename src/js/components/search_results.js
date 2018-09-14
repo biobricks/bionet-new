@@ -123,7 +123,7 @@ module.exports = function(Component) {
           }
           return (
             <Link 
-              to={'/virtual/show/'+result.value.id} 
+              to={'/inventory/'+result.value.id} 
               class="search-result panel-block"
             >
               <div class="columns is-paddingless">

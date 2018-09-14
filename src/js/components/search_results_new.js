@@ -21,7 +21,7 @@ module.exports = function(Component) {
 
     let results = this.props.results.map((result, index) => {
     	return (
-       <Link to={'/virtual/show/'+result.value.id} className="search-result panel-block">
+       <Link to={'/inventory/'+result.value.id} className="search-result panel-block">
 			  	<div className="columns has-text-centered-mobile is-gapless">
 			    	<div 
 			    		className="column is-1"

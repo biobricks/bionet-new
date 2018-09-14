@@ -12,7 +12,7 @@ module.exports = function(Component) {
           <li>
             {(!isActiveItem) ? (
               <Link 
-                to={`/ui/inventory/${item.id}`}
+                to={`/inventory/${item.id}`}
               >
                 {item.name}
               </Link>

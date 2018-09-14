@@ -34,7 +34,7 @@ module.exports = function(Component) {
       const children = selectedRecord && selectedRecord.children && selectedRecord.children.map((child, index) => {
         return (
           <Link
-            to={`/ui/inventory/${child.id}`}
+            to={`/inventory/${child.id}`}
             class="panel-block"
             id={child.id}
           >

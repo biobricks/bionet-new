@@ -33,7 +33,7 @@ module.exports = function(Component) {
         const isContainer = hasParentId && !hasVirtualId;
         return (
           <Link
-            to={`/ui/inventory/${child.id}`}
+            to={`/inventory/${child.id}`}
             class="panel-block"
             id={child.id}
           >

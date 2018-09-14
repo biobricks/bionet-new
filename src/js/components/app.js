@@ -61,8 +61,8 @@ module.exports = function(Component) {
                 <Route exact path="/" component={Search} />
                 
             
-                <Route path="/ui/inventory/:id" component={InventoryPage} />
-                <Route exact path="/ui/inventory" component={InventoryPage} />
+                <Route path="/inventory/:id" component={InventoryPage} />
+                <Route exact path="/inventory" component={InventoryPage} />
 
                 <Route exact path="/signup" render={() => (
                   <Signup />
@@ -113,12 +113,6 @@ module.exports = function(Component) {
                 <Switch>
                   <Route path="/dynamic-loading/:foo" component={DynamicLoading} />
                   <Route path="/dynamic-loading" component={DynamicLoading} />
-                </Switch>
-                
-                <Switch>
-                    <Route path="/inventory/new/:virtual_id" key="without-id" component={Inventory}/>
-                    <Route path="/inventory/:id" key="with-id" component={Inventory}/>
-                    <Route path="/inventory" key="without-id" component={Inventory}/>
                 </Switch>
 
                 <Route path="/o/:humanID" component={BarcodeRedirect}/>

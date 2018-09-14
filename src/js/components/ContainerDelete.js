@@ -22,7 +22,7 @@ module.exports = function(Component) {
       this.props.deleteContainer(selectedRecord, parentRecord);
       this.setState({
         redirect: true,
-        redirectTo: `/ui/inventory/${parentRecord.id}`
+        redirectTo: `/inventory/${parentRecord.id}`
       });
     }
 

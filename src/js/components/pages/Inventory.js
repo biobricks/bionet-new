@@ -376,7 +376,7 @@ module.exports = function (Component) {
           selectedRecord.children.push(savedContainer);
           this.setState({
             redirect: true,
-            redirectTo: `/ui/inventory/${savedContainer.id}`,
+            redirectTo: `/inventory/${savedContainer.id}`,
             error: {},
             alert,
             mode: 'view',
@@ -458,7 +458,7 @@ module.exports = function (Component) {
           // set state 
           this.setState({
             redirect: true,
-            redirectTo: `/ui/inventory/${parentContainer.id}`,            
+            redirectTo: `/inventory/${parentContainer.id}`,            
             mode: 'view',
             error: {},
             alert
@@ -581,7 +581,7 @@ module.exports = function (Component) {
           // set state 
           this.setState({
             redirect: true,
-            redirectTo: `/ui/inventory/${parentContainer.id}`,            
+            redirectTo: `/inventory/${parentContainer.id}`,            
             mode: 'view',
             error: {},
             alert

@@ -104,7 +104,7 @@ module.exports = function (Component) {
 
           let childEl = (
             <Link
-              to={`/ui/inventory/${child.id}`}
+              to={`/inventory/${child.id}`}
               id={child.id}
               class="grid-item"
               pos={childIndex}

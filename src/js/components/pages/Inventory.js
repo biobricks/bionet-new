@@ -56,7 +56,8 @@ module.exports = function (Component) {
       this.updateHoveredRecord = this.updateHoveredRecord.bind(this); 
       this.updateSelectedRecord = this.updateSelectedRecord.bind(this);
       this.handleSetNewLocation = this.handleSetNewLocation.bind(this);  
-      this.savePhysical = this.savePhysical.bind(this);  
+      this.savePhysical = this.savePhysical.bind(this); 
+      this.saveNewPhysical = this.saveNewPhysical.bind(this); 
       this.saveVirtual = this.saveVirtual.bind(this);
     }
 
@@ -466,6 +467,49 @@ module.exports = function (Component) {
       }.bind(this));      
     }
 
+    saveNewPhysical(virtual, physical) {
+      let inventoryPath = this.state.inventoryPath;
+      let selectedRecord = this.state.selectedRecord;
+      let alert;
+      app.actions.inventory.saveVirtualRecord(virtual, function(error, newVirtual) {
+        if (error) {
+          alert = {
+            type: 'danger',
+            message: `Error saving virtual ${virtual.name}:\n${error.message}`
+          };
+          this.setState({ error, alert });          
+        } else {
+          physical['parent_id'] = this.state.selectedRecord.id;
+          physical['virtual_id'] = newVirtual.id;
+          app.actions.inventory.saveNewRecord(physical, null, null, function(error, newPhysical) {
+            if (error) {
+              alert = {
+                type: 'danger',
+                message: `Error saving ${physical.name}:\n${error.message}`
+              };
+              this.setState({ error, alert }); 
+            } else {
+              alert = {
+                type: 'success',
+                message: `${physical.name} saved successfully.`
+              };
+              selectedRecord.children.push(newPhysical);
+              console.log('Selected Record: ', selectedRecord);
+              inventoryPath[inventoryPath.length - 1] = selectedRecord;
+              console.log('Inventory Path: ', inventoryPath);
+              this.setState({
+                alert,
+                error: {},
+                selectedRecord,
+                inventoryPath,
+                mode: 'view'
+              });
+            }
+          }.bind(this));
+        }
+      }.bind(this));
+    }
+
     // update physical
     savePhysical(physical, changeToView=false) {
       // let virtualRecord = this.state.virtualRecord;
@@ -741,6 +785,7 @@ module.exports = function (Component) {
                     newItemName={this.state.newItemName}
                     newItemX={this.state.newItemX}
                     newItemY={this.state.newItemY}
+                    saveNewPhysical={this.saveNewPhysical}
                   />
                 ) : null }
 
@@ -757,7 +802,9 @@ module.exports = function (Component) {
                     toggleDataFullScreen={this.toggleDataFullScreen}
                     updateSelectedRecord={this.updateSelectedRecord} 
                     savePhysical={this.savePhysical}  
-                    deletePhysical={this.deletePhysical}          
+                    deletePhysical={this.deletePhysical}   
+                    newItemX={this.state.newItemX}
+                    newItemY={this.state.newItemY}                           
                   />
                 ) : null }
 

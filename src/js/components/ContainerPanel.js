@@ -86,6 +86,7 @@ module.exports = function (Component) {
               newItemX={this.props.newItemX}
               newItemY={this.props.newItemY}
               handleSetNewLocation={this.props.handleSetNewLocation}
+              saveNewPhysical={this.props.saveNewPhysical}
             />
           ) : null }
 

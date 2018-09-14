@@ -61,7 +61,7 @@ module.exports = function(Component) {
                   <label class="label">Instance Of</label>
                 </div>
                 <div class="field-body">
-                  <Link to={`/ui/inventory/${virtualRecord.id}`}>
+                  <Link to={`/inventory/${virtualRecord.id}`}>
                     {virtualRecord.name}
                   </Link>
                 </div>

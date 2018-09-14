@@ -6,6 +6,7 @@ import util from '../../util.js';
 module.exports = function (Component) {
   
   const LabPanel = require('../LabPanel')(Component);
+  const Message = require('../Message')(Component);
   const ContainerPanel = require('../ContainerPanel')(Component);
   const PhysicalPanel = require('../PhysicalPanel')(Component);
   const VirtualPanel = require('../VirtualPanel')(Component);
@@ -27,6 +28,7 @@ module.exports = function (Component) {
         },
         inventoryPath: [],
         selectedRecord: {},
+        selectedRecordFound: null,
         parentRecord: {},
         parentVisible: false,
         virtualRecord: {},     
@@ -110,7 +112,11 @@ module.exports = function (Component) {
                 type: 'danger',
                 message: `Error finding record in database:\n${error.message}`
               };
-              this.setState({ error, alert });
+              this.setState({ 
+                error, 
+                alert,
+                selectedRecordFound: false 
+              });
             } else {
               virtual['type'] = 'virtual';
               // set state
@@ -123,11 +129,16 @@ module.exports = function (Component) {
                     type: 'danger',
                     message: `Error finding physical instances in database:\n${error.message}`
                   };
-                  this.setState({ error, alert });
+                  this.setState({ 
+                    error, 
+                    alert,
+                    selectedRecordFound: true 
+                  });
                 } else {
                   virtual['children'] = children;
                   this.setState({
                     selectedRecord: virtual,
+                    selectedRecordFound: true,
                     virtualRecord: virtual,
                     mode: 'view',
                     parentVisible: false
@@ -147,7 +158,11 @@ module.exports = function (Component) {
                 type: 'danger',
                 message: `Error finding records in database:\n${error.message}`
               };
-              this.setState({ error, alert });
+              this.setState({ 
+                error, 
+                alert,
+                selectedRecordFound: false 
+              });
             } else {
               // empty unwanted subdivisions field from each item in the inventory path
               for(let i = 0; i < inventoryPath.length; i++){
@@ -201,9 +216,9 @@ module.exports = function (Component) {
                   if (error) {
                     let alert = {
                       type: 'danger',
-                      message: `Error finding record in database:\n${error.message}`
+                      message: `Error finding physical instance's virtual in database:\n${error.message}`
                     };
-                    this.setState({ error, alert });                    
+                    this.setState({ error, alert, selectedRecordFound: true });                    
                   } else {
                     // set state
                     //  inventoryPath was updated
@@ -213,6 +228,7 @@ module.exports = function (Component) {
                       inventoryPath,
                       parentRecord,
                       selectedRecord,
+                      selectedRecordFound: true,
                       virtualRecord: virtual,
                       mode: 'view',
                       parentVisible: false              
@@ -228,6 +244,7 @@ module.exports = function (Component) {
                   inventoryPath,
                   parentRecord,
                   selectedRecord,
+                  selectedRecordFound: true,
                   virtualRecord: {},
                   mode: 'view',
                   parentVisible: false  
@@ -634,8 +651,9 @@ module.exports = function (Component) {
       util.whenConnected(function(){
         const idParam = (this.props.match.params.id) ? this.props.match.params.id : null;
         const selectedRecordExists = Object.keys(this.state.selectedRecord).length > 0;
+        const errorExists = Object.keys(this.state.error).length > 0;
         const idMatchesSelectedRecord = idParam && selectedRecordExists && this.state.selectedRecord.id === idParam;
-        if (idParam && idParam.length > 0 && !selectedRecordExists || !idMatchesSelectedRecord) {
+        if (!errorExists && idParam && idParam.length > 0 && !selectedRecordExists || !errorExists && !idMatchesSelectedRecord) {
           this.getInventoryPath(); 
         }  
       }.bind(this));         
@@ -660,6 +678,7 @@ module.exports = function (Component) {
       
       // set render conditions
       const selectedRecordExists = Object.keys(selectedRecord).length > 0;
+      const errorExists = Object.keys(this.state.error).length > 0;
       const parentRecord = this.state.parentRecord;
       
       // apply conditional css classes for full screen
@@ -674,6 +693,25 @@ module.exports = function (Component) {
         column1Class = "column is-7-desktop";
         column2Class = "column is-5-desktop";
       }    
+
+      if (this.state.selectedRecordFound === false) {
+        return (
+          <div class="InventoryPage">
+            <div class="columns is-desktop is-centered">
+              <div class="column is-12 is-6-desktop">
+                <div class="panel has-text-centered">
+                  <div class="panel-heading">
+                    <h3 class="mb-0">ID Not Found</h3>
+                  </div>
+                  <div class="panel-block">
+                    <p style="margin: 0 auto;">Sorry!  We did not find any Bionet content with that ID.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
 
       return (
         <div class="InventoryPage">

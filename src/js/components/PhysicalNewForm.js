@@ -359,9 +359,6 @@ module.exports = function(Component) {
 
             </form> 
           </div>
-          <div class="panel-block">
-            <pre>{JSON.stringify(this.state.form, null, 2)}</pre>
-          </div>
         </div>
       )
     }

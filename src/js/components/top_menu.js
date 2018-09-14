@@ -28,31 +28,31 @@ module.exports = function(Component) {
           </Link>
         ));
 
-        if(util.user.isInGroup('admin')) {
-          optionalNavItems.push((
-            <Link to='/admin' class="navbar-item">
-              <span class="icon">
-                <i class="fa fa-lg fa-wrench" aria-hidden="true"></i>
-            </span>
-          </Link>
-          ));
-        }
+        // if(util.user.isInGroup('admin')) {
+        //   optionalNavItems.push((
+        //     <Link to='/admin' class="navbar-item">
+        //       <span class="icon">
+        //         <i class="fa fa-lg fa-wrench" aria-hidden="true"></i>
+        //     </span>
+        //   </Link>
+        //   ));
+        // }
 
-        optionalNavItems.push((
-          <Link to='/inventory/favorites' class="navbar-item">
-            <span class="icon">
-              <i class="fa fa-lg fa-star" aria-hidden="true"></i>
-            </span>
-          </Link>
-        ));
+        // optionalNavItems.push((
+        //   <Link to='/inventory/favorites' class="navbar-item">
+        //     <span class="icon">
+        //       <i class="fa fa-lg fa-star" aria-hidden="true"></i>
+        //     </span>
+        //   </Link>
+        // ));
 
-        optionalNavItems.push((
-          <Link to='/settings' class="navbar-item">
-            <span class="icon">
-              <i class="fa fa-lg fa-cog" aria-hidden="true"></i>
-            </span>
-          </Link>
-        ));
+        // optionalNavItems.push((
+        //   <Link to='/settings' class="navbar-item">
+        //     <span class="icon">
+        //       <i class="fa fa-lg fa-cog" aria-hidden="true"></i>
+        //     </span>
+        //   </Link>
+        // ));
 
         // only show admin menu item if this is an admin user
         if(userData.groups && userData.groups.indexOf('admin')) {

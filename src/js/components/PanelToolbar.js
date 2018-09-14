@@ -14,13 +14,18 @@ module.exports = function(Component) {
         
           {(this.props.mode === 'view') ? (
             <div class="buttons has-addons">
-              <span 
-                class="button is-small is-success"
-                mode="new"
-                onClick={this.props.handleSetMode}
-              >
-                <i class="mdi mdi-plus" mode="new"></i>
-              </span>
+                
+              {(this.props.selectedRecord.type && this.props.selectedRecord.type !== 'virtual') ? (  
+                <span 
+                  class="button is-small is-success"
+                  mode="new"
+                  onClick={this.props.handleSetMode}
+                >
+                  <i class="
+                  mdi mdi-plus" mode="new"></i>
+                </span>
+              ) : null }  
+              
               <span 
                 class="button is-small is-link"
                 mode="edit"
@@ -57,6 +62,7 @@ module.exports = function(Component) {
 
           {(this.props.mode === 'edit') ? (
             <div class="buttons has-addons">
+              
               <span 
                 class="button is-small"
                 mode="view"
@@ -64,19 +70,24 @@ module.exports = function(Component) {
               >
                 <i class="mdi mdi-arrow-left-bold" mode="view"></i>
               </span>
-              <span 
-                class="button is-small is-danger"
-                mode="delete"
-                onClick={this.props.handleSetMode}
-              >
-                <i class="mdi mdi-delete-variant" mode="delete"></i>
-              </span>
+
+              {(this.props.selectedRecord.type && this.props.selectedRecord.type !== 'virtual') ? (
+                <span 
+                  class="button is-small is-danger"
+                  mode="delete"
+                  onClick={this.props.handleSetMode}
+                >
+                  <i class="mdi mdi-delete-variant" mode="delete"></i>
+                </span>
+              ) : null }
+              
               <span 
                 class="button is-small is-primary"
                 onClick={this.props.toggleDataFullScreen}
               >
                 <i class={mapExpandIcon}></i>
               </span>
+
             </div>
           ) : null }
 

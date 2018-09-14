@@ -125,6 +125,14 @@ module.exports = function(Component) {
               </div>
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-narrow">
+                  <label class="label">License</label>
+                </div>
+                <div class="field-body">
+                  {selectedRecord.license || "Limbo"}
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal is-narrow">
                   <label class="label">Created</label>
                 </div>
                 <div class="field-body">

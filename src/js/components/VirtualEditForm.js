@@ -15,7 +15,8 @@ module.exports = function(Component) {
           freeGenesStage: this.props.selectedRecord.freeGenesStage || 0,
           provenance: this.props.selectedRecord.provenance,
           sequence: this.props.selectedRecord.sequence || '',
-          genotype: this.props.selectedRecord.genotype || '' 
+          genotype: this.props.selectedRecord.genotype || '',
+          license: this.props.selectedRecord.license || 'Limbo'
         }
       };
       this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -37,7 +38,8 @@ module.exports = function(Component) {
           formKey === 'genotype' ||
           formKey === 'sequence' ||
           formKey === 'isAvailable' || 
-          formKey === 'freeGenes'
+          formKey === 'freeGenes' || 
+          formKey === 'license'
         ) {
           formValue = form[formKey];
         } else if (formKey === 'freeGenesStage') {
@@ -274,6 +276,24 @@ module.exports = function(Component) {
                     onInput={this.updateFormField}
                   >{this.state.form.sequence}</textarea>
                 </div>
+              </div>
+
+              <div class="field is-horizontal">
+                <div class="field-label is-normal is-narrow">
+                  <label class="label">License</label>
+                </div>
+                <div class="field-body">        
+                  <div class="select">
+                    <select 
+                      name="license"
+                      onChange={this.updateFormField}
+                    >
+                      <option value="OpenMTA" selected={this.state.form.license === "OpenMTA"}>OpenMTA</option>
+                      <option value="UBMTA" selected={this.state.form.license === "UBMTA"}>UBMTA</option>
+                      <option value="Limbo" selected={!this.state.form.license || this.state.form.license === "Limbo"}>Limbo</option>
+                    </select>
+                  </div>
+                </div>    
               </div>
 
               <div class="field is-horizontal">

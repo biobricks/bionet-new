@@ -12,154 +12,161 @@ module.exports = function(Component) {
     constructor(props) {
       super(props);
       this.state = {
-        username: '',
-        password: ''
+        form: {
+          username: '',
+          password: ''
+        },
+        authError: '',
+        usernameFormError: '',
+        passwordFormError: ''
       };
+      this.onFieldInput = this.onFieldInput.bind(this);
+      this.onFormSubmit = this.onFormSubmit.bind(this);
     };
+  
 
-    formToState() {
+    onFieldInput(e) {
+      let form = this.state.form;
+      let field = e.target.getAttribute('name');
+      form[field] = e.target.value;
       this.setState({
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value,
+        form
       });
-    }
-    
-    login(e) {
+    }    
+
+    onFormSubmit(e) {
       e.preventDefault();
-      this.formToState();
+      const username = this.state.form.username.trim();
+      const password = this.state.form.password.trim();
+      let usernameFormError;
+      let passwordFormError;
+      // username validation
+      if (!username || username.length < 3 || username.match(/\s/) || username.match('@')) {
+        usernameFormError = "Username is required, cannot contain spaces or '@', and must be a minimum of 3 characters.";
+      }
+      // password validation
+      if (!password || password.trim().length < 1) {
+        passwordFormError = "Password required.";
+      } else if (zxcvbn(password).score < 2) {
+        passwordFormError = "Password is not secure enough. Try adding numbers and special characters.";
+      }
 
-      var username = this.state.username.trim();
-      var password = this.state.password.trim();
-      if(!username.length) {
-        this.changeState({
-          usernameError: true
+      let usernameFormErrorExists = usernameFormError && usernameFormError.length > 1;
+      let passwordFormErrorExists = passwordFormError && passwordFormError.length > 1;
+
+      // if form not vaild
+      if (usernameFormErrorExists || passwordFormErrorExists) {
+        this.setState({
+          usernameFormError: usernameFormErrorExists ? usernameFormError : '',
+          passwordFormError: passwordFormErrorExists ? passwordFormError : '',
         });
-        return;
+      // if form valid
+      } else {
+        app.actions.user.login(username, password, function(error, token, userData) {
+          if (error) {
+            this.setState({
+              authError: error
+            });
+          } else {
+            app.actions.notify("Logged in!", 'notice');
+            app.actions.route('/');
+            window.scrollTo(0,0)
+          }
+        }.bind(this));
       }
-
-      if(!username.length) {
-        this.changeState({
-          passwordError: true
-        });
-        return;
-      }
-      
-      app.actions.user.login(username, password, function(err, token, userData) {
-        if(err) {
-          app.actions.notify(err.toString(), 'error');
-          this.changeState({
-            passwordError: true,
-            usernameError: true
-          });
-          return;
-        }
-        this.changeState({
-          passwordError: false,
-          usernameError: false
-        });
-        app.actions.notify("Logged in!", 'notice');
-        app.actions.route('/');
-        window.scrollTo(0,0)
-      }.bind(this));
-      
-    };
-   
-    passwordMessage() {
-      if(this.state.passwordError) {
-        var msg = 'Incorrect password.';
-        if(!this.state.password.trim().length) {
-          msg = "Missing password.";
-        } else if(zxcvbn(this.state.password).score < 2) {
-          msg += " This is not a valid password for this site (too weak).";
-        }
-        return (
-          <p class="help is-danger">{msg}</p>
-        );
-      }
-      return '';
-    };
-
-    usernameMessage() {
-      if(this.state.usernameError) {
-        var msg = 'Unknown username.';
-        // TODO this should be re-usig the signup validations
-        if(!this.state.username.trim().length) {
-          msg = "Missing username.";  
-        } else if(this.state.username.trim().length < 2) {
-          msg += " This is not a valid username on this site (too short).";
-        }
-        if(this.state.username.match(/\s/)) {
-          msg += " Username must not contain spaces (or other whitespace).";
-        }
-        if(this.state.username.match('@')) {
-          msg += " Username must not contain any @ symbols.";
-        }
-        return (
-          <p class="help is-danger">{msg}</p>
-        );
-      }
-    };
-
-    
+    }
 
 	  render() {
       
       return (
-        <div>
-          <form onsubmit={this.login.bind(this)}>
-            <section class="hero is-info ">
-              <div class="hero-body">
-                <div class="container">
-                  <h1 class="title">
-                    Login
-                  </h1>
-                  <h2 class="subtitle">
-                    Welcome back to the bionet
-                  </h2>
+        <div class="Login">
+          <div class="columns is-desktop is-centered">
+            <div class="column is-12 is-6-desktop">    
+              <div class="panel">
+                <div class="panel-heading has-text-centered">
+                  <h3 class="mb-0">Login</h3>
+                </div>
+                <div class="panel-block is-block">
+
+                  <form onSubmit={this.onFormSubmit}>
+
+                    <div class="field has-text-centered">
+                      <p>Don't have a login? Why not <Link to="/signup">sign up</Link> for an account?</p>
+                    </div>
+
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal is-narrow">
+                        <label class="label mt-1">Username</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control expanded has-icons-left">
+                            <input 
+                              class="input" 
+                              type="text"
+                              name="username" 
+                              placeholder="username"
+                              value={this.state.form.username}
+                              onInput={this.onFieldInput}
+                            />
+                            <span class="icon is-small is-left">
+                              <i class="mdi mdi-24px mdi-account mt-1"></i>
+                            </span>                          
+                          </div>
+                          {(this.state.usernameFormError.length > 0) ? (
+                            <p class="help is-danger p-0 mt-1">
+                              {this.state.usernameFormError}
+                            </p>
+                          ) : null }  
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal is-narrow">
+                        <label class="label mt-1">Password</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control expanded has-icons-left">
+                            <input 
+                              class="input" 
+                              type="password" 
+                              name="password"
+                              placeholder="password"
+                              value={this.state.form.password}
+                              onInput={this.onFieldInput}
+                            />
+                            <span class="icon is-small is-left">
+                              <i class="mdi mdi-24px mdi-textbox-password mt-1"></i>
+                            </span>                          
+                          </div>
+                          {(this.state.passwordFormError.length > 0) ? (
+                            <p class="help is-danger p-0 mt-1">
+                              {this.state.passwordFormError}
+                            </p>
+                          ) : null }  
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field has-text-centered">
+                      <p>If you forgot your password you can <Link to="/password-reset">request a password reset</Link></p>
+                    </div>
+
+                    <div class="field is-grouped is-grouped-centered">
+                      <div class="control">
+                        <button type="submit" class="button is-success mb-2">Login</button>
+                      </div>
+                    </div>
+
+                  </form>
+
+          
                 </div>
               </div>
-            </section>
-            <div class="container post-hero-area">
-              <div class="columns">
-                <div class="column is-6">
-
-                  <div class="field">
-                    <p>Don't have a login? Why not <Link to="/signup">sign up</Link> for an account?</p>
-                  </div>
-                  
-                  <div class="field">
-                    <label class="label">Username</label>
-                    <div class="control has-icons-left has-icons-right">
-                      <input id="username" class="input" type="text" oninput={linkState(this, 'username')} />
-                      <span class="icon is-small is-left">
-                        <i class="fa fa-user"></i>
-                      </span>
-                    </div>
-                    {this.usernameMessage()}
-                  </div>
-                  
-                  <div class="field">
-                    <label class="label">Password</label>
-                    <div class="control has-icons-left has-icons-right">
-                      <input id="password" class="input" type="password" oninput={linkState(this, 'password')} />
-                      <span class="icon is-small is-left">
-                        <i class="fa fa-lock"></i>
-                      </span>
-                      {this.passwordMessage()}
-                      <p class="help is-danger">If you forgot your password you can <Link to="/password-reset">request a password reset</Link></p>
-                    </div>
-                  </div>
-
-                  <div class="field is-grouped">
-                    <div class="control">
-                      <input type="submit" class="button is-link" value="Login" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="column is-6"></div>
             </div>
-          </form>
+          </div>    
         </div>
       )
     }

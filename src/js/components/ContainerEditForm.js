@@ -98,7 +98,7 @@ module.exports = function(Component) {
 
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-narrow">
-                  <label class="label mt-1">Name</label>
+                  <label class="label">Name</label>
                 </div>
                 <div class="field-body">
                     <input 

@@ -102,7 +102,7 @@ module.exports = function(Component) {
                       <div class="control">
                         <button 
                           type="submit" 
-                          class="button is-success mb-2"
+                          class="button is-success mt-2 mb-2"
                           value="Reset password"
                           disabled={!!this.state.emailError || !this.state.email}
                         >Request Password Reset</button>

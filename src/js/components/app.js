@@ -8,8 +8,8 @@ module.exports = function(Component) {
   var TopMenu = require('./top_menu.js')(Component);
   var PersistentNotify = require('./persistent_notify.js')(Component);
 
-  var Signup = require('./signup.js')(Component);
-  var Login = require('./login.js')(Component);
+  var Signup = require('./Signup.js')(Component);
+  var Login = require('./Login.js')(Component);
   var Logout = require('./logout.js')(Component);
   var PasswordReset = require('./password_reset.js')(Component);
   var PasswordCompleteReset = require('./password_complete_reset.js')(Component);

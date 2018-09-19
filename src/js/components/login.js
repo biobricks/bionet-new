@@ -91,7 +91,7 @@ module.exports = function(Component) {
                   <form onSubmit={this.onFormSubmit}>
 
                     <div class="field has-text-centered">
-                      <p>Don't have a login? Why not <Link to="/signup">sign up</Link> for an account?</p>
+                      <p>Don't have a login? Why not <Link to="/signup">Sign Up</Link> for an account?</p>
                     </div>
 
                     <div class="field is-horizontal">

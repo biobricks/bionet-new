@@ -1,11 +1,23 @@
-
 import {h} from 'preact';
-
+import {Link} from 'react-router-dom';
 import validations from '../../../common/validations.js';
+
+
 
 module.exports = function(Component) {
 
   return class Signup extends Component {
+
+    constructor(props) {
+      super(props);
+      this.state = {
+        username: '',
+        email: '',
+        password: '',
+        masterPassword: ''
+      };
+      this.submit = this.submit.bind(this);
+    };    
 
     // if a validate function is present it will be used by validator()
     validate(o, lostFocus) {
@@ -29,103 +41,148 @@ module.exports = function(Component) {
         app.actions.route('/login');
       });
     }
-    
-    cancel(e) {
-      e.preventDefault();
-
-      app.actions.route('/');
-    }
 
 	  render() {
-
       return (
-        <div>
-          <form onsubmit={this.submit.bind(this)}>
-            <section class="hero is-info ">
-              <div class="hero-body">
-                <div class="container">
-                  <h1 class="title">
-                    Sign up
-                  </h1>
-                  <h2 class="subtitle">
-                    Create your bionet account
-                  </h2>
+        <div class="Signup">
+          <div class="columns is-desktop is-centered">
+            <div class="column is-12 is-6-desktop">    
+              <div class="panel">
+                <div class="panel-heading has-text-centered">
+                  <h3 class="mb-0">Signup</h3>
+                </div>
+                <div class="panel-block is-block">
+
+                  <div class="field has-text-centered">
+                    <p>Already have an account? <Link to="/login">Login</Link></p>
+                  </div>
+
+                  <form onsubmit={this.submit}>
+
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal is-narrow">
+                        <label class="label mt-1">Username</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control expanded has-icons-left">
+                            <input 
+                              class={'input ' + this.validateInputClass('username')}
+                              type="text"
+                              name="username" 
+                              onInput={this.validator('username')}
+                              onfocusout={this.validator('username', true)} 
+                              value={this.state.username}
+                              placeholder="username"
+                            />
+                            <span class="icon is-small is-left">
+                              <i class="mdi mdi-24px mdi-account mt-1"></i>
+                            </span>                          
+                          </div>
+                          {(this.state.username.length > 0) ? (
+                            <span>{this.validateInputNotice('username', "Your user name is valid and unique on this bionet node :)")}</span>
+                          ) : (
+                            <p class="help">
+                              * Username must be unique on this BioNet Node.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal is-narrow">
+                        <label class="label mt-1">Email</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control expanded has-icons-left">
+                            <input 
+                              class={'input ' + this.validateInputClass('email')} 
+                              type="email"
+                              name="email" 
+                              placeholder="myemailaddress@example.com"
+                              onInput={this.validator('email')}
+                              onfocusout={this.validator('email', true)} 
+                              value={this.state.email}
+                            />
+                            <span class="icon is-small is-left">
+                              <i class="mdi mdi-18px mdi-email mt-1"></i>
+                            </span>                          
+                          </div>
+                          {this.validateInputNotice('email', "Looks like a valid email address to me!")}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal is-narrow">
+                        <label class="label mt-1">Password</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control expanded has-icons-left">
+                            <input 
+                              class={'input ' + this.validateInputClass('password')} 
+                              type="password"
+                              name="password" 
+                              placeholder="secretpassword"
+                              onInput={this.validator('password')}
+                              onfocusout={this.validator('password', true)} 
+                              value={this.state.password}
+                            />
+                            <span class="icon is-small is-left">
+                              <i class="mdi mdi-24px mdi-textbox-password mt-1"></i>
+                            </span>                          
+                          </div>
+                          {this.validateInputNotice('password', "Your password is strong.")}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal is-narrow">
+                        <label class="label mt-1">New Account Password</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control expanded has-icons-left">
+                            <input 
+                              class={'input ' + this.validateInputClass('masterPassword')} 
+                              type="password"
+                              name="masterPassword" 
+                              placeholder="newaccountpassword"
+                              onInput={this.validator('masterPassword')}
+                              onfocusout={this.validator('masterPassword', true)} 
+                              value={this.state.masterPassword}
+                            />
+                            <span class="icon is-small is-left">
+                              <i class="mdi mdi-24px mdi-textbox-password mt-1"></i>
+                            </span>                          
+                          </div>
+                          {(this.state.masterPassword.length > 0) ? (
+                            <span>{this.validateInputNotice('masterPassword')}</span>
+                          ) : (
+                            <p class="help">
+                              * Ask your BioNet Node Administrator for the New Account Password.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field is-grouped is-grouped-centered">
+                      <div class="control">
+                        <button type="submit" class="button is-success mt-2 mb-2" value="Create">Signup</button>
+                      </div>
+                    </div>
+
+                  </form>
+
                 </div>
               </div>
-            </section>
-            <div class="container post-hero-area">
-              <div class="columns">
-                <div class="column is-6">
-                  
-                  <div class="field">
-                    <label class="label">Username</label>
-                    <div class="control has-icons-left has-icons-right">
-                      <input class={'input ' + this.validateInputClass('username')} type="text" onInput={this.validator('username')} onfocusout={this.validator('username', true)} value={this.state.username} placeholder="Must be unique on this bionet node"/>
-                      <span class="icon is-small is-left">
-                        <i class="fa fa-user"></i>
-                      </span>
-                      <span class="icon is-small is-right">
-                        <i class={'fa ' + this.validateInputIcon('username')}></i>
-                      </span>
-                    </div>
-                    {this.validateInputNotice('username', "Your user name is valid and unique on this bionet node :)")}
-                  </div>
-
-                  <div class="field">
-                    <label class="label">Email</label>
-                    <div class="control has-icons-left has-icons-right">
-                      <input class={'input ' + this.validateInputClass('email')} type="text" onInput={this.validator('email')} onfocusout={this.validator('email', true)} value={this.state.email} />
-                      <span class="icon is-small is-left">
-                        <i class="fa fa-envelope"></i>
-                      </span>
-                      <span class="icon is-small is-right">
-                        <i class={'fa ' + this.validateInputIcon('email')}></i>
-                      </span>
-                    </div>
-                    {this.validateInputNotice('email', "Looks like a valid email address to me!")}
-                  </div>
-
-                  <div class="field">
-                    <label class="label">Password</label>
-                    <div class="control has-icons-left has-icons-right">
-                      <input class={'input ' + this.validateInputClass('password')} type="password" onInput={this.validator('password')} onfocusout={this.validator('password', true)} value={this.state.password} />
-                      <span class="icon is-small is-left">
-                        <i class="fa fa-lock"></i>
-                      </span>
-                      <span class="icon is-small is-right">
-                        <i class={'fa ' + this.validateInputIcon('password')}></i>
-                      </span>
-                    </div>
-                    {this.validateInputNotice('password', "Your password is strong")}
-                  </div>
-
-                  <div class="field">
-                    <label class="label">Master password</label>
-                    <div class="control has-icons-left has-icons-right">
-                      <input class={'input ' + this.validateInputClass('masterPassword')} type="password" onInput={this.validator('masterPassword')} onfocusout={this.validator('masterPassword', true)} value={this.state.masterPassword} placeholder="hint: ask your bionet node administrator" />
-                      <span class="icon is-small is-left">
-                        <i class="fa fa-lock"></i>
-                      </span>
-                      <span class="icon is-small is-right">
-                        <i class={'fa ' + this.validateInputIcon('masterPassword')}></i>
-                      </span>
-                    </div>
-                    {this.validateInputNotice('masterPassword')}
-                  </div>
-                  
-                  <div class="field is-grouped">
-                    <div class="control">
-                      <input type="submit" class="button is-link" value="Create" />
-                    </div>
-                    <div class="control">
-                      <button class="button is-text" onclick={this.cancel.bind(this)}>Cancel</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="column is-6"></div>
             </div>
-          </form>
+          </div>        
         </div>
       )
     }

@@ -1,0 +1,36 @@
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+.Signup .columns .column .panel {
+  .panel-block form {
+    width: 100%;
+    .field:not(:last-child){
+      margin-bottom: .6rem;
+    }
+    .field {
+      .field-label.is-narrow label {
+        width: 175px;
+      }
+      .field-label.is-narrow label.mt-1 {
+        margin-top: 4px;
+      }
+      .field-body .field .help {
+        padding: 0;
+        margin-top: 12px;
+      } 
+      .field-body .control {
+        text-align: left;
+        padding-top: 6px;
+        .button {
+          border-radius: 0px;
+        }
+        label.radio {
+          margin-right: 16px;
+          input[type="radio"] {
+            margin-right: 8px !important;
+          }
+        }
+      }
+    }  
+  }
+}

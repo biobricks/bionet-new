@@ -10,7 +10,7 @@ module.exports = function(Component) {
 
   var Signup = require('./Signup.js')(Component);
   var Login = require('./Login.js')(Component);
-  var Logout = require('./logout.js')(Component);
+  var Logout = require('./Logout.js')(Component);
   var PasswordReset = require('./password_reset.js')(Component);
   var PasswordCompleteReset = require('./password_complete_reset.js')(Component);
   var Search = require('./search.js')(Component);

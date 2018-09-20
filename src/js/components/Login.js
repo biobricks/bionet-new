@@ -1,7 +1,6 @@
 
 import {h} from 'preact';
 import linkState from 'linkstate';
-import zxcvbn from 'zxcvbn';
 import merge from 'deepmerge';
 import {Link} from 'react-router-dom';
 
@@ -41,14 +40,13 @@ module.exports = function(Component) {
       let usernameFormError;
       let passwordFormError;
       // username validation
-      if (!username || username.length < 3 || username.match(/\s/) || username.match('@')) {
-        usernameFormError = "Username is required, cannot contain spaces or '@', and must be a minimum of 3 characters.";
+      if (!username || username.length < 1 ) {
+        usernameFormError = "Username is required.";
       }
+
       // password validation
       if (!password || password.trim().length < 1) {
         passwordFormError = "Password required.";
-      } else if (zxcvbn(password).score < 2) {
-        passwordFormError = "Password is not secure enough. Try adding numbers and special characters.";
       }
 
       let usernameFormErrorExists = usernameFormError && usernameFormError.length > 1;
@@ -65,7 +63,7 @@ module.exports = function(Component) {
         app.actions.user.login(username, password, function(error, token, userData) {
           if (error) {
             this.setState({
-              authError: error
+              authError: 'Incorrect username or password.'
             });
           } else {
             app.actions.notify("Logged in!", 'notice');
@@ -76,7 +74,7 @@ module.exports = function(Component) {
       }
     }
 
-	  render() {
+  	  render() {
       
       return (
         <div class="Login">
@@ -91,7 +89,11 @@ module.exports = function(Component) {
                   <form onSubmit={this.onFormSubmit}>
 
                     <div class="field has-text-centered">
-                      <p>Don't have a login? Why not <Link to="/signup">Sign Up</Link> for an account?</p>
+                      {(this.state.authError.length > 0) ? (
+                        <p class="has-text-danger">{this.state.authError}</p>
+                      ) : (
+                        <p>Don't have a login? Why not <Link to="/signup">Sign Up</Link> for an account?</p>
+                      )}  
                     </div>
 
                     <div class="field is-horizontal">

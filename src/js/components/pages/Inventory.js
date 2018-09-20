@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import ashnazg from 'ashnazg';
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import util from '../../util.js';
 
 module.exports = function (Component) {
@@ -738,6 +738,27 @@ module.exports = function (Component) {
         column2Class = "column is-5-desktop";
       }    
 
+      // if no user is logged in
+      if(!app.state.global.user) {
+        return (
+          <div class="InventoryPage">
+            <div class="columns is-desktop is-centered">
+              <div class="column is-12 is-6-desktop">
+                <div class="panel has-text-centered">
+                  <div class="panel-heading">
+                    <h3 class="mb-0">Login Required</h3>
+                  </div>
+                  <div class="panel-block">
+                    <p style="margin: 0 auto;">Please <Link to="/login">Login</Link> to continue.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );      
+      }
+
+      // if no record is found
       if (this.state.selectedRecordFound === false) {
         return (
           <div class="InventoryPage">

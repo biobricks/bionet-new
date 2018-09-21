@@ -714,7 +714,7 @@ module.exports = function (Component) {
         const idParam = (this.props.match.params.id) ? this.props.match.params.id : null;
         const selectedRecordExists = Object.keys(this.state.selectedRecord).length > 0;
         const idMatchesSelectedRecord = idParam && selectedRecordExists && this.state.selectedRecord.id === idParam;
-        if (idParam && idParam.length > 0 && !selectedRecordExists || !idMatchesSelectedRecord) {
+        if (idParam && idParam.length > 0 && !selectedRecordExists || !idParam || !idMatchesSelectedRecord) {
           console.log('Mount: getInventoryPath');
           this.getInventoryPath(); 
         }  

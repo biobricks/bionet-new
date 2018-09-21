@@ -1,0 +1,48 @@
+{
+  "selectedRecord": {
+    "name": "Freezer 1",
+    "description": "A demo Freezer.",
+    "xUnits": 1,
+    "yUnits": 4,
+    "color": "aqua",
+    "majorGridLine": 1,
+    "parent_x": 2,
+    "parent_y": 2,
+    "parent_id": "p-69c30faf-c904-40aa-b661-caf24d2d0358",
+    "id": "p-8d0e49ad-e8c3-40ed-ad7b-961aeabf45be",
+    "created": {
+      "user": "user",
+      "time": 1534364700
+    },
+    "updated": {
+      "user": "user",
+      "time": 1534364785
+    },
+    "viewOrientation": "top",
+    "children": [
+      {
+        "name": "Shelf",
+        "description": "",
+        "xUnits": 1,
+        "yUnits": 1,
+        "color": "aqua",
+        "majorGridLine": null,
+        "parent_x": 1,
+        "parent_y": 1,
+        "parent_id": "p-8d0e49ad-e8c3-40ed-ad7b-961aeabf45be",
+        "id": "p-afa8a05f-848d-4fbe-9f81-87e9d4f47a5c",
+        "created": {
+          "user": "user",
+          "time": 1534364765
+        },
+        "updated": {
+          "user": "user",
+          "time": 1534364765
+        }
+      }
+    ],
+    "subdivisions": [],
+    "type": "container"
+  },
+  "children": []
+}

@@ -1,0 +1,89 @@
+{
+  "selectedRecord": {
+    "id": "p-69c30faf-c904-40aa-b661-caf24d2d0358",
+    "name": "Counter Culture Labs",
+    "type": "lab",
+    "layoutWidthUnits": 20,
+    "layoutWidth": 800,
+    "created": {
+      "user": "matthewstewart",
+      "time": 1531701689
+    },
+    "updated": {
+      "user": "matthewstewart",
+      "time": 1531706542
+    },
+    "layoutHeightUnits": 10,
+    "layoutHeight": 400,
+    "majorGridLine": 10,
+    "children": [
+      {
+        "name": "Blah_0",
+        "type": "physical",
+        "description": "",
+        "fontSize": 12,
+        "color": "#00ffff",
+        "parent_x": 4,
+        "parent_y": 2,
+        "parent_x_span": 1,
+        "parent_y_span": 1,
+        "parent_id": "p-69c30faf-c904-40aa-b661-caf24d2d0358",
+        "virtual_id": "v-86b87e58-dd78-4926-8746-60414b86d219",
+        "id": "p-ec52eef9-7fc2-427e-b5fc-aedafe5ab30d",
+        "created": {
+          "user": "user",
+          "time": 1537555031
+        },
+        "updated": {
+          "user": "user",
+          "time": 1537555031
+        }
+      },
+      {
+        "name": "Blahblah_0",
+        "type": "physical",
+        "description": "",
+        "fontSize": 12,
+        "color": "#00ffff",
+        "parent_x": 5,
+        "parent_y": 2,
+        "parent_x_span": 1,
+        "parent_y_span": 1,
+        "parent_id": "p-69c30faf-c904-40aa-b661-caf24d2d0358",
+        "virtual_id": "v-2e596abc-e79a-499d-8330-2c61ec556b4f",
+        "id": "p-aa6a12e2-1e0b-42a7-9f2b-3015f593b96d",
+        "created": {
+          "user": "user",
+          "time": 1537555091
+        },
+        "updated": {
+          "user": "user",
+          "time": 1537555494
+        }
+      },
+      {
+        "name": "Freezer 1",
+        "description": "A demo Freezer.",
+        "xUnits": 1,
+        "yUnits": 4,
+        "color": "aqua",
+        "majorGridLine": 1,
+        "parent_x": 2,
+        "parent_y": 2,
+        "parent_id": "p-69c30faf-c904-40aa-b661-caf24d2d0358",
+        "id": "p-8d0e49ad-e8c3-40ed-ad7b-961aeabf45be",
+        "created": {
+          "user": "user",
+          "time": 1534364700
+        },
+        "updated": {
+          "user": "user",
+          "time": 1534364785
+        },
+        "viewOrientation": "top"
+      }
+    ],
+    "subdivisions": []
+  },
+  "children": []
+}

@@ -1,0 +1,85 @@
+{
+  "selectedRecord": {
+    "name": "Foo",
+    "description": "Foo Bar Baz.",
+    "enableColorPicker": false,
+    "color": "aqua",
+    "isAvailable": true,
+    "freeGenes": false,
+    "sequence": "AGTC",
+    "genotype": "Example Genotype",
+    "provenance": "Example Provenance",
+    "id": "v-894fdf00-8090-4523-a0db-628152cc308d",
+    "created": {
+      "user": "user",
+      "time": 1534366125
+    },
+    "updated": {
+      "user": "user",
+      "time": 1534366125
+    },
+    "type": "virtual",
+    "children": [
+      {
+        "name": "Foo_0",
+        "type": "physical",
+        "virtual_id": "v-894fdf00-8090-4523-a0db-628152cc308d",
+        "parent_id": "p-afa8a05f-848d-4fbe-9f81-87e9d4f47a5c",
+        "parent_x": 1,
+        "parent_y": 1,
+        "color": "aqua",
+        "id": "p-85fc5937-1f6e-452d-b2ea-604b9a53a66f",
+        "created": {
+          "user": "user",
+          "time": 1534366125
+        },
+        "updated": {
+          "user": "user",
+          "time": 1534366125
+        }
+      }
+    ]
+  },
+  "virtualRecord": {
+    "name": "Foo",
+    "description": "Foo Bar Baz.",
+    "enableColorPicker": false,
+    "color": "aqua",
+    "isAvailable": true,
+    "freeGenes": false,
+    "sequence": "AGTC",
+    "genotype": "Example Genotype",
+    "provenance": "Example Provenance",
+    "id": "v-894fdf00-8090-4523-a0db-628152cc308d",
+    "created": {
+      "user": "user",
+      "time": 1534366125
+    },
+    "updated": {
+      "user": "user",
+      "time": 1534366125
+    },
+    "type": "virtual",
+    "children": [
+      {
+        "name": "Foo_0",
+        "type": "physical",
+        "virtual_id": "v-894fdf00-8090-4523-a0db-628152cc308d",
+        "parent_id": "p-afa8a05f-848d-4fbe-9f81-87e9d4f47a5c",
+        "parent_x": 1,
+        "parent_y": 1,
+        "color": "aqua",
+        "id": "p-85fc5937-1f6e-452d-b2ea-604b9a53a66f",
+        "created": {
+          "user": "user",
+          "time": 1534366125
+        },
+        "updated": {
+          "user": "user",
+          "time": 1534366125
+        }
+      }
+    ]
+  },
+  "children": []
+}

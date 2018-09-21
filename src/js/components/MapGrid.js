@@ -117,7 +117,6 @@ module.exports = function (Component) {
               onDragStart={this.props.onCellDragStart}
               onDragOver={this.props.onCellDragOver}
               onDragEnd={this.props.onCellDragEnd}
-              onDrop={this.props.parentVisible ? null : this.props.onCellDrop}
             >
               <div 
                 class="grid-item-label"

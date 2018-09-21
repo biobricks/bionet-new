@@ -697,7 +697,8 @@ module.exports = function (Component) {
         const selectedRecordExists = Object.keys(this.state.selectedRecord).length > 0;
         const errorExists = Object.keys(this.state.error).length > 0;
         const idMatchesSelectedRecord = idParam && selectedRecordExists && this.state.selectedRecord.id === idParam;
-        if (!errorExists && idParam && idParam.length > 0 && !selectedRecordExists || !errorExists && !idMatchesSelectedRecord) {
+        if (!errorExists && idParam && idParam.length > 0 && !selectedRecordExists || !errorExists && idParam && !idMatchesSelectedRecord) {
+          console.log('Update: getInventoryPath');
           this.getInventoryPath(); 
         }  
       }.bind(this));         
@@ -710,6 +711,7 @@ module.exports = function (Component) {
         const selectedRecordExists = Object.keys(this.state.selectedRecord).length > 0;
         const idMatchesSelectedRecord = idParam && selectedRecordExists && this.state.selectedRecord.id === idParam;
         if (idParam && idParam.length > 0 && !selectedRecordExists || !idMatchesSelectedRecord) {
+          console.log('Mount: getInventoryPath');
           this.getInventoryPath(); 
         }  
       }.bind(this));    

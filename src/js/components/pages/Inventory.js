@@ -267,7 +267,9 @@ module.exports = function (Component) {
       this.removeAlert();
       // set the mode in state
       this.setState({
-        mode
+        mode,
+        newItemX: 0,
+        newItemY: 0        
       });
     }
 
@@ -502,7 +504,9 @@ module.exports = function (Component) {
                 error: {},
                 selectedRecord,
                 inventoryPath,
-                mode: 'view'
+                mode: 'view',
+                newItemX: 0,
+                newItemY: 0                
               });
             }
           }.bind(this));

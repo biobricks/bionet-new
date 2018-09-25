@@ -15,14 +15,11 @@ module.exports = function(Component) {
   var PasswordCompleteReset = require('./PasswordCompleteReset.js')(Component);
   var Search = require('./Search.js')(Component);
   var Help = require('./help.js')(Component);
-  var Virtual = require('./virtual.js')(Component);
-  var EditVirtual = require('./edit_virtual.js')(Component);
   var RequestMaterial = require('./request_material.js')(Component);
   var RequestList = require('./request_list.js')(Component);
   var Request = require('./request.js')(Component);
   var RequestApprove = require('./request_approve.js')(Component);
   var RequestSent = require('./request_sent.js')(Component);
-  var Inventory = require('./inventory/index.js')(Component);
   var Settings = require('./settings.js')(Component);
   var Admin = require('./admin.js')(Component);
   var AdminEditUser = require('./admin_edit_user.js')(Component);
@@ -75,9 +72,6 @@ module.exports = function(Component) {
                 <Route exact path="/signup" render={() => (
                   <Signup />
                 )}/>
-
-                <Route path="/virtual/show/:id" component={Virtual} />
-                <Route path="/virtual/edit/:id" component={EditVirtual} />
 
                 <Switch>
                   <Route path="/request/:id" component={RequestMaterial} />

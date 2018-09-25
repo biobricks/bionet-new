@@ -13,7 +13,7 @@ module.exports = function(Component) {
   var Logout = require('./Logout.js')(Component);
   var PasswordReset = require('./PasswordReset.js')(Component);
   var PasswordCompleteReset = require('./PasswordCompleteReset.js')(Component);
-  var Search = require('./search.js')(Component);
+  var Search = require('./Search.js')(Component);
   var Help = require('./help.js')(Component);
   var Virtual = require('./virtual.js')(Component);
   var EditVirtual = require('./edit_virtual.js')(Component);
@@ -36,12 +36,14 @@ module.exports = function(Component) {
   var PrintShippingLabel = require('./print_shipping_label.js')(Component);
 
 
-
   // Top Level Page Components Controlling Layout
   const InventoryPage = require('./pages/Inventory.js')(Component);
 
   // Test Component for HTML5 Canvas
   const CanvasPage = require('./pages/Canvas.js')(Component);
+
+  // Help Page
+  const HelpPage = require('./pages/Help.js')(Component);
 
   // just an example of dynamically loading js
   var DynamicLoading = require('./dynamic_loading.js')(Component);
@@ -63,6 +65,7 @@ module.exports = function(Component) {
               <div class="content-area">
                 <Route exact path="/" component={Search} />
                 
+                <Route exact path="/help" component={HelpPage} />
             
                 <Route path="/inventory/:id" component={InventoryPage} />
                 <Route exact path="/inventory" component={InventoryPage} />

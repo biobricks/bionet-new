@@ -18,9 +18,9 @@ function diff(a, b) {
 
 module.exports = function(Component) {
 
-  var SearchBar = require('./search_bar.js')(Component)
-  var SearchResults = require('./search_results_new.js')(Component)
-  var SearchPagination = require('./search_pagination.js')(Component)
+  var SearchBar = require('./SearchBar.js')(Component)
+  var SearchResults = require('./SearchResults.js')(Component)
+  var SearchPagination = require('./SearchPagination.js')(Component)
 
   return class Search extends Component {
 

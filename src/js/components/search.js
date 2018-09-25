@@ -320,7 +320,14 @@ module.exports = function(Component) {
                         Keep track of your stuff, find what you need, and share as you like. The bionet supports true asynchronous, peer-peer inventory management and sharing — all your inventory information is controlled locally by you. You decide if others can see what you wish to share. All BioNet software and associated materials are free to use.
                       </p>
                       <h2 class="mt-1">How Does It Work?</h2>
-                      <iframe width="100%" height="400" src="https://www.youtube.com/embed/t29-RGggSU8?ecver=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                      <iframe 
+                        width="100%" 
+                        height="400" 
+                        class="mt-1"
+                        src="https://www.youtube.com/embed/t29-RGggSU8?ecver=1" 
+                        frameborder="0" 
+                        allow="autoplay; encrypted-media" 
+                        allowfullscreen></iframe>
                     </div>
                   </div>                  
                 )}

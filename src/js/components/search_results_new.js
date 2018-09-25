@@ -99,10 +99,10 @@ module.exports = function(Component) {
 			      			  <img src="/static/images/openmta-logo.png" alt="OpenMTA" className="openmta-icon"/>
 			      		) : null }
 			      		{ (result.value.license === "UBMTA") ? (
-			      			<i className="result-icon mdi mdi-18px mdi-wall" />
+			      			<span>UBMTA</span>
 			      		) : null }
 			      		{ (result.value.license === "Limbo" || (result.value.license !== "UBMTA" && result.value.license === "OpenMTA" && !result.value.freegenes)) ? (
-			      			<i className="result-icon mdi mdi-18px mdi-help-circle"/>
+			      			<span>LIMBO</span>
 			      		) : null }
 		      		</div>
 		      	</div>			      	

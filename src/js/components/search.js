@@ -287,7 +287,7 @@ module.exports = function(Component) {
 
 	  render() {
       return (
-      <section className="columns is-desktop is-gapless">  
+      <section className="columns is-desktop is-gapless is-centered">  
         <div className="column is-8-desktop">
         	<div className="search-container">
     	      <div className="columns">
@@ -309,7 +309,21 @@ module.exports = function(Component) {
                     />
                     <SearchPagination query={this.state.lastQuery} loading={this.state.loading} results={this.state.results} page={this.state.page} numpages={Math.ceil(this.state.hits / this.state.perPage)} perPage={this.state.perPage} />
                   </div>
-                ) : null }
+                ) : (
+                  <div class="panel">
+                    <div class="panel-heading has-text-centered">
+                      <h3 class="mb-0">Welcome To The BioNet!</h3>
+                    </div>
+                    <div class="panel-block is-block has-text-centered pb-2">
+                      <h2 class="mt-1">A Free Biological Inventory Management System And Browser</h2>
+                      <p>
+                        Keep track of your stuff, find what you need, and share as you like. The bionet supports true asynchronous, peer-peer inventory management and sharing — all your inventory information is controlled locally by you. You decide if others can see what you wish to share. All BioNet software and associated materials are free to use.
+                      </p>
+                      <h2 class="mt-1">How Does It Work?</h2>
+                      <iframe width="100%" height="400" src="https://www.youtube.com/embed/t29-RGggSU8?ecver=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    </div>
+                  </div>                  
+                )}
     	        </div>
     	      </div>
           </div>

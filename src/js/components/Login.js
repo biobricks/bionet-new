@@ -91,9 +91,8 @@ module.exports = function(Component) {
                     <div class="field has-text-centered">
                       {(this.state.authError.length > 0) ? (
                         <p class="has-text-danger">{this.state.authError}</p>
-                      ) : (
-                        <p>Don't have a login? Why not <Link to="/signup">Sign Up</Link> for an account?</p>
-                      )}  
+                      ) : null }  
+                      <p>Don't have a login? Why not <Link to="/signup">Sign Up</Link> for an account?</p>
                     </div>
 
                     <div class="field is-horizontal">

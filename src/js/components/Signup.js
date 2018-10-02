@@ -117,7 +117,7 @@ module.exports = function(Component) {
 
                     <div class="field is-horizontal">
                       <div class="field-label is-normal is-narrow">
-                        <label class="label mt-1">Password</label>
+                        <label class="label mt-1">Your Password</label>
                       </div>
                       <div class="field-body">
                         <div class="field">
@@ -126,7 +126,7 @@ module.exports = function(Component) {
                               class={'input ' + this.validateInputClass('password')} 
                               type="password"
                               name="password" 
-                              placeholder="secretpassword"
+                              placeholder="yoursecretpassword"
                               onInput={this.validator('password')}
                               onfocusout={this.validator('password', true)} 
                               value={this.state.password}

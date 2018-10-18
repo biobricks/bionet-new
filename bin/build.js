@@ -20,8 +20,8 @@ var glob = require('glob');
 function getTime() {
   var d = new Date;
   var t = [d.getHours(), d.getMinutes(), d.getSeconds()];
-  t = t.map(function(i) {
-    return (i < 9) ? '0'+i : i;
+  t = t.map(function (i) {
+    return (i < 9) ? '0' + i : i;
   })
   return t[0] + ':' + t[1] + '.' + t[2];
 }
@@ -41,17 +41,17 @@ function build(opts) {
 
     var outStream = fs.createWriteStream(output);
 
-    if(!opts.dev) {
+    if (!opts.dev) {
       outStream.on('close', onBuildEnd);
     }
 
     b.bundle()
 
-      .on('error', function(err) {
+      .on('error', function (err) {
         beep();
-        if(err instanceof SyntaxError && err.message.match(/while parsing file/)) {
+        if (err instanceof SyntaxError && err.message.match(/while parsing file/)) {
           // Format syntax error messages nicely
-          var re = new RegExp(err.filename+'\:? ?');
+          var re = new RegExp(err.filename + '\:? ?');
           var msg = err.message.replace(re, '');
           msg = msg.replace(/ while parsing file\:.*/, '');
           console.error();
@@ -67,7 +67,7 @@ function build(opts) {
           console.error(err);
         }
       })
-    
+
       .pipe(outStream);
   }
 
@@ -83,43 +83,43 @@ function build(opts) {
     var lazies = glob.sync(path.join(__dirname, '..', 'src', 'js', 'lazy_modules', '*.js'))
 
     var i;
-    for(i=0; i < lazies.length; i++) {
+    for (i = 0; i < lazies.length; i++) {
       b.external(path.basename(lazies[i], '.js'));
     }
-    
-  } catch(err) {
+
+  } catch (err) {
     console.error(err);
   }
 
-/*
-  var b = browserify({
-    entries: [opts.source || path.join(__dirname, '..', 'src', 'js', 'index.js'), path.join(__dirname, '..', 'src', 'js', 'lazy_modules', 'foo.js')],
-    cache: {},
-    packageCache: {}
-  })
+  /*
+    var b = browserify({
+      entries: [opts.source || path.join(__dirname, '..', 'src', 'js', 'index.js'), path.join(__dirname, '..', 'src', 'js', 'lazy_modules', 'foo.js')],
+      cache: {},
+      packageCache: {}
+    })
+  
+    b.plugin(factorBundle, {
+      outputs: [path.join(__dirname, '..', 'static', 'build', 'bundle.js'), path.join(__dirname, '..', 'static', 'build', 'lazy_modules', 'foo.js')]  
+    });
+  
+  //  b.external('foo');
+  */
 
-  b.plugin(factorBundle, {
-    outputs: [path.join(__dirname, '..', 'static', 'build', 'bundle.js'), path.join(__dirname, '..', 'static', 'build', 'lazy_modules', 'foo.js')]  
-  });
-
-//  b.external('foo');
-*/
-
-  if(opts.dev) {
+  if (opts.dev) {
     console.log("Watching for changes...".yellow);
     b.plugin(watchify);
   }
 
-  if(opts.hot) {
+  if (opts.hot) {
     console.log("Hot module reloading enabled".yellow);
     b.plugin(hmr);
   }
 
-  b.on('update', function(time) {
-    onBuildStart();  
+  b.on('update', function (time) {
+    onBuildStart();
   });
 
-  if(opts.dev) {
+  if (opts.dev) {
     b.on('log', onBuildEnd);
   }
 
@@ -128,7 +128,7 @@ function build(opts) {
       'es2015', 'env'
     ],
     plugins: [
-      ['transform-react-jsx', {pragma: 'h'}],
+      ['transform-react-jsx', { pragma: 'h' }],
       'transform-object-rest-spread',
       'transform-class-properties'
     ]
@@ -136,9 +136,9 @@ function build(opts) {
 
   b.transform('browserify-markdown');
   var alias = opts.alias || {
-      "react": "preact-compat",
-      "react-dom": "preact-compat"
-  } 
+    "react": "preact-compat",
+    "react-dom": "preact-compat"
+  }
   b.transform('aliasify', {
     aliases: alias,
     global: true
@@ -160,38 +160,38 @@ if (require.main === module) {
     ],
     default: {}
   });
-  
+
   build(argv);
 
 } else {
 
   module.exports = {
     build: build,
-      
-    buildtest: function(opts) {
-        opts = opts || opts;
-        opts.output = path.join(__dirname, '..', 'static', 'build', 'index.test.js');
-        opts.source = path.join(__dirname, '..', 'tests', 'index.js');
-        opts.test = true;
-        opts.alias = {
-          'react-dom/server': 'preact-render-to-string',
-          'react-addons-test-utils': 'preact-test-utils',
-          'react-addons-transition-group': 'preact-transition-group',
-          'react': 'preact-compat-enzyme',
-          'react-dom': 'preact-compat-enzyme',
-          'react-test-renderer/shallow': "preact-test-utils",
-          'react-test-renderer': "preact-test-utils"
-        }
+
+    buildtest: function (opts) {
+      opts = opts || opts;
+      opts.output = path.join(__dirname, '..', 'static', 'build', 'index.test.js');
+      opts.source = path.join(__dirname, '..', 'tests', 'index.js');
+      opts.test = true;
+      opts.alias = {
+        'react-dom/server': 'preact-render-to-string',
+        'react-addons-test-utils': 'preact-test-utils',
+        'react-addons-transition-group': 'preact-transition-group',
+        'react': 'preact-compat-enzyme',
+        'react-dom': 'preact-compat-enzyme',
+        'react-test-renderer/shallow': "preact-test-utils",
+        'react-test-renderer': "preact-test-utils"
+      }
       return build(opts);
     },
 
-    watch: function(opts) {
+    watch: function (opts) {
       opts = opts || opts;
       opts.dev = true;
       return build(opts);
     },
 
-    hot: function(opts) {
+    hot: function (opts) {
       opts = opts || opts;
       opts.dev = true;
       opts.hot = true;

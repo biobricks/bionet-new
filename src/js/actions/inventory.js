@@ -77,6 +77,17 @@ module.exports = {
         }
         return null
     },
+
+    enableVisualizer: function() {
+        var qparam = app.state.history.location.search
+        return (qparam.indexOf('vis') >= 0)
+    },
+
+    getInventoryTree: function(cb) {
+        app.remote.inventoryTree(function (err, children) {
+            if (cb) cb(err,children)
+        })
+    },
     
     selectCell: function(id, parentId, x, y, navigate) {
         //console.log('selectCell action:',id,parentId,x,y,navigate)

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import ashnazg from 'ashnazg';
 import { Link } from 'react-router-dom';
-import { ForceGraph2D, ForceGraph3D, ForceGraphVR } from 'react-force-graph';
+//import { ForceGraph2D, ForceGraph3D, ForceGraphVR } from 'react-force-graph';
 
 module.exports = function (Component) {
 
@@ -47,6 +47,7 @@ module.exports = function (Component) {
       return (
         <div className="NodeGraph">
           <div id="2D Graph">
+/*
             <ForceGraph2D 
               graphData={graphInput} 
               style={{'height': '600px'}}
@@ -54,12 +55,15 @@ module.exports = function (Component) {
               linkDirectionalArrowRelPos={1}
               linkCurvature={0.25}
             />
+*/
           </div>
           <div id="3D Graph">
+/*
             <ForceGraph3D 
               graphData={genRandomTree()} 
               style={{'height': '600px'}}
             />
+*/
           </div>
         </div>
       );

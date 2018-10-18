@@ -5,12 +5,16 @@ import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
 module.exports = function (Component) {
 
   const MapGrid = require('./MapGrid')(Component);
+  const Visualizer = require('./Visualizer')(Component);
 
   return class MapPanel extends Component {
 
     constructor(props) {
       super(props);
-      this.state = {};
+
+      this.state = {
+        vis:app.actions.inventory.enableVisualizer()
+      }
       // this.onRecordMouseEnter = this.onRecordMouseEnter.bind(this);
       // this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);     
       this.onCellDragStart = this.onCellDragStart.bind(this);
@@ -166,11 +170,14 @@ module.exports = function (Component) {
               "target": child.id
             }
             let nextPathItem = inventoryPath[i + 1];
+            try {
+
             if (childNode.id !== nextPathItem.id){
               graphInput.nodes.push(childNode);
               graphInput.links.push(childLink);
             }
-          }
+          } catch (e) {}
+        }
           prevNode = node; 
         }
         if (pathItem.type === 'container'){
@@ -245,7 +252,15 @@ module.exports = function (Component) {
 
           </div>
           {(Object.keys(mapRecord).length > 0 && mapMode === 'grid') ? (       
-            <MapGrid 
+              (this.state.vis) ? (
+                <Visualizer
+                  name="bionet_container"
+                  diagram="bionet-container"
+                  inventoryPath={inventoryPath}
+                  inventoryTree={this.state.inventoryTree}
+                  />
+                ) : (
+              <MapGrid 
               {...this.props}
               type={type}
               selectedRecord={ mapRecord }
@@ -258,18 +273,41 @@ module.exports = function (Component) {
               // onRecordMouseEnter={this.onRecordMouseEnter}
               // onRecordMouseLeave={this.onRecordMouseLeave}
             />
+            )
           ) : null }
-          {(Object.keys(mapRecord).length > 0 && mapMode === '2D') ? (       
+          {(Object.keys(mapRecord).length > 0 && mapMode === '2D') ? (
             <div class="NodeGraph panel-block">
+              {(this.state.vis) ? (
+                <div style="width:100%;display:flex">
+                  <div style="width:60%;display:block;margin:12px;min-height:calc(100vh-40px)">
+                    <Visualizer
+                      name="tree"
+                      diagram="tree"
+                      inventoryPath={inventoryPath}
+                      inventoryTree={this.state.inventoryTree}
+                    />
+                  </div>
+                  <div style="width:40%;display:block;margin:12px;min-height:calc(100vh-40px)">
+                    <Visualizer
+                      name="bionet_container"
+                      diagram="bionet-container"
+                      inventoryPath={inventoryPath}
+                      inventoryTree={this.state.inventoryTree}
+                    />
+                  </div>
+                </div>
+              ) : (
               <div class="d-block">
                 <ForceGraph2D 
-                  graphData={graphInput} 
+                 graphData={graphInput} 
                   style={{'height': '300px', 'width': '300px'}}
                   linkDirectionalArrowLength={3.5}
                   linkDirectionalArrowRelPos={1}
                   linkCurvature={0}
-                />
+                  />
               </div>
+              )
+              }
             </div>
           ) : null }
           {(Object.keys(mapRecord).length > 0 && mapMode === '3D') ? (       

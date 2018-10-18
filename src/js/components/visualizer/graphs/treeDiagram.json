@@ -1,0 +1,186 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v4.json",
+    "width": 500,
+    "height": 500,
+    "padding": 0,
+    "autosize": "fit",
+    "signals": [
+        {
+            "name": "labels",
+            "value": true
+        },
+        {
+            "name": "layout",
+            "value": "tidy"
+        },
+        {
+            "name": "links",
+            "value": "diagonal"
+        }
+    ],
+    "data": [
+        {
+            "name": "tree",
+            "values": [],
+            "transform": [
+                {
+                    "type": "stratify",
+                    "key": "id",
+                    "parentKey": "parent"
+                },
+                {
+                    "type": "tree",
+                    "method": {
+                        "signal": "layout"
+                    },
+                    "size": [
+                        {
+                            "signal": "height"
+                        },
+                        {
+                            "signal": "width-100"
+                        }
+                    ],
+                    "as": [
+                        "y",
+                        "x",
+                        "depth",
+                        "children"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "links",
+            "source": "tree",
+            "transform": [
+                {
+                    "type": "treelinks"
+                },
+                {
+                    "type": "linkpath",
+                    "orient": "horizontal",
+                    "shape": {
+                        "signal": "links"
+                    }
+                }
+            ]
+        }
+    ],
+    "scales": [
+        {
+            "name": "color",
+            "type": "sequential",
+            "range": {
+                "scheme": "magma"
+            },
+            "domain": {
+                "data": "tree",
+                "field": "depth"
+            },
+            "zero": true
+        }
+    ],
+    "marks": [
+        {
+            "type": "path",
+            "from": {
+                "data": "links"
+            },
+            "encode": {
+                "update": {
+                    "path": {
+                        "field": "path"
+                    },
+                    "stroke": {
+                        "value": "#ccc"
+                    }
+                }
+            }
+        },
+        {
+            "type": "symbol",
+            "from": {
+                "data": "tree"
+            },
+            "hover": {
+                "cursor": {
+                    "value": "pointer"
+                }
+            },
+            "encode": {
+                "enter": {
+                    "size": {
+                        "value": 100
+                    },
+                    "stroke": {
+                        "value": "#fff"
+                    },
+                    "tooltip": {
+                        "field": "name"
+                    }
+                },
+                "update": {
+                    "x": {
+                        "field": "x"
+                    },
+                    "y": {
+                        "field": "y"
+                    },
+                    "fill": {
+                        "field": "fillColor"
+                    }
+                },
+                "hover": {
+                    "cursor": {
+                        "value": "pointer"
+                    }
+                }
+            }
+        },
+        {
+            "type": "text",
+            "from": {
+                "data": "tree"
+            },
+            "encode": {
+                "enter": {
+                    "text": {
+                        "field": "name"
+                    },
+                    "fontSize": {
+                        "field": "fontSize"
+                    },
+                    "fontweight": {
+                        "field": "fontWeight"
+                    },
+                    "baseline": {
+                        "value": "middle"
+                    }
+                },
+                "update": {
+                    "x": {
+                        "field": "x"
+                    },
+                    "y": {
+                        "field": "y"
+                    },
+                    "dx": {
+                        "signal": "datum.children ? -7 : 7"
+                    },
+                    "align": {
+                        "signal": "datum.children ? 'right' : 'left'"
+                    },
+                    "opacity": {
+                        "signal": "labels ? 1 : 0"
+                    }
+                },
+                "hover": {
+                    "cursor": {
+                        "value": "pointer"
+                    }
+                }
+            }
+        }
+    ]
+}

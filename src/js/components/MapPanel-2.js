@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import ashnazg from 'ashnazg';
-import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
+//import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
 
 module.exports = function (Component) {
 
@@ -262,6 +262,7 @@ module.exports = function (Component) {
           {(Object.keys(mapRecord).length > 0 && mapMode === '2D') ? (       
             <div class="NodeGraph panel-block">
               <div class="d-block">
+/*
                 <ForceGraph2D 
                   graphData={graphInput} 
                   style={{'height': '300px', 'width': '300px'}}
@@ -269,12 +270,14 @@ module.exports = function (Component) {
                   linkDirectionalArrowRelPos={1}
                   linkCurvature={0}
                 />
+*/
               </div>
             </div>
           ) : null }
           {(Object.keys(mapRecord).length > 0 && mapMode === '3D') ? (       
             <div class="NodeGraph panel-block">
               <div class="d-block">
+/*
                 <ForceGraph3D 
                   graphData={graphInput} 
                   style={{'height': '300px', 'width': '300px'}}
@@ -282,6 +285,7 @@ module.exports = function (Component) {
                   linkDirectionalArrowRelPos={1}
                   linkCurvature={0}
                 />
+*/
               </div>
             </div>
           ) : null }          

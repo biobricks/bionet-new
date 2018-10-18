@@ -13,12 +13,12 @@ module.exports = function (Component) {
                 visualizer: props.diagram,
                 outputFormat: "canvas",
                 renderContainer: props.name,
-                clickHandler: this.onclick.bind(this)
+                clickHandler: (props.onclick) ? props.onclick : this.onclick.bind(this)
             }
             this.visualizer = visualizer(this.opts)
             this.state = {};
             var self=this
-            app.remote.inventoryTree(function (err, children) {
+            app.actions.inventory.getInventoryTree(function (err, children) {
                 if (err) {
                     console.log("inventoryTree error:", err);
                     return

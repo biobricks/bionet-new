@@ -13,7 +13,8 @@ module.exports = function (Component) {
       super(props);
 
       this.state = {
-        vis:app.actions.inventory.enableVisualizer()
+        vis:app.actions.inventory.enableVisualizer(),
+        inventoryPath: props.inventoryPath
       }
       // this.onRecordMouseEnter = this.onRecordMouseEnter.bind(this);
       // this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);     
@@ -90,6 +91,21 @@ module.exports = function (Component) {
     //   console.log(`On Mouse Leave: ${id}`);
     //   this.props.updateHoveredRecord(null);
     // }
+
+    selectContainer(id) {
+      console.log('visualizer selected record:',id)
+      if (id) {
+        var self=this
+        app.actions.inventory.getInventoryPath(id, function(err,inventoryPath) {
+            if (!err) {
+              self.setState({
+                selectedRecord:id,
+                inventoryPath: inventoryPath
+              })
+            }
+        })
+      }
+    }
 
     render() {
       const inventoryPath = this.props.inventoryPath || [];
@@ -283,16 +299,18 @@ module.exports = function (Component) {
                     <Visualizer
                       name="tree"
                       diagram="tree"
-                      inventoryPath={inventoryPath}
+                      inventoryPath={this.state.inventoryPath}
                       inventoryTree={this.state.inventoryTree}
+                      onclick={this.selectContainer.bind(this)}
                     />
                   </div>
                   <div style="width:40%;display:block;margin:12px;min-height:calc(100vh-40px)">
                     <Visualizer
                       name="bionet_container"
                       diagram="bionet-container"
-                      inventoryPath={inventoryPath}
+                      inventoryPath={this.state.inventoryPath}
                       inventoryTree={this.state.inventoryTree}
+                      onclick={this.selectContainer.bind(this)}
                     />
                   </div>
                 </div>

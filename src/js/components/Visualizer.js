@@ -29,7 +29,7 @@ module.exports = function (Component) {
 
         onclick(id) {
             console.log('visualizer click', id)
-            app.state.history.push('/inventory/'+id+"?vis=true")
+            if (id) app.state.history.push('/inventory/'+id+"?vis=true")
         }
 
         render() {

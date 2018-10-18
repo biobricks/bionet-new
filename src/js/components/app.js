@@ -45,6 +45,9 @@ module.exports = function(Component) {
   // just an example of dynamically loading js
   var DynamicLoading = require('./dynamic_loading.js')(Component);
 
+  // example node graph
+  var NodeGraph = require('./NodeGraph')(Component);
+
   return class App extends Component {
 
     constructor(props) {
@@ -61,7 +64,7 @@ module.exports = function(Component) {
               <TopMenu/>
               <div class="content-area">
                 <Route exact path="/" component={Search} />
-                
+                <Route exact path="/node-graph" component={NodeGraph} />
                 <Route exact path="/help" component={HelpPage} />
             
                 <Route path="/inventory/:id" component={InventoryPage} />

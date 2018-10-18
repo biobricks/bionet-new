@@ -125,7 +125,7 @@ function build(opts) {
 
   b.transform('babelify', {
     presets: [
-      'es2015'
+      'es2015', 'env'
     ],
     plugins: [
       ['transform-react-jsx', {pragma: 'h'}],

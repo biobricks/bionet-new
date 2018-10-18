@@ -21,6 +21,7 @@ module.exports = function (Component) {
         mapFullScreen: false,
         dataFullScreen: false,
         mode: 'view',
+        mapMode: 'grid',
         error: {},
         alert: {
           type: '',
@@ -42,6 +43,7 @@ module.exports = function (Component) {
       ashnazg.listen('global.user', this.loggedInUser.bind(this));
       // Bindings
       this.loggedInUser = this.loggedInUser.bind(this);
+      this.setMapMode = this.setMapMode.bind(this);
       this.toggleParentVisible = this.toggleParentVisible.bind(this);
       this.getInventoryPath = this.getInventoryPath.bind(this);
       this.handleSetMode = this.handleSetMode.bind(this);
@@ -80,6 +82,21 @@ module.exports = function (Component) {
         this.setState({
           user: {}
         });
+      }
+    }
+
+    setMapMode(e) {
+      let mapMode = e.target.getAttribute('mode');
+      if (mapMode === '2D' || mapMode === '3D') {
+        this.setState({ 
+          mapMode,
+          mapFullScreen: true
+        });
+      } else if (mapMode === 'grid') {
+        this.setState({ 
+          mapMode,
+          mapFullScreen: false
+        });        
       }
     }
 
@@ -863,6 +880,8 @@ module.exports = function (Component) {
                     inventoryPath={this.state.inventoryPath}
                     type={this.state.selectedRecord.type}
                     mode={this.state.mode}
+                    mapMode={this.state.mapMode}
+                    setMapMode={this.setMapMode}
                     mapFullScreen={this.state.mapFullScreen}
                     toggleMapFullScreen={this.toggleMapFullScreen}
                     onRecordMouseEnter={this.onRecordMouseEnter}

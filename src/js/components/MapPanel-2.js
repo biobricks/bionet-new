@@ -1,16 +1,20 @@
 import { h } from 'preact';
 import ashnazg from 'ashnazg';
-//import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
+import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
 
 module.exports = function (Component) {
 
   const MapGrid = require('./MapGrid')(Component);
+  const Visualizer = require('./Visualizer')(Component);
 
   return class MapPanel extends Component {
 
     constructor(props) {
       super(props);
-      this.state = {};
+      this.state = {
+        vis:app.actions.inventory.enableVisualizer(),
+        inventoryPath: props.inventoryPath
+      }
       // this.onRecordMouseEnter = this.onRecordMouseEnter.bind(this);
       // this.onRecordMouseLeave = this.onRecordMouseLeave.bind(this);     
       this.onCellDragStart = this.onCellDragStart.bind(this);
@@ -86,6 +90,20 @@ module.exports = function (Component) {
     //   console.log(`On Mouse Leave: ${id}`);
     //   this.props.updateHoveredRecord(null);
     // }
+    selectContainer(id) {
+      console.log('visualizer selected record:',id)
+      if (id) {
+        var self=this
+        app.actions.inventory.getInventoryPath(id, function(err,inventoryPath) {
+            if (!err) {
+              self.setState({
+                selectedRecord:id,
+                inventoryPath: inventoryPath
+              })
+            }
+        })
+      }
+    }
 
     render() {
       const inventoryPath = this.props.inventoryPath || [];
@@ -245,39 +263,59 @@ module.exports = function (Component) {
 
           </div>
           {(Object.keys(mapRecord).length > 0 && mapMode === 'grid') ? (       
-            <MapGrid 
-              {...this.props}
-              type={type}
-              selectedRecord={ mapRecord }
-              onCellDragStart={this.onCellDragStart}
-              onCellDragOver={this.onCellDragOver}
-              onCellDragEnd={this.onCellDragEnd}
-              onCellDrop={this.onCellDrop}
-              parentVisible={this.props.parentVisible}
-              //selectedRecord={selectedRecord}
-              // onRecordMouseEnter={this.onRecordMouseEnter}
-              // onRecordMouseLeave={this.onRecordMouseLeave}
-            />
+            (this.state.vis) ? (
+              <Visualizer
+                name="bionet_container"
+                diagram="bionet-container"
+                inventoryPath={inventoryPath}
+                inventoryTree={this.state.inventoryTree}
+              />
+            ) : (
+                <MapGrid
+                  {...this.props}
+                  type={type}
+                  selectedRecord={mapRecord}
+                  onCellDragStart={this.onCellDragStart}
+                  onCellDragOver={this.onCellDragOver}
+                  onCellDragEnd={this.onCellDragEnd}
+                  onCellDrop={this.onCellDrop}
+                  parentVisible={this.props.parentVisible}
+                //selectedRecord={selectedRecord}
+                // onRecordMouseEnter={this.onRecordMouseEnter}
+                // onRecordMouseLeave={this.onRecordMouseLeave}
+                />
+              )
           ) : null }
           {(Object.keys(mapRecord).length > 0 && mapMode === '2D') ? (       
             <div class="NodeGraph panel-block">
-              <div class="d-block">
-/*
-                <ForceGraph2D 
-                  graphData={graphInput} 
-                  style={{'height': '300px', 'width': '300px'}}
-                  linkDirectionalArrowLength={3.5}
-                  linkDirectionalArrowRelPos={1}
-                  linkCurvature={0}
-                />
-*/
+              (this.state.vis) ? (
+                <div style="width:100%;display:flex">
+                <div style="width:60%;display:block;margin:12px;min-height:calc(100vh-40px)">
+                  <Visualizer
+                    name="tree"
+                    diagram="tree"
+                    inventoryPath={this.state.inventoryPath}
+                    inventoryTree={this.state.inventoryTree}
+                    onclick={this.selectContainer.bind(this)}
+                  />
+                </div>
               </div>
+                ) : (
+              <div class="d-block">
+                  <ForceGraph2D
+                    graphData={graphInput}
+                    style={{ 'height': '300px', 'width': '300px' }}
+                    linkDirectionalArrowLength={3.5}
+                    linkDirectionalArrowRelPos={1}
+                    linkCurvature={0}
+                  />
+                </div>
+                )
             </div>
           ) : null }
           {(Object.keys(mapRecord).length > 0 && mapMode === '3D') ? (       
             <div class="NodeGraph panel-block">
               <div class="d-block">
-/*
                 <ForceGraph3D 
                   graphData={graphInput} 
                   style={{'height': '300px', 'width': '300px'}}
@@ -285,12 +323,11 @@ module.exports = function (Component) {
                   linkDirectionalArrowRelPos={1}
                   linkCurvature={0}
                 />
-*/
               </div>
             </div>
           ) : null }          
         </div>
-      );
+      )
     }
 
   }

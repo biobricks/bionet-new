@@ -294,26 +294,38 @@ module.exports = function (Component) {
           {(Object.keys(mapRecord).length > 0 && mapMode === '2D') ? (
             <div class="NodeGraph panel-block">
               {(this.state.vis) ? (
-                <div style="width:100%;display:flex">
-                  <div style="width:60%;display:block;margin:12px;min-height:calc(100vh-40px)">
-                    <Visualizer
-                      name="tree"
-                      diagram="tree"
-                      inventoryPath={this.state.inventoryPath}
-                      inventoryTree={this.state.inventoryTree}
-                      onclick={this.selectContainer.bind(this)}
-                    />
+                (this.props.mapFullScreen) ? (
+                  <div style="width:100%;display:flex">
+                    <div style="width:60%;display:block;margin:12px;min-height:calc(100vh-40px)">
+                      <Visualizer
+                        name="tree"
+                        diagram="tree"
+                        inventoryPath={this.state.inventoryPath}
+                        inventoryTree={this.state.inventoryTree}
+                        onclick={this.selectContainer.bind(this)}
+                      />
+                    </div>
+                    <div style="width:40%;display:block;margin:12px;min-height:calc(100vh-40px)">
+                      <Visualizer
+                        name="bionet_container"
+                        diagram="bionet-container"
+                        inventoryPath={this.state.inventoryPath}
+                        inventoryTree={this.state.inventoryTree}
+                        onclick={this.selectContainer.bind(this)}
+                      />
+                    </div>
                   </div>
-                  <div style="width:40%;display:block;margin:12px;min-height:calc(100vh-40px)">
-                    <Visualizer
-                      name="bionet_container"
-                      diagram="bionet-container"
-                      inventoryPath={this.state.inventoryPath}
-                      inventoryTree={this.state.inventoryTree}
-                      onclick={this.selectContainer.bind(this)}
-                    />
-                  </div>
-                </div>
+                ) : (
+                    <div style="width:100%;display:block;margin:12px;min-height:calc(100vh-40px)">
+                      <Visualizer
+                        name="tree"
+                        diagram="tree"
+                        inventoryPath={this.state.inventoryPath}
+                        inventoryTree={this.state.inventoryTree}
+                        onclick={this.selectContainer.bind(this)}
+                      />
+                    </div>
+                  )
               ) : (
               <div class="d-block">
                 <ForceGraph2D 

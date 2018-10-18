@@ -602,6 +602,23 @@ module.exports = {
         })
     },
     
+    moveItemToContainer: function(id, parentId, cb) {
+        app.actions.inventory.updateItem(id, function(err,item) {
+            console.log('moveItemLocation:',err,item)
+            if (err) {
+                app.actions.error(err)
+                if (cb) cb(err)
+                return
+            }
+            item.parent_id = parentId
+            // todo: get available cell
+            item.parent_x = x
+            item.parent_y = y
+            if (cb) cb(null,item)
+            return item
+        })
+    },
+    
     moveItemLocation: function(data,parentId, x,y, cb) {
         const isId = data.indexOf('p-')===0
         if (isId) {

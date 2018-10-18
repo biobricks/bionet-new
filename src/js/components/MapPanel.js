@@ -24,6 +24,12 @@ module.exports = function (Component) {
       this.onCellDrop = this.onCellDrop.bind(this);
     }
 
+    componentWillReceiveProps(newProps) {
+      this.setState({
+        inventoryPath:newProps.inventoryPath
+      })
+    }
+
     onCellDragStart(e) {
       //console.log('onCellDragStart');
       let selectedRecord = this.props.selectedRecord;
@@ -94,17 +100,29 @@ module.exports = function (Component) {
 
     selectContainer(id) {
       console.log('visualizer selected record:',id)
-      if (id) {
-        var self=this
-        app.actions.inventory.getInventoryPath(id, function(err,inventoryPath) {
-            if (!err) {
-              self.setState({
-                selectedRecord:id,
-                inventoryPath: inventoryPath
-              })
-            }
-        })
+      if (!id) return
+      if (this.props.mode === 'edit') {
+          var self=this
+          app.actions.inventory.getInventoryPath(id, function(err,inventoryPath) {
+              if (!err) {
+                self.setState({
+                  selectedRecord:id,
+                  inventoryPath: inventoryPath
+                })
+              }
+          })
+      } else {
+        app.state.history.push('/inventory/'+id+"?vis=true")
       }
+    }
+
+    moveItem() {
+        console.log('moving item to:',this.props.selectedRecord.id, this.state.selectedRecord)
+        /*
+        app.actions.inventory.moveItemToContainer(id, this.state.selectedRecord,function(err){
+          //update message
+        })        
+        */
     }
 
     render() {
@@ -251,6 +269,14 @@ module.exports = function (Component) {
                     >
                       Grid
                     </span>                    
+                  ) : null }
+                  {(mode === 'edit') ? (  
+                    <span 
+                      class="button is-small is-secondary"
+                      onClick={this.moveItem.bind(this)}
+                    >
+                      <i class="mdi mdi-cursor-move"></i>
+                    </span>
                   ) : null }
                   {(mode === 'edit' && selectedRecord.type === 'container') ? (  
                     <span 

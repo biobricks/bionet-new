@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+require('events').EventEmitter.prototype._maxListeners = 0;
 var fs = require('fs');
 var path = require('path');
 var net = require('net');
